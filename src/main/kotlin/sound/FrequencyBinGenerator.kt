@@ -1,25 +1,32 @@
 package sound
 
-class FrequencyBinGenerator {
+class FrequencyBinGenerator(private val listener: Listener) {
 
     fun getFrequencyBins(): List<FrequencyBin> {
-        return listOf(
-            stubFrequencyBin100hz(),
-            stubFrequencyBin200hz(),
-            stubFrequencyBin300hz()
-        )
+        val fftData = listener.getFftData()
+        return convertToFrequencyBins(fftData)
     }
 
-    private fun stubFrequencyBin100hz(): FrequencyBin {
-        return FrequencyBin(100.0, 0.0)
+    private fun convertToFrequencyBins(fftData: DoubleArray): List<FrequencyBin> {
+        var frequencyBins = mutableListOf<FrequencyBin>()
+
+        fftData.forEachIndexed { index, amplitude ->
+            val frequencySample = createFrequencyBin(index, amplitude)
+            frequencyBins.add(frequencySample)
+        }
+
+        return frequencyBins
     }
 
-    private fun stubFrequencyBin200hz(): FrequencyBin {
-        return FrequencyBin(200.0, 50.0)
+    private fun createFrequencyBin(index: Int, amplitude: Double): FrequencyBin {
+        val frequency = getFrequency(index)
+        return FrequencyBin(frequency, amplitude)
     }
 
-    private fun stubFrequencyBin300hz(): FrequencyBin {
-        return FrequencyBin(300.0, 10.0)
+    private fun getFrequency(index: Int): Double {
+        val sampleRate = listener.getSampleRate()
+        val sampleSize = listener.getSampleSize()
+        return index * sampleRate / sampleSize
     }
 
 }

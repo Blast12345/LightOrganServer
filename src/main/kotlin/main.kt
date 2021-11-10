@@ -1,7 +1,8 @@
-import sound.FrequencyBinGenerator
+import sound.*
 
 fun main() {
-    val frequencyBinGenerator = FrequencyBinGenerator()
+    val lineInListener = LineInListener()
+    val frequencyBinGenerator = FrequencyBinGenerator(lineInListener)
 
     while (true) {
         val frequencyBins = frequencyBinGenerator.getFrequencyBins()
