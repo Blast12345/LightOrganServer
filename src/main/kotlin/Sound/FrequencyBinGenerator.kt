@@ -1,11 +1,13 @@
 package sound
 
-class SoundService {
+class FrequencyBinGenerator {
 
     fun getFrequencyBins(): List<FrequencyBin> {
-        return listOf(stubFrequencyBin100hz(),
-                stubFrequencyBin200hz(),
-                stubFrequencyBin300hz())
+        return listOf(
+            stubFrequencyBin100hz(),
+            stubFrequencyBin200hz(),
+            stubFrequencyBin300hz()
+        )
     }
 
     private fun stubFrequencyBin100hz(): FrequencyBin {

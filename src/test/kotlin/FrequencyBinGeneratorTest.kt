@@ -2,11 +2,11 @@ import sound.*
 import org.junit.*
 import org.junit.Assert.assertEquals
 
-class SoundServiceTest {
+class FrequencyBinGeneratorTest {
 
     @Test
     fun `when getFrequencyBins then returns frequency bins`() {
-        val uut = SoundService()
+        val uut = FrequencyBinGenerator()
         val actual = uut.getFrequencyBins()
         val expected = getFakeFrequencyBins()
         assertEquals(actual, expected)

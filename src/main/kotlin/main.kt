@@ -1,10 +1,10 @@
-import sound.SoundService
+import sound.FrequencyBinGenerator
 
 fun main() {
-    val soundService = SoundService()
+    val frequencyBinGenerator = FrequencyBinGenerator()
 
     while (true) {
-        val frequencyBins = soundService.getFrequencyBins()
+        val frequencyBins = frequencyBinGenerator.getFrequencyBins()
     }
 }
 
