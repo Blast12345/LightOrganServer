@@ -1,8 +1,6 @@
 import sound.*
 import org.junit.*
-import org.hamcrest.MatcherAssert.*
-import org.hamcrest.collection.*
-
+import org.junit.Assert.assertEquals
 
 class SoundServiceTest {
 
@@ -10,27 +8,27 @@ class SoundServiceTest {
     fun `when getFrequencyBins then returns frequency bins`() {
         val uut = SoundService()
         val actual = uut.getFrequencyBins()
-        val expected = getStubFrequencyBins()
-
-        Assert.assertThat(actual,
-                IsIterableContainingInOrder.contains(expected.toArray()));
+        val expected = getFakeFrequencyBins()
+        assertEquals(actual, expected)
     }
 
-    private fun getStubFrequencyBins(): List<FrequencyBin> {
-        return listOf(stubFrequencyBin100hz(),
-                stubFrequencyBin200hz(),
-                stubFrequencyBin300hz())
+    private fun getFakeFrequencyBins(): List<FrequencyBin> {
+        return listOf(
+            fakeFrequencyBin100hz(),
+            fakeFrequencyBin200hz(),
+            fakeFrequencyBin300hz()
+        )
     }
 
-    private fun stubFrequencyBin100hz(): FrequencyBin {
+    private fun fakeFrequencyBin100hz(): FrequencyBin {
         return FrequencyBin(100.0, 0.0)
     }
 
-    private fun stubFrequencyBin200hz(): FrequencyBin {
+    private fun fakeFrequencyBin200hz(): FrequencyBin {
         return FrequencyBin(200.0, 50.0)
     }
 
-    private fun stubFrequencyBin300hz(): FrequencyBin {
+    private fun fakeFrequencyBin300hz(): FrequencyBin {
         return FrequencyBin(300.0, 10.0)
     }
 

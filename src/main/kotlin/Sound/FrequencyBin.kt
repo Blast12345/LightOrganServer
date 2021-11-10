@@ -1,3 +1,3 @@
 package sound
 
-class FrequencyBin(val frequency: Double, var amplitude: Double)
+data class FrequencyBin(val frequency: Double, val amplitude: Double)
