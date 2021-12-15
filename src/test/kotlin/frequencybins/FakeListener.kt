@@ -1,8 +1,8 @@
-package mocking
+package frequencybins
 
-import sound.Listener
+import sound.listener.Listener
 
-class MockLineListener(private val fftData: DoubleArray): Listener {
+class FakeListener(private val fftData: DoubleArray): Listener {
 
     override fun getSampleRate(): Double {
         return 500.0

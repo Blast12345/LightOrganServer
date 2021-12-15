@@ -1,4 +1,4 @@
-package sound
+package sound.listener
 
 interface Listener {
     fun getSampleRate(): Double
