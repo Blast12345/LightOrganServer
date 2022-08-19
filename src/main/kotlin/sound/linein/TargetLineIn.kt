@@ -14,4 +14,32 @@ class TargetLineIn(/*private val targetDataLine: TargetDataLine*/): LineIn {
         return 1
     }
 
+    override fun availableBytes(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun bitDepth(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun bufferSize(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun isBigEndian(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun getFrame(): DoubleArray {
+        TODO("Not yet implemented")
+    }
+
+    override fun hasDataAvailable(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun readAvailable(): ByteArray {
+        TODO("Not yet implemented")
+    }
+
 }
