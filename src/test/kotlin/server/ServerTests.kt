@@ -24,10 +24,10 @@ class ServerTests {
     fun `the server can send a message`() {
         val sut = createSUT()
         sut.sendMessage(message)
-        assertEquals(message, socket.message)
-        // TODO: Implement me when device handshake is ready
-//        assertEquals(message, socket.address)
-//        assertEquals(message, socket.port)
+        assertEquals(socket.message, message)
+        // NOTE: We are assuming this is hardcoded for the MVP.
+        assertEquals(socket.address, "192.168.1.55")
+        assertEquals(socket.port, 9999)
     }
 
     @Test

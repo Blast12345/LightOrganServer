@@ -6,8 +6,7 @@ interface ServerInterface {
     fun sendMessage(message: String)
 }
 
-// TODO: Start listening for clients
-// Maybe create a ClientManager?
+// TODO: Start listening for clients; probably using a client manager.
 class Server(
     private val timeUtility: TimeUtilityInterface = TimeUtility(),
     private val socket: UdpSocketInterface = UdpSocket()): ServerInterface {
