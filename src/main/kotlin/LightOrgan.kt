@@ -3,8 +3,8 @@ import colorService.ColorServiceInterface
 import server.Server
 import server.ServerInterface
 
-class LightOrgan(var colorService: ColorServiceInterface = ColorService(),
-                 var server: ServerInterface = Server()) { // TODO: Last Message Timestamp
+class LightOrgan(var server: ServerInterface = Server(),
+                 var colorService: ColorServiceInterface = ColorService()) {
 
     var isRunning = false
         private set

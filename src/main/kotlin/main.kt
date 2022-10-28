@@ -6,7 +6,7 @@ fun main() {
     // start listening - this isn't testable in and of itself
     // get frequency bins
     // generate the RGB commands given frequency bins and LED count
-    // send RGB commands to client(s)
+    // - send RGB commands to client(s)
 
     val lightOrgan = LightOrgan()
     lightOrgan.start()

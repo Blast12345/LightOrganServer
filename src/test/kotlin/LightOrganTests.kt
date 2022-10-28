@@ -5,18 +5,18 @@ import server.FakeServer
 
 class LightOrganTests {
 
-    private lateinit var colorService: FakeColorService
     private lateinit var server: FakeServer
+    private lateinit var colorService: FakeColorService
     private val color = "1"
 
     @Before
     fun setup() {
-        colorService = FakeColorService()
         server = FakeServer()
+        colorService = FakeColorService()
     }
 
     private fun createSUT(): LightOrgan {
-        return LightOrgan(colorService, server)
+        return LightOrgan(server, colorService)
     }
 
     @Test
