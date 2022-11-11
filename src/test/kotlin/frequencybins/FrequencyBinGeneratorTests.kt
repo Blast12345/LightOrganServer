@@ -1,9 +1,9 @@
 package frequencybins
 
-import org.junit.*
+import colorService.sound.FrequencyBin
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import sound.frequencybins.FrequencyBin
+import org.junit.Test
 import sound.frequencybins.FrequencyBinGenerator
 
 class FrequencyBinGeneratorTests {

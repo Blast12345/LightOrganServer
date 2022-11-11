@@ -1,13 +1,15 @@
 package server
 
+import java.awt.Color
+
 class FakeServer: ServerInterface {
 
-    var message: String? = null
-    override var lastMessageTimestampInMilliseconds: Long? = null
-    override var millisecondsSinceLastSentMessage: Long? = null
+    var color: Color? = null
+    override var lastColorTimestampInMilliseconds: Long? = null
+    override var millisecondsSinceLastSentColor: Long? = null
 
-    override fun sendMessage(message: String) {
-        this.message = message
+    override fun sendColor(color: Color) {
+        this.color = color
     }
 
 }

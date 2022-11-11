@@ -15,6 +15,7 @@ class UdpSocket: UdpSocketInterface {
     override fun send(message: String, address: String, port: Int) {
         val packet = createPacket(message, address, port)
         socket.send(packet)
+        println("Sent Message: $message")
     }
 
     private fun createPacket(message: String, address: String, port: Int): DatagramPacket {
