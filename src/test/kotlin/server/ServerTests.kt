@@ -1,14 +1,15 @@
 package server
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.awt.Color
 
 class ServerTests {
 
     private lateinit var timeUtility: FakeTimeUtility
     private lateinit var socket: FakeUdpSocket
-    private val message = "fake message"
+    private val color = Color.blue
 
     @Before
     fun setup() {
@@ -21,31 +22,31 @@ class ServerTests {
     }
 
     @Test
-    fun `the server can send a message`() {
+    fun `the server can send a color`() {
         val sut = createSUT()
-        sut.sendMessage(message)
-        assertEquals(socket.message, message)
+        sut.sendColor(color)
+        assertEquals(socket.message, "${color.red},${color.green},${color.blue}")
         // NOTE: We are assuming this is hardcoded for the MVP.
         assertEquals(socket.address, "192.168.1.55")
         assertEquals(socket.port, 9999)
     }
 
     @Test
-    fun `a timestamp is updated when a message is sent`() {
+    fun `a timestamp is updated when a color is sent`() {
         val sut = createSUT()
-        sut.sendMessage(message)
-        assertEquals(timeUtility.currentTimeInMillisecondsValue, sut.lastMessageTimestampInMilliseconds)
+        sut.sendColor(color)
+        assertEquals(timeUtility.currentTimeInMillisecondsValue, sut.lastColorTimestampInMilliseconds)
     }
 
     @Test
-    fun `compute the time since the last message`() {
+    fun `compute the time since the last color`() {
         val sut = createSUT()
         val startTime: Long = 0
         val duration: Long = 100
         val endTime: Long = startTime + duration
-        sut.lastMessageTimestampInMilliseconds = startTime
+        sut.lastColorTimestampInMilliseconds = startTime
         timeUtility.currentTimeInMillisecondsValue = endTime
-        assertEquals(duration, sut.millisecondsSinceLastSentMessage)
+        assertEquals(duration, sut.millisecondsSinceLastSentColor)
     }
 
 }

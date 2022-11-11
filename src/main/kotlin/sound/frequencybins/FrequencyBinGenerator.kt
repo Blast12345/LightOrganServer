@@ -1,5 +1,6 @@
 package sound.frequencybins
 
+import colorService.sound.FrequencyBin
 import sound.listener.Listener
 
 class FrequencyBinGenerator(private val listener: Listener) {

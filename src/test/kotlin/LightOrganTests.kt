@@ -1,13 +1,15 @@
 import colorService.FakeColorService
-import org.junit.*
 import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
 import server.FakeServer
+import java.awt.Color
 
 class LightOrganTests {
 
     private lateinit var server: FakeServer
     private lateinit var colorService: FakeColorService
-    private val color = "1"
+    private val color = Color.blue
 
     @Before
     fun setup() {
@@ -33,23 +35,23 @@ class LightOrganTests {
         sut.start()
 
         colorService.lambda?.invoke(color)
-        assertEquals(color, server.message)
+        assertEquals(color, server.color)
     }
 
     @Test
-    fun `limit the number of messages to 60 times per second`() {
+    fun `limit the number of colors to 60 times per second`() {
         val sut = createSUT()
         sut.start()
 
-        server.millisecondsSinceLastSentMessage = 0
+        server.millisecondsSinceLastSentColor = 0
 
         colorService.lambda?.invoke(color)
-        assertNotEquals(color, server.message)
+        assertNotEquals(color, server.color)
 
-        server.millisecondsSinceLastSentMessage = minimumColorDurationInMilliseconds(60)
+        server.millisecondsSinceLastSentColor = minimumColorDurationInMilliseconds(60)
 
         colorService.lambda?.invoke(color)
-        assertEquals(color, server.message)
+        assertEquals(color, server.color)
     }
 
     private fun minimumColorDurationInMilliseconds(colorsPerSecond: Int): Long {
