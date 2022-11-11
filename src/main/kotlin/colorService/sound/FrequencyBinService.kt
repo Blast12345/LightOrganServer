@@ -1,4 +1,4 @@
-package colorService.color
+package colorService.sound
 
 import colorService.sound.FrequencyBin
 

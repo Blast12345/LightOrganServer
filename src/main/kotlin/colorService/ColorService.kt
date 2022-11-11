@@ -2,8 +2,8 @@ package colorService
 
 import colorService.color.ColorGenerator
 import colorService.color.ColorGeneratorInterface
-import colorService.color.FrequencyBinService
-import colorService.color.FrequencyBinServiceInterface
+import colorService.sound.FrequencyBinService
+import colorService.sound.FrequencyBinServiceInterface
 import java.awt.Color
 
 typealias NextColor = (Color) -> Unit
