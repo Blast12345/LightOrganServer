@@ -1,16 +1,16 @@
 package colorService.color
 
 import colorService.sound.FrequencyBin
-import colorService.sound.FrequencyBins
+import colorService.sound.FrequencyBinList
 import java.awt.Color
 
 interface ColorGeneratorInterface {
-    fun colorForFrequency(frequencyBins: List<FrequencyBin>): Color
+    fun colorForFrequencyBins(frequencyBins: List<FrequencyBin>): Color
 }
 
 class ColorGenerator: ColorGeneratorInterface {
 
-    override fun colorForFrequency(frequencyBins: List<FrequencyBin>): Color {
+    override fun colorForFrequencyBins(frequencyBins: List<FrequencyBin>): Color {
         if (frequencyBins.isEmpty()) {
             return Color.black
         }
@@ -24,7 +24,7 @@ class ColorGenerator: ColorGeneratorInterface {
     }
 
     private fun createHueForFrequencyBins(frequencyBins: List<FrequencyBin>): Float {
-        val binsModel = FrequencyBins(frequencyBins)
+        val binsModel = FrequencyBinList(frequencyBins) // TODO: Create from factory?
         val hue = (binsModel.averageFrequency() - binsModel.minimumFrequency()) / binsModel.maximumFrequency()
         return hue.toFloat()
     }

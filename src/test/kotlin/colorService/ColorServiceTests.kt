@@ -1,7 +1,7 @@
 package colorService
 
 import colorService.color.FakeColorGenerator
-import colorService.sound.FakeFrequencyBinService
+import colorService.sound.FakeFrequencyBinsService
 import colorService.sound.FrequencyBin
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -10,13 +10,13 @@ import java.awt.Color
 
 class ColorServiceTests {
 
-    private lateinit var frequencyBinsService: FakeFrequencyBinService
+    private lateinit var frequencyBinsService: FakeFrequencyBinsService
     private lateinit var colorGenerator: FakeColorGenerator
     private val frequencyBins = listOf(FrequencyBin(100.0, 10.0))
 
     @Before
     fun setup() {
-        frequencyBinsService = FakeFrequencyBinService()
+        frequencyBinsService = FakeFrequencyBinsService()
         colorGenerator = FakeColorGenerator()
     }
 

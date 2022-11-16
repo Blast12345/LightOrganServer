@@ -8,7 +8,7 @@ class FakeColorGenerator: ColorGeneratorInterface {
     var frequencyBins: List<FrequencyBin>? = null
     val color: Color = Color.orange
 
-    override fun colorForFrequency(frequencyBins: List<FrequencyBin>): Color {
+    override fun colorForFrequencyBins(frequencyBins: List<FrequencyBin>): Color {
         this.frequencyBins = frequencyBins
         return color
     }

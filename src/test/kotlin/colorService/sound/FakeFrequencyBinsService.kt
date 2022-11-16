@@ -1,6 +1,6 @@
 package colorService.sound
 
-class FakeFrequencyBinService: FrequencyBinServiceInterface {
+class FakeFrequencyBinsService: FrequencyBinsServiceInterface {
 
     var lambda: NextFrequencyBins? = null
 

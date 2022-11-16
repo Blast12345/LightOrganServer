@@ -1,7 +1,12 @@
 package colorService.sound
 
-class FrequencyBins(private val frequencyBins: List<FrequencyBin>) {
+interface FrequencyBinListInterface {
+    val frequencyBins: List<FrequencyBin>
+}
 
+class FrequencyBinList(override val frequencyBins: List<FrequencyBin>): FrequencyBinListInterface {
+
+    // TODO: Test me
     fun minimumFrequency(): Double {
         return frequencyBins.first().frequency
     }

@@ -18,7 +18,7 @@ class ColorGeneratorTests {
     @Test
     fun `color is black when there are no frequency bins`() {
         val sut = createSUT()
-        val actualColor = sut.colorForFrequency(emptyList())
+        val actualColor = sut.colorForFrequencyBins(emptyList())
         assertEquals(black, actualColor)
     }
 
@@ -31,7 +31,7 @@ class ColorGeneratorTests {
             FrequencyBin(50.0, 0.0),
             FrequencyBin(100.0, 0.0)
         )
-        val actualColor = sut.colorForFrequency(frequencyBins)
+        val actualColor = sut.colorForFrequencyBins(frequencyBins)
 
         assertEquals(red, actualColor)
     }
@@ -45,7 +45,7 @@ class ColorGeneratorTests {
             FrequencyBin(50.0, 1.0),
             FrequencyBin(100.0, 0.0)
         )
-        val actualColor = sut.colorForFrequency(frequencyBins)
+        val actualColor = sut.colorForFrequencyBins(frequencyBins)
 
         assertEquals(oppositeOfRed, actualColor)
     }
@@ -59,7 +59,7 @@ class ColorGeneratorTests {
             FrequencyBin(50.0, 0.0),
             FrequencyBin(100.0, 1.0)
         )
-        val actualColor = sut.colorForFrequency(frequencyBins)
+        val actualColor = sut.colorForFrequencyBins(frequencyBins)
 
         assertEquals(red, actualColor)
     }
