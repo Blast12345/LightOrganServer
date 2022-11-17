@@ -33,7 +33,7 @@ class ColorFactoryTests {
         val frequencyBins = listOf(FrequencyBin(1.0, 1.0))
         val actualColor = sut.colorFrom(frequencyBins)
         assertEquals(frequencyBins, hueFactory.frequencyBins)
-        assertEquals(hueFactory.hue, actualColor.getHue())
+        assertEquals(hueFactory.hue, actualColor.getHue(), 0.001f)
     }
 
 }
