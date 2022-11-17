@@ -1,7 +1,7 @@
 package colorListener
 
 import colorListener.color.FakeColorFactory
-import colorListener.sound.FakeFrequencyBinsService
+import colorListener.sound.FakeFrequencyBinsListener
 import colorListener.sound.FrequencyBin
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -10,13 +10,13 @@ import java.awt.Color
 
 class ColorListenerTests {
 
-    private lateinit var frequencyBinsService: FakeFrequencyBinsService
+    private lateinit var frequencyBinsService: FakeFrequencyBinsListener
     private lateinit var colorFactory: FakeColorFactory
     private val frequencyBins = listOf(FrequencyBin(100.0, 10.0))
 
     @Before
     fun setup() {
-        frequencyBinsService = FakeFrequencyBinsService()
+        frequencyBinsService = FakeFrequencyBinsListener()
         colorFactory = FakeColorFactory()
     }
 

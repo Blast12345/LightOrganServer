@@ -1,6 +1,6 @@
 package colorListener.sound
 
-class FakeFrequencyBinsService: FrequencyBinsServiceInterface {
+class FakeFrequencyBinsListener : FrequencyBinsListenerInterface {
 
     var lambda: NextFrequencyBins? = null
 

@@ -1,10 +1,10 @@
 package colorListener.sound
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class FrequencyBinsServiceTests {
+class FrequencyBinsListenerTests {
 
     private lateinit var fftService: FakeFftService
     private lateinit var frequencyBinsFactory: FakeFrequencyBinsFactory
@@ -15,8 +15,8 @@ class FrequencyBinsServiceTests {
         frequencyBinsFactory = FakeFrequencyBinsFactory()
     }
 
-    private fun createSUT(): FrequencyBinsService {
-        return FrequencyBinsService(fftService, frequencyBinsFactory)
+    private fun createSUT(): FrequencyBinsListener {
+        return FrequencyBinsListener(fftService, frequencyBinsFactory)
     }
 
     @Test

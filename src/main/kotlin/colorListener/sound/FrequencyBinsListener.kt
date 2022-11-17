@@ -2,12 +2,14 @@ package colorListener.sound
 
 typealias NextFrequencyBins = (List<FrequencyBin>) -> Unit
 
-interface FrequencyBinsServiceInterface {
+interface FrequencyBinsListenerInterface {
     fun listenForFrequencyBins(lambda: NextFrequencyBins)
 }
 
-class FrequencyBinsService(private val fftService: FftServiceInterface = FftService(),
-                           private val frequencyBinsFactory: FrequencyBinsFactoryInterface = FrequencyBinsFactory()): FrequencyBinsServiceInterface {
+class FrequencyBinsListener(
+    private val fftService: FftServiceInterface = FftService(),
+    private val frequencyBinsFactory: FrequencyBinsFactoryInterface = FrequencyBinsFactory()
+) : FrequencyBinsListenerInterface {
 
     override fun listenForFrequencyBins(lambda: NextFrequencyBins) {
         fftService.listenForFftData { sampleRate, sampleSize, amplitudes ->

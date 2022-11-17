@@ -2,8 +2,8 @@ package colorListener
 
 import colorListener.color.ColorFactory
 import colorListener.color.ColorFactoryInterface
-import colorListener.sound.FrequencyBinsService
-import colorListener.sound.FrequencyBinsServiceInterface
+import colorListener.sound.FrequencyBinsListener
+import colorListener.sound.FrequencyBinsListenerInterface
 import java.awt.Color
 
 typealias NextColor = (Color) -> Unit
@@ -13,7 +13,7 @@ interface ColorListenerInterface {
 }
 
 class ColorListener(
-    private val frequencyBinService: FrequencyBinsServiceInterface = FrequencyBinsService(),
+    private val frequencyBinService: FrequencyBinsListenerInterface = FrequencyBinsListener(),
     private val colorFactory: ColorFactoryInterface = ColorFactory()
 ) : ColorListenerInterface {
 
