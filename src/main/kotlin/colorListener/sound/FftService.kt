@@ -1,4 +1,4 @@
-package colorService.sound
+package colorListener.sound
 
 typealias NextFftData = (sampleRate: Int, sampleSize: Int, amplitudes: DoubleArray) -> Unit
 

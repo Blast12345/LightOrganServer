@@ -1,4 +1,4 @@
-import colorService.FakeColorService
+import colorListener.FakeColorListener
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -8,17 +8,17 @@ import java.awt.Color
 class LightOrganTests {
 
     private lateinit var server: FakeServer
-    private lateinit var colorService: FakeColorService
+    private lateinit var colorListener: FakeColorListener
     private val color = Color.blue
 
     @Before
     fun setup() {
         server = FakeServer()
-        colorService = FakeColorService()
+        colorListener = FakeColorListener()
     }
 
     private fun createSUT(): LightOrgan {
-        return LightOrgan(server, colorService)
+        return LightOrgan(server, colorListener)
     }
 
     @Test
@@ -34,7 +34,7 @@ class LightOrganTests {
         val sut = createSUT()
         sut.start()
 
-        colorService.lambda?.invoke(color)
+        colorListener.lambda?.invoke(color)
         assertEquals(color, server.color)
     }
 
@@ -45,12 +45,12 @@ class LightOrganTests {
 
         server.millisecondsSinceLastSentColor = 0
 
-        colorService.lambda?.invoke(color)
+        colorListener.lambda?.invoke(color)
         assertNotEquals(color, server.color)
 
         server.millisecondsSinceLastSentColor = minimumColorDurationInMilliseconds(60)
 
-        colorService.lambda?.invoke(color)
+        colorListener.lambda?.invoke(color)
         assertEquals(color, server.color)
     }
 

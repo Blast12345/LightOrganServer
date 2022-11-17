@@ -1,4 +1,4 @@
-package colorService.sound
+package colorListener.sound
 
 typealias NextFrequencyBins = (List<FrequencyBin>) -> Unit
 

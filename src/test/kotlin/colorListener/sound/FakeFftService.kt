@@ -1,4 +1,4 @@
-package colorService.sound
+package colorListener.sound
 
 class FakeFftService: FftServiceInterface {
 

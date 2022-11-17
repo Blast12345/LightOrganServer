@@ -1,27 +1,27 @@
-package colorService
+package colorListener
 
-import colorService.color.FakeColorGenerator
-import colorService.sound.FakeFrequencyBinsService
-import colorService.sound.FrequencyBin
+import colorListener.color.FakeColorFactory
+import colorListener.sound.FakeFrequencyBinsService
+import colorListener.sound.FrequencyBin
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.awt.Color
 
-class ColorServiceTests {
+class ColorListenerTests {
 
     private lateinit var frequencyBinsService: FakeFrequencyBinsService
-    private lateinit var colorGenerator: FakeColorGenerator
+    private lateinit var colorFactory: FakeColorFactory
     private val frequencyBins = listOf(FrequencyBin(100.0, 10.0))
 
     @Before
     fun setup() {
         frequencyBinsService = FakeFrequencyBinsService()
-        colorGenerator = FakeColorGenerator()
+        colorFactory = FakeColorFactory()
     }
 
-    private fun createSUT(): ColorService {
-        return ColorService(frequencyBinsService, colorGenerator)
+    private fun createSUT(): ColorListener {
+        return ColorListener(frequencyBinsService, colorFactory)
     }
 
     @Test
@@ -35,8 +35,8 @@ class ColorServiceTests {
 
         frequencyBinsService.lambda?.invoke(frequencyBins)
 
-        assertEquals(colorGenerator.frequencyBins, frequencyBins)
-        assertEquals(nextColor, colorGenerator.color)
+        assertEquals(colorFactory.frequencyBins, frequencyBins)
+        assertEquals(nextColor, colorFactory.color)
     }
 
 }

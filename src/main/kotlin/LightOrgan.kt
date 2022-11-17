@@ -1,11 +1,11 @@
-import colorService.ColorService
-import colorService.ColorServiceInterface
+import colorListener.ColorListener
+import colorListener.ColorListenerInterface
 import server.Server
 import server.ServerInterface
 import java.awt.Color
 
 class LightOrgan(private var server: ServerInterface = Server(),
-                 private var colorService: ColorServiceInterface = ColorService()) {
+                 private var colorListener: ColorListenerInterface = ColorListener()) {
 
     var isRunning = false
         private set
@@ -17,7 +17,7 @@ class LightOrgan(private var server: ServerInterface = Server(),
     }
 
     private fun startListeningForNextColor() {
-        colorService.listenForNextColor { color ->
+        colorListener.listenForNextColor { color ->
             sendColorIfAble(color)
         }
     }

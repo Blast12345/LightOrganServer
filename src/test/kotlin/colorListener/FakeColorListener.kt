@@ -1,6 +1,6 @@
-package colorService
+package colorListener
 
-class FakeColorService: ColorServiceInterface {
+class FakeColorListener: ColorListenerInterface {
 
     var lambda: NextColor? = null
 
