@@ -1,4 +1,4 @@
-package colorListener.sound
+package colorListener.sound.frequencyBins
 
 class FakeFrequencyBinsListener : FrequencyBinsListenerInterface {
 

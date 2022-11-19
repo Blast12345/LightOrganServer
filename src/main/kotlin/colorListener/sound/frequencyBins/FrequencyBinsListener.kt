@@ -1,4 +1,7 @@
-package colorListener.sound
+package colorListener.sound.frequencyBins
+
+import colorListener.sound.FftService
+import colorListener.sound.FftServiceInterface
 
 typealias NextFrequencyBins = (List<FrequencyBin>) -> Unit
 

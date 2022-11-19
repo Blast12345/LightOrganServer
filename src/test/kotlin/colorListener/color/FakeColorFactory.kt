@@ -1,9 +1,9 @@
 package colorListener.color
 
-import colorListener.sound.FrequencyBin
+import colorListener.sound.frequencyBins.FrequencyBin
 import java.awt.Color
 
-class FakeColorFactory: ColorFactoryInterface {
+class FakeColorFactory : ColorFactoryInterface {
 
     var frequencyBins: List<FrequencyBin>? = null
     val color: Color = Color.orange

@@ -1,9 +1,9 @@
 package colorListener.color
 
-import colorListener.sound.FrequencyBin
-import colorListener.sound.averageFrequency
-import colorListener.sound.maximumFrequency
-import colorListener.sound.minimumFrequency
+import colorListener.sound.frequencyBins.FrequencyBin
+import colorListener.sound.frequencyBins.averageFrequency
+import colorListener.sound.frequencyBins.maximumFrequency
+import colorListener.sound.frequencyBins.minimumFrequency
 
 interface HueFactoryInterface {
     fun hueFrom(frequencyBins: List<FrequencyBin>): Float

@@ -1,6 +1,6 @@
 package colorListener.color
 
-import colorListener.sound.FrequencyBin
+import colorListener.sound.frequencyBins.FrequencyBin
 
 class FakeHueFactory : HueFactoryInterface {
 

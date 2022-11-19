@@ -1,4 +1,4 @@
-package colorListener.sound
+package colorListener.sound.frequencyBins
 
 import colorListener.sound.fft.FakeFftService
 import org.junit.Assert.assertEquals

@@ -1,6 +1,6 @@
-package colorListener.sound
+package colorListener.sound.frequencyBins
 
-class FakeFrequencyBinsFactory: FrequencyBinsFactoryInterface {
+class FakeFrequencyBinsFactory : FrequencyBinsFactoryInterface {
 
     var sampleRate: Int? = null
     var sampleSize: Int? = null

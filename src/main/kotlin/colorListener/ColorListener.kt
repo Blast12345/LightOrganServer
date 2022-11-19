@@ -2,8 +2,8 @@ package colorListener
 
 import colorListener.color.ColorFactory
 import colorListener.color.ColorFactoryInterface
-import colorListener.sound.FrequencyBinsListener
-import colorListener.sound.FrequencyBinsListenerInterface
+import colorListener.sound.frequencyBins.FrequencyBinsListener
+import colorListener.sound.frequencyBins.FrequencyBinsListenerInterface
 import java.awt.Color
 
 typealias NextColor = (Color) -> Unit

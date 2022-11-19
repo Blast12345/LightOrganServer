@@ -1,8 +1,8 @@
 package colorListener
 
 import colorListener.color.FakeColorFactory
-import colorListener.sound.FakeFrequencyBinsListener
-import colorListener.sound.FrequencyBin
+import colorListener.sound.frequencyBins.FakeFrequencyBinsListener
+import colorListener.sound.frequencyBins.FrequencyBin
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test

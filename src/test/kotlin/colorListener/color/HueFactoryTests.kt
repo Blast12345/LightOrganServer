@@ -1,6 +1,6 @@
 package colorListener.color
 
-import colorListener.sound.FrequencyBin
+import colorListener.sound.frequencyBins.FrequencyBin
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package colorListener.sound
+package colorListener.sound.frequencyBins
 
 interface FrequencyBinsFactoryInterface {
     fun createFrom(sampleRate: Int, sampleSize: Int, amplitudes: DoubleArray): List<FrequencyBin>
