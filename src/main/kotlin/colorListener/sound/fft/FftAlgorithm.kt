@@ -1,7 +1,7 @@
 package colorListener.sound.fft
 
 import org.jtransforms.fft.DoubleFFT_1D
-import java.lang.Math.sqrt
+import kotlin.math.sqrt
 
 interface FftAlgorithmInterface {
     fun process(signal: DoubleArray): DoubleArray

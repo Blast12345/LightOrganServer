@@ -2,7 +2,7 @@ package colorListener.sound.fft
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.lang.Math.sin
+import kotlin.math.sin
 
 class FftAlgorithmTests {
 
