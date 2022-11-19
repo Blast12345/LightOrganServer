@@ -5,10 +5,10 @@ import colorListener.sound.NextFftData
 
 class FakeFftService : FftServiceInterface {
 
-    var lambda: NextFftData? = null
+    var nextFftData: NextFftData? = null
 
     override fun listenForFftData(lambda: NextFftData) {
-        this.lambda = lambda
+        this.nextFftData = lambda
     }
 
 }

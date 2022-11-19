@@ -1,11 +1,11 @@
 package colorListener
 
-class FakeColorListener: ColorListenerInterface {
+class FakeColorListener : ColorListenerInterface {
 
-    var lambda: NextColor? = null
+    var nextColor: NextColor? = null
 
     override fun listenForNextColor(lambda: NextColor) {
-        this.lambda = lambda
+        this.nextColor = lambda
     }
 
 }

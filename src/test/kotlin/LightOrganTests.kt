@@ -34,7 +34,7 @@ class LightOrganTests {
         val sut = createSUT()
         sut.start()
 
-        colorListener.lambda?.invoke(color)
+        colorListener.nextColor?.invoke(color)
         assertEquals(color, server.color)
     }
 
@@ -45,12 +45,12 @@ class LightOrganTests {
 
         server.millisecondsSinceLastSentColor = 0
 
-        colorListener.lambda?.invoke(color)
+        colorListener.nextColor?.invoke(color)
         assertNotEquals(color, server.color)
 
         server.millisecondsSinceLastSentColor = minimumColorDurationInMilliseconds(60)
 
-        colorListener.lambda?.invoke(color)
+        colorListener.nextColor?.invoke(color)
         assertEquals(color, server.color)
     }
 
