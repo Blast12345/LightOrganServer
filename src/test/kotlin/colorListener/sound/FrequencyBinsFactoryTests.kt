@@ -1,6 +1,6 @@
 package colorListener.sound
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FrequencyBinsFactoryTests {
@@ -25,7 +25,8 @@ class FrequencyBinsFactoryTests {
         val expected = listOf(
             FrequencyBin(0.0 * sampleRate / sampleSize, amplitude0),
             FrequencyBin(1.0 * sampleRate / sampleSize, amplitude1),
-            FrequencyBin(2.0 * sampleRate / sampleSize, amplitude2))
+            FrequencyBin(2.0 * sampleRate / sampleSize, amplitude2)
+        )
 
         assertEquals(expected, actual)
     }
