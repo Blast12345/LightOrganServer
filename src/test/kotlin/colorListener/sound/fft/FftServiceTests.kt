@@ -36,7 +36,7 @@ class FftServiceTests {
             actual = sampleRate
         }
 
-        lineInputListener.newAudioSample?.invoke(sampleRate, sampleSize, signal)
+        lineInputListener.nextAudioSample?.invoke(sampleRate, sampleSize, signal)
         assertEquals(sampleRate, actual)
     }
 
@@ -49,7 +49,7 @@ class FftServiceTests {
             actual = sampleSize
         }
 
-        lineInputListener.newAudioSample?.invoke(sampleRate, sampleSize, signal)
+        lineInputListener.nextAudioSample?.invoke(sampleRate, sampleSize, signal)
         assertEquals(sampleSize, actual)
     }
 
@@ -62,7 +62,7 @@ class FftServiceTests {
             actual = amplitudes
         }
 
-        lineInputListener.newAudioSample?.invoke(sampleRate, sampleSize, signal)
+        lineInputListener.nextAudioSample?.invoke(sampleRate, sampleSize, signal)
         assertEquals(amplitudeFactory.signal, signal)
         assertEquals(amplitudeFactory.amplitudes, actual)
     }

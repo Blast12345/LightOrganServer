@@ -33,7 +33,7 @@ class ColorListenerTests {
             nextColor = it
         }
 
-        frequencyBinsService.lambda?.invoke(frequencyBins)
+        frequencyBinsService.nextFrequencyBins?.invoke(frequencyBins)
 
         assertEquals(colorFactory.frequencyBins, frequencyBins)
         assertEquals(nextColor, colorFactory.color)

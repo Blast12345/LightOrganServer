@@ -2,10 +2,10 @@ package colorListener.sound.input
 
 class FakeLineInputListener : LineInputListenerInterface {
 
-    var newAudioSample: AudioSample? = null
+    var nextAudioSample: NextAudioSample? = null
 
-    override fun listenForNextAudioSample(lambda: AudioSample) {
-        newAudioSample = lambda
+    override fun listenForNextAudioSample(lambda: NextAudioSample) {
+        nextAudioSample = lambda
     }
 
 }

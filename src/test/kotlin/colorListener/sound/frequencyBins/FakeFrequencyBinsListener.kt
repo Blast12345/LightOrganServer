@@ -2,10 +2,10 @@ package colorListener.sound.frequencyBins
 
 class FakeFrequencyBinsListener : FrequencyBinsListenerInterface {
 
-    var lambda: NextFrequencyBins? = null
+    var nextFrequencyBins: NextFrequencyBins? = null
 
     override fun listenForFrequencyBins(lambda: NextFrequencyBins) {
-        this.lambda = lambda
+        this.nextFrequencyBins = lambda
     }
 
 }
