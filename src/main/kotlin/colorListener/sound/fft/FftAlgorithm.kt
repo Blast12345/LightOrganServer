@@ -20,9 +20,9 @@ class FftAlgorithm : FftAlgorithmInterface {
         val amplitudes = DoubleArray(signal.size / 2)
 
         for (i in amplitudes.indices) {
-            val re = signal[i * 2]
-            val im = signal[i * 2 + 1]
-            amplitudes[i] = sqrt(re * re + im * im) / signal.size
+            val real = signal[i * 2]
+            val imaginary = signal[i * 2 + 1]
+            amplitudes[i] = sqrt(real * real + imaginary * imaginary) / signal.size
         }
 
         return amplitudes
