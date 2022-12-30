@@ -21,19 +21,20 @@ class ColorFactoryTests {
     }
 
     @Test
-    fun `the color is black when there are no frequency bins`() {
-        val sut = createSUT()
-        val actualColor = sut.colorFrom(emptyList())
-        assertEquals(Color.black, actualColor)
-    }
-
-    @Test
     fun `the colors hue is derived from the frequency bins`() {
         val sut = createSUT()
         val frequencyBins = listOf(FrequencyBin(1.0, 1.0))
-        val actualColor = sut.colorFrom(frequencyBins)
+        val color = sut.colorFrom(frequencyBins)
+        assertEquals(hueFactory.hue!!, color.getHue(), 0.001f)
         assertEquals(frequencyBins, hueFactory.frequencyBins)
-        assertEquals(hueFactory.hue, actualColor.getHue(), 0.001f)
+    }
+
+    @Test
+    fun `the color is black when there is no hue`() {
+        val sut = createSUT()
+        hueFactory.hue = null
+        val color = sut.colorFrom(emptyList())
+        assertEquals(Color.black, color)
     }
 
 }

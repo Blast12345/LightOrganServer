@@ -10,15 +10,13 @@ interface ColorFactoryInterface {
 class ColorFactory(private val hueFactory: HueFactoryInterface = HueFactory()) : ColorFactoryInterface {
 
     override fun colorFrom(frequencyBins: List<FrequencyBin>): Color {
-        if (frequencyBins.isEmpty()) {
-            return Color.black
-        }
+        val hue = hueFactory.hueFrom(frequencyBins)
 
-        return Color.getHSBColor(
-            hueFactory.hueFrom(frequencyBins),
-            1.0F,
-            1.0F
-        )
+        return if (hue != null) {
+            Color.getHSBColor(hue, 1.0F, 1.0F)
+        } else {
+            Color.black
+        }
     }
 
 }
