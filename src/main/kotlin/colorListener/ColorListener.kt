@@ -2,14 +2,15 @@ package colorListener
 
 import colorListener.color.ColorFactory
 import colorListener.color.ColorFactoryInterface
-import colorListener.sound.frequencyBins.FrequencyBinsListener
-import colorListener.sound.frequencyBins.FrequencyBinsListenerInterface
+import sound.frequencyBins.FrequencyBinsListener
+import sound.frequencyBins.FrequencyBinsListenerInterface
 import java.awt.Color
 
 typealias NextColor = (Color) -> Unit
 
 interface ColorListenerInterface {
     fun listenForNextColor(lambda: NextColor)
+    fun colorFor(sample: DoubleArray): Color
 }
 
 class ColorListener(
@@ -22,6 +23,10 @@ class ColorListener(
             val color = colorFactory.colorFrom(frequencyBins)
             lambda(color)
         }
+    }
+
+    override fun colorFor(sample: DoubleArray): Color {
+        TODO("Not yet implemented")
     }
 
 }

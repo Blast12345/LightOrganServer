@@ -1,6 +1,6 @@
 package colorListener.color
 
-import colorListener.sound.frequencyBins.*
+import sound.frequencyBins.*
 
 interface HueFactoryInterface {
     fun hueFrom(frequencyBins: List<FrequencyBin>): Float?

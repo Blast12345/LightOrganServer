@@ -1,10 +1,11 @@
 package colorListener.color
 
-import colorListener.sound.frequencyBins.*
+import sound.frequencyBins.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
+import sound.frequencyBins.FrequencyBin
 
 class HueFactoryTests {
 

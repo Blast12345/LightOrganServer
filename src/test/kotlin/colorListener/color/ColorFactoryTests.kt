@@ -1,10 +1,10 @@
 package colorListener.color
 
-import colorListener.sound.frequencyBins.FrequencyBin
-import extensions.getHue
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import sound.frequencyBins.FrequencyBin
+import toolkit.getHue
 import java.awt.Color
 
 class ColorFactoryTests {

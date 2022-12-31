@@ -1,62 +1,37 @@
-import colorListener.FakeColorListener
-import org.junit.Assert.*
+import colorListener.FakeColorFactory
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import server.FakeServer
-import java.awt.Color
+import sound.input.FakeInput
 
 class LightOrganTests {
 
+    private lateinit var input: FakeInput
+    private lateinit var colorFactory: FakeColorFactory
     private lateinit var server: FakeServer
-    private lateinit var colorListener: FakeColorListener
-    private val color = Color.blue
 
     @Before
     fun setup() {
+        input = FakeInput()
+        colorFactory = FakeColorFactory()
         server = FakeServer()
-        colorListener = FakeColorListener()
     }
 
     private fun createSUT(): LightOrgan {
-        return LightOrgan(server, colorListener)
+        return LightOrgan(input, colorFactory, server)
     }
 
     @Test
-    fun `know when the light organ has been started`() {
-        val sut = createSUT()
-        assertFalse(sut.isRunning)
-        sut.start()
-        assertTrue(sut.isRunning)
-    }
-
-    @Test
-    fun `send colors to the server when they become available`() {
+    fun `send colors to the server when the input has new data`() {
         val sut = createSUT()
         sut.start()
 
-        colorListener.nextColor?.invoke(color)
-        assertEquals(color, server.color)
-    }
+        val sample = doubleArrayOf(1.1, 2.2)
+        input.listener?.invoke(sample)
 
-    @Test
-    fun `limit the number of colors to 60 times per second`() {
-        val sut = createSUT()
-        sut.start()
-
-        server.millisecondsSinceLastSentColor = 0
-
-        colorListener.nextColor?.invoke(color)
-        assertNotEquals(color, server.color)
-
-        server.millisecondsSinceLastSentColor = minimumColorDurationInMilliseconds(60)
-
-        colorListener.nextColor?.invoke(color)
-        assertEquals(color, server.color)
-    }
-
-    private fun minimumColorDurationInMilliseconds(colorsPerSecond: Int): Long {
-        val minimumColorDurationInMilliseconds = 1 / colorsPerSecond.toFloat() * 1000
-        return minimumColorDurationInMilliseconds.toLong()
+        assertEquals(colorFactory.color, server.color)
+        assertEquals(sample, colorFactory.sample)
     }
 
 }
