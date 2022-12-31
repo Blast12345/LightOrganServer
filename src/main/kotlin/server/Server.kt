@@ -11,7 +11,8 @@ interface ServerInterface {
 // TODO: Start listening for clients; probably using a client manager.
 class Server(
     private val timeUtility: TimeUtilityInterface = TimeUtility(),
-    private val socket: UdpSocketInterface = UdpSocket()): ServerInterface {
+    private val socket: UdpSocketInterface = UdpSocket()
+) : ServerInterface {
 
     private val address = "192.168.1.55"
     private val port = 9999
@@ -39,6 +40,7 @@ class Server(
     }
 
     private fun updateLastColorTimestamp() {
+        println("Time since last color: $millisecondsSinceLastSentColor ms")
         lastColorTimestampInMilliseconds = timeUtility.currentTimeMilliseconds()
     }
 

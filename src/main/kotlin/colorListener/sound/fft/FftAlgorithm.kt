@@ -17,6 +17,7 @@ class FftAlgorithm : FftAlgorithmInterface {
     }
 
     private fun createAmplitudes(signal: DoubleArray): DoubleArray {
+        // TODO: Why do we divide by 2? Is this due to the frame size? Nyquist Frequency?
         val amplitudes = DoubleArray(signal.size / 2)
 
         for (i in amplitudes.indices) {

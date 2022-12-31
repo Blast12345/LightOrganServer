@@ -4,8 +4,10 @@ import server.Server
 import server.ServerInterface
 import java.awt.Color
 
-class LightOrgan(private var server: ServerInterface = Server(),
-                 private var colorListener: ColorListenerInterface = ColorListener()) {
+class LightOrgan(
+    private var server: ServerInterface = Server(),
+    private var colorListener: ColorListenerInterface = ColorListener()
+) {
 
     var isRunning = false
         private set
@@ -23,6 +25,7 @@ class LightOrgan(private var server: ServerInterface = Server(),
     }
 
     private fun sendColorIfAble(color: Color) {
+        // TODO: I think we want to rate limit via state, otherwise we skip colors (on occassion) which doubles the perceived latency
         if (shouldSendColor()) {
             server.sendColor(color)
         }
