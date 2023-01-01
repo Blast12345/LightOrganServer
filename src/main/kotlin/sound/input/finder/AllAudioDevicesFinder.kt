@@ -1,4 +1,4 @@
-package sound.input
+package sound.input.finder
 
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.Mixer

@@ -1,5 +1,5 @@
 import sound.input.Input
-import sound.input.InputFinder
+import sound.input.finder.InputFinder
 
 fun main() {
     val input = findInput()
@@ -7,7 +7,6 @@ fun main() {
 }
 
 private fun findInput(): Input {
-    // TODO: Improve me
     val targetDataLine = InputFinder().getInput()
     return Input(targetDataLine)
 }

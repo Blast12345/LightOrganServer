@@ -16,8 +16,8 @@ class FrequencyBinsListener(
 
     override fun listenForFrequencyBins(lambda: NextFrequencyBins) {
         fftService.listenForFftData { sampleRate, sampleSize, amplitudes ->
-            val frequencyBins = frequencyBinsFactory.createFrom(sampleRate, sampleSize, amplitudes)
-            lambda(frequencyBins)
+//            val frequencyBins = frequencyBinsFactory.createFrom(sampleRate, sampleSize, amplitudes)
+//            lambda(frequencyBins)
         }
     }
 

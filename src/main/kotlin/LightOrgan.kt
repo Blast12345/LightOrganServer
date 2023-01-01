@@ -1,24 +1,25 @@
-import colorListener.ColorListener
-import colorListener.ColorListenerInterface
+import color.ColorFactory
+import color.ColorFactoryInterface
 import server.Server
 import server.ServerInterface
 import sound.input.InputInterface
+import sound.input.sample.AudioFrame
 
 class LightOrgan(
     private var input: InputInterface,
-    private var colorFactory: ColorListenerInterface = ColorListener(),
+    private var colorFactory: ColorFactoryInterface = ColorFactory(),
     private var server: ServerInterface = Server()
 ) {
 
     fun start() {
-        input.listenForAudioSamples { nextSample ->
-            sendColorFor(nextSample)
+        input.listenForAudioSamples { nextAudioFrame ->
+            sendColorFor(nextAudioFrame)
         }
     }
 
-    private fun sendColorFor(sample: DoubleArray) {
+    private fun sendColorFor(audioFrame: AudioFrame) {
         // TODO: Sleep if we are sending colors too quickly?
-        val color = colorFactory.colorFor(sample)
+        val color = colorFactory.colorFor(audioFrame)
         server.sendColor(color)
     }
 

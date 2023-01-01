@@ -24,7 +24,7 @@ class FftServiceTests {
     }
 
 //    @Test
-//    fun `the sample rate is returned when a signal is received from a line input`() {
+//    fun `the audioFrame rate is returned when a signal is received from a line input`() {
 //        val sut = createSUT()
 //
 //        var actual: Int? = null
@@ -37,7 +37,7 @@ class FftServiceTests {
 //    }
 //
 //    @Test
-//    fun `the sample size is returned when a signal is received from a line input`() {
+//    fun `the audioFrame size is returned when a signal is received from a line input`() {
 //        val sut = createSUT()
 //
 //        var actual: Int? = null

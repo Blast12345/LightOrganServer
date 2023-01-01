@@ -1,9 +1,9 @@
-package colorListener.color
+package color
 
 import sound.frequencyBins.*
 
 interface HueFactoryInterface {
-    fun hueFrom(frequencyBins: List<FrequencyBin>): Float?
+    fun createFrom(frequencyBins: List<FrequencyBin>): Float?
 }
 
 class HueFactory(
@@ -12,7 +12,7 @@ class HueFactory(
     private val maximumFrequencyFactory: MaximumFrequencyFactoryInterface = MaximumFrequencyFactory()
 ) : HueFactoryInterface {
 
-    override fun hueFrom(frequencyBins: List<FrequencyBin>): Float? {
+    override fun createFrom(frequencyBins: List<FrequencyBin>): Float? {
         val averageFrequency = averageFrequencyFactory.averageFrequencyFrom(frequencyBins)
         val minimumFrequency = minimumFrequencyFactory.minimumFrequencyFrom(frequencyBins)
         val maximumFrequency = maximumFrequencyFactory.maximumFrequencyFrom(frequencyBins)

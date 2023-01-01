@@ -1,22 +1,25 @@
 package sound.input
 
+import sound.input.sample.AudioFrame
+import sound.input.sample.AudioFrameFactory
+import sound.input.sample.AudioFrameFactoryInterface
 import javax.sound.sampled.TargetDataLine
 
-typealias NextAudioSample = (signal: DoubleArray) -> Unit
+typealias NextAudioFrame = (audioFrame: AudioFrame) -> Unit
 
 interface InputInterface {
-    fun listenForAudioSamples(listener: NextAudioSample)
+    fun listenForAudioSamples(listener: NextAudioFrame)
 }
 
 class Input(
     private val line: TargetDataLine,
-    private val rawWaveFactory: RawWaveFactoryInterface = RawWaveFactory()
+    private val audioFrameFactory: AudioFrameFactoryInterface = AudioFrameFactory()
 ) : InputInterface {
 
     private var shouldListen = false
-    private var buffer = ByteArray(line.bufferSize)
+    private var samplesBuffer = ByteArray(line.bufferSize)
 
-    override fun listenForAudioSamples(listener: NextAudioSample) {
+    override fun listenForAudioSamples(listener: NextAudioFrame) {
         startListening()
         whenDataIsAvailable {
             returnNextSampleTo(listener)
@@ -42,15 +45,22 @@ class Input(
         return line.available() > 0
     }
 
-    private fun returnNextSampleTo(listener: NextAudioSample) {
-        val nextSample = getNextSample()
-        listener(nextSample)
+    private fun returnNextSampleTo(listener: NextAudioFrame) {
+        val nextAudioFrame = getNextAudioFrame()
+        listener(nextAudioFrame)
     }
 
-    private fun getNextSample(): DoubleArray {
+    private fun getNextAudioFrame(): AudioFrame {
+        return audioFrameFactory.audioFrameFor(
+            samples = getNextFrame(),
+            line = line
+        )
+    }
+
+    private fun getNextFrame(): ByteArray {
         val newData = getNewData()
         updateBufferWith(newData)
-        return rawWaveFactory.rawWaveFrom(buffer, line.format)
+        return samplesBuffer
     }
 
     private fun getNewData(): ByteArray {
@@ -62,26 +72,13 @@ class Input(
     }
 
     private fun updateBufferWith(newData: ByteArray) {
-        val rolloverData = buffer.drop(newData.size).toByteArray()
-        buffer = rolloverData + newData
+        val rolloverData = samplesBuffer.drop(newData.size).toByteArray()
+        samplesBuffer = rolloverData + newData
     }
-
 
     fun stopListening() {
         shouldListen = false
     }
-    // TODO:
-//    fun sampleRate(): Float {
-//        return line.format.sampleRate
-//    }
-//
-//    fun sampleSize(): Int {
-//        // NOTE: I think frame size is dependent on bit-depth. 8-bit audio would like be 1, 16 would be 2, 24 would be 3, and 32 would be 4
-//        return line.bufferSize / line.format.frameSize
-//    }
-//
-//    fun bufferSize(): Int {
-//        return line.bufferSize
-//    }
 
 }
+

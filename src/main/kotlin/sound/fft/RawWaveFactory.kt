@@ -1,4 +1,4 @@
-package sound.input
+package sound.fft
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

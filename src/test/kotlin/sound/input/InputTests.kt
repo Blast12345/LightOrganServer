@@ -7,6 +7,8 @@ import io.mockk.verifyOrder
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import sound.input.sample.AudioFrame
+import sound.input.sample.AudioFrameFactory
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
@@ -16,17 +18,17 @@ class InputTests {
     private lateinit var dataLine: TargetDataLine
 
     @MockK
-    private lateinit var rawWaveFactory: RawWaveFactory
+    private lateinit var sampleFactory: AudioFrameFactory
 
     private val bufferSize = 4096
     private val bytesAvailable = 1024
     private val bytesRead = 1024
     private val format = AudioFormat(44100F, 8, 1, true, true)
-    private val rawWave = doubleArrayOf(1.0)
+    private val audioFrame = AudioFrame(byteArrayOf(1), format)
 
     @Before
     fun setup() {
-        dataLine = mockk<TargetDataLine>()
+        dataLine = mockk()
         every { dataLine.bufferSize } returns bufferSize
         every { dataLine.open() } returns Unit
         every { dataLine.start() } returns Unit
@@ -34,27 +36,27 @@ class InputTests {
         every { dataLine.read(any(), 0, bytesAvailable) } returns bytesRead
         every { dataLine.format } returns format
 
-        rawWaveFactory = mockk<RawWaveFactory>()
-        every { rawWaveFactory.rawWaveFrom(any(), format) } returns rawWave
+        sampleFactory = mockk()
+        every { sampleFactory.audioFrameFor(any(), dataLine) } returns audioFrame
     }
 
     private fun createSUT(): Input {
-        return Input(dataLine, rawWaveFactory)
+        return Input(dataLine, sampleFactory)
     }
 
     @Test
-    fun `return the audio sample when the data line has new data`() {
+    fun `return the audio frame when the data line has new data`() {
         val sut = createSUT()
 
-        var nextSample: DoubleArray? = null
+        var nextAudioFrame: AudioFrame? = null
         sut.listenForAudioSamples {
-            nextSample = it
+            nextAudioFrame = it
 
             // We must stop listening or the while loop will prevent us from continuing
             sut.stopListening()
         }
 
-        assertEquals(rawWave, nextSample)
+        assertEquals(audioFrame, nextAudioFrame)
     }
 
     @Test

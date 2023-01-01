@@ -2,9 +2,9 @@ package sound.input
 
 class FakeInput : InputInterface {
 
-    var listener: NextAudioSample? = null
+    var listener: NextAudioFrame? = null
 
-    override fun listenForAudioSamples(listener: NextAudioSample) {
+    override fun listenForAudioSamples(listener: NextAudioFrame) {
         this.listener = listener
     }
 
