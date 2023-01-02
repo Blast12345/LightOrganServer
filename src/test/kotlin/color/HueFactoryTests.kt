@@ -1,9 +1,9 @@
 package color
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import sound.frequencyBins.*
 
 class HueFactoryTests {
@@ -13,7 +13,7 @@ class HueFactoryTests {
     private lateinit var maximumFrequencyFactory: FakeMaximumFrequencyFactory
     private val frequencyBins: FrequencyBins = listOf(FrequencyBin(75.0, 1.2))
 
-    @Before
+    @BeforeEach
     fun setup() {
         averageFrequencyFactory = FakeAverageFrequencyFactory()
         minimumFrequencyFactory = FakeMinimumFrequencyFactory()

@@ -1,11 +1,12 @@
 package sound.input
 
-import sound.input.sample.AudioFrame
-import sound.input.sample.AudioFrameFactory
-import sound.input.sample.AudioFrameFactoryInterface
+import sound.input.samples.NormalizedAudioFrame
+import sound.input.samples.NormalizedAudioFrameFactory
+import sound.input.samples.NormalizedAudioFrameFactoryInterface
+import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
-typealias NextAudioFrame = (audioFrame: AudioFrame) -> Unit
+typealias NextAudioFrame = (audioFrame: NormalizedAudioFrame) -> Unit
 
 interface InputInterface {
     fun listenForAudioSamples(listener: NextAudioFrame)
@@ -13,30 +14,23 @@ interface InputInterface {
 
 class Input(
     private val line: TargetDataLine,
-    private val audioFrameFactory: AudioFrameFactoryInterface = AudioFrameFactory()
+    private val audioFrameFactory: NormalizedAudioFrameFactoryInterface = NormalizedAudioFrameFactory()
 ) : InputInterface {
 
-    private var shouldListen = false
+    private var canListen: Boolean
     private var samplesBuffer = ByteArray(line.bufferSize)
 
-    override fun listenForAudioSamples(listener: NextAudioFrame) {
-        startListening()
-        whenDataIsAvailable {
-            returnNextSampleTo(listener)
-        }
-    }
-
-    private fun startListening() {
+    init {
         line.open()
         line.start()
-        shouldListen = true
+        canListen = true
     }
 
-    private fun whenDataIsAvailable(dataIsAvailable: () -> Unit) {
+    override fun listenForAudioSamples(listener: NextAudioFrame) {
         // NOTE: New data becomes available every ~10 ms. I don't know how this delay is derived.
-        while (shouldListen) {
+        while (canListen) {
             if (hasDataAvailable()) {
-                dataIsAvailable()
+                returnNextSampleTo(listener)
             }
         }
     }
@@ -50,10 +44,10 @@ class Input(
         listener(nextAudioFrame)
     }
 
-    private fun getNextAudioFrame(): AudioFrame {
-        return audioFrameFactory.audioFrameFor(
-            samples = getNextFrame(),
-            line = line
+    private fun getNextAudioFrame(): NormalizedAudioFrame {
+        return audioFrameFactory.createFor(
+            rawSamples = getNextFrame(),
+            format = getAudioFormat()
         )
     }
 
@@ -76,8 +70,12 @@ class Input(
         samplesBuffer = rolloverData + newData
     }
 
+    private fun getAudioFormat(): AudioFormat {
+        return line.format
+    }
+
     fun stopListening() {
-        shouldListen = false
+        canListen = false
     }
 
 }

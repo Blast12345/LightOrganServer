@@ -1,23 +1,21 @@
 package color
 
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import sound.frequencyBins.FakeFrequencyBinsFactory
-import sound.input.sample.AudioFrame
+import sound.input.samples.NormalizedAudioFrame
 import toolkit.getHue
 import java.awt.Color
-import javax.sound.sampled.AudioFormat
 
 class ColorFactoryTests {
 
     private lateinit var frequencyBinsFactory: FakeFrequencyBinsFactory
     private lateinit var hueFactory: FakeHueFactory
-    private val frame = byteArrayOf(1)
-    private val format = AudioFormat(44100F, 8, 1, true, true)
-    private val audioFrame = AudioFrame(frame, format)
+    private val samples = doubleArrayOf(1.1)
+    private val audioFrame = NormalizedAudioFrame(samples)
 
-    @Before
+    @BeforeEach
     fun setup() {
         frequencyBinsFactory = FakeFrequencyBinsFactory()
         hueFactory = FakeHueFactory()

@@ -1,8 +1,7 @@
 package sound.fft
 
-import org.junit.Assert.assertArrayEquals
-import org.junit.Test
-import sound.fft.HannWindowFilter
+import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Test
 
 // NOTE: These are characterization tests due to the complex math.
 class HannWindowFilterTests {

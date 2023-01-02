@@ -1,15 +1,15 @@
 package color
 
-import sound.input.sample.AudioFrame
+import sound.input.samples.NormalizedAudioFrame
 import java.awt.Color
 
 class FakeColorFactory : ColorFactoryInterface {
 
-    var audioFrame: AudioFrame? = null
+    var audioFrame: NormalizedAudioFrame? = null
     val color: Color = Color.orange
 
-    override fun colorFor(audioFrame: AudioFrame): Color {
-        this.audioFrame = audioFrame
+    override fun colorFor(normalizedAudioFrame: NormalizedAudioFrame): Color {
+        this.audioFrame = normalizedAudioFrame
         return color
     }
 

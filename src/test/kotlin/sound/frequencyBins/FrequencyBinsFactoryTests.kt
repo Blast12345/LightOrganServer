@@ -1,14 +1,14 @@
 package sound.frequencyBins
 
-import org.junit.Test
-import sound.input.sample.AudioFrame
-import javax.sound.sampled.AudioFormat
+import org.junit.jupiter.api.Test
+import sound.input.samples.NormalizedAudioFrame
 
 class FrequencyBinsFactoryTests {
 
-    private val frame = byteArrayOf(1)
-    private val format = AudioFormat(44100F, 8, 1, true, true)
-    private val audioFrame = AudioFrame(frame, format)
+    private val samples = doubleArrayOf(1.1)
+    private val normalizedAudioFrame = NormalizedAudioFrame(samples)
+    private val bin1 = FrequencyBin(100.0, 1.0)
+    private val bin2 = FrequencyBin(200.0, 2.0)
 
     private fun createSUT(): FrequencyBinsFactory {
         return FrequencyBinsFactory()
@@ -16,15 +16,10 @@ class FrequencyBinsFactoryTests {
 
     @Test
     fun `frequency bins are created from an audio frame`() {
-        val sut = createSUT()
-//        val sampleRate = 44100
-//        val sampleSize = 512
-//        val amplitude0 = 0.0
-//        val amplitude1 = 1.0
-//        val amplitude2 = 2.0
-//        val amplitudes = doubleArrayOf(amplitude0, amplitude1, amplitude2)
-//
-        val actual = sut.createFrom(audioFrame, 0F)
+        // TODO:
+//        val sut = createSUT()
+//        val actual = sut.createFrom(normalizedAudioFrame, 0F)
+//        val expected = listOf(bin1, bin2)
 //        assertEquals(expected, actual)
 //
 //        // TODO: Is it true that the first bin is always 0?

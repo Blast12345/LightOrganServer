@@ -1,6 +1,6 @@
 package sound.fft
 
-import org.junit.Before
+import org.junit.jupiter.api.BeforeEach
 
 class FftServiceTests {
 
@@ -10,7 +10,7 @@ class FftServiceTests {
     private val sampleSize = 2
     private val signal = DoubleArray(5)
 
-    @Before
+    @BeforeEach
     fun setup() {
 //        lineInputListener = FakeLineInputListener()
         amplitudeFactory = FakeAmplitudeFactory()
@@ -24,7 +24,7 @@ class FftServiceTests {
     }
 
 //    @Test
-//    fun `the audioFrame rate is returned when a signal is received from a line input`() {
+//    fun `the normalizedAudioFrame rate is returned when a signal is received from a line input`() {
 //        val sut = createSUT()
 //
 //        var actual: Int? = null
@@ -37,7 +37,7 @@ class FftServiceTests {
 //    }
 //
 //    @Test
-//    fun `the audioFrame size is returned when a signal is received from a line input`() {
+//    fun `the normalizedAudioFrame size is returned when a signal is received from a line input`() {
 //        val sut = createSUT()
 //
 //        var actual: Int? = null

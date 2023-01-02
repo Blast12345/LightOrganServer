@@ -1,15 +1,18 @@
 package sound.frequencyBins
 
-import sound.input.sample.AudioFrame
+import sound.input.samples.NormalizedAudioFrame
 
 class FakeFrequencyBinsFactory : FrequencyBinsFactoryInterface {
 
-    var audioFrame: AudioFrame? = null
+    var audioFrame: NormalizedAudioFrame? = null
     var lowestSupportedFrequency: Float? = null
     val frequencyBins = listOf(FrequencyBin(1.0, 1.0))
 
-    override fun createFrom(audioFrame: AudioFrame, lowestSupportedFrequency: Float): List<FrequencyBin> {
-        this.audioFrame = audioFrame
+    override fun createFrom(
+        normalizedAudioFrame: NormalizedAudioFrame,
+        lowestSupportedFrequency: Float
+    ): List<FrequencyBin> {
+        this.audioFrame = normalizedAudioFrame
         this.lowestSupportedFrequency = lowestSupportedFrequency
         return frequencyBins
     }

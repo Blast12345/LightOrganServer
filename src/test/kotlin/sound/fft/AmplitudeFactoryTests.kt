@@ -1,8 +1,8 @@
 package sound.fft
 
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class AmplitudeFactoryTests {
 
@@ -10,7 +10,7 @@ class AmplitudeFactoryTests {
     private lateinit var fftAlgorithm: FakeFftAlgorithm
     private val signal = DoubleArray(5)
 
-    @Before
+    @BeforeEach
     fun setup() {
         hannWindowFilter = FakeHannWindowFilter()
         fftAlgorithm = FakeFftAlgorithm()

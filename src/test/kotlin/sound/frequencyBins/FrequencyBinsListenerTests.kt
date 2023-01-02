@@ -1,7 +1,7 @@
 package sound.frequencyBins
 
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import sound.fft.FakeFftService
 
 class FrequencyBinsListenerTests {
@@ -9,7 +9,7 @@ class FrequencyBinsListenerTests {
     private lateinit var fftService: FakeFftService
     private lateinit var frequencyBinsFactory: FakeFrequencyBinsFactory
 
-    @Before
+    @BeforeEach
     fun setup() {
         fftService = FakeFftService()
         frequencyBinsFactory = FakeFrequencyBinsFactory()

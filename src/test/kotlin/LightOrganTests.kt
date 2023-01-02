@@ -1,11 +1,10 @@
 import color.FakeColorFactory
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import server.FakeServer
 import sound.input.FakeInput
-import sound.input.sample.AudioFrame
-import javax.sound.sampled.AudioFormat
+import sound.input.samples.NormalizedAudioFrame
 
 class LightOrganTests {
 
@@ -13,7 +12,7 @@ class LightOrganTests {
     private lateinit var colorFactory: FakeColorFactory
     private lateinit var server: FakeServer
 
-    @Before
+    @BeforeEach
     fun setup() {
         input = FakeInput()
         colorFactory = FakeColorFactory()
@@ -29,9 +28,8 @@ class LightOrganTests {
         val sut = createSUT()
         sut.start()
 
-        val samples = byteArrayOf(1)
-        val format = AudioFormat(44100F, 8, 1, true, true)
-        val audioFrame = AudioFrame(samples, format)
+        val samples = doubleArrayOf(1.1)
+        val audioFrame = NormalizedAudioFrame(samples)
         input.listener?.invoke(audioFrame)
 
         assertEquals(colorFactory.color, server.color)

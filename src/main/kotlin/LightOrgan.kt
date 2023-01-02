@@ -3,7 +3,7 @@ import color.ColorFactoryInterface
 import server.Server
 import server.ServerInterface
 import sound.input.InputInterface
-import sound.input.sample.AudioFrame
+import sound.input.samples.NormalizedAudioFrame
 
 class LightOrgan(
     private var input: InputInterface,
@@ -17,9 +17,9 @@ class LightOrgan(
         }
     }
 
-    private fun sendColorFor(audioFrame: AudioFrame) {
+    private fun sendColorFor(normalizedAudioFrame: NormalizedAudioFrame) {
         // TODO: Sleep if we are sending colors too quickly?
-        val color = colorFactory.colorFor(audioFrame)
+        val color = colorFactory.colorFor(normalizedAudioFrame)
         server.sendColor(color)
     }
 
