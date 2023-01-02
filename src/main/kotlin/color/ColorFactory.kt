@@ -7,7 +7,7 @@ import sound.input.samples.NormalizedAudioFrame
 import java.awt.Color
 
 interface ColorFactoryInterface {
-    fun colorFor(normalizedAudioFrame: NormalizedAudioFrame): Color
+    fun createFor(audioFrame: NormalizedAudioFrame): Color
 }
 
 class ColorFactory(
@@ -21,8 +21,8 @@ class ColorFactory(
     // Longer audio increases latency because we make calculations based on increasingly older data
     private val lowestSupportedFrequency = 20F
 
-    override fun colorFor(normalizedAudioFrame: NormalizedAudioFrame): Color {
-        val hue = getHueFor(normalizedAudioFrame)
+    override fun createFor(audioFrame: NormalizedAudioFrame): Color {
+        val hue = getHueFor(audioFrame)
 
         return if (hue != null) {
             Color.getHSBColor(hue, 1.0F, 1.0F)
@@ -31,13 +31,13 @@ class ColorFactory(
         }
     }
 
-    private fun getHueFor(normalizedAudioFrame: NormalizedAudioFrame): Float? {
-        val frequencyBins = getFrequencyBinsFor(normalizedAudioFrame)
+    private fun getHueFor(audioFrame: NormalizedAudioFrame): Float? {
+        val frequencyBins = getFrequencyBinsFor(audioFrame)
         return hueFactory.createFrom(frequencyBins)
     }
 
-    private fun getFrequencyBinsFor(normalizedAudioFrame: NormalizedAudioFrame): FrequencyBins {
-        return frequencyBinsFactory.createFrom(normalizedAudioFrame, lowestSupportedFrequency)
+    private fun getFrequencyBinsFor(audioFrame: NormalizedAudioFrame): FrequencyBins {
+        return frequencyBinsFactory.createFrom(audioFrame, lowestSupportedFrequency)
     }
 
 }

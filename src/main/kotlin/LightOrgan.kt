@@ -17,9 +17,9 @@ class LightOrgan(
         }
     }
 
-    private fun sendColorFor(normalizedAudioFrame: NormalizedAudioFrame) {
+    private fun sendColorFor(audioFrame: NormalizedAudioFrame) {
         // TODO: Sleep if we are sending colors too quickly?
-        val color = colorFactory.colorFor(normalizedAudioFrame)
+        val color = colorFactory.createFor(audioFrame)
         server.sendColor(color)
     }
 
