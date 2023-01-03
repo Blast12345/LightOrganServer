@@ -2,11 +2,10 @@ package toolkit.monkeyTest
 
 import kotlin.random.Random
 
-fun Random.nextDoubleArray(): DoubleArray {
-    val length = Random.nextInt() % 10
+fun Random.nextDoubleArray(length: Int = Random.nextInt() % 10): DoubleArray {
     var list: MutableList<Double> = mutableListOf()
 
-    for (i in 0..length) {
+    for (i in 0 until length) {
         list.add(Random.nextDouble())
     }
 

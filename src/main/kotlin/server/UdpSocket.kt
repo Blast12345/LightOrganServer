@@ -8,13 +8,19 @@ interface UdpSocketInterface {
     fun send(message: String, address: String, port: Int)
 }
 
-class UdpSocket: UdpSocketInterface {
+class UdpSocket : UdpSocketInterface {
 
     private val socket = DatagramSocket()
 
     override fun send(message: String, address: String, port: Int) {
         val packet = createPacket(message, address, port)
-        socket.send(packet)
+
+        try {
+            socket.send(packet)
+        } catch (e: Exception) {
+            // Don't do anything
+        }
+
         println("Sent Message: $message")
     }
 
@@ -24,7 +30,8 @@ class UdpSocket: UdpSocketInterface {
             buffer,
             buffer.size,
             InetAddress.getByName(address),
-            port)
+            port
+        )
     }
 
 }

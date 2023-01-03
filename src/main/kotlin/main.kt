@@ -1,7 +1,7 @@
 import sound.input.Input
 import sound.input.finder.InputFinder
 
-fun main() {
+suspend fun main() {
     val input = findInput()
     startLightOrganWith(input)
 }
@@ -11,7 +11,7 @@ private fun findInput(): Input {
     return Input(targetDataLine)
 }
 
-private fun startLightOrganWith(input: Input) {
+private suspend fun startLightOrganWith(input: Input) {
     val lightOrgan = createLightOrganFor(input)
     lightOrgan.start()
 }

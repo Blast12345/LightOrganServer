@@ -8,10 +8,11 @@ import sound.frequencyBins.*
 
 class HueFactoryTests {
 
+    // TODO: Update these to use MockK
     private lateinit var averageFrequencyFactory: FakeAverageFrequencyFactory
     private lateinit var minimumFrequencyFactory: FakeMinimumFrequencyFactory
     private lateinit var maximumFrequencyFactory: FakeMaximumFrequencyFactory
-    private val frequencyBins: FrequencyBins = listOf(FrequencyBin(75.0, 1.2))
+    private val frequencyBins: FrequencyBins = listOf(FrequencyBin(75.0F, 1.2))
 
     @BeforeEach
     fun setup() {

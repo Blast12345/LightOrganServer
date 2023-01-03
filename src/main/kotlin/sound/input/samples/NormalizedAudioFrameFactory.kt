@@ -12,7 +12,7 @@ class NormalizedAudioFrameFactory(private val sampleNormalizer: SampleNormalizer
     override fun createFor(rawSamples: ByteArray, format: AudioFormat): NormalizedAudioFrame {
         return NormalizedAudioFrame(
             samples = getNormalizedSamplesFor(rawSamples, format),
-            sampleRate = format.sampleRate // TODO: Test me
+            sampleRate = format.sampleRate
         )
     }
 

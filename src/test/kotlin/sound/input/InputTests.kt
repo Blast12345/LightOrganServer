@@ -53,8 +53,9 @@ class InputTests {
     }
 
     @Test
-    fun `the data line is opened and started when the input is initialized`() {
-        createSUT()
+    suspend fun `listen to a data line`() {
+        val sut = createSUT()
+        sut.listenForAudioSamples(delegate)
         verifyOrder {
             dataLine.open()
             dataLine.start()
@@ -62,7 +63,7 @@ class InputTests {
     }
 
     @Test
-    fun `return an audio frame when the data line has data available`() {
+    suspend fun `return an audio frame when the data line has data available`() {
         val sut = createSUT()
         sut.listenForAudioSamples(delegate)
         verify { delegate.receiveAudioFrame(audioFrame) }

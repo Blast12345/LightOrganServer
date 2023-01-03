@@ -19,7 +19,7 @@ class LightOrgan(
 
     private val lowestSupportedFrequency = 20F
 
-    fun start() {
+    suspend fun start() {
         input.listenForAudioSamples(this)
     }
 

@@ -1,8 +1,5 @@
 import color.ColorFactory
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import server.Server
@@ -15,24 +12,16 @@ import kotlin.random.Random
 
 class LightOrganTests {
 
-    @MockK
     private lateinit var input: Input
-
-    @MockK
     private lateinit var server: Server
-
-    @MockK
     private lateinit var colorFactory: ColorFactory
-
-    @MockK
     private lateinit var frequencyBinsFactory: FrequencyBinsFactory
-
     private val audioFrame = Random.nextNormalizedAudioFrame()
 
     @BeforeEach
     fun setup() {
         input = mockk()
-        every { input.listenForAudioSamples(any()) } returns Unit
+        coEvery { input.listenForAudioSamples(any()) } returns Unit
 
         server = mockk()
         every { server.sendColor(any()) } returns Unit
@@ -54,10 +43,10 @@ class LightOrganTests {
     }
 
     @Test
-    fun `start listening to the input for audio`() {
+    suspend fun `start listening to the input for audio`() {
         val sut = createSUT()
         sut.start()
-        verify { input.listenForAudioSamples(sut) }
+        coVerify { input.listenForAudioSamples(sut) }
     }
 
     @Test
