@@ -1,10 +1,8 @@
 package toolkit.monkeyTest
 
 import javax.sound.sampled.TargetDataLine
-import kotlin.random.Random
 
-fun nextTargetDataLineList(): List<TargetDataLine> {
-    val length = Random.nextInt() % 10
+fun nextTargetDataLineList(length: Int): List<TargetDataLine> {
     var list: MutableList<TargetDataLine> = mutableListOf()
 
     for (i in 0 until length) {

@@ -10,7 +10,7 @@ import toolkit.monkeyTest.nextTargetDataLineList
 class InputFinderTests {
 
     private lateinit var allInputsFinder: AllInputsFinderInterface
-    private val targetDataLines = nextTargetDataLineList()
+    private val targetDataLines = nextTargetDataLineList(2)
 
     @BeforeEach
     fun setup() {

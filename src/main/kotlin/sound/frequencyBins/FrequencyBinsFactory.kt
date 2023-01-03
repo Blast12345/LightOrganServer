@@ -8,20 +8,41 @@ interface FrequencyBinsFactoryInterface {
     fun createFrom(audioFrame: NormalizedAudioFrame, lowestSupportedFrequency: Float): FrequencyBins
 }
 
-class FrequencyBinsFactory(private val amplitudeFactory: AmplitudeFactoryInterface = AmplitudeFactory()) :
+class FrequencyBinsFactory(
+    private val amplitudeFactory: AmplitudeFactoryInterface = AmplitudeFactory(),
+    private val sampleSizeFactory: SampleSizeFactoryInterface = SampleSizeFactory()
+) :
     FrequencyBinsFactoryInterface {
 
     override fun createFrom(
         audioFrame: NormalizedAudioFrame,
         lowestSupportedFrequency: Float
     ): FrequencyBins {
-        // TODO: Only pass in necessary samples
-        val amplitudes = getAmplitudesFor(audioFrame.samples)
-        val sampleSize = audioFrame.samples.count() // TODO: This will need to change
-        val sampleRate = audioFrame.sampleRate
+        val sampleRate = getSampleRateFor(audioFrame)
+        val sampleSize = getSampleSizeFor(lowestSupportedFrequency, sampleRate)
+        val latestSamples = getLatestSamplesFor(sampleSize, audioFrame.samples)
+        val amplitudes = getAmplitudesFor(latestSamples)
+
         return amplitudes.mapIndexed { index, amplitude ->
             getFrequencyBinFor(index, amplitude, sampleSize, sampleRate)
         }
+    }
+
+    private fun getSampleRateFor(audioFrame: NormalizedAudioFrame): Float {
+        return audioFrame.sampleRate
+    }
+
+    private fun getSampleSizeFor(frequency: Float, sampleRate: Float): Int {
+        return sampleSizeFactory.createFor(frequency, sampleRate)
+    }
+
+    private fun getLatestSamplesFor(sampleSize: Int, samples: DoubleArray): DoubleArray {
+        val latestSamples = samples.takeLast(sampleSize)
+        return latestSamples.toDoubleArray()
+    }
+
+    private fun getAmplitudesFor(samples: DoubleArray): DoubleArray {
+        return amplitudeFactory.createFrom(samples)
     }
 
     private fun getFrequencyBinFor(index: Int, amplitude: Double, sampleSize: Int, sampleRate: Float): FrequencyBin {
@@ -31,27 +52,8 @@ class FrequencyBinsFactory(private val amplitudeFactory: AmplitudeFactoryInterfa
         )
     }
 
-    private fun getAmplitudesFor(samples: DoubleArray): DoubleArray {
-        return amplitudeFactory.createFrom(samples)
-    }
-
     private fun getFrequencyFor(index: Int, sampleSize: Int, sampleRate: Float): Float {
         return index * sampleRate / sampleSize
     }
-
-//    private fun getLatestSamplesForSupportedFrequency(
-//        lowestSupportedFrequency: Float,
-//        normalizedAudioFrame: NormalizedAudioFrame
-//    ): DoubleArray {
-//        val samplesNeeded = samplesNeededFor(lowestSupportedFrequency, normalizedAudioFrame.sampleRate)
-//        val latestSamples = normalizedAudioFrame.samples.takeLast(samplesNeeded)
-//        return latestSamples.toDoubleArray()
-//    }
-//
-//    private fun samplesNeededFor(lowestSupportedFrequency: Float, sampleRate: Float): Int {
-//        // TODO: This is a bit lazy. We need to ensure that it is a power of something.
-//        val secondsOfAudioRequired = 1 / lowestSupportedFrequency
-//        return (secondsOfAudioRequired * sampleRate).toInt()
-//    }
 
 }

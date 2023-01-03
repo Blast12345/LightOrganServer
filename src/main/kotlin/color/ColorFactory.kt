@@ -22,7 +22,9 @@ class ColorFactory(
     }
 
     private fun getHueFor(frequencyBins: FrequencyBins): Float? {
-        return hueFactory.createFrom(frequencyBins)
+        // TODO: Limit scope
+        val subBins = frequencyBins.filter { it.frequency in 20.0..120.0 }.filter { it.amplitude > 0.01 }
+        return hueFactory.createFrom(subBins)
     }
 
 }
