@@ -18,7 +18,7 @@ class NormalizedAudioFrameFactoryTests {
     @BeforeEach
     fun setup() {
         sampleNormalizer = mockk()
-        every { sampleNormalizer.normalize(any(), any()) } returns Random.nextDoubleArray()
+        every { sampleNormalizer.normalize(any(), any()) } returns nextDoubleArray()
 
         format = mockk()
         every { format.sampleRate } returns Random.nextFloat()

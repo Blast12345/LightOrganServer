@@ -14,7 +14,7 @@ import kotlin.random.Random
 class ColorFactoryTests {
 
     private lateinit var hueFactory: HueFactory
-    private val frequencyBins = Random.nextFrequencyBins()
+    private val frequencyBins = nextFrequencyBins()
 
     @BeforeEach
     fun setup() {

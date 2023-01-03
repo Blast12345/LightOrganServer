@@ -11,7 +11,6 @@ import sound.input.Input
 import toolkit.monkeyTest.nextColor
 import toolkit.monkeyTest.nextFrequencyBins
 import toolkit.monkeyTest.nextNormalizedAudioFrame
-import kotlin.random.Random
 
 class LightOrganTests {
 
@@ -19,7 +18,7 @@ class LightOrganTests {
     private lateinit var server: Server
     private lateinit var colorFactory: ColorFactory
     private lateinit var frequencyBinsFactory: FrequencyBinsFactory
-    private val audioFrame = Random.nextNormalizedAudioFrame()
+    private val audioFrame = nextNormalizedAudioFrame()
 
     @BeforeEach
     fun setup() {
@@ -30,10 +29,10 @@ class LightOrganTests {
         every { server.sendColor(any()) } returns Unit
 
         colorFactory = mockk()
-        every { colorFactory.createFor(any()) } returns Random.nextColor()
+        every { colorFactory.createFor(any()) } returns nextColor()
 
         frequencyBinsFactory = mockk()
-        every { frequencyBinsFactory.createFrom(any(), any()) } returns Random.nextFrequencyBins()
+        every { frequencyBinsFactory.createFrom(any(), any()) } returns nextFrequencyBins()
     }
 
     private fun createSUT(): LightOrgan {
@@ -63,7 +62,7 @@ class LightOrganTests {
     @Test
     fun `the sent color is computed from frequency bins`() {
         val sut = createSUT()
-        val color = Random.nextColor()
+        val color = nextColor()
         every { colorFactory.createFor(any()) } returns color
         sut.receiveAudioFrame(audioFrame)
         verify { server.sendColor(color) }
@@ -72,7 +71,7 @@ class LightOrganTests {
     @Test
     fun `the frequency bins are created from the audio frame`() {
         val sut = createSUT()
-        val frequencyBins = Random.nextFrequencyBins()
+        val frequencyBins = nextFrequencyBins()
         every { frequencyBinsFactory.createFrom(any(), any()) } returns frequencyBins
         sut.receiveAudioFrame(audioFrame)
         verify { colorFactory.createFor(frequencyBins) }

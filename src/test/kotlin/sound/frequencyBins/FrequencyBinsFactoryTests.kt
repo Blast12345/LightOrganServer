@@ -9,16 +9,15 @@ import org.junit.jupiter.api.Test
 import sound.fft.AmplitudeFactory
 import sound.input.samples.NormalizedAudioFrame
 import toolkit.monkeyTest.nextDoubleArray
-import kotlin.random.Random
 
 class FrequencyBinsFactoryTests {
 
     private lateinit var amplitudeFactory: AmplitudeFactory // TODO: Interface
 
-    private val samples = Random.nextDoubleArray(length = 44100)
+    private val samples = nextDoubleArray(length = 44100)
     private val sampleRate = 44100F
     private val audioFrame = NormalizedAudioFrame(samples, sampleRate)
-    private val amplitudes = Random.nextDoubleArray(length = 44100)
+    private val amplitudes = nextDoubleArray(length = 44100)
 
     @BeforeEach
     fun setup() {

@@ -3,7 +3,7 @@ package toolkit.monkeyTest
 import java.awt.Color
 import kotlin.random.Random
 
-fun Random.nextColor(): Color {
+fun nextColor(): Color {
     val red = Random.nextFloat()
     val green = Random.nextFloat()
     val blue = Random.nextFloat()

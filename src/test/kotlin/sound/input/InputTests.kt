@@ -7,14 +7,14 @@ import io.mockk.verifyOrder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.input.samples.NormalizedAudioFrame
-import sound.input.samples.NormalizedAudioFrameFactory
+import sound.input.samples.NormalizedAudioFrameFactoryInterface
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
 class InputTests {
 
     private lateinit var dataLine: TargetDataLine
-    private lateinit var audioFrameFactory: NormalizedAudioFrameFactory
+    private lateinit var audioFrameFactory: NormalizedAudioFrameFactoryInterface
     private lateinit var delegate: InputDelegate
 
     private val bufferSize = 4096

@@ -3,9 +3,9 @@ package toolkit.monkeyTest
 import sound.input.samples.NormalizedAudioFrame
 import kotlin.random.Random
 
-fun Random.nextNormalizedAudioFrame(): NormalizedAudioFrame {
+fun nextNormalizedAudioFrame(): NormalizedAudioFrame {
     return NormalizedAudioFrame(
-        samples = Random.nextDoubleArray(),
+        samples = nextDoubleArray(),
         sampleRate = Random.nextFloat()
     )
 }
