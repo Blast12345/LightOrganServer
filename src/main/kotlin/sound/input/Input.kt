@@ -1,6 +1,5 @@
 package sound.input
 
-import kotlinx.coroutines.delay
 import sound.input.samples.NormalizedAudioFrame
 import sound.input.samples.NormalizedAudioFrameFactory
 import sound.input.samples.NormalizedAudioFrameFactoryInterface
@@ -12,7 +11,7 @@ interface InputDelegate {
 }
 
 interface InputInterface {
-    suspend fun listenForAudioSamples(delegate: InputDelegate)
+    fun listenForAudioSamples(delegate: InputDelegate)
 }
 
 class Input(
@@ -21,25 +20,21 @@ class Input(
 ) : InputInterface {
 
     private var samplesBuffer = ByteArray(dataLine.bufferSize)
+    private var shouldListen: Boolean = false
 
-    override suspend fun listenForAudioSamples(delegate: InputDelegate) {
-        startInput()
-        watchForNewData(delegate)
-    }
-
-    private suspend fun startInput() {
+    init {
         dataLine.open()
         dataLine.start()
+    }
 
-        while (!dataLine.isActive) {
-            println("Waiting for input to start...")
-            delay(500)
-        }
+    override fun listenForAudioSamples(delegate: InputDelegate) {
+        shouldListen = true
+        watchForNewData(delegate)
     }
 
     private fun watchForNewData(delegate: InputDelegate) {
         // NOTE: New data becomes available every ~10 ms. I don't know how this delay is derived.
-        while (dataLine.isActive) {
+        while (shouldListen) {
             if (hasDataAvailable()) {
                 returnNextSampleTo(delegate)
             }
@@ -83,6 +78,10 @@ class Input(
 
     private fun getAudioFormat(): AudioFormat {
         return dataLine.format
+    }
+
+    fun stopListening() {
+        shouldListen = false
     }
 
 }

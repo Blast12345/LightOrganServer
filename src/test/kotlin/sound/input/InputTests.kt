@@ -1,11 +1,9 @@
 package sound.input
 
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifyOrder
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.input.samples.NormalizedAudioFrame
@@ -15,13 +13,8 @@ import javax.sound.sampled.TargetDataLine
 
 class InputTests {
 
-    @MockK
     private lateinit var dataLine: TargetDataLine
-
-    @MockK
-    private lateinit var sampleFactory: NormalizedAudioFrameFactory
-
-    @MockK
+    private lateinit var audioFrameFactory: NormalizedAudioFrameFactory
     private lateinit var delegate: InputDelegate
 
     private val bufferSize = 4096
@@ -37,26 +30,24 @@ class InputTests {
         every { dataLine.bufferSize } returns bufferSize
         every { dataLine.open() } returns Unit
         every { dataLine.start() } returns Unit
-        every { dataLine.isActive } returns true andThen true andThen false
         every { dataLine.available() } returns bytesAvailable
         every { dataLine.read(any(), 0, bytesAvailable) } returns bytesRead
         every { dataLine.format } returns format
 
-        sampleFactory = mockk()
-        every { sampleFactory.createFor(any(), format) } returns audioFrame
+        audioFrameFactory = mockk()
+        every { audioFrameFactory.createFor(any(), format) } returns audioFrame
 
         delegate = mockk()
         every { delegate.receiveAudioFrame(any()) } returns Unit
     }
 
     private fun createSUT(): Input {
-        return Input(dataLine, sampleFactory)
+        return Input(dataLine, audioFrameFactory)
     }
 
     @Test
-    fun `listen to a data line`() {
-        val sut = createSUT()
-        runBlocking { sut.listenForAudioSamples(delegate) }
+    fun `open and start a data line on initialization`() {
+        createSUT()
         verifyOrder {
             dataLine.open()
             dataLine.start()
@@ -66,7 +57,8 @@ class InputTests {
     @Test
     fun `return an audio frame when the data line has data available`() {
         val sut = createSUT()
-        runBlocking { sut.listenForAudioSamples(delegate) }
+        every { delegate.receiveAudioFrame(any()) } answers { sut.stopListening() }
+        sut.listenForAudioSamples(delegate)
         verify { delegate.receiveAudioFrame(audioFrame) }
     }
 

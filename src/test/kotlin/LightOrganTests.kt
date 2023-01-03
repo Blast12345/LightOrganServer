@@ -1,5 +1,7 @@
 import color.ColorFactory
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,7 +24,7 @@ class LightOrganTests {
     @BeforeEach
     fun setup() {
         input = mockk()
-        coEvery { input.listenForAudioSamples(any()) } returns Unit
+        every { input.listenForAudioSamples(any()) } returns Unit
 
         server = mockk()
         every { server.sendColor(any()) } returns Unit
@@ -47,12 +49,13 @@ class LightOrganTests {
     fun `start listening to the input for audio`() {
         val sut = createSUT()
         runBlocking { sut.start() }
-        coVerify { input.listenForAudioSamples(sut) }
+        verify { input.listenForAudioSamples(sut) }
     }
 
     @Test
     fun `send a color to the server when an audio frame is received`() {
         val sut = createSUT()
+
         sut.receiveAudioFrame(audioFrame)
         verify { server.sendColor(any()) }
     }
