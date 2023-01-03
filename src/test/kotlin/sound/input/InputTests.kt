@@ -5,6 +5,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifyOrder
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.input.samples.NormalizedAudioFrame
@@ -36,7 +37,7 @@ class InputTests {
         every { dataLine.bufferSize } returns bufferSize
         every { dataLine.open() } returns Unit
         every { dataLine.start() } returns Unit
-        every { dataLine.isActive } returns true andThen false
+        every { dataLine.isActive } returns true andThen true andThen false
         every { dataLine.available() } returns bytesAvailable
         every { dataLine.read(any(), 0, bytesAvailable) } returns bytesRead
         every { dataLine.format } returns format
@@ -53,9 +54,9 @@ class InputTests {
     }
 
     @Test
-    suspend fun `listen to a data line`() {
+    fun `listen to a data line`() {
         val sut = createSUT()
-        sut.listenForAudioSamples(delegate)
+        runBlocking { sut.listenForAudioSamples(delegate) }
         verifyOrder {
             dataLine.open()
             dataLine.start()
@@ -63,9 +64,9 @@ class InputTests {
     }
 
     @Test
-    suspend fun `return an audio frame when the data line has data available`() {
+    fun `return an audio frame when the data line has data available`() {
         val sut = createSUT()
-        sut.listenForAudioSamples(delegate)
+        runBlocking { sut.listenForAudioSamples(delegate) }
         verify { delegate.receiveAudioFrame(audioFrame) }
     }
 

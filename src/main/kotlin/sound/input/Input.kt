@@ -24,13 +24,7 @@ class Input(
 
     override suspend fun listenForAudioSamples(delegate: InputDelegate) {
         startInput()
-
-        // NOTE: New data becomes available every ~10 ms. I don't know how this delay is derived.
-        while (true) {
-            if (hasDataAvailable()) {
-                returnNextSampleTo(delegate)
-            }
-        }
+        watchForNewData(delegate)
     }
 
     private suspend fun startInput() {
@@ -40,6 +34,15 @@ class Input(
         while (!dataLine.isActive) {
             println("Waiting for input to start...")
             delay(500)
+        }
+    }
+
+    private fun watchForNewData(delegate: InputDelegate) {
+        // NOTE: New data becomes available every ~10 ms. I don't know how this delay is derived.
+        while (dataLine.isActive) {
+            if (hasDataAvailable()) {
+                returnNextSampleTo(delegate)
+            }
         }
     }
 
