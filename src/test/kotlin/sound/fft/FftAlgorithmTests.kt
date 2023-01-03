@@ -8,7 +8,7 @@ class FftAlgorithmTests {
 
     private val signalFrequency = 50
     private val sampleRate = 44100
-    private val signal = createSignalFor(signalFrequency)
+    private val signal = createSignal(signalFrequency)
 
     private fun createSUT(): FftAlgorithm {
         return FftAlgorithm()
@@ -24,7 +24,7 @@ class FftAlgorithmTests {
 
 
     // Reference: the "Make 50 hz signal" section from https://github.com/wendykierp/JTransforms/issues/4#issuecomment-199352683
-    private fun createSignalFor(frequency: Int): DoubleArray {
+    private fun createSignal(frequency: Int): DoubleArray {
         val signal = DoubleArray(sampleRate)
 
         for (i in signal.indices) {

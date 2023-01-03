@@ -29,10 +29,10 @@ class LightOrganTests {
         every { server.sendColor(any()) } returns Unit
 
         colorFactory = mockk()
-        every { colorFactory.createFor(any()) } returns nextColor()
+        every { colorFactory.create(any()) } returns nextColor()
 
         frequencyBinsFactory = mockk()
-        every { frequencyBinsFactory.createFrom(any(), any()) } returns nextFrequencyBins()
+        every { frequencyBinsFactory.create(any(), any()) } returns nextFrequencyBins()
     }
 
     private fun createSUT(): LightOrgan {
@@ -63,7 +63,7 @@ class LightOrganTests {
     fun `the sent color is computed from frequency bins`() {
         val sut = createSUT()
         val color = nextColor()
-        every { colorFactory.createFor(any()) } returns color
+        every { colorFactory.create(any()) } returns color
         sut.receiveAudioFrame(audioFrame)
         verify { server.sendColor(color) }
     }
@@ -72,9 +72,9 @@ class LightOrganTests {
     fun `the frequency bins are created from the audio frame`() {
         val sut = createSUT()
         val frequencyBins = nextFrequencyBins()
-        every { frequencyBinsFactory.createFrom(any(), any()) } returns frequencyBins
+        every { frequencyBinsFactory.create(any(), any()) } returns frequencyBins
         sut.receiveAudioFrame(audioFrame)
-        verify { colorFactory.createFor(frequencyBins) }
+        verify { colorFactory.create(frequencyBins) }
     }
 
     @Test
@@ -83,7 +83,7 @@ class LightOrganTests {
         // Lower frequencies are uncommon in music and supporting them will add latency.
         val sut = createSUT()
         sut.receiveAudioFrame(audioFrame)
-        verify { frequencyBinsFactory.createFrom(any(), 20F) }
+        verify { frequencyBinsFactory.create(any(), 20F) }
     }
 
 }

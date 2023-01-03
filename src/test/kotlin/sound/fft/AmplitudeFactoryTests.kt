@@ -23,7 +23,7 @@ class AmplitudeFactoryTests {
     @Test
     fun `the signal goes through a hann window filter to reduce spectral leakage`() {
         val sut = createSUT()
-        sut.createFrom(signal)
+        sut.create(signal)
         assertEquals(hannWindowFilter.signal, signal)
     }
 
@@ -31,7 +31,7 @@ class AmplitudeFactoryTests {
     fun `the filtered signal is processed by FFT`() {
         // TODO: Is processed by FFT? Has FFT applied to it? Goes through an FFT algorithm?
         val sut = createSUT()
-        val amplitudes = sut.createFrom(signal)
+        val amplitudes = sut.create(signal)
         assertEquals(fftAlgorithm.signal, hannWindowFilter.filteredSignal)
         assertEquals(fftAlgorithm.amplitudes, amplitudes)
     }

@@ -1,7 +1,7 @@
 package sound.fft
 
 interface AmplitudeFactoryInterface {
-    fun createFrom(signal: DoubleArray): DoubleArray
+    fun create(signal: DoubleArray): DoubleArray
 }
 
 class AmplitudeFactory(
@@ -9,7 +9,7 @@ class AmplitudeFactory(
     private val fftAlgorithm: FftAlgorithmInterface = FftAlgorithm()
 ) : AmplitudeFactoryInterface {
 
-    override fun createFrom(signal: DoubleArray): DoubleArray {
+    override fun create(signal: DoubleArray): DoubleArray {
         val filteredSignal = hannWindowFilter.filter(signal)
         return fftAlgorithm.process(filteredSignal)
     }

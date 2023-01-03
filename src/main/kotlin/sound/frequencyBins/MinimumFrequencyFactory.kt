@@ -1,21 +1,21 @@
 package sound.frequencyBins
 
 interface MinimumFrequencyFactoryInterface {
-    fun minimumFrequencyFrom(frequencyBins: FrequencyBins): Float?
+    fun minimumFrequency(frequencyBins: FrequencyBins): Float?
 }
 
 class MinimumFrequencyFactory : MinimumFrequencyFactoryInterface {
 
-    override fun minimumFrequencyFrom(frequencyBins: FrequencyBins): Float? {
+    override fun minimumFrequency(frequencyBins: FrequencyBins): Float? {
         return if (frequencyBins.isNotEmpty()) {
-            val frequencyBin = minimumFrequencyBinFrom(frequencyBins)
+            val frequencyBin = minimumFrequencyBin(frequencyBins)
             return frequencyBin.frequency.toFloat()
         } else {
             null
         }
     }
 
-    private fun minimumFrequencyBinFrom(frequencyBins: FrequencyBins): FrequencyBin {
+    private fun minimumFrequencyBin(frequencyBins: FrequencyBins): FrequencyBin {
         val sortedFrequencyBins = sorted(frequencyBins)
         return sortedFrequencyBins.first()
     }

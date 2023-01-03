@@ -26,10 +26,10 @@ class FrequencyBinsFactoryTests {
     @BeforeEach
     fun setup() {
         amplitudeFactory = mockk()
-        every { amplitudeFactory.createFrom(any()) } returns amplitudes
+        every { amplitudeFactory.create(any()) } returns amplitudes
 
         sampleSizeFactory = mockk()
-        every { sampleSizeFactory.createFor(any(), any()) } returns sampleSize
+        every { sampleSizeFactory.create(any(), any()) } returns sampleSize
     }
 
     private fun createSUT(): FrequencyBinsFactory {
@@ -42,7 +42,7 @@ class FrequencyBinsFactoryTests {
     @Test
     fun `each frequency bin has an amplitude`() {
         val sut = createSUT()
-        val actual = sut.createFrom(audioFrame, 0F)
+        val actual = sut.create(audioFrame, 0F)
         val actualAmplitudes = actual.map { it.amplitude }.toDoubleArray()
         assertArrayEquals(amplitudes, actualAmplitudes)
     }
@@ -52,18 +52,18 @@ class FrequencyBinsFactoryTests {
         val sut = createSUT()
         val lowestSupportedFrequency = 20F
         val sampleSize = 4096
-        every { sampleSizeFactory.createFor(lowestSupportedFrequency, sampleRate) } returns sampleSize
+        every { sampleSizeFactory.create(lowestSupportedFrequency, sampleRate) } returns sampleSize
 
-        sut.createFrom(audioFrame, lowestSupportedFrequency)
+        sut.create(audioFrame, lowestSupportedFrequency)
 
         val expectedSamples = samples.takeLast(sampleSize).toDoubleArray()
-        verify { amplitudeFactory.createFrom(expectedSamples) }
+        verify { amplitudeFactory.create(expectedSamples) }
     }
 
     @Test
     fun `each frequency bin has a frequency`() {
         val sut = createSUT()
-        val actual = sut.createFrom(audioFrame, 0F)
+        val actual = sut.create(audioFrame, 0F)
         val actualFrequencies = actual.map { it.frequency }
         assertEquals(expectedFrequencies(), actualFrequencies)
     }

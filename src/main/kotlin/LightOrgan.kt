@@ -24,22 +24,21 @@ class LightOrgan(
     }
 
     override fun receiveAudioFrame(audioFrame: NormalizedAudioFrame) {
-        // TODO: Sleep if we are sending colors too quickly?
-        sendColorToServerFor(audioFrame)
+        sendColorToServer(audioFrame)
     }
 
-    private fun sendColorToServerFor(audioFrame: NormalizedAudioFrame) {
-        val color = getColorFor(audioFrame)
+    private fun sendColorToServer(audioFrame: NormalizedAudioFrame) {
+        val color = getColor(audioFrame)
         server.sendColor(color)
     }
 
-    private fun getColorFor(audioFrame: NormalizedAudioFrame): Color {
-        val frequencyBins = getFrequencyBinsFor(audioFrame)
-        return colorFactory.createFor(frequencyBins)
+    private fun getColor(audioFrame: NormalizedAudioFrame): Color {
+        val frequencyBins = getFrequencyBins(audioFrame)
+        return colorFactory.create(frequencyBins)
     }
 
-    private fun getFrequencyBinsFor(audioFrame: NormalizedAudioFrame): FrequencyBins {
-        return frequencyBinsFactory.createFrom(audioFrame, lowestSupportedFrequency)
+    private fun getFrequencyBins(audioFrame: NormalizedAudioFrame): FrequencyBins {
+        return frequencyBinsFactory.create(audioFrame, lowestSupportedFrequency)
     }
 
 }

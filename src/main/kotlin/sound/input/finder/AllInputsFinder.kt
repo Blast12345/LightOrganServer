@@ -13,7 +13,7 @@ class AllInputsFinder(private val allAudioDevicesFinder: AllAudioDevicesFinderIn
 
     override fun getInputs(): List<TargetDataLine> {
         return getAudioDevices().flatMap { audioDevice ->
-            getTargetDataLinesFor(audioDevice)
+            getTargetDataLines(audioDevice)
         }
     }
 
@@ -21,12 +21,12 @@ class AllInputsFinder(private val allAudioDevicesFinder: AllAudioDevicesFinderIn
         return allAudioDevicesFinder.getAudioDevices()
     }
 
-    private fun getTargetDataLinesFor(audioDevice: Mixer): List<TargetDataLine> {
-        val targetDataLineInfo = getTargetDataLineInfoListFor(audioDevice)
+    private fun getTargetDataLines(audioDevice: Mixer): List<TargetDataLine> {
+        val targetDataLineInfo = getTargetDataLineInfoList(audioDevice)
         return targetDataLineInfo.map { audioDevice.getLine(it) as TargetDataLine }
     }
 
-    private fun getTargetDataLineInfoListFor(audioDevice: Mixer): List<Line.Info> {
+    private fun getTargetDataLineInfoList(audioDevice: Mixer): List<Line.Info> {
         val targetLineInfo = audioDevice.targetLineInfo
         return targetLineInfo.filter { it.lineClass == TargetDataLine::class.java }
     }

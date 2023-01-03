@@ -18,7 +18,7 @@ class MinimumFrequencyFactoryTests {
     fun `get the minimum frequency from a list of sorted bins`() {
         val sut = createSUT()
         val sortedList = arrayListOf(bin1, bin2, bin3)
-        val minimumFrequency = sut.minimumFrequencyFrom(sortedList)
+        val minimumFrequency = sut.minimumFrequency(sortedList)
         assertEquals(100.0F, minimumFrequency!!, 0.1F)
     }
 
@@ -26,7 +26,7 @@ class MinimumFrequencyFactoryTests {
     fun `the minimum frequency is null when the frequency bin list is empty`() {
         val sut = createSUT()
         val emptyList: FrequencyBins = emptyList()
-        val minimumFrequency = sut.minimumFrequencyFrom(emptyList)
+        val minimumFrequency = sut.minimumFrequency(emptyList)
         assertNull(minimumFrequency)
     }
 
@@ -34,7 +34,7 @@ class MinimumFrequencyFactoryTests {
     fun `get the minimum frequency from a list of unsorted bins`() {
         val sut = createSUT()
         val unsortedList = arrayListOf(bin3, bin1, bin2)
-        val minimumFrequency = sut.minimumFrequencyFrom(unsortedList)
+        val minimumFrequency = sut.minimumFrequency(unsortedList)
         assertEquals(100.0F, minimumFrequency!!, 0.1F)
     }
 

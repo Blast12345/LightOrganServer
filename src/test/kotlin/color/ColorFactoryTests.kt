@@ -19,7 +19,7 @@ class ColorFactoryTests {
     @BeforeEach
     fun setup() {
         hueFactory = mockk()
-        every { hueFactory.createFrom(any()) } returns Random.nextFloat()
+        every { hueFactory.create(any()) } returns Random.nextFloat()
     }
 
     private fun createSUT(): ColorFactory {
@@ -29,7 +29,7 @@ class ColorFactoryTests {
     @Test
     fun `create a color`() {
         val sut = createSUT()
-        val actual = sut.createFor(frequencyBins)
+        val actual = sut.create(frequencyBins)
         assertTrue(actual is Color)
     }
 
@@ -37,16 +37,16 @@ class ColorFactoryTests {
     fun `the hue is computed from the frequency bins`() {
         val sut = createSUT()
         val hue = Random.nextFloat()
-        every { hueFactory.createFrom(frequencyBins) } returns hue
-        val actual = sut.createFor(frequencyBins)
+        every { hueFactory.create(frequencyBins) } returns hue
+        val actual = sut.create(frequencyBins)
         assertEquals(hue, actual.getHue(), 0.001F)
     }
 
     @Test
     fun `the color is black when there is no hue`() {
         val sut = createSUT()
-        every { hueFactory.createFrom(any()) } returns null
-        val actual = sut.createFor(frequencyBins)
+        every { hueFactory.create(any()) } returns null
+        val actual = sut.create(frequencyBins)
         assertEquals(Color.black, actual)
     }
 

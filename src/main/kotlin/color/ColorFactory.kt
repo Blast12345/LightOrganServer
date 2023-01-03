@@ -4,15 +4,15 @@ import sound.frequencyBins.FrequencyBins
 import java.awt.Color
 
 interface ColorFactoryInterface {
-    fun createFor(frequencyBins: FrequencyBins): Color
+    fun create(frequencyBins: FrequencyBins): Color
 }
 
 class ColorFactory(
     private val hueFactory: HueFactoryInterface = HueFactory()
 ) : ColorFactoryInterface {
 
-    override fun createFor(frequencyBins: FrequencyBins): Color {
-        val hue = getHueFor(frequencyBins)
+    override fun create(frequencyBins: FrequencyBins): Color {
+        val hue = getHue(frequencyBins)
 
         return if (hue != null) {
             Color.getHSBColor(hue, 1.0F, 1.0F)
@@ -21,10 +21,10 @@ class ColorFactory(
         }
     }
 
-    private fun getHueFor(frequencyBins: FrequencyBins): Float? {
+    private fun getHue(frequencyBins: FrequencyBins): Float? {
         // TODO: Limit scope
         val subBins = frequencyBins.filter { it.frequency in 20.0..120.0 }.filter { it.amplitude > 0.01 }
-        return hueFactory.createFrom(subBins)
+        return hueFactory.create(subBins)
     }
 
 }

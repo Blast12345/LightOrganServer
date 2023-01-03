@@ -18,7 +18,7 @@ class AverageFrequencyFactoryTests {
     fun `get the average frequency from a list of bins`() {
         val sut = createSUT()
         val list = arrayListOf(bin1, bin2, bin3)
-        val averageFrequency = sut.averageFrequencyFrom(list)
+        val averageFrequency = sut.averageFrequency(list)
         assertEquals(266.6F, averageFrequency!!, 0.1F)
     }
 
@@ -26,7 +26,7 @@ class AverageFrequencyFactoryTests {
     fun `the average frequency is null when the frequency bin list is empty`() {
         val sut = createSUT()
         val emptyList: FrequencyBins = emptyList()
-        val averageFrequency = sut.averageFrequencyFrom(emptyList)
+        val averageFrequency = sut.averageFrequency(emptyList)
         assertNull(averageFrequency)
     }
 
@@ -34,7 +34,7 @@ class AverageFrequencyFactoryTests {
     fun `the average frequency is null when the frequency bins have no amplitude`() {
         val sut = createSUT()
         val listWithNoAmplitudes: FrequencyBins = listOf(bin1)
-        val averageFrequency = sut.averageFrequencyFrom(listWithNoAmplitudes)
+        val averageFrequency = sut.averageFrequency(listWithNoAmplitudes)
         assertNull(averageFrequency)
     }
 

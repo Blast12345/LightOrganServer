@@ -34,7 +34,7 @@ class NormalizedAudioFrameFactoryTests {
         val normalizedSamples = doubleArrayOf(1.1, 2.2, 3.3)
         every { sampleNormalizer.normalize(rawSamples, any()) } returns normalizedSamples
 
-        val actual = sut.createFor(rawSamples, format)
+        val actual = sut.create(rawSamples, format)
 
         assertEquals(normalizedSamples, actual.samples)
     }
@@ -45,7 +45,7 @@ class NormalizedAudioFrameFactoryTests {
         val sampleRate = Random.nextFloat()
         every { format.sampleRate } returns sampleRate
 
-        val actual = sut.createFor(rawSamples, format)
+        val actual = sut.create(rawSamples, format)
 
         assertEquals(sampleRate, actual.sampleRate)
     }

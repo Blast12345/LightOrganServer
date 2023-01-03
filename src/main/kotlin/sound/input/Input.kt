@@ -51,7 +51,7 @@ class Input(
     }
 
     private fun getNextAudioFrame(): NormalizedAudioFrame {
-        return audioFrameFactory.createFor(
+        return audioFrameFactory.create(
             rawSamples = getNextFrame(),
             format = getAudioFormat()
         )

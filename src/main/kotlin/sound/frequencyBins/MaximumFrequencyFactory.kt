@@ -1,21 +1,21 @@
 package sound.frequencyBins
 
 interface MaximumFrequencyFactoryInterface {
-    fun maximumFrequencyFrom(frequencyBins: FrequencyBins): Float?
+    fun maximumFrequency(frequencyBins: FrequencyBins): Float?
 }
 
 class MaximumFrequencyFactory : MaximumFrequencyFactoryInterface {
 
-    override fun maximumFrequencyFrom(frequencyBins: FrequencyBins): Float? {
+    override fun maximumFrequency(frequencyBins: FrequencyBins): Float? {
         return if (frequencyBins.isNotEmpty()) {
-            val frequencyBin = maximumFrequencyBinFrom(frequencyBins)
+            val frequencyBin = maximumFrequencyBin(frequencyBins)
             return frequencyBin.frequency.toFloat()
         } else {
             null
         }
     }
 
-    private fun maximumFrequencyBinFrom(frequencyBins: FrequencyBins): FrequencyBin {
+    private fun maximumFrequencyBin(frequencyBins: FrequencyBins): FrequencyBin {
         val sortedFrequencyBins = sorted(frequencyBins)
         return sortedFrequencyBins.last()
     }

@@ -35,7 +35,7 @@ class HueFactoryTests {
         averageFrequencyFactory.frequency = 75F
         minimumFrequencyFactory.frequency = 10F
         maximumFrequencyFactory.frequency = 100F
-        val actualHue = sut.createFrom(frequencyBins)
+        val actualHue = sut.create(frequencyBins)
         assertEquals(0.65f, actualHue!!, 0.001f)
         assertEquals(frequencyBins, averageFrequencyFactory.frequencyBins)
         assertEquals(frequencyBins, minimumFrequencyFactory.frequencyBins)
@@ -46,7 +46,7 @@ class HueFactoryTests {
     fun `the hue is null when the maximum frequency is 0`() {
         val sut = createSUT()
         maximumFrequencyFactory.frequency = 0F
-        val actualHue = sut.createFrom(frequencyBins)
+        val actualHue = sut.create(frequencyBins)
         assertNull(actualHue)
     }
 
@@ -54,7 +54,7 @@ class HueFactoryTests {
     fun `the hue is null when the maximum frequency is null`() {
         val sut = createSUT()
         maximumFrequencyFactory.frequency = null
-        val actualHue = sut.createFrom(frequencyBins)
+        val actualHue = sut.create(frequencyBins)
         assertNull(actualHue)
     }
 
@@ -62,7 +62,7 @@ class HueFactoryTests {
     fun `the hue is null when the minimum frequency is null`() {
         val sut = createSUT()
         minimumFrequencyFactory.frequency = null
-        val actualHue = sut.createFrom(frequencyBins)
+        val actualHue = sut.create(frequencyBins)
         assertNull(actualHue)
     }
 
@@ -70,7 +70,7 @@ class HueFactoryTests {
     fun `the hue is null when the average frequency is null`() {
         val sut = createSUT()
         averageFrequencyFactory.frequency = null
-        val actualHue = sut.createFrom(frequencyBins)
+        val actualHue = sut.create(frequencyBins)
         assertNull(actualHue)
     }
 

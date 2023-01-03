@@ -35,7 +35,7 @@ class InputTests {
         every { dataLine.format } returns format
 
         audioFrameFactory = mockk()
-        every { audioFrameFactory.createFor(any(), format) } returns audioFrame
+        every { audioFrameFactory.create(any(), format) } returns audioFrame
 
         delegate = mockk()
         every { delegate.receiveAudioFrame(any()) } returns Unit

@@ -1,15 +1,15 @@
 package sound.frequencyBins
 
 interface AverageFrequencyFactoryInterface {
-    fun averageFrequencyFrom(frequencyBins: FrequencyBins): Float?
+    fun averageFrequency(frequencyBins: FrequencyBins): Float?
 }
 
 class AverageFrequencyFactory : AverageFrequencyFactoryInterface {
 
-    override fun averageFrequencyFrom(frequencyBins: FrequencyBins): Float? {
+    override fun averageFrequency(frequencyBins: FrequencyBins): Float? {
         return if (frequencyBins.isNotEmpty()) {
-            val weightedAmplitude = weightedAmplitudeFrom(frequencyBins)
-            val totalAmplitude = totalAmplitudeFrom(frequencyBins)
+            val weightedAmplitude = weightedAmplitude(frequencyBins)
+            val totalAmplitude = totalAmplitude(frequencyBins)
             return averageFrequency(weightedAmplitude, totalAmplitude)
         } else {
             null
@@ -24,7 +24,7 @@ class AverageFrequencyFactory : AverageFrequencyFactoryInterface {
         }
     }
 
-    private fun weightedAmplitudeFrom(frequencyBins: FrequencyBins): Float {
+    private fun weightedAmplitude(frequencyBins: FrequencyBins): Float {
         var weightedAmplitude = 0.0
 
         for (frequencyBin in frequencyBins) {
@@ -34,7 +34,7 @@ class AverageFrequencyFactory : AverageFrequencyFactoryInterface {
         return weightedAmplitude.toFloat()
     }
 
-    private fun totalAmplitudeFrom(frequencyBins: FrequencyBins): Float {
+    private fun totalAmplitude(frequencyBins: FrequencyBins): Float {
         return frequencyBins.map { it.amplitude }.sum().toFloat()
     }
 
