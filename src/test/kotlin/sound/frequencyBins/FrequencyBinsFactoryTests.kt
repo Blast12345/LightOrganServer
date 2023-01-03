@@ -1,12 +1,14 @@
 package sound.frequencyBins
 
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import sound.input.samples.NormalizedAudioFrame
 
 class FrequencyBinsFactoryTests {
 
     private val samples = doubleArrayOf(1.1)
-    private val normalizedAudioFrame = NormalizedAudioFrame(samples)
+    private val sampleRate = 44100F
+    private val audioFrame = NormalizedAudioFrame(samples, sampleRate)
     private val bin1 = FrequencyBin(100.0, 1.0)
     private val bin2 = FrequencyBin(200.0, 2.0)
 
@@ -16,9 +18,9 @@ class FrequencyBinsFactoryTests {
 
     @Test
     fun `frequency bins are created from an audio frame`() {
-        // TODO:
-//        val sut = createSUT()
-//        val actual = sut.createFrom(normalizedAudioFrame, 0F)
+        val sut = createSUT()
+        val actual = sut.createFrom(audioFrame, 0F)
+        assertTrue(actual is FrequencyBins)
 //        val expected = listOf(bin1, bin2)
 //        assertEquals(expected, actual)
 //
@@ -31,5 +33,8 @@ class FrequencyBinsFactoryTests {
 //
 //        assertEquals(expected, actual)
     }
+
+//    @Test
+//    fun `the frequency bins
 
 }

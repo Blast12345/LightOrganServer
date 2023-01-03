@@ -1,39 +1,97 @@
-import color.FakeColorFactory
-import org.junit.jupiter.api.Assertions.assertEquals
+import color.ColorFactory
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import server.FakeServer
-import sound.input.FakeInput
-import sound.input.samples.NormalizedAudioFrame
+import server.Server
+import sound.frequencyBins.FrequencyBinsFactory
+import sound.input.Input
+import toolkit.monkeyTest.nextColor
+import toolkit.monkeyTest.nextFrequencyBins
+import toolkit.monkeyTest.nextNormalizedAudioFrame
+import kotlin.random.Random
 
 class LightOrganTests {
 
-    private lateinit var input: FakeInput
-    private lateinit var colorFactory: FakeColorFactory
-    private lateinit var server: FakeServer
+    @MockK
+    private lateinit var input: Input
+
+    @MockK
+    private lateinit var server: Server
+
+    @MockK
+    private lateinit var colorFactory: ColorFactory
+
+    @MockK
+    private lateinit var frequencyBinsFactory: FrequencyBinsFactory
+
+    private val audioFrame = Random.nextNormalizedAudioFrame()
 
     @BeforeEach
     fun setup() {
-        input = FakeInput()
-        colorFactory = FakeColorFactory()
-        server = FakeServer()
+        input = mockk()
+        every { input.listenForAudioSamples(any()) } returns Unit
+
+        server = mockk()
+        every { server.sendColor(any()) } returns Unit
+
+        colorFactory = mockk()
+        every { colorFactory.createFor(any()) } returns Random.nextColor()
+
+        frequencyBinsFactory = mockk()
+        every { frequencyBinsFactory.createFrom(any(), any()) } returns Random.nextFrequencyBins()
     }
 
     private fun createSUT(): LightOrgan {
-        return LightOrgan(input, colorFactory, server)
+        return LightOrgan(
+            input = input,
+            server = server,
+            colorFactory = colorFactory,
+            frequencyBinsFactory = frequencyBinsFactory
+        )
     }
 
     @Test
-    fun `send colors to the server when the input provides new samples`() {
+    fun `start listening to the input for audio`() {
         val sut = createSUT()
         sut.start()
+        verify { input.listenForAudioSamples(sut) }
+    }
 
-        val samples = doubleArrayOf(1.1)
-        val audioFrame = NormalizedAudioFrame(samples)
-        input.listener?.invoke(audioFrame)
+    @Test
+    fun `send a color to the server when an audio frame is received`() {
+        val sut = createSUT()
+        sut.receiveAudioFrame(audioFrame)
+        verify { server.sendColor(any()) }
+    }
 
-        assertEquals(colorFactory.color, server.color)
-        assertEquals(audioFrame, colorFactory.audioFrame)
+    @Test
+    fun `the sent color is computed from frequency bins`() {
+        val sut = createSUT()
+        val color = Random.nextColor()
+        every { colorFactory.createFor(any()) } returns color
+        sut.receiveAudioFrame(audioFrame)
+        verify { server.sendColor(color) }
+    }
+
+    @Test
+    fun `the frequency bins are created from the audio frame`() {
+        val sut = createSUT()
+        val frequencyBins = Random.nextFrequencyBins()
+        every { frequencyBinsFactory.createFrom(any(), any()) } returns frequencyBins
+        sut.receiveAudioFrame(audioFrame)
+        verify { colorFactory.createFor(frequencyBins) }
+    }
+
+    @Test
+    fun `the lowest supported frequency is 20hz`() {
+        // NOTE: This is for practical reasons.
+        // Lower frequencies are uncommon in music and supporting them will add latency.
+        val sut = createSUT()
+        sut.receiveAudioFrame(audioFrame)
+        verify { frequencyBinsFactory.createFrom(any(), 20F) }
     }
 
 }

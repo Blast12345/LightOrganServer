@@ -7,8 +7,7 @@ interface AmplitudeFactoryInterface {
 class AmplitudeFactory(
     private val hannWindowFilter: HannWindowFilterInterface = HannWindowFilter(),
     private val fftAlgorithm: FftAlgorithmInterface = FftAlgorithm()
-) :
-    AmplitudeFactoryInterface {
+) : AmplitudeFactoryInterface {
 
     override fun createFrom(signal: DoubleArray): DoubleArray {
         val filteredSignal = hannWindowFilter.filter(signal)

@@ -8,40 +8,42 @@ import javax.sound.sampled.TargetDataLine
 
 typealias NextAudioFrame = (audioFrame: NormalizedAudioFrame) -> Unit
 
+interface InputDelegate {
+    fun receiveAudioFrame(audioFrame: NormalizedAudioFrame)
+}
+
 interface InputInterface {
-    fun listenForAudioSamples(listener: NextAudioFrame)
+    fun listenForAudioSamples(delegate: InputDelegate)
 }
 
 class Input(
-    private val line: TargetDataLine,
+    private val dataLine: TargetDataLine,
     private val audioFrameFactory: NormalizedAudioFrameFactoryInterface = NormalizedAudioFrameFactory()
 ) : InputInterface {
 
-    private var canListen: Boolean
-    private var samplesBuffer = ByteArray(line.bufferSize)
+    private var samplesBuffer = ByteArray(dataLine.bufferSize)
 
     init {
-        line.open()
-        line.start()
-        canListen = true
+        dataLine.open()
+        dataLine.start()
     }
 
-    override fun listenForAudioSamples(listener: NextAudioFrame) {
+    override fun listenForAudioSamples(delegate: InputDelegate) {
         // NOTE: New data becomes available every ~10 ms. I don't know how this delay is derived.
-        while (canListen) {
+        while (dataLine.isActive) {
             if (hasDataAvailable()) {
-                returnNextSampleTo(listener)
+                returnNextSampleTo(delegate)
             }
         }
     }
 
     private fun hasDataAvailable(): Boolean {
-        return line.available() > 0
+        return dataLine.available() > 0
     }
 
-    private fun returnNextSampleTo(listener: NextAudioFrame) {
+    private fun returnNextSampleTo(delegate: InputDelegate) {
         val nextAudioFrame = getNextAudioFrame()
-        listener(nextAudioFrame)
+        delegate.receiveAudioFrame(nextAudioFrame)
     }
 
     private fun getNextAudioFrame(): NormalizedAudioFrame {
@@ -58,10 +60,10 @@ class Input(
     }
 
     private fun getNewData(): ByteArray {
-        val bytesToRead = line.available()
+        val bytesToRead = dataLine.available()
         val newData = ByteArray(bytesToRead)
         // TODO: Do the bytes read match the new data size? We need to know for the drop function.
-        val bytesRead = line.read(newData, 0, newData.size)
+        val bytesRead = dataLine.read(newData, 0, newData.size)
         return newData
     }
 
@@ -71,12 +73,7 @@ class Input(
     }
 
     private fun getAudioFormat(): AudioFormat {
-        return line.format
+        return dataLine.format
     }
-
-    fun stopListening() {
-        canListen = false
-    }
-
 }
 

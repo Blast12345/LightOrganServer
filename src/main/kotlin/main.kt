@@ -12,6 +12,10 @@ private fun findInput(): Input {
 }
 
 private fun startLightOrganWith(input: Input) {
-    val lightOrgan = LightOrgan(input)
+    val lightOrgan = createLightOrganFor(input)
     lightOrgan.start()
+}
+
+private fun createLightOrganFor(input: Input): LightOrgan {
+    return LightOrgan(input)
 }
