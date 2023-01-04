@@ -2,22 +2,18 @@ package sound.frequencyBins
 
 import sound.fft.AmplitudeFactory
 import sound.fft.AmplitudeFactoryInterface
-import sound.input.samples.NormalizedAudioFrame
+import sound.input.samples.AudioFrame
 
 interface FrequencyBinsFactoryInterface {
-    fun create(audioFrame: NormalizedAudioFrame, lowestSupportedFrequency: Float): FrequencyBins
+    fun create(audioFrame: AudioFrame, lowestSupportedFrequency: Float): FrequencyBins
 }
 
 class FrequencyBinsFactory(
     private val amplitudeFactory: AmplitudeFactoryInterface = AmplitudeFactory(),
     private val sampleSizeFactory: SampleSizeFactoryInterface = SampleSizeFactory()
-) :
-    FrequencyBinsFactoryInterface {
+) : FrequencyBinsFactoryInterface {
 
-    override fun create(
-        audioFrame: NormalizedAudioFrame,
-        lowestSupportedFrequency: Float
-    ): FrequencyBins {
+    override fun create(audioFrame: AudioFrame, lowestSupportedFrequency: Float): FrequencyBins {
         val sampleRate = getSampleRate(audioFrame)
         val sampleSize = getSampleSize(lowestSupportedFrequency, sampleRate)
         val latestSamples = getLatestSamples(sampleSize, audioFrame.samples)
@@ -28,7 +24,7 @@ class FrequencyBinsFactory(
         }
     }
 
-    private fun getSampleRate(audioFrame: NormalizedAudioFrame): Float {
+    private fun getSampleRate(audioFrame: AudioFrame): Float {
         return audioFrame.sampleRate
     }
 

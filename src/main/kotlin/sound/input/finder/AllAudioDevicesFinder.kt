@@ -7,7 +7,6 @@ interface AllAudioDevicesFinderInterface {
     fun getAudioDevices(): List<Mixer>
 }
 
-// TODO: Test me
 class AllAudioDevicesFinder : AllAudioDevicesFinderInterface {
 
     override fun getAudioDevices(): List<Mixer> {

@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test
 import server.Server
 import sound.frequencyBins.FrequencyBinsFactory
 import sound.input.Input
+import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextColor
 import toolkit.monkeyTest.nextFrequencyBins
-import toolkit.monkeyTest.nextNormalizedAudioFrame
 
 class LightOrganTests {
 
@@ -19,7 +19,7 @@ class LightOrganTests {
     private var server: Server = mockk()
     private var colorFactory: ColorFactory = mockk()
     private var frequencyBinsFactory: FrequencyBinsFactory = mockk()
-    private val audioFrame = nextNormalizedAudioFrame()
+    private val audioFrame = nextAudioFrame()
 
     @BeforeEach
     fun setup() {

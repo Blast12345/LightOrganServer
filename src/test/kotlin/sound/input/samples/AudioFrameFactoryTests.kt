@@ -11,7 +11,7 @@ import toolkit.monkeyTest.nextDoubleArray
 import javax.sound.sampled.AudioFormat
 import kotlin.random.Random
 
-class NormalizedAudioFrameFactoryTests {
+class AudioFrameFactoryTests {
 
     private var sampleNormalizer: SampleNormalizer = mockk()
     private var format: AudioFormat = mockk()
@@ -28,12 +28,12 @@ class NormalizedAudioFrameFactoryTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): NormalizedAudioFrameFactory {
-        return NormalizedAudioFrameFactory(sampleNormalizer)
+    private fun createSUT(): AudioFrameFactory {
+        return AudioFrameFactory(sampleNormalizer)
     }
 
     @Test
-    fun `the samples are a normalized version of the raw samples`() {
+    fun `normalize the audio so that different formats can be interpreted the same`() {
         val sut = createSUT()
         val normalizedSamples = doubleArrayOf(1.1, 2.2, 3.3)
         every { sampleNormalizer.normalize(rawSamples, any()) } returns normalizedSamples

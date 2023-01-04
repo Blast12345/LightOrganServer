@@ -7,7 +7,7 @@ import sound.frequencyBins.FrequencyBinsFactory
 import sound.frequencyBins.FrequencyBinsFactoryInterface
 import sound.input.InputDelegate
 import sound.input.InputInterface
-import sound.input.samples.NormalizedAudioFrame
+import sound.input.samples.AudioFrame
 import java.awt.Color
 
 class LightOrgan(
@@ -23,21 +23,21 @@ class LightOrgan(
         input.listenForAudioSamples(this)
     }
 
-    override fun receiveAudioFrame(audioFrame: NormalizedAudioFrame) {
+    override fun receiveAudioFrame(audioFrame: AudioFrame) {
         sendColorToServer(audioFrame)
     }
 
-    private fun sendColorToServer(audioFrame: NormalizedAudioFrame) {
+    private fun sendColorToServer(audioFrame: AudioFrame) {
         val color = getColor(audioFrame)
         server.sendColor(color)
     }
 
-    private fun getColor(audioFrame: NormalizedAudioFrame): Color {
+    private fun getColor(audioFrame: AudioFrame): Color {
         val frequencyBins = getFrequencyBins(audioFrame)
         return colorFactory.create(frequencyBins)
     }
 
-    private fun getFrequencyBins(audioFrame: NormalizedAudioFrame): FrequencyBins {
+    private fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBins {
         return frequencyBinsFactory.create(audioFrame, lowestSupportedFrequency)
     }
 

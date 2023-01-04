@@ -6,7 +6,9 @@ interface InputFinderInterface {
     fun getInput(): TargetDataLine
 }
 
-class InputFinder(private val allInputsFinder: AllInputsFinderInterface = AllInputsFinder()) : InputFinderInterface {
+class InputFinder(
+    private val allInputsFinder: AllInputsFinderInterface = AllInputsFinder()
+) : InputFinderInterface {
 
     // NOTE: This could be extended in the future to take a searchable string
     override fun getInput(): TargetDataLine {

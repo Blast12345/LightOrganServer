@@ -18,7 +18,7 @@ class AmplitudeFactoryTests {
 
     @BeforeEach
     fun setup() {
-        every { fftAlgorithm.process(any()) } returns nextDoubleArray()
+        every { fftAlgorithm.calculateRelativeAmplitudes(any()) } returns nextDoubleArray()
         every { hannWindowFilter.filter(any()) } returns nextDoubleArray()
     }
 
@@ -38,7 +38,7 @@ class AmplitudeFactoryTests {
     fun `the samples are processed by FFT to receive amplitudes`() {
         val sut = createSUT()
         val expectedAmplitudes = nextDoubleArray()
-        every { fftAlgorithm.process(any()) } returns expectedAmplitudes
+        every { fftAlgorithm.calculateRelativeAmplitudes(any()) } returns expectedAmplitudes
 
         val amplitudes = sut.create(samples)
 
@@ -54,7 +54,7 @@ class AmplitudeFactoryTests {
         sut.create(samples)
 
         verify { hannWindowFilter.filter(samples) }
-        verify { fftAlgorithm.process(filteredSamples) }
+        verify { fftAlgorithm.calculateRelativeAmplitudes(filteredSamples) }
     }
 
 }

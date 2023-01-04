@@ -17,7 +17,7 @@ class FftAlgorithmTests {
     @Test
     fun `apply the fft algorithm`() {
         val sut = createSUT()
-        val amplitudes = sut.process(signal)
+        val amplitudes = sut.calculateRelativeAmplitudes(signal)
         val frequencyOfGreatestAmplitude = frequencyOfGreatestAmplitude(amplitudes)
         assertEquals(signalFrequency, frequencyOfGreatestAmplitude)
     }

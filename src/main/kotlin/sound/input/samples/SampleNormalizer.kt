@@ -8,9 +8,9 @@ interface SampleNormalizerInterface {
     fun normalize(formatSpecificSamples: ByteArray, format: AudioFormat): DoubleArray
 }
 
+// Reference: https://stackoverflow.com/questions/29560491/fourier-transforming-a-byte-array
 class SampleNormalizer : SampleNormalizerInterface {
 
-    // Reference: https://stackoverflow.com/questions/29560491/fourier-transforming-a-byte-array
     override fun normalize(formatSpecificSamples: ByteArray, format: AudioFormat): DoubleArray {
         val bitDepth = getBitDepth(format)
         val buffer = getBuffer(formatSpecificSamples, format)

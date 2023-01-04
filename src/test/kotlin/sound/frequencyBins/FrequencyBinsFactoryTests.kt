@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.fft.AmplitudeFactoryInterface
-import sound.input.samples.NormalizedAudioFrame
+import sound.input.samples.AudioFrame
 import toolkit.monkeyTest.nextDoubleArray
 
 class FrequencyBinsFactoryTests {
@@ -22,7 +22,7 @@ class FrequencyBinsFactoryTests {
     private val sampleRateToSizeRatio = 4
     private val sampleSize = (sampleRate / sampleRateToSizeRatio).toInt()
     private val samples = nextDoubleArray(length = sampleSize)
-    private val audioFrame = NormalizedAudioFrame(samples, sampleRate)
+    private val audioFrame = AudioFrame(samples, sampleRate)
     private val amplitudes = nextDoubleArray(length = sampleSize / 2)
 
     @BeforeEach

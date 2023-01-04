@@ -4,22 +4,22 @@ import io.mockk.*
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.input.samples.NormalizedAudioFrame
-import sound.input.samples.NormalizedAudioFrameFactoryInterface
+import sound.input.samples.AudioFrame
+import sound.input.samples.AudioFrameFactoryInterface
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
 class InputTests {
 
     private var dataLine: TargetDataLine = mockk()
-    private var audioFrameFactory: NormalizedAudioFrameFactoryInterface = mockk()
+    private var audioFrameFactory: AudioFrameFactoryInterface = mockk()
     private var delegate: InputDelegate = mockk()
 
     private val bufferSize = 4096
     private val bytesAvailable = 1024
     private val bytesRead = 1024
     private val format = AudioFormat(44100F, 8, 1, true, true)
-    private val audioFrame = NormalizedAudioFrame(doubleArrayOf(1.1), 44100F)
+    private val audioFrame = AudioFrame(doubleArrayOf(1.1), 44100F)
 
     @BeforeEach
     fun setup() {

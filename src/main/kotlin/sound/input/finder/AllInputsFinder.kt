@@ -8,8 +8,9 @@ interface AllInputsFinderInterface {
     fun getInputs(): List<TargetDataLine>
 }
 
-class AllInputsFinder(private val allAudioDevicesFinder: AllAudioDevicesFinderInterface = AllAudioDevicesFinder()) :
-    AllInputsFinderInterface {
+class AllInputsFinder(
+    private val allAudioDevicesFinder: AllAudioDevicesFinderInterface = AllAudioDevicesFinder()
+) : AllInputsFinderInterface {
 
     override fun getInputs(): List<TargetDataLine> {
         return getAudioDevices().flatMap { audioDevice ->

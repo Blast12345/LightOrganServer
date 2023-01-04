@@ -1,8 +1,8 @@
 package sound.input
 
-import sound.input.samples.NormalizedAudioFrame
-import sound.input.samples.NormalizedAudioFrameFactory
-import sound.input.samples.NormalizedAudioFrameFactoryInterface
+import sound.input.samples.AudioFrame
+import sound.input.samples.AudioFrameFactory
+import sound.input.samples.AudioFrameFactoryInterface
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
@@ -12,7 +12,7 @@ interface InputInterface {
 
 class Input(
     private val dataLine: TargetDataLine,
-    private val audioFrameFactory: NormalizedAudioFrameFactoryInterface = NormalizedAudioFrameFactory()
+    private val audioFrameFactory: AudioFrameFactoryInterface = AudioFrameFactory()
 ) : InputInterface {
 
     private var samplesBuffer = ByteArray(dataLine.bufferSize)
@@ -46,7 +46,7 @@ class Input(
         delegate.receiveAudioFrame(nextAudioFrame)
     }
 
-    private fun getNextAudioFrame(): NormalizedAudioFrame {
+    private fun getNextAudioFrame(): AudioFrame {
         return audioFrameFactory.create(
             rawSamples = getNextFrame(),
             format = getAudioFormat()
@@ -62,8 +62,7 @@ class Input(
     private fun getNewData(): ByteArray {
         val bytesToRead = dataLine.available()
         val newData = ByteArray(bytesToRead)
-        // TODO: Do the bytes read match the new data size? We need to know for the drop function.
-        val bytesRead = dataLine.read(newData, 0, newData.size)
+        dataLine.read(newData, 0, newData.size)
         return newData
     }
 

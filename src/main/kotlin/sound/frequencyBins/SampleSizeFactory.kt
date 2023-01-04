@@ -9,13 +9,13 @@ interface SampleSizeFactoryInterface {
 class SampleSizeFactory : SampleSizeFactoryInterface {
 
     override fun create(frequency: Float, sampleRate: Float): Int {
-        val exactSampleSize = getExactSampleSize(frequency, sampleRate)
-        val power = getPower(exactSampleSize)
+        val power = getPower(frequency, sampleRate)
         return 2.0.pow(power).toInt()
     }
 
-    private fun getPower(exactSampleSize: Float): Int {
+    private fun getPower(frequency: Float, sampleRate: Float): Int {
         var power = 0
+        val exactSampleSize = getExactSampleSize(frequency, sampleRate)
 
         while (2.0.pow(power) < exactSampleSize) {
             power += 1

@@ -15,7 +15,7 @@ class AmplitudeFactory(
 
     private fun getAmplitudes(samples: DoubleArray): DoubleArray {
         val filteredSignal = filterUsingHannWindow(samples)
-        return fftAlgorithm.process(filteredSignal)
+        return fftAlgorithm.calculateRelativeAmplitudes(filteredSignal)
     }
 
     private fun filterUsingHannWindow(samples: DoubleArray): DoubleArray {
