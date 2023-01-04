@@ -1,12 +1,12 @@
 package sound.frequencyBins
 
-interface AverageFrequencyFactoryInterface {
-    fun averageFrequency(frequencyBins: FrequencyBins): Float?
+interface AverageFrequencyCalculatorInterface {
+    fun calculate(frequencyBins: FrequencyBins): Float?
 }
 
-class AverageFrequencyFactory : AverageFrequencyFactoryInterface {
+class AverageFrequencyCalculator : AverageFrequencyCalculatorInterface {
 
-    override fun averageFrequency(frequencyBins: FrequencyBins): Float? {
+    override fun calculate(frequencyBins: FrequencyBins): Float? {
         return if (frequencyBins.isNotEmpty()) {
             val weightedAmplitude = weightedAmplitude(frequencyBins)
             val totalAmplitude = totalAmplitude(frequencyBins)

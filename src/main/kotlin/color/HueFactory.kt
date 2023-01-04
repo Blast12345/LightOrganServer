@@ -7,16 +7,19 @@ interface HueFactoryInterface {
 }
 
 class HueFactory(
-    private val averageFrequencyFactory: AverageFrequencyFactoryInterface = AverageFrequencyFactory(),
-    private val minimumFrequencyFactory: MinimumFrequencyFactoryInterface = MinimumFrequencyFactory(),
-    private val maximumFrequencyFactory: MaximumFrequencyFactoryInterface = MaximumFrequencyFactory()
+    private val averageFrequencyCalculator: AverageFrequencyCalculatorInterface = AverageFrequencyCalculator(),
+    private val minimumFrequencyFinder: MinimumFrequencyFinderInterface = MinimumFrequencyFinder(),
+    private val maximumFrequencyFinder: MaximumFrequencyFinderInterface = MaximumFrequencyFinder()
 ) : HueFactoryInterface {
 
     override fun create(frequencyBins: List<FrequencyBin>): Float? {
-        val averageFrequency = averageFrequencyFactory.averageFrequency(frequencyBins)
-        val minimumFrequency = minimumFrequencyFactory.minimumFrequency(frequencyBins)
-        val maximumFrequency = maximumFrequencyFactory.maximumFrequency(frequencyBins)
+        val averageFrequency = averageFrequencyCalculator.calculate(frequencyBins)
+        val minimumFrequency = minimumFrequencyFinder.find(frequencyBins)
+        val maximumFrequency = maximumFrequencyFinder.find(frequencyBins)
+        return getHue(averageFrequency, minimumFrequency, maximumFrequency)
+    }
 
+    private fun getHue(averageFrequency: Float?, minimumFrequency: Float?, maximumFrequency: Float?): Float? {
         return if (averageFrequency != null && minimumFrequency != null && maximumFrequency != null) {
             getHue(averageFrequency, minimumFrequency, maximumFrequency)
         } else {
@@ -28,8 +31,14 @@ class HueFactory(
         return if (maximumFrequency == 0F) {
             null
         } else {
-            (averageFrequency - minimumFrequency) / maximumFrequency
+            val range = maximumFrequency - minimumFrequency
+            val adjustedAverage = averageFrequency - minimumFrequency
+            getHue(range, adjustedAverage)
         }
+    }
+
+    private fun getHue(range: Float, adjustedAverage: Float): Float {
+        return adjustedAverage / range
     }
 
 }
