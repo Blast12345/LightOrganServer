@@ -10,8 +10,16 @@ class AmplitudeFactory(
 ) : AmplitudeFactoryInterface {
 
     override fun create(samples: DoubleArray): DoubleArray {
-        val filteredSignal = hannWindowFilter.filter(samples)
+        return getAmplitudes(samples)
+    }
+
+    private fun getAmplitudes(samples: DoubleArray): DoubleArray {
+        val filteredSignal = filterUsingHannWindow(samples)
         return fftAlgorithm.process(filteredSignal)
+    }
+
+    private fun filterUsingHannWindow(samples: DoubleArray): DoubleArray {
+        return hannWindowFilter.filter(samples)
     }
 
 }
