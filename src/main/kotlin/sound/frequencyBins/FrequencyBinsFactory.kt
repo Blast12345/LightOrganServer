@@ -44,7 +44,7 @@ class FrequencyBinsFactory(
     private fun getFrequencyBin(index: Int, amplitude: Double, sampleSize: Int, sampleRate: Float): FrequencyBin {
         return FrequencyBin(
             frequency = getFrequency(index, sampleSize, sampleRate),
-            amplitude = amplitude
+            amplitude = amplitude.toFloat()
         )
     }
 

@@ -1,51 +1,80 @@
 package color
 
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.frequencyBins.*
+import sound.frequencyBins.AverageFrequencyCalculator
+import sound.frequencyBins.FrequencyBin
+import sound.frequencyBins.MaximumFrequencyFinder
+import sound.frequencyBins.MinimumFrequencyFinder
+import toolkit.monkeyTest.nextFrequencyBins
+import kotlin.random.Random
 
 class HueFactoryTests {
 
-    // TODO: Update these to use MockK
-    private lateinit var averageFrequencyFactory: FakeAverageFrequencyFactory
-    private lateinit var minimumFrequencyFactory: FakeMinimumFrequencyFactory
-    private lateinit var maximumFrequencyFactory: FakeMaximumFrequencyFactory
-    private val frequencyBins: FrequencyBins = listOf(FrequencyBin(75.0F, 1.2))
+    private var averageFrequencyCalculator: AverageFrequencyCalculator = mockk()
+    private var minimumFrequencyFinder: MinimumFrequencyFinder = mockk()
+    private var maximumFrequencyFinder: MaximumFrequencyFinder = mockk()
+    private val frequencyBins = nextFrequencyBins()
 
     @BeforeEach
     fun setup() {
-        averageFrequencyFactory = FakeAverageFrequencyFactory()
-        minimumFrequencyFactory = FakeMinimumFrequencyFactory()
-        maximumFrequencyFactory = FakeMaximumFrequencyFactory()
+        every { averageFrequencyCalculator.calculate(any()) } returns Random.nextFloat()
+        every { minimumFrequencyFinder.find(any()) } returns Random.nextFloat()
+        every { maximumFrequencyFinder.find(any()) } returns Random.nextFloat()
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
     }
 
     private fun createSUT(): HueFactory {
         return HueFactory(
-            averageFrequencyFactory,
-            minimumFrequencyFactory,
-            maximumFrequencyFactory
+            averageFrequencyCalculator = averageFrequencyCalculator,
+            minimumFrequencyFinder = minimumFrequencyFinder,
+            maximumFrequencyFinder = maximumFrequencyFinder
         )
     }
 
     @Test
-    fun `the hue is corresponds to where the average frequency falls within the provided range`() {
+    fun `the hue is corresponds to the position of the average frequency within the provided range`() {
         val sut = createSUT()
-        averageFrequencyFactory.frequency = 75F
-        minimumFrequencyFactory.frequency = 10F
-        maximumFrequencyFactory.frequency = 100F
+        every { averageFrequencyCalculator.calculate(frequencyBins) } returns 75F
+        every { minimumFrequencyFinder.find(frequencyBins) } returns 50F
+        every { maximumFrequencyFinder.find(frequencyBins) } returns 100F
+
         val actualHue = sut.create(frequencyBins)
-        assertEquals(0.65f, actualHue!!, 0.001f)
-        assertEquals(frequencyBins, averageFrequencyFactory.frequencyBins)
-        assertEquals(frequencyBins, minimumFrequencyFactory.frequencyBins)
-        assertEquals(frequencyBins, maximumFrequencyFactory.frequencyBins)
+
+        assertEquals(0.5F, actualHue!!, 0.001F)
+    }
+
+    @Test
+    fun `the hue should only respect frequencies up to 120hz`() {
+        val sut = createSUT()
+        val bin1 = FrequencyBin(50F, 1F)
+        val bin2 = FrequencyBin(100F, 1F)
+        val bin3 = FrequencyBin(150F, 1F)
+        val frequencyBins = listOf(bin1, bin2, bin3)
+
+        sut.create(frequencyBins)
+
+        val expectedFrequencyBins = listOf(bin1, bin2)
+        verify { averageFrequencyCalculator.calculate(expectedFrequencyBins) }
+        verify { minimumFrequencyFinder.find(expectedFrequencyBins) }
+        verify { maximumFrequencyFinder.find(expectedFrequencyBins) }
     }
 
     @Test
     fun `the hue is null when the maximum frequency is 0`() {
         val sut = createSUT()
-        maximumFrequencyFactory.frequency = 0F
+        every { maximumFrequencyFinder.find(any()) } returns 0F
         val actualHue = sut.create(frequencyBins)
         assertNull(actualHue)
     }
@@ -53,7 +82,7 @@ class HueFactoryTests {
     @Test
     fun `the hue is null when the maximum frequency is null`() {
         val sut = createSUT()
-        maximumFrequencyFactory.frequency = null
+        every { maximumFrequencyFinder.find(any()) } returns null
         val actualHue = sut.create(frequencyBins)
         assertNull(actualHue)
     }
@@ -61,7 +90,7 @@ class HueFactoryTests {
     @Test
     fun `the hue is null when the minimum frequency is null`() {
         val sut = createSUT()
-        minimumFrequencyFactory.frequency = null
+        every { minimumFrequencyFinder.find(any()) } returns null
         val actualHue = sut.create(frequencyBins)
         assertNull(actualHue)
     }
@@ -69,7 +98,7 @@ class HueFactoryTests {
     @Test
     fun `the hue is null when the average frequency is null`() {
         val sut = createSUT()
-        averageFrequencyFactory.frequency = null
+        every { averageFrequencyCalculator.calculate(any()) } returns null
         val actualHue = sut.create(frequencyBins)
         assertNull(actualHue)
     }

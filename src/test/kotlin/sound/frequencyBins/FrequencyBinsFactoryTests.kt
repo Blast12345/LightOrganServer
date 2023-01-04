@@ -5,7 +5,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,7 +18,7 @@ class FrequencyBinsFactoryTests {
     private var sampleSizeFactory: SampleSizeFactoryInterface = mockk()
 
     private val sampleRate = 48000F
-    private val sampleRateToSizeRatio = 4
+    private val sampleRateToSizeRatio = 4F
     private val sampleSize = (sampleRate / sampleRateToSizeRatio).toInt()
     private val samples = nextDoubleArray(length = sampleSize)
     private val audioFrame = AudioFrame(samples, sampleRate)
@@ -47,8 +46,9 @@ class FrequencyBinsFactoryTests {
     fun `each frequency bin has an amplitude`() {
         val sut = createSUT()
         val actual = sut.create(audioFrame, 0F)
-        val actualAmplitudes = actual.map { it.amplitude }.toDoubleArray()
-        assertArrayEquals(amplitudes, actualAmplitudes)
+        val actualAmplitudes = actual.map { it.amplitude }
+        val expectedAmplitudes = amplitudes.map { it.toFloat() }
+        assertEquals(expectedAmplitudes, actualAmplitudes)
     }
 
     @Test
@@ -77,7 +77,7 @@ class FrequencyBinsFactoryTests {
         var frequencies: MutableList<Float> = mutableListOf()
 
         for (i in 0 until numberOfBins) {
-            val frequency = (i * sampleRateToSizeRatio).toFloat()
+            val frequency = (i * sampleRateToSizeRatio)
             frequencies.add(frequency)
         }
 
