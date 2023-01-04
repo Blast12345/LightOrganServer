@@ -1,8 +1,10 @@
 package sound.fft
 
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -10,17 +12,19 @@ import toolkit.monkeyTest.nextDoubleArray
 
 class AmplitudeFactoryTests {
 
-    private lateinit var fftAlgorithm: FftAlgorithmInterface
-    private lateinit var hannWindowFilter: HannWindowFilterInterface
+    private var fftAlgorithm: FftAlgorithmInterface = mockk()
+    private var hannWindowFilter: HannWindowFilterInterface = mockk()
     private val samples = nextDoubleArray()
 
     @BeforeEach
     fun setup() {
-        fftAlgorithm = mockk()
         every { fftAlgorithm.process(any()) } returns nextDoubleArray()
-
-        hannWindowFilter = mockk()
         every { hannWindowFilter.filter(any()) } returns nextDoubleArray()
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
     }
 
     private fun createSUT(): AmplitudeFactory {

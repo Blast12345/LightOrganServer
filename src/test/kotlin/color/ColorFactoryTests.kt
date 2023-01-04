@@ -1,9 +1,10 @@
 package color
 
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.getHue
@@ -13,13 +14,17 @@ import kotlin.random.Random
 
 class ColorFactoryTests {
 
-    private lateinit var hueFactory: HueFactory
+    private var hueFactory: HueFactory = mockk()
     private val frequencyBins = nextFrequencyBins()
 
     @BeforeEach
     fun setup() {
-        hueFactory = mockk()
         every { hueFactory.create(any()) } returns Random.nextFloat()
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
     }
 
     private fun createSUT(): ColorFactory {
@@ -27,14 +32,7 @@ class ColorFactoryTests {
     }
 
     @Test
-    fun `create a color`() {
-        val sut = createSUT()
-        val actual = sut.create(frequencyBins)
-        assertTrue(actual is Color)
-    }
-
-    @Test
-    fun `the hue is computed from the frequency bins`() {
+    fun `the colors hue is computed from the frequency bins`() {
         val sut = createSUT()
         val hue = Random.nextFloat()
         every { hueFactory.create(frequencyBins) } returns hue

@@ -1,7 +1,9 @@
 package sound.input.samples
 
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -11,17 +13,19 @@ import kotlin.random.Random
 
 class NormalizedAudioFrameFactoryTests {
 
-    private lateinit var sampleNormalizer: SampleNormalizer
+    private var sampleNormalizer: SampleNormalizer = mockk()
+    private var format: AudioFormat = mockk()
     private val rawSamples = byteArrayOf(1, 2, 3)
-    private lateinit var format: AudioFormat
 
     @BeforeEach
     fun setup() {
-        sampleNormalizer = mockk()
         every { sampleNormalizer.normalize(any(), any()) } returns nextDoubleArray()
-
-        format = mockk()
         every { format.sampleRate } returns Random.nextFloat()
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
     }
 
     private fun createSUT(): NormalizedAudioFrameFactory {

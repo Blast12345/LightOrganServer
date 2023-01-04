@@ -1,7 +1,9 @@
 import color.ColorFactory
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import server.Server
@@ -13,25 +15,23 @@ import toolkit.monkeyTest.nextNormalizedAudioFrame
 
 class LightOrganTests {
 
-    private lateinit var input: Input
-    private lateinit var server: Server
-    private lateinit var colorFactory: ColorFactory
-    private lateinit var frequencyBinsFactory: FrequencyBinsFactory
+    private var input: Input = mockk()
+    private var server: Server = mockk()
+    private var colorFactory: ColorFactory = mockk()
+    private var frequencyBinsFactory: FrequencyBinsFactory = mockk()
     private val audioFrame = nextNormalizedAudioFrame()
 
     @BeforeEach
     fun setup() {
-        input = mockk()
         every { input.listenForAudioSamples(any()) } returns Unit
-
-        server = mockk()
         every { server.sendColor(any()) } returns Unit
-
-        colorFactory = mockk()
         every { colorFactory.create(any()) } returns nextColor()
-
-        frequencyBinsFactory = mockk()
         every { frequencyBinsFactory.create(any(), any()) } returns nextFrequencyBins()
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
     }
 
     private fun createSUT(): LightOrgan {

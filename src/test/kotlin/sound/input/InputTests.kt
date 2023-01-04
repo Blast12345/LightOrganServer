@@ -1,9 +1,7 @@
 package sound.input
 
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
-import io.mockk.verifyOrder
+import io.mockk.*
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.input.samples.NormalizedAudioFrame
@@ -13,9 +11,9 @@ import javax.sound.sampled.TargetDataLine
 
 class InputTests {
 
-    private lateinit var dataLine: TargetDataLine
-    private lateinit var audioFrameFactory: NormalizedAudioFrameFactoryInterface
-    private lateinit var delegate: InputDelegate
+    private var dataLine: TargetDataLine = mockk()
+    private var audioFrameFactory: NormalizedAudioFrameFactoryInterface = mockk()
+    private var delegate: InputDelegate = mockk()
 
     private val bufferSize = 4096
     private val bytesAvailable = 1024
@@ -25,20 +23,19 @@ class InputTests {
 
     @BeforeEach
     fun setup() {
-        // TODO: Perhaps these can be improved. Feels a bit heavy handed.
-        dataLine = mockk()
         every { dataLine.bufferSize } returns bufferSize
         every { dataLine.open() } returns Unit
         every { dataLine.start() } returns Unit
         every { dataLine.available() } returns bytesAvailable
         every { dataLine.read(any(), 0, bytesAvailable) } returns bytesRead
         every { dataLine.format } returns format
-
-        audioFrameFactory = mockk()
         every { audioFrameFactory.create(any(), format) } returns audioFrame
-
-        delegate = mockk()
         every { delegate.receiveAudioFrame(any()) } returns Unit
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
     }
 
     private fun createSUT(): Input {

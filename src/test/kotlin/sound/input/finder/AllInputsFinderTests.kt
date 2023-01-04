@@ -1,7 +1,9 @@
 package sound.input.finder
 
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -11,31 +13,26 @@ import javax.sound.sampled.TargetDataLine
 
 class AllInputsFinderTests {
 
-    private lateinit var input1: TargetDataLine
-    private lateinit var inputs: List<TargetDataLine>
-    private lateinit var mixer1: Mixer
-    private lateinit var mixer2: Mixer
+    private var input1: TargetDataLine = mockk()
+    private var allAudioDevicesFinder: AllAudioDevicesFinderInterface = mockk()
+    private val inputs = listOf(input1)
+    private var mixer1: Mixer = mockk()
+    private var mixer2: Mixer = mockk()
     private val targetLineInfo = nextTargetLineInfo()
-    private lateinit var audioDevices: List<Mixer>
-    private lateinit var allAudioDevicesFinder: AllAudioDevicesFinderInterface
+    private val audioDevices = listOf(mixer1, mixer2)
 
     @BeforeEach
     fun setup() {
-        input1 = mockk()
-        inputs = listOf(input1)
-
-        mixer1 = mockk()
         every { mixer1.targetLineInfo } returns arrayOf(targetLineInfo)
         every { mixer1.getLine(targetLineInfo) } returns input1
-
-        mixer2 = mockk()
         every { mixer2.targetLineInfo } returns arrayOf()
         every { mixer2.getLine(targetLineInfo) } returns null
-
-        audioDevices = listOf(mixer1, mixer2)
-
-        allAudioDevicesFinder = mockk()
         every { allAudioDevicesFinder.getAudioDevices() } returns audioDevices
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
     }
 
     private fun createSUT(): AllInputsFinder {

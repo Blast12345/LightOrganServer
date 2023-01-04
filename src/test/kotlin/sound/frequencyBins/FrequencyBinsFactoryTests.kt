@@ -1,8 +1,10 @@
 package sound.frequencyBins
 
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -13,8 +15,8 @@ import toolkit.monkeyTest.nextDoubleArray
 
 class FrequencyBinsFactoryTests {
 
-    private lateinit var amplitudeFactory: AmplitudeFactoryInterface
-    private lateinit var sampleSizeFactory: SampleSizeFactoryInterface
+    private var amplitudeFactory: AmplitudeFactoryInterface = mockk()
+    private var sampleSizeFactory: SampleSizeFactoryInterface = mockk()
 
     private val sampleRate = 48000F
     private val sampleRateToSizeRatio = 4
@@ -25,11 +27,13 @@ class FrequencyBinsFactoryTests {
 
     @BeforeEach
     fun setup() {
-        amplitudeFactory = mockk()
         every { amplitudeFactory.create(any()) } returns amplitudes
-
-        sampleSizeFactory = mockk()
         every { sampleSizeFactory.create(any(), any()) } returns sampleSize
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
     }
 
     private fun createSUT(): FrequencyBinsFactory {

@@ -1,7 +1,9 @@
 package sound.input.finder
 
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkStatic
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -20,6 +22,11 @@ class AllAudioDevicesFinderTests {
         mockkStatic(AudioSystem::class)
         every { AudioSystem.getMixerInfo() } returns arrayOf(mixerInfo)
         every { AudioSystem.getMixer(mixerInfo) } returns mixer
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
     }
 
     private fun createSUT(): AllAudioDevicesFinder {
