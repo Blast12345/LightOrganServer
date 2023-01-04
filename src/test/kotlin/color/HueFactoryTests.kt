@@ -3,12 +3,14 @@ package color
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.frequencyBins.AverageFrequencyCalculator
+import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.MaximumFrequencyFinder
 import sound.frequencyBins.MinimumFrequencyFinder
 import toolkit.monkeyTest.nextFrequencyBins
@@ -51,6 +53,22 @@ class HueFactoryTests {
         val actualHue = sut.create(frequencyBins)
 
         assertEquals(0.5F, actualHue!!, 0.001F)
+    }
+
+    @Test
+    fun `the hue should only respect frequencies up to 120hz`() {
+        val sut = createSUT()
+        val bin1 = FrequencyBin(50F, 1F)
+        val bin2 = FrequencyBin(100F, 1F)
+        val bin3 = FrequencyBin(150F, 1F)
+        val frequencyBins = listOf(bin1, bin2, bin3)
+
+        sut.create(frequencyBins)
+
+        val expectedFrequencyBins = listOf(bin1, bin2)
+        verify { averageFrequencyCalculator.calculate(expectedFrequencyBins) }
+        verify { minimumFrequencyFinder.find(expectedFrequencyBins) }
+        verify { maximumFrequencyFinder.find(expectedFrequencyBins) }
     }
 
     @Test
