@@ -2,7 +2,6 @@ import color.ColorFactory
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import server.Server
@@ -47,7 +46,7 @@ class LightOrganTests {
     @Test
     fun `start listening to the input for audio`() {
         val sut = createSUT()
-        runBlocking { sut.start() }
+        sut.start()
         verify { input.listenForAudioSamples(sut) }
     }
 

@@ -1,16 +1,16 @@
 package sound.fft
 
 interface AmplitudeFactoryInterface {
-    fun create(signal: DoubleArray): DoubleArray
+    fun create(samples: DoubleArray): DoubleArray
 }
 
 class AmplitudeFactory(
-    private val hannWindowFilter: HannWindowFilterInterface = HannWindowFilter(),
-    private val fftAlgorithm: FftAlgorithmInterface = FftAlgorithm()
+    private val fftAlgorithm: FftAlgorithmInterface = FftAlgorithm(),
+    private val hannWindowFilter: HannWindowFilterInterface = HannWindowFilter()
 ) : AmplitudeFactoryInterface {
 
-    override fun create(signal: DoubleArray): DoubleArray {
-        val filteredSignal = hannWindowFilter.filter(signal)
+    override fun create(samples: DoubleArray): DoubleArray {
+        val filteredSignal = hannWindowFilter.filter(samples)
         return fftAlgorithm.process(filteredSignal)
     }
 

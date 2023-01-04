@@ -6,10 +6,6 @@ import sound.input.samples.NormalizedAudioFrameFactoryInterface
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
-interface InputDelegate {
-    fun receiveAudioFrame(audioFrame: NormalizedAudioFrame)
-}
-
 interface InputInterface {
     fun listenForAudioSamples(delegate: InputDelegate)
 }

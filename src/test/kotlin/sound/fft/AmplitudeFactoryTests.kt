@@ -1,39 +1,56 @@
 package sound.fft
 
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import toolkit.monkeyTest.nextDoubleArray
 
 class AmplitudeFactoryTests {
 
-    private lateinit var hannWindowFilter: FakeHannWindowFilter
-    private lateinit var fftAlgorithm: FakeFftAlgorithm
-    private val signal = DoubleArray(5)
+    private lateinit var fftAlgorithm: FftAlgorithmInterface
+    private lateinit var hannWindowFilter: HannWindowFilterInterface
+    private val samples = nextDoubleArray()
 
     @BeforeEach
     fun setup() {
-        hannWindowFilter = FakeHannWindowFilter()
-        fftAlgorithm = FakeFftAlgorithm()
+        fftAlgorithm = mockk()
+        every { fftAlgorithm.process(any()) } returns nextDoubleArray()
+
+        hannWindowFilter = mockk()
+        every { hannWindowFilter.filter(any()) } returns nextDoubleArray()
     }
 
     private fun createSUT(): AmplitudeFactory {
-        return AmplitudeFactory(hannWindowFilter, fftAlgorithm)
+        return AmplitudeFactory(
+            fftAlgorithm = fftAlgorithm,
+            hannWindowFilter = hannWindowFilter
+        )
     }
 
     @Test
-    fun `the signal goes through a hann window filter to reduce spectral leakage`() {
+    fun `the samples are processed by FFT to receive amplitudes`() {
         val sut = createSUT()
-        sut.create(signal)
-        assertEquals(hannWindowFilter.signal, signal)
+        val expectedAmplitudes = nextDoubleArray()
+        every { fftAlgorithm.process(any()) } returns expectedAmplitudes
+
+        val amplitudes = sut.create(samples)
+
+        assertEquals(expectedAmplitudes, amplitudes)
     }
 
     @Test
-    fun `the filtered signal is processed by FFT`() {
-        // TODO: Is processed by FFT? Has FFT applied to it? Goes through an FFT algorithm?
+    fun `the samples go through a hann window filter to reduce spectral leakage`() {
         val sut = createSUT()
-        val amplitudes = sut.create(signal)
-        assertEquals(fftAlgorithm.signal, hannWindowFilter.filteredSignal)
-        assertEquals(fftAlgorithm.amplitudes, amplitudes)
+        val filteredSamples = nextDoubleArray()
+        every { hannWindowFilter.filter(any()) } returns filteredSamples
+
+        sut.create(samples)
+
+        verify { hannWindowFilter.filter(samples) }
+        verify { fftAlgorithm.process(filteredSamples) }
     }
 
 }
