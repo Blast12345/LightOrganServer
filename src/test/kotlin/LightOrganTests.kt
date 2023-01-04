@@ -1,62 +1,88 @@
-import colorService.FakeColorService
-import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Test
-import server.FakeServer
-import java.awt.Color
+import color.ColorFactory
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import server.Server
+import sound.frequencyBins.FrequencyBinsFactory
+import sound.input.Input
+import toolkit.monkeyTest.nextAudioFrame
+import toolkit.monkeyTest.nextColor
+import toolkit.monkeyTest.nextFrequencyBins
 
 class LightOrganTests {
 
-    private lateinit var server: FakeServer
-    private lateinit var colorService: FakeColorService
-    private val color = Color.blue
+    private var input: Input = mockk()
+    private var server: Server = mockk()
+    private var colorFactory: ColorFactory = mockk()
+    private var frequencyBinsFactory: FrequencyBinsFactory = mockk()
+    private val audioFrame = nextAudioFrame()
 
-    @Before
+    @BeforeEach
     fun setup() {
-        server = FakeServer()
-        colorService = FakeColorService()
+        every { input.listenForAudioSamples(any()) } returns Unit
+        every { server.sendColor(any()) } returns Unit
+        every { colorFactory.create(any()) } returns nextColor()
+        every { frequencyBinsFactory.create(any(), any()) } returns nextFrequencyBins()
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
     }
 
     private fun createSUT(): LightOrgan {
-        return LightOrgan(server, colorService)
+        return LightOrgan(
+            input = input,
+            server = server,
+            colorFactory = colorFactory,
+            frequencyBinsFactory = frequencyBinsFactory
+        )
     }
 
     @Test
-    fun `know when the light organ has been started`() {
+    fun `start listening to the input for audio`() {
         val sut = createSUT()
-        assertFalse(sut.isRunning)
         sut.start()
-        assertTrue(sut.isRunning)
+        verify { input.listenForAudioSamples(sut) }
     }
 
     @Test
-    fun `send colors to the server when they become available`() {
+    fun `send a color to the server when an audio frame is received`() {
         val sut = createSUT()
-        sut.start()
 
-        colorService.lambda?.invoke(color)
-        assertEquals(color, server.color)
+        sut.receiveAudioFrame(audioFrame)
+        verify { server.sendColor(any()) }
     }
 
     @Test
-    fun `limit the number of colors to 60 times per second`() {
+    fun `the sent color is computed from frequency bins`() {
         val sut = createSUT()
-        sut.start()
-
-        server.millisecondsSinceLastSentColor = 0
-
-        colorService.lambda?.invoke(color)
-        assertNotEquals(color, server.color)
-
-        server.millisecondsSinceLastSentColor = minimumColorDurationInMilliseconds(60)
-
-        colorService.lambda?.invoke(color)
-        assertEquals(color, server.color)
+        val color = nextColor()
+        every { colorFactory.create(any()) } returns color
+        sut.receiveAudioFrame(audioFrame)
+        verify { server.sendColor(color) }
     }
 
-    private fun minimumColorDurationInMilliseconds(colorsPerSecond: Int): Long {
-        val minimumColorDurationInMilliseconds = 1 / colorsPerSecond.toFloat() * 1000
-        return minimumColorDurationInMilliseconds.toLong()
+    @Test
+    fun `the frequency bins are created from the audio frame`() {
+        val sut = createSUT()
+        val frequencyBins = nextFrequencyBins()
+        every { frequencyBinsFactory.create(any(), any()) } returns frequencyBins
+        sut.receiveAudioFrame(audioFrame)
+        verify { colorFactory.create(frequencyBins) }
+    }
+
+    @Test
+    fun `the lowest supported frequency is 20hz`() {
+        // NOTE: This is for practical reasons.
+        // Lower frequencies are uncommon in music and supporting them will add latency.
+        val sut = createSUT()
+        sut.receiveAudioFrame(audioFrame)
+        verify { frequencyBinsFactory.create(any(), 20F) }
     }
 
 }
