@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test
 
 class MinimumFrequencyFinderTests {
 
-    private val bin1 = FrequencyBin(100F, 1.0)
-    private val bin2 = FrequencyBin(200F, 2.0)
-    private val bin3 = FrequencyBin(300F, 3.0)
+    private val bin1 = FrequencyBin(100F, 1F)
+    private val bin2 = FrequencyBin(200F, 2F)
+    private val bin3 = FrequencyBin(300F, 3F)
 
     private fun createSUT(): MinimumFrequencyFinder {
         return MinimumFrequencyFinder()

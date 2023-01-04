@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test
 
 class AverageFrequencyCalculatorTests {
 
-    private val bin1 = FrequencyBin(100F, 0.0)
-    private val bin2 = FrequencyBin(200F, 1.0)
-    private val bin3 = FrequencyBin(300F, 2.0)
+    private val bin1 = FrequencyBin(100F, 0F)
+    private val bin2 = FrequencyBin(200F, 1F)
+    private val bin3 = FrequencyBin(300F, 2F)
 
     private fun createSUT(): AverageFrequencyCalculator {
         return AverageFrequencyCalculator()

@@ -25,17 +25,17 @@ class AverageFrequencyCalculator : AverageFrequencyCalculatorInterface {
     }
 
     private fun weightedAmplitude(frequencyBins: FrequencyBins): Float {
-        var weightedAmplitude = 0.0
+        var weightedAmplitude = 0F
 
         for (frequencyBin in frequencyBins) {
             weightedAmplitude += frequencyBin.frequency * frequencyBin.amplitude
         }
 
-        return weightedAmplitude.toFloat()
+        return weightedAmplitude
     }
 
     private fun totalAmplitude(frequencyBins: FrequencyBins): Float {
-        return frequencyBins.map { it.amplitude }.sum().toFloat()
+        return frequencyBins.map { it.amplitude }.sum()
     }
 
 }
