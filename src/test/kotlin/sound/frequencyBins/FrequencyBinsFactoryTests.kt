@@ -15,7 +15,7 @@ import toolkit.monkeyTest.nextDoubleArray
 class FrequencyBinsFactoryTests {
 
     private var amplitudeFactory: AmplitudeFactoryInterface = mockk()
-    private var sampleSizeFactory: SampleSizeFactoryInterface = mockk()
+    private var sampleSizeCalculator: SampleSizeCalculatorInterface = mockk()
 
     private val sampleRate = 48000F
     private val sampleRateToSizeRatio = 4F
@@ -27,7 +27,7 @@ class FrequencyBinsFactoryTests {
     @BeforeEach
     fun setup() {
         every { amplitudeFactory.create(any()) } returns amplitudes
-        every { sampleSizeFactory.create(any(), any()) } returns sampleSize
+        every { sampleSizeCalculator.calculate(any(), any()) } returns sampleSize
     }
 
     @AfterEach
@@ -38,7 +38,7 @@ class FrequencyBinsFactoryTests {
     private fun createSUT(): FrequencyBinsFactory {
         return FrequencyBinsFactory(
             amplitudeFactory = amplitudeFactory,
-            sampleSizeFactory = sampleSizeFactory
+            sampleSizeCalculator = sampleSizeCalculator
         )
     }
 
@@ -56,7 +56,7 @@ class FrequencyBinsFactoryTests {
         val sut = createSUT()
         val lowestSupportedFrequency = 20F
         val sampleSize = 4096
-        every { sampleSizeFactory.create(lowestSupportedFrequency, sampleRate) } returns sampleSize
+        every { sampleSizeCalculator.calculate(lowestSupportedFrequency, sampleRate) } returns sampleSize
 
         sut.create(audioFrame, lowestSupportedFrequency)
 
