@@ -8,8 +8,8 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.fft.AmplitudeFactoryInterface
 import sound.input.samples.AudioFrame
+import sound.signalProcessing.AmplitudeFactoryInterface
 import toolkit.monkeyTest.nextDoubleArray
 
 class FrequencyBinsFactoryTests {

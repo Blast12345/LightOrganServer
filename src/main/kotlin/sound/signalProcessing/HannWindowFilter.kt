@@ -1,4 +1,4 @@
-package sound.fft
+package sound.signalProcessing
 
 import kotlin.math.PI
 import kotlin.math.cos
