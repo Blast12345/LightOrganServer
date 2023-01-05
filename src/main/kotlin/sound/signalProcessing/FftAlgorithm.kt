@@ -1,4 +1,4 @@
-package sound.fft
+package sound.signalProcessing
 
 import org.jtransforms.fft.DoubleFFT_1D
 import kotlin.math.sqrt

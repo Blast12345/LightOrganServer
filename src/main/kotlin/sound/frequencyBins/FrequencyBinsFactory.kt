@@ -1,8 +1,8 @@
 package sound.frequencyBins
 
-import sound.fft.AmplitudeFactory
-import sound.fft.AmplitudeFactoryInterface
 import sound.input.samples.AudioFrame
+import sound.signalProcessing.AmplitudeFactory
+import sound.signalProcessing.AmplitudeFactoryInterface
 
 interface FrequencyBinsFactoryInterface {
     fun create(audioFrame: AudioFrame, lowestSupportedFrequency: Float): FrequencyBins
