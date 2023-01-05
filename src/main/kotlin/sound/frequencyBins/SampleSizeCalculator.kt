@@ -2,15 +2,16 @@ package sound.frequencyBins
 
 import kotlin.math.pow
 
-interface SampleSizeFactoryInterface {
-    fun create(frequency: Float, sampleRate: Float): Int
+interface SampleSizeCalculatorInterface {
+    fun calculate(frequency: Float, sampleRate: Float): Int
 }
 
-class SampleSizeFactory : SampleSizeFactoryInterface {
+class SampleSizeCalculator : SampleSizeCalculatorInterface {
 
-    override fun create(frequency: Float, sampleRate: Float): Int {
+    override fun calculate(frequency: Float, sampleRate: Float): Int {
         val power = getPower(frequency, sampleRate)
-        return 2.0.pow(power).toInt()
+        val sampleSize = 2.0.pow(power)
+        return sampleSize.toInt()
     }
 
     private fun getPower(frequency: Float, sampleRate: Float): Int {

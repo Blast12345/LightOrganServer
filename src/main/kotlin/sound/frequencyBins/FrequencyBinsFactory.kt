@@ -10,7 +10,7 @@ interface FrequencyBinsFactoryInterface {
 
 class FrequencyBinsFactory(
     private val amplitudeFactory: AmplitudeFactoryInterface = AmplitudeFactory(),
-    private val sampleSizeFactory: SampleSizeFactoryInterface = SampleSizeFactory()
+    private val sampleSizeCalculator: SampleSizeCalculatorInterface = SampleSizeCalculator()
 ) : FrequencyBinsFactoryInterface {
 
     override fun create(audioFrame: AudioFrame, lowestSupportedFrequency: Float): FrequencyBins {
@@ -29,7 +29,7 @@ class FrequencyBinsFactory(
     }
 
     private fun getSampleSize(frequency: Float, sampleRate: Float): Int {
-        return sampleSizeFactory.create(frequency, sampleRate)
+        return sampleSizeCalculator.calculate(frequency, sampleRate)
     }
 
     private fun getLatestSamples(sampleSize: Int, samples: DoubleArray): DoubleArray {
