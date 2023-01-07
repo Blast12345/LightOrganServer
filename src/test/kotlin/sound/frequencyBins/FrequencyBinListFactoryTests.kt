@@ -65,7 +65,14 @@ class FrequencyBinListFactoryTests {
     @Test
     fun `the lowest supported bin is 20hz`() {
         val sut = createSUT()
-        sut.create(audioSignal)
+        val invalidBin = FrequencyBin(19F, 1F)
+        val validBin = FrequencyBin(20F, 1F)
+        every { frequencyBinFactory.create(any(), any(), any()) } returnsMany listOf(invalidBin, validBin)
+
+        val frequencyBins = sut.create(audioSignal)
+
+        val expected = listOf(validBin)
+        assertEquals(expected, frequencyBins)
         verify { signalProcessor.process(audioSignal, 20F) }
     }
 

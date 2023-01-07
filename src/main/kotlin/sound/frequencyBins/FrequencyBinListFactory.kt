@@ -17,14 +17,36 @@ class FrequencyBinListFactory(
     private val lowestSupportedFrequency = 20F
 
     override fun create(audioSignal: AudioSignal): FrequencyBinList {
-        val processedSamples = signalProcessor.process(audioSignal, lowestSupportedFrequency)
-        val magnitudes = fftAlgorithm.calculateMagnitudes(processedSamples)
-        val normalizedMagnitudes = magnitudeNormalizer.normalize(magnitudes, processedSamples.size)
+        val processedSamples = getProcessedSamples(audioSignal)
+        val magnitudes = getMagnitudes(processedSamples)
+        val normalizedMagnitudes = getNormalizedMagnitudes(magnitudes, processedSamples.size)
         val granularity = calculateGranularity(normalizedMagnitudes.size, audioSignal.sampleRate)
-        return create(normalizedMagnitudes, granularity)
+        val allBins = createAllBins(normalizedMagnitudes, granularity)
+        return getSupportedBins(allBins)
     }
 
-    private fun create(magnitudes: DoubleArray, granularity: Float): FrequencyBinList {
+    private fun getProcessedSamples(audioSignal: AudioSignal): DoubleArray {
+        return signalProcessor.process(audioSignal, lowestSupportedFrequency)
+    }
+
+    private fun getMagnitudes(processedSamples: DoubleArray): DoubleArray {
+        return fftAlgorithm.calculateMagnitudes(processedSamples)
+    }
+
+    private fun getNormalizedMagnitudes(magnitudes: DoubleArray, sampleSize: Int): DoubleArray {
+        return magnitudeNormalizer.normalize(magnitudes, sampleSize)
+    }
+
+    private fun calculateGranularity(numberOfBins: Int, sampleRate: Float): Float {
+        val nyquistFrequency = calculateNyquistFrequency(sampleRate)
+        return numberOfBins / nyquistFrequency
+    }
+
+    private fun calculateNyquistFrequency(sampleRate: Float): Float {
+        return sampleRate / 2
+    }
+
+    private fun createAllBins(magnitudes: DoubleArray, granularity: Float): FrequencyBinList {
         val frequencyBins: MutableList<FrequencyBin> = mutableListOf()
 
         magnitudes.forEachIndexed { index, magnitude ->
@@ -35,13 +57,8 @@ class FrequencyBinListFactory(
         return frequencyBins
     }
 
-    private fun calculateGranularity(numberOfBins: Int, sampleRate: Float): Float {
-        val nyquistFrequency = calculateNyquistFrequency(sampleRate)
-        return numberOfBins / nyquistFrequency
-    }
-
-    private fun calculateNyquistFrequency(sampleRate: Float): Float {
-        return sampleRate / 2
+    private fun getSupportedBins(frequencyBins: FrequencyBinList): FrequencyBinList {
+        return frequencyBins.filter { it.frequency >= lowestSupportedFrequency }
     }
 
 }
