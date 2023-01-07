@@ -15,7 +15,7 @@ import sound.signalProcessing.SignalProcessorInterface
 import toolkit.monkeyTest.nextDoubleArray
 import toolkit.monkeyTest.nextFrequencyBin
 
-class FrequencyBinsFactoryTests {
+class FrequencyBinListFactoryTests {
 
     private var signalProcessor: SignalProcessorInterface = mockk()
     private var fftAlgorithm: FftAlgorithmInterface = mockk()
@@ -35,7 +35,7 @@ class FrequencyBinsFactoryTests {
 
     @BeforeEach
     fun setup() {
-        every { signalProcessor.process(any()) } returns processedSamples
+        every { signalProcessor.process(any(), any()) } returns processedSamples
         every { fftAlgorithm.calculateMagnitudes(any()) } returns magnitudes
         every { magnitudeNormalizer.normalize(any(), any()) } returns normalizedMagnitudes
         every { frequencyBinFactory.create(any(), any(), any()) } returns frequencyBin
@@ -46,8 +46,8 @@ class FrequencyBinsFactoryTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): FrequencyBinsFactory {
-        return FrequencyBinsFactory(
+    private fun createSUT(): FrequencyBinListFactory {
+        return FrequencyBinListFactory(
             signalProcessor = signalProcessor,
             fftAlgorithm = fftAlgorithm,
             magnitudeNormalizer = magnitudeNormalizer,
@@ -59,7 +59,14 @@ class FrequencyBinsFactoryTests {
     fun `the audio signal is processed`() {
         val sut = createSUT()
         sut.create(audioSignal)
-        verify { signalProcessor.process(audioSignal) }
+        verify { signalProcessor.process(audioSignal, any()) }
+    }
+
+    @Test
+    fun `the lowest supported bin is 20hz`() {
+        val sut = createSUT()
+        sut.create(audioSignal)
+        verify { signalProcessor.process(audioSignal, 20F) }
     }
 
     @Test

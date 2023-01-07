@@ -1,8 +1,8 @@
 package color
 
-import sound.frequencyBins.FrequencyBins
-import sound.frequencyBins.FrequencyBinsFactory
-import sound.frequencyBins.FrequencyBinsFactoryInterface
+import sound.frequencyBins.FrequencyBinList
+import sound.frequencyBins.FrequencyBinListFactory
+import sound.frequencyBins.FrequencyBinListFactoryInterface
 import sound.input.samples.AudioSignal
 import java.awt.Color
 
@@ -11,7 +11,7 @@ interface ColorFactoryInterface {
 }
 
 class ColorFactory(
-    private val frequencyBinsFactory: FrequencyBinsFactoryInterface = FrequencyBinsFactory(),
+    private val frequencyBinListFactory: FrequencyBinListFactoryInterface = FrequencyBinListFactory(),
     private val hueFactory: HueFactoryInterface = HueFactory()
 ) : ColorFactoryInterface {
 
@@ -20,12 +20,12 @@ class ColorFactory(
         return getColor(frequencyBins)
     }
 
-    private fun getFrequencyBins(audioSignal: AudioSignal): FrequencyBins {
-        return frequencyBinsFactory.create(audioSignal)
+    private fun getFrequencyBins(audioSignal: AudioSignal): FrequencyBinList {
+        return frequencyBinListFactory.create(audioSignal)
     }
 
-    private fun getColor(frequencyBins: FrequencyBins): Color {
-        val hue = getHue(frequencyBins)
+    private fun getColor(frequencyBinList: FrequencyBinList): Color {
+        val hue = getHue(frequencyBinList)
 
         return if (hue != null) {
             Color.getHSBColor(hue, 1.0F, 1.0F)
@@ -34,8 +34,8 @@ class ColorFactory(
         }
     }
 
-    private fun getHue(frequencyBins: FrequencyBins): Float? {
-        return hueFactory.create(frequencyBins)
+    private fun getHue(frequencyBinList: FrequencyBinList): Float? {
+        return hueFactory.create(frequencyBinList)
     }
 
 }

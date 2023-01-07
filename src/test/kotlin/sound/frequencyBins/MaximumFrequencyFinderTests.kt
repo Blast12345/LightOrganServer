@@ -25,7 +25,7 @@ class MaximumFrequencyFinderTests {
     @Test
     fun `the maximum frequency is null when the frequency bin list is empty`() {
         val sut = createSUT()
-        val emptyList: FrequencyBins = emptyList()
+        val emptyList: FrequencyBinList = emptyList()
         val maximumFrequency = sut.find(emptyList)
         assertNull(maximumFrequency)
     }

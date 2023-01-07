@@ -25,7 +25,7 @@ class MinimumFrequencyFinderTests {
     @Test
     fun `the minimum frequency is null when the frequency bin list is empty`() {
         val sut = createSUT()
-        val emptyList: FrequencyBins = emptyList()
+        val emptyList: FrequencyBinList = emptyList()
         val minimumFrequency = sut.find(emptyList)
         assertNull(minimumFrequency)
     }

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.frequencyBins.FrequencyBinsFactoryInterface
+import sound.frequencyBins.FrequencyBinListFactoryInterface
 import toolkit.getHue
 import toolkit.monkeyTest.nextAudioSignal
 import toolkit.monkeyTest.nextFrequencyBins
@@ -16,7 +16,7 @@ import kotlin.random.Random
 
 class ColorFactoryTests {
 
-    private var frequencyBinsFactory: FrequencyBinsFactoryInterface = mockk()
+    private var frequencyBinListFactory: FrequencyBinListFactoryInterface = mockk()
     private var hueFactory: HueFactoryInterface = mockk()
 
     private val audioSignal = nextAudioSignal()
@@ -24,7 +24,7 @@ class ColorFactoryTests {
 
     @BeforeEach
     fun setup() {
-        every { frequencyBinsFactory.create(audioSignal) } returns frequencyBins
+        every { frequencyBinListFactory.create(audioSignal) } returns frequencyBins
         every { hueFactory.create(any()) } returns Random.nextFloat()
     }
 
@@ -35,7 +35,7 @@ class ColorFactoryTests {
 
     private fun createSUT(): ColorFactory {
         return ColorFactory(
-            frequencyBinsFactory = frequencyBinsFactory,
+            frequencyBinListFactory = frequencyBinListFactory,
             hueFactory = hueFactory
         )
     }
