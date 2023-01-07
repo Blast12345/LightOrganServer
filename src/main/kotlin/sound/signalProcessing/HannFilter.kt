@@ -3,12 +3,12 @@ package sound.signalProcessing
 import kotlin.math.PI
 import kotlin.math.cos
 
-interface HannWindowFilterInterface {
+interface HannFilterInterface {
     fun filter(signal: DoubleArray): DoubleArray
 }
 
 // Reference: https://dsp.stackexchange.com/questions/19776/is-it-necessary-to-apply-some-window-method-to-obtain-the-fft-java
-class HannWindowFilter : HannWindowFilterInterface {
+class HannFilter : HannFilterInterface {
 
     override fun filter(signal: DoubleArray): DoubleArray {
         val output = DoubleArray(signal.size)
