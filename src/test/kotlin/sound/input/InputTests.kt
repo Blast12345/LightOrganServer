@@ -4,22 +4,22 @@ import io.mockk.*
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.input.samples.AudioFrame
-import sound.input.samples.AudioFrameFactoryInterface
+import sound.input.samples.AudioSignal
+import sound.input.samples.AudioSignalFactoryInterface
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
 class InputTests {
 
     private var dataLine: TargetDataLine = mockk()
-    private var audioFrameFactory: AudioFrameFactoryInterface = mockk()
+    private var audioSignalFactory: AudioSignalFactoryInterface = mockk()
     private var delegate: InputDelegate = mockk()
 
     private val bufferSize = 4096
     private val bytesAvailable = 1024
     private val bytesRead = 1024
     private val format = AudioFormat(44100F, 8, 1, true, true)
-    private val audioFrame = AudioFrame(doubleArrayOf(1.1), 44100F)
+    private val audioSignal = AudioSignal(doubleArrayOf(1.1), 44100F)
 
     @BeforeEach
     fun setup() {
@@ -29,8 +29,8 @@ class InputTests {
         every { dataLine.available() } returns bytesAvailable
         every { dataLine.read(any(), 0, bytesAvailable) } returns bytesRead
         every { dataLine.format } returns format
-        every { audioFrameFactory.create(any(), format) } returns audioFrame
-        every { delegate.receiveAudioFrame(any()) } returns Unit
+        every { audioSignalFactory.create(any(), format) } returns audioSignal
+        every { delegate.receiveAudioSignal(any()) } returns Unit
     }
 
     @AfterEach
@@ -39,7 +39,7 @@ class InputTests {
     }
 
     private fun createSUT(): Input {
-        return Input(dataLine, audioFrameFactory)
+        return Input(dataLine, audioSignalFactory)
     }
 
     @Test
@@ -52,11 +52,11 @@ class InputTests {
     }
 
     @Test
-    fun `return an audio frame when the data line has data available`() {
+    fun `return an audio signal when the data line has data available`() {
         val sut = createSUT()
-        every { delegate.receiveAudioFrame(any()) } answers { sut.stopListening() }
+        every { delegate.receiveAudioSignal(any()) } answers { sut.stopListening() }
         sut.listenForAudioSamples(delegate)
-        verify { delegate.receiveAudioFrame(audioFrame) }
+        verify { delegate.receiveAudioSignal(audioSignal) }
     }
 
 }

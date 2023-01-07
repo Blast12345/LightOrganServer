@@ -11,7 +11,7 @@ import toolkit.monkeyTest.nextDoubleArray
 import javax.sound.sampled.AudioFormat
 import kotlin.random.Random
 
-class AudioFrameFactoryTests {
+class AudioSignalFactoryTests {
 
     private var sampleNormalizer: SampleNormalizer = mockk()
     private var format: AudioFormat = mockk()
@@ -28,8 +28,8 @@ class AudioFrameFactoryTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): AudioFrameFactory {
-        return AudioFrameFactory(sampleNormalizer)
+    private fun createSUT(): AudioSignalFactory {
+        return AudioSignalFactory(sampleNormalizer)
     }
 
     @Test
