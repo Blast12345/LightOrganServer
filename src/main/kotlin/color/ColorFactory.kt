@@ -24,8 +24,8 @@ class ColorFactory(
         return frequencyBinListFactory.create(audioSignal)
     }
 
-    private fun getColor(frequencyBinList: FrequencyBinList): Color {
-        val hue = getHue(frequencyBinList)
+    private fun getColor(frequencyBins: FrequencyBinList): Color {
+        val hue = getHue(frequencyBins)
 
         return if (hue != null) {
             Color.getHSBColor(hue, 1.0F, 1.0F)
@@ -34,8 +34,8 @@ class ColorFactory(
         }
     }
 
-    private fun getHue(frequencyBinList: FrequencyBinList): Float? {
-        return hueFactory.create(frequencyBinList)
+    private fun getHue(frequencyBins: FrequencyBinList): Float? {
+        return hueFactory.create(frequencyBins)
     }
 
 }

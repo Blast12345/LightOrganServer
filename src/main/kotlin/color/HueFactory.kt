@@ -3,7 +3,7 @@ package color
 import sound.frequencyBins.FrequencyBinList
 
 interface HueFactoryInterface {
-    fun create(frequencyBinList: FrequencyBinList): Float?
+    fun create(frequencyBins: FrequencyBinList): Float?
 }
 
 class HueFactory(
@@ -12,16 +12,16 @@ class HueFactory(
     private val maximumFrequencyFinder: MaximumFrequencyFinderInterface = MaximumFrequencyFinder()
 ) : HueFactoryInterface {
 
-    override fun create(frequencyBinList: FrequencyBinList): Float? {
-        val bassBins = getBassBins(frequencyBinList)
+    override fun create(frequencyBins: FrequencyBinList): Float? {
+        val bassBins = getBassBins(frequencyBins)
         val averageFrequency = averageFrequencyCalculator.calculate(bassBins)
         val minimumFrequency = minimumFrequencyFinder.find(bassBins)
         val maximumFrequency = maximumFrequencyFinder.find(bassBins)
         return getHue(averageFrequency, minimumFrequency, maximumFrequency)
     }
 
-    private fun getBassBins(frequencyBinList: FrequencyBinList): FrequencyBinList {
-        return frequencyBinList.filter { it.frequency < 120F }
+    private fun getBassBins(frequencyBins: FrequencyBinList): FrequencyBinList {
+        return frequencyBins.filter { it.frequency < 120F }
     }
 
     private fun getHue(averageFrequency: Float?, minimumFrequency: Float?, maximumFrequency: Float?): Float? {

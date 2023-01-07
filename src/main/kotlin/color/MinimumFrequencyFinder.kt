@@ -4,31 +4,31 @@ import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 
 interface MinimumFrequencyFinderInterface {
-    fun find(frequencyBinList: FrequencyBinList): Float?
+    fun find(frequencyBins: FrequencyBinList): Float?
 }
 
 class MinimumFrequencyFinder : MinimumFrequencyFinderInterface {
 
-    override fun find(frequencyBinList: FrequencyBinList): Float? {
-        return if (frequencyBinList.isNotEmpty()) {
-            getMinimumFrequency(frequencyBinList)
+    override fun find(frequencyBins: FrequencyBinList): Float? {
+        return if (frequencyBins.isNotEmpty()) {
+            getMinimumFrequency(frequencyBins)
         } else {
             null
         }
     }
 
-    private fun getMinimumFrequency(frequencyBinList: FrequencyBinList): Float {
-        val frequencyBin = getMinimumFrequencyBin(frequencyBinList)
+    private fun getMinimumFrequency(frequencyBins: FrequencyBinList): Float {
+        val frequencyBin = getMinimumFrequencyBin(frequencyBins)
         return frequencyBin.frequency
     }
 
-    private fun getMinimumFrequencyBin(frequencyBinList: FrequencyBinList): FrequencyBin {
-        val sortedFrequencyBins = sorted(frequencyBinList)
+    private fun getMinimumFrequencyBin(frequencyBins: FrequencyBinList): FrequencyBin {
+        val sortedFrequencyBins = sorted(frequencyBins)
         return sortedFrequencyBins.first()
     }
 
-    private fun sorted(frequencyBinList: FrequencyBinList): FrequencyBinList {
-        return frequencyBinList.sortedBy { it.frequency }
+    private fun sorted(frequencyBins: FrequencyBinList): FrequencyBinList {
+        return frequencyBins.sortedBy { it.frequency }
     }
 
 }
