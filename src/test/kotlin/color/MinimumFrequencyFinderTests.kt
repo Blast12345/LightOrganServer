@@ -1,8 +1,10 @@
-package sound.frequencyBins
+package color
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import sound.frequencyBins.FrequencyBin
+import sound.frequencyBins.FrequencyBinList
 
 class MinimumFrequencyFinderTests {
 

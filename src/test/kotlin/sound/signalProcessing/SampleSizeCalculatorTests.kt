@@ -1,4 +1,4 @@
-package sound.frequencyBins
+package sound.signalProcessing
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

@@ -1,4 +1,7 @@
-package sound.frequencyBins
+package color
+
+import sound.frequencyBins.FrequencyBin
+import sound.frequencyBins.FrequencyBinList
 
 interface MaximumFrequencyFinderInterface {
     fun find(frequencyBinList: FrequencyBinList): Float?

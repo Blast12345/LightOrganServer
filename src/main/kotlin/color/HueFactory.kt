@@ -1,6 +1,6 @@
 package color
 
-import sound.frequencyBins.*
+import sound.frequencyBins.FrequencyBinList
 
 interface HueFactoryInterface {
     fun create(frequencyBinList: FrequencyBinList): Float?

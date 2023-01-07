@@ -1,4 +1,6 @@
-package sound.frequencyBins
+package color
+
+import sound.frequencyBins.FrequencyBinList
 
 interface AverageFrequencyCalculatorInterface {
     fun calculate(frequencyBinList: FrequencyBinList): Float?
