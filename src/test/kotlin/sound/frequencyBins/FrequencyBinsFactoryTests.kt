@@ -8,7 +8,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.input.samples.AudioFrame
+import sound.input.samples.AudioSignal
 import sound.signalProcessing.AmplitudeFactoryInterface
 import toolkit.monkeyTest.nextDoubleArray
 
@@ -21,7 +21,7 @@ class FrequencyBinsFactoryTests {
     private val sampleRateToSizeRatio = 4F
     private val sampleSize = (sampleRate / sampleRateToSizeRatio).toInt()
     private val samples = nextDoubleArray(length = sampleSize)
-    private val audioFrame = AudioFrame(samples, sampleRate)
+    private val audioSignal = AudioSignal(samples, sampleRate)
     private val amplitudes = nextDoubleArray(length = sampleSize / 2)
 
     @BeforeEach
@@ -45,7 +45,7 @@ class FrequencyBinsFactoryTests {
     @Test
     fun `each frequency bin has an amplitude`() {
         val sut = createSUT()
-        val actual = sut.create(audioFrame, 0F)
+        val actual = sut.create(audioSignal, 0F)
         val actualAmplitudes = actual.map { it.amplitude }
         val expectedAmplitudes = amplitudes.map { it.toFloat() }
         assertEquals(expectedAmplitudes, actualAmplitudes)
@@ -58,7 +58,7 @@ class FrequencyBinsFactoryTests {
         val sampleSize = 4096
         every { sampleSizeCalculator.calculate(lowestSupportedFrequency, sampleRate) } returns sampleSize
 
-        sut.create(audioFrame, lowestSupportedFrequency)
+        sut.create(audioSignal, lowestSupportedFrequency)
 
         val expectedSamples = samples.takeLast(sampleSize).toDoubleArray()
         verify { amplitudeFactory.create(expectedSamples) }
@@ -67,7 +67,7 @@ class FrequencyBinsFactoryTests {
     @Test
     fun `each frequency bin has a frequency`() {
         val sut = createSUT()
-        val actual = sut.create(audioFrame, 0F)
+        val actual = sut.create(audioSignal, 0F)
         val actualFrequencies = actual.map { it.frequency }
         assertEquals(expectedFrequencies(), actualFrequencies)
     }

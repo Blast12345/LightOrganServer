@@ -2,17 +2,17 @@ package sound.input.samples
 
 import javax.sound.sampled.AudioFormat
 
-interface AudioFrameFactoryInterface {
-    fun create(rawSamples: ByteArray, format: AudioFormat): AudioFrame
+interface AudioSignalFactoryInterface {
+    fun create(samples: ByteArray, format: AudioFormat): AudioSignal
 }
 
-class AudioFrameFactory(
+class AudioSignalFactory(
     private val sampleNormalizer: SampleNormalizerInterface = SampleNormalizer()
-) : AudioFrameFactoryInterface {
+) : AudioSignalFactoryInterface {
 
-    override fun create(rawSamples: ByteArray, format: AudioFormat): AudioFrame {
-        return AudioFrame(
-            samples = getNormalizedSamples(rawSamples, format),
+    override fun create(samples: ByteArray, format: AudioFormat): AudioSignal {
+        return AudioSignal(
+            samples = getNormalizedSamples(samples, format),
             sampleRate = getSampleRate(format)
         )
     }

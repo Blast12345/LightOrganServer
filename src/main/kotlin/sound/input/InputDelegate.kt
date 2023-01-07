@@ -1,7 +1,7 @@
 package sound.input
 
-import sound.input.samples.AudioFrame
+import sound.input.samples.AudioSignal
 
 interface InputDelegate {
-    fun receiveAudioFrame(audioFrame: AudioFrame)
+    fun receiveAudioSignal(audioSignal: AudioSignal)
 }
