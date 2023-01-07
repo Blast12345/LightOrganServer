@@ -16,11 +16,9 @@ class LightOrgan(
     private val input: InputInterface,
     private val server: ServerInterface = Server(),
     private val colorFactory: ColorFactoryInterface = ColorFactory(),
-    private val frequencyBinsFactory: FrequencyBinsFactoryInterface = FrequencyBinsFactory(),
     private val systemTime: SystemTimeInterface = SystemTime()
 ) : InputDelegate {
 
-    private val lowestSupportedFrequency = 20F
     private val maximumUpdatesPerSecond = 60
     private val minimumSecondsBetweenColors = 1.0 / maximumUpdatesPerSecond
     private var timestampOfLastSentColor = 0.0
@@ -42,12 +40,7 @@ class LightOrgan(
     }
 
     private fun getColor(audioFrame: AudioFrame): Color {
-        val frequencyBins = getFrequencyBins(audioFrame)
-        return colorFactory.create(frequencyBins)
-    }
-
-    private fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBins {
-        return frequencyBinsFactory.create(audioFrame, lowestSupportedFrequency)
+        return colorFactory.create(audioFrame)
     }
 
     private fun updateTimestampOfLastSentColor() {
