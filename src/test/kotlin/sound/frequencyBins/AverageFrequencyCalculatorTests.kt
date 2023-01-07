@@ -31,10 +31,10 @@ class AverageFrequencyCalculatorTests {
     }
 
     @Test
-    fun `the average frequency is null when the frequency bins have no amplitude`() {
+    fun `the average frequency is null when the frequency bins have no magnitude`() {
         val sut = createSUT()
-        val listWithNoAmplitudes: FrequencyBins = listOf(bin1)
-        val averageFrequency = sut.calculate(listWithNoAmplitudes)
+        val listWithNoMagnitudes: FrequencyBins = listOf(bin1)
+        val averageFrequency = sut.calculate(listWithNoMagnitudes)
         assertNull(averageFrequency)
     }
 

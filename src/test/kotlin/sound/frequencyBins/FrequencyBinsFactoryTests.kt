@@ -8,26 +8,37 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.input.samples.AudioFrame
-import sound.signalProcessing.AmplitudeFactoryInterface
+import sound.input.samples.AudioSignal
+import sound.signalProcessing.FftAlgorithmInterface
+import sound.signalProcessing.MagnitudeNormalizerInterface
+import sound.signalProcessing.SignalProcessorInterface
 import toolkit.monkeyTest.nextDoubleArray
+import toolkit.monkeyTest.nextFrequencyBin
 
 class FrequencyBinsFactoryTests {
 
-    private var amplitudeFactory: AmplitudeFactoryInterface = mockk()
-    private var sampleSizeCalculator: SampleSizeCalculatorInterface = mockk()
+    private var signalProcessor: SignalProcessorInterface = mockk()
+    private var fftAlgorithm: FftAlgorithmInterface = mockk()
+    private var magnitudeNormalizer: MagnitudeNormalizerInterface = mockk()
+    private var frequencyBinFactory: FrequencyBinFactoryInterface = mockk()
 
-    private val sampleRate = 48000F
-    private val sampleRateToSizeRatio = 4F
-    private val sampleSize = (sampleRate / sampleRateToSizeRatio).toInt()
-    private val samples = nextDoubleArray(length = sampleSize)
-    private val audioFrame = AudioFrame(samples, sampleRate)
-    private val amplitudes = nextDoubleArray(length = sampleSize / 2)
+    private val samples = nextDoubleArray(length = 4)
+    private val sampleRate = 8F
+    private val audioSignal = AudioSignal(samples, sampleRate)
+
+    private val processedSamples = nextDoubleArray()
+    private val magnitudes = nextDoubleArray()
+    private val normalizedMagnitudes = doubleArrayOf(1.0, 2.0)
+    private val frequencyBin = nextFrequencyBin()
+    private val bin1: FrequencyBin = mockk()
+    private val bin2: FrequencyBin = mockk()
 
     @BeforeEach
     fun setup() {
-        every { amplitudeFactory.create(any()) } returns amplitudes
-        every { sampleSizeCalculator.calculate(any(), any()) } returns sampleSize
+        every { signalProcessor.process(any()) } returns processedSamples
+        every { fftAlgorithm.calculateMagnitudes(any()) } returns magnitudes
+        every { magnitudeNormalizer.normalize(any(), any()) } returns normalizedMagnitudes
+        every { frequencyBinFactory.create(any(), any(), any()) } returns frequencyBin
     }
 
     @AfterEach
@@ -37,50 +48,42 @@ class FrequencyBinsFactoryTests {
 
     private fun createSUT(): FrequencyBinsFactory {
         return FrequencyBinsFactory(
-            amplitudeFactory = amplitudeFactory,
-            sampleSizeCalculator = sampleSizeCalculator
+            signalProcessor = signalProcessor,
+            fftAlgorithm = fftAlgorithm,
+            magnitudeNormalizer = magnitudeNormalizer,
+            frequencyBinFactory = frequencyBinFactory
         )
     }
 
     @Test
-    fun `each frequency bin has an amplitude`() {
+    fun `the audio signal is processed`() {
         val sut = createSUT()
-        val actual = sut.create(audioFrame, 0F)
-        val actualAmplitudes = actual.map { it.amplitude }
-        val expectedAmplitudes = amplitudes.map { it.toFloat() }
-        assertEquals(expectedAmplitudes, actualAmplitudes)
+        sut.create(audioSignal)
+        verify { signalProcessor.process(audioSignal) }
     }
 
     @Test
-    fun `the amplitudes are calculated from the fewest samples necessary for a minimum frequency`() {
+    fun `the processed signal is has its magnitudes calculated by FFT`() {
         val sut = createSUT()
-        val lowestSupportedFrequency = 20F
-        val sampleSize = 4096
-        every { sampleSizeCalculator.calculate(lowestSupportedFrequency, sampleRate) } returns sampleSize
-
-        sut.create(audioFrame, lowestSupportedFrequency)
-
-        val expectedSamples = samples.takeLast(sampleSize).toDoubleArray()
-        verify { amplitudeFactory.create(expectedSamples) }
+        sut.create(audioSignal)
+        verify { fftAlgorithm.calculateMagnitudes(processedSamples) }
     }
 
     @Test
-    fun `each frequency bin has a frequency`() {
+    fun `the magnitudes are normalized`() {
         val sut = createSUT()
-        val actual = sut.create(audioFrame, 0F)
-        val actualFrequencies = actual.map { it.frequency }
-        assertEquals(expectedFrequencies(), actualFrequencies)
+        sut.create(audioSignal)
+        verify { magnitudeNormalizer.normalize(magnitudes, processedSamples.size) }
     }
 
-    private fun expectedFrequencies(): List<Float> {
-        val numberOfBins = amplitudes.count()
-        var frequencies: MutableList<Float> = mutableListOf()
-
-        for (i in 0 until numberOfBins) {
-            val frequency = (i * sampleRateToSizeRatio)
-            frequencies.add(frequency)
-        }
-
-        return frequencies
+    @Test
+    fun `a frequency bin is created for each normalized magnitude`() {
+        val sut = createSUT()
+        every { frequencyBinFactory.create(0, 0.5F, 1.0) } returns bin1
+        every { frequencyBinFactory.create(1, 0.5F, 2.0) } returns bin2
+        val frequencyBins = sut.create(audioSignal)
+        val expectedFrequencyBins = listOf(bin1, bin2)
+        assertEquals(expectedFrequencyBins, frequencyBins)
     }
+
 }

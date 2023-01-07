@@ -2,12 +2,9 @@ import color.ColorFactory
 import color.ColorFactoryInterface
 import server.Server
 import server.ServerInterface
-import sound.frequencyBins.FrequencyBins
-import sound.frequencyBins.FrequencyBinsFactory
-import sound.frequencyBins.FrequencyBinsFactoryInterface
 import sound.input.InputDelegate
 import sound.input.InputInterface
-import sound.input.samples.AudioFrame
+import sound.input.samples.AudioSignal
 import wrappers.SystemTime
 import wrappers.SystemTimeInterface
 import java.awt.Color
@@ -27,20 +24,20 @@ class LightOrgan(
         input.listenForAudioSamples(this)
     }
 
-    override fun receiveAudioFrame(audioFrame: AudioFrame) {
+    override fun receiveAudioSignal(audioSignal: AudioSignal) {
         if (shouldSendNextColor()) {
-            sendColorToServer(audioFrame)
+            sendColorToServer(audioSignal)
         }
     }
 
-    private fun sendColorToServer(audioFrame: AudioFrame) {
-        val color = getColor(audioFrame)
+    private fun sendColorToServer(audioSignal: AudioSignal) {
+        val color = getColor(audioSignal)
         server.sendColor(color)
         updateTimestampOfLastSentColor()
     }
 
-    private fun getColor(audioFrame: AudioFrame): Color {
-        return colorFactory.create(audioFrame)
+    private fun getColor(audioSignal: AudioSignal): Color {
+        return colorFactory.create(audioSignal)
     }
 
     private fun updateTimestampOfLastSentColor() {

@@ -1,55 +1,47 @@
 package sound.frequencyBins
 
-import sound.input.samples.AudioFrame
-import sound.signalProcessing.AmplitudeFactory
-import sound.signalProcessing.AmplitudeFactoryInterface
+import sound.input.samples.AudioSignal
+import sound.signalProcessing.*
 
 interface FrequencyBinsFactoryInterface {
-    fun create(audioFrame: AudioFrame, lowestSupportedFrequency: Float): FrequencyBins
+    fun create(audioSignal: AudioSignal): FrequencyBins
 }
 
 class FrequencyBinsFactory(
-    private val amplitudeFactory: AmplitudeFactoryInterface = AmplitudeFactory(),
-    private val sampleSizeCalculator: SampleSizeCalculatorInterface = SampleSizeCalculator()
+    private val signalProcessor: SignalProcessorInterface = SignalProcessor(),
+    private val fftAlgorithm: FftAlgorithmInterface = FftAlgorithm(),
+    private val magnitudeNormalizer: MagnitudeNormalizerInterface = MagnitudeNormalizer(),
+    private val frequencyBinFactory: FrequencyBinFactoryInterface = FrequencyBinFactory()
 ) : FrequencyBinsFactoryInterface {
 
-    override fun create(audioFrame: AudioFrame, lowestSupportedFrequency: Float): FrequencyBins {
-        val sampleRate = getSampleRate(audioFrame)
-        val sampleSize = getSampleSize(lowestSupportedFrequency, sampleRate)
-        val latestSamples = getLatestSamples(sampleSize, audioFrame.samples)
-        val amplitudes = getAmplitudes(latestSamples)
+    private val lowestSupportedFrequency = 20F
 
-        return amplitudes.mapIndexed { index, amplitude ->
-            getFrequencyBin(index, amplitude, sampleSize, sampleRate)
+    override fun create(audioSignal: AudioSignal): FrequencyBins {
+        val processedSamples = signalProcessor.process(audioSignal)
+        val magnitudes = fftAlgorithm.calculateMagnitudes(processedSamples)
+        val normalizedMagnitudes = magnitudeNormalizer.normalize(magnitudes, processedSamples.size)
+        val granularity = calculateGranularity(normalizedMagnitudes.size, audioSignal.sampleRate)
+        return create(normalizedMagnitudes, granularity)
+    }
+
+    private fun create(magnitudes: DoubleArray, granularity: Float): FrequencyBins {
+        val frequencyBins: MutableList<FrequencyBin> = mutableListOf()
+
+        magnitudes.forEachIndexed { index, magnitude ->
+            val frequencyBin = frequencyBinFactory.create(index, granularity, magnitude)
+            frequencyBins.add(frequencyBin)
         }
+
+        return frequencyBins
     }
 
-    private fun getSampleRate(audioFrame: AudioFrame): Float {
-        return audioFrame.sampleRate
+    private fun calculateGranularity(numberOfBins: Int, sampleRate: Float): Float {
+        val nyquistFrequency = calculateNyquistFrequency(sampleRate)
+        return numberOfBins / nyquistFrequency
     }
 
-    private fun getSampleSize(frequency: Float, sampleRate: Float): Int {
-        return sampleSizeCalculator.calculate(frequency, sampleRate)
-    }
-
-    private fun getLatestSamples(sampleSize: Int, samples: DoubleArray): DoubleArray {
-        val latestSamples = samples.takeLast(sampleSize)
-        return latestSamples.toDoubleArray()
-    }
-
-    private fun getAmplitudes(samples: DoubleArray): DoubleArray {
-        return amplitudeFactory.create(samples)
-    }
-
-    private fun getFrequencyBin(index: Int, amplitude: Double, sampleSize: Int, sampleRate: Float): FrequencyBin {
-        return FrequencyBin(
-            frequency = getFrequency(index, sampleSize, sampleRate),
-            amplitude = amplitude.toFloat()
-        )
-    }
-
-    private fun getFrequency(index: Int, sampleSize: Int, sampleRate: Float): Float {
-        return index * sampleRate / sampleSize
+    private fun calculateNyquistFrequency(sampleRate: Float): Float {
+        return sampleRate / 2
     }
 
 }

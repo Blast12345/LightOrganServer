@@ -4,33 +4,33 @@ import org.jtransforms.fft.DoubleFFT_1D
 import kotlin.math.sqrt
 
 interface FftAlgorithmInterface {
-    fun calculateRelativeAmplitudes(signal: DoubleArray): DoubleArray
+    fun calculateMagnitudes(samples: DoubleArray): DoubleArray
 }
 
 // Reference: https://github.com/wendykierp/JTransforms/issues/4#issue-142313147
 class FftAlgorithm : FftAlgorithmInterface {
 
-    override fun calculateRelativeAmplitudes(signal: DoubleArray): DoubleArray {
-        val doubleFFT = DoubleFFT_1D(signal.size.toLong())
-        doubleFFT.realForward(signal)
-        return getAmplitudes(signal)
+    override fun calculateMagnitudes(samples: DoubleArray): DoubleArray {
+        val doubleFFT = DoubleFFT_1D(samples.size.toLong())
+        doubleFFT.realForward(samples)
+        return getMagnitudes(samples)
     }
 
-    private fun getAmplitudes(signal: DoubleArray): DoubleArray {
+    private fun getMagnitudes(samples: DoubleArray): DoubleArray {
         // NOTE: I'm not entirely sure why we divide by two.
         // Maybe this is due to the Nyquist Frequency?
-        val amplitudes = DoubleArray(signal.size / 2)
+        val magnitudes = DoubleArray(samples.size / 2)
 
-        for (i in amplitudes.indices) {
-            val real = signal[i * 2]
-            val imaginary = signal[i * 2 + 1]
-            amplitudes[i] = calculateAmplitude(real, imaginary, signal.size)
+        for (i in magnitudes.indices) {
+            val real = samples[i * 2]
+            val imaginary = samples[i * 2 + 1]
+            magnitudes[i] = calculateMagnitude(real, imaginary)
         }
 
-        return amplitudes
+        return magnitudes
     }
 
-    private fun calculateAmplitude(real: Double, imaginary: Double, sampleSize: Int): Double {
-        return sqrt(real * real + imaginary * imaginary) / sampleSize
+    private fun calculateMagnitude(real: Double, imaginary: Double): Double {
+        return sqrt(real * real + imaginary * imaginary)
     }
 }

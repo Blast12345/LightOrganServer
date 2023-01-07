@@ -8,34 +8,34 @@ class AverageFrequencyCalculator : AverageFrequencyCalculatorInterface {
 
     override fun calculate(frequencyBins: FrequencyBins): Float? {
         return if (frequencyBins.isNotEmpty()) {
-            val weightedAmplitude = weightedAmplitude(frequencyBins)
-            val totalAmplitude = totalAmplitude(frequencyBins)
-            return averageFrequency(weightedAmplitude, totalAmplitude)
+            val weightedMagnitude = weightedMagnitude(frequencyBins)
+            val totalMagnitude = totalMagnitude(frequencyBins)
+            return averageFrequency(weightedMagnitude, totalMagnitude)
         } else {
             null
         }
     }
 
-    private fun averageFrequency(weightedAmplitude: Float, totalAmplitude: Float): Float? {
-        return if (totalAmplitude == 0F) {
+    private fun averageFrequency(weightedMagnitude: Float, totalMagnitude: Float): Float? {
+        return if (totalMagnitude == 0F) {
             null
         } else {
-            weightedAmplitude / totalAmplitude
+            weightedMagnitude / totalMagnitude
         }
     }
 
-    private fun weightedAmplitude(frequencyBins: FrequencyBins): Float {
-        var weightedAmplitude = 0F
+    private fun weightedMagnitude(frequencyBins: FrequencyBins): Float {
+        var weightedMagnitude = 0F
 
         for (frequencyBin in frequencyBins) {
-            weightedAmplitude += frequencyBin.frequency * frequencyBin.amplitude
+            weightedMagnitude += frequencyBin.frequency * frequencyBin.magnitude
         }
 
-        return weightedAmplitude
+        return weightedMagnitude
     }
 
-    private fun totalAmplitude(frequencyBins: FrequencyBins): Float {
-        return frequencyBins.map { it.amplitude }.sum()
+    private fun totalMagnitude(frequencyBins: FrequencyBins): Float {
+        return frequencyBins.map { it.magnitude }.sum()
     }
 
 }

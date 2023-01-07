@@ -1,8 +1,8 @@
 package sound.input
 
-import sound.input.samples.AudioFrame
-import sound.input.samples.AudioFrameFactory
-import sound.input.samples.AudioFrameFactoryInterface
+import sound.input.samples.AudioSignal
+import sound.input.samples.AudioSignalFactory
+import sound.input.samples.AudioSignalFactoryInterface
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
@@ -12,7 +12,7 @@ interface InputInterface {
 
 class Input(
     private val dataLine: TargetDataLine,
-    private val audioFrameFactory: AudioFrameFactoryInterface = AudioFrameFactory()
+    private val audioSignalFactory: AudioSignalFactoryInterface = AudioSignalFactory()
 ) : InputInterface {
 
     private var samplesBuffer = ByteArray(dataLine.bufferSize)
@@ -43,11 +43,11 @@ class Input(
 
     private fun returnNextSampleTo(delegate: InputDelegate) {
         val nextAudioFrame = getNextAudioFrame()
-        delegate.receiveAudioFrame(nextAudioFrame)
+        delegate.receiveAudioSignal(nextAudioFrame)
     }
 
-    private fun getNextAudioFrame(): AudioFrame {
-        return audioFrameFactory.create(
+    private fun getNextAudioFrame(): AudioSignal {
+        return audioSignalFactory.create(
             rawSamples = getNextFrame(),
             format = getAudioFormat()
         )

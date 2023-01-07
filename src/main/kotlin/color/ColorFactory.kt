@@ -3,11 +3,11 @@ package color
 import sound.frequencyBins.FrequencyBins
 import sound.frequencyBins.FrequencyBinsFactory
 import sound.frequencyBins.FrequencyBinsFactoryInterface
-import sound.input.samples.AudioFrame
+import sound.input.samples.AudioSignal
 import java.awt.Color
 
 interface ColorFactoryInterface {
-    fun create(audioFrame: AudioFrame): Color
+    fun create(audioSignal: AudioSignal): Color
 }
 
 class ColorFactory(
@@ -15,13 +15,13 @@ class ColorFactory(
     private val hueFactory: HueFactoryInterface = HueFactory()
 ) : ColorFactoryInterface {
 
-    override fun create(audioFrame: AudioFrame): Color {
-        val frequencyBins = getFrequencyBins(audioFrame)
+    override fun create(audioSignal: AudioSignal): Color {
+        val frequencyBins = getFrequencyBins(audioSignal)
         return getColor(frequencyBins)
     }
 
-    private fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBins {
-        return frequencyBinsFactory.create(audioFrame, 0F)
+    private fun getFrequencyBins(audioSignal: AudioSignal): FrequencyBins {
+        return frequencyBinsFactory.create(audioSignal)
     }
 
     private fun getColor(frequencyBins: FrequencyBins): Color {

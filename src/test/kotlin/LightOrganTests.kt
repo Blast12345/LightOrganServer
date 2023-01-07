@@ -7,11 +7,9 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import server.ServerInterface
-import sound.frequencyBins.FrequencyBinsFactoryInterface
 import sound.input.InputInterface
-import toolkit.monkeyTest.nextAudioFrame
+import toolkit.monkeyTest.nextAudioSignal
 import toolkit.monkeyTest.nextColor
-import toolkit.monkeyTest.nextFrequencyBins
 import wrappers.SystemTimeInterface
 import kotlin.random.Random
 
@@ -21,7 +19,7 @@ class LightOrganTests {
     private var server: ServerInterface = mockk()
     private var colorFactory: ColorFactoryInterface = mockk()
     private var systemTime: SystemTimeInterface = mockk()
-    private val audioFrame = nextAudioFrame()
+    private val audioSignal = nextAudioSignal()
     private val oneSixtiethSecond = 1.0 / 60.0
     private val twoSixtiethsSecond = oneSixtiethSecond * 2.0
 
@@ -57,7 +55,7 @@ class LightOrganTests {
     @Test
     fun `send a color to the server when an audio frame is received`() {
         val sut = createSUT()
-        sut.receiveAudioFrame(audioFrame)
+        sut.receiveAudioSignal(audioSignal)
         verify { server.sendColor(any()) }
     }
 
@@ -66,7 +64,7 @@ class LightOrganTests {
         val sut = createSUT()
         val color = nextColor()
         every { colorFactory.create(any()) } returns color
-        sut.receiveAudioFrame(audioFrame)
+        sut.receiveAudioSignal(audioSignal)
         verify { server.sendColor(color) }
     }
 
@@ -75,14 +73,14 @@ class LightOrganTests {
         val sut = createSUT()
 
         every { systemTime.currentTimeInSeconds() } returns oneSixtiethSecond
-        sut.receiveAudioFrame(audioFrame)
+        sut.receiveAudioSignal(audioSignal)
         verify(exactly = 1) { server.sendColor(any()) }
 
-        sut.receiveAudioFrame(audioFrame)
+        sut.receiveAudioSignal(audioSignal)
         verify(exactly = 1) { server.sendColor(any()) }
 
         every { systemTime.currentTimeInSeconds() } returns twoSixtiethsSecond
-        sut.receiveAudioFrame(audioFrame)
+        sut.receiveAudioSignal(audioSignal)
         verify(exactly = 2) { server.sendColor(any()) }
     }
 

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextDoubleArray
 
-class AmplitudeFactoryTests {
+class MagnitudeFactoryTests {
 
     private var fftAlgorithm: FftAlgorithmInterface = mockk()
     private var hannWindowFilter: HannWindowFilterInterface = mockk()
@@ -22,7 +22,7 @@ class AmplitudeFactoryTests {
 
     @BeforeEach
     fun setup() {
-        every { fftAlgorithm.calculateRelativeAmplitudes(any()) } returns fftOutput
+        every { fftAlgorithm.calculateMagnitudes(any()) } returns fftOutput
         every { hannWindowFilter.filter(any()) } returns hannWindowOutput
         every { denoiser.denoise(any()) } returns denoiserOutput
     }
@@ -32,8 +32,8 @@ class AmplitudeFactoryTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): AmplitudeFactory {
-        return AmplitudeFactory(
+    private fun createSUT(): MagnitudeFactory {
+        return MagnitudeFactory(
             fftAlgorithm = fftAlgorithm,
             hannWindowFilter = hannWindowFilter,
             denoiser = denoiser
@@ -41,17 +41,17 @@ class AmplitudeFactoryTests {
     }
 
     @Test
-    fun `the samples are processed to produce amplitudes`() {
+    fun `the samples are processed to produce magnitudes`() {
         val sut = createSUT()
-        val amplitudes = sut.create(samples)
-        assertEquals(denoiserOutput, amplitudes)
+        val magnitudes = sut.create(samples)
+        assertEquals(denoiserOutput, magnitudes)
     }
 
     @Test
-    fun `the samples are processed by FFT to identify the relative amplitude of particular frequencies`() {
+    fun `the samples are processed by FFT to identify the relative magnitude of particular frequencies`() {
         val sut = createSUT()
         sut.create(samples)
-        verify { fftAlgorithm.calculateRelativeAmplitudes(hannWindowOutput) }
+        verify { fftAlgorithm.calculateMagnitudes(hannWindowOutput) }
     }
 
     @Test
@@ -62,7 +62,7 @@ class AmplitudeFactoryTests {
     }
 
     @Test
-    fun `the amplitudes are de-noised to account for interference`() {
+    fun `the magnitudes are de-noised to account for interference`() {
         val sut = createSUT()
         sut.create(samples)
         every { denoiser.denoise(fftOutput) }

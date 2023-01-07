@@ -17,9 +17,9 @@ class FftAlgorithmTests {
     @Test
     fun `apply the fft algorithm`() {
         val sut = createSUT()
-        val amplitudes = sut.calculateRelativeAmplitudes(signal)
-        val frequencyOfGreatestAmplitude = frequencyOfGreatestAmplitude(amplitudes)
-        assertEquals(signalFrequency, frequencyOfGreatestAmplitude)
+        val magnitudes = sut.calculateMagnitudes(signal)
+        val frequencyOfGreatestMagnitude = frequencyOfGreatestMagnitude(magnitudes)
+        assertEquals(signalFrequency, frequencyOfGreatestMagnitude)
     }
 
 
@@ -35,18 +35,18 @@ class FftAlgorithmTests {
         return signal
     }
 
-    private fun frequencyOfGreatestAmplitude(amplitudes: DoubleArray): Int? {
-        val greatestAmplitude = greatestAmplitudeIn(amplitudes)
+    private fun frequencyOfGreatestMagnitude(magnitudes: DoubleArray): Int? {
+        val greatestMagnitude = greatestMagnitudeIn(magnitudes)
 
-        return if (greatestAmplitude != null) {
-            amplitudes.indexOfFirst { it == greatestAmplitude }
+        return if (greatestMagnitude != null) {
+            magnitudes.indexOfFirst { it == greatestMagnitude }
         } else {
             null
         }
     }
 
-    private fun greatestAmplitudeIn(amplitudes: DoubleArray): Double? {
-        return amplitudes.maxOrNull()
+    private fun greatestMagnitudeIn(magnitudes: DoubleArray): Double? {
+        return magnitudes.maxOrNull()
     }
 
 }

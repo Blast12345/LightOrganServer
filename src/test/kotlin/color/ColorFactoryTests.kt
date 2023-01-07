@@ -7,10 +7,9 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.frequencyBins.FrequencyBinsFactory
 import sound.frequencyBins.FrequencyBinsFactoryInterface
 import toolkit.getHue
-import toolkit.monkeyTest.nextAudioFrame
+import toolkit.monkeyTest.nextAudioSignal
 import toolkit.monkeyTest.nextFrequencyBins
 import java.awt.Color
 import kotlin.random.Random
@@ -20,12 +19,12 @@ class ColorFactoryTests {
     private var frequencyBinsFactory: FrequencyBinsFactoryInterface = mockk()
     private var hueFactory: HueFactoryInterface = mockk()
 
-    private val audioFrame = nextAudioFrame()
+    private val audioFrame = nextAudioSignal()
     private val frequencyBins = nextFrequencyBins()
 
     @BeforeEach
     fun setup() {
-        every { frequencyBinsFactory.create(audioFrame, any()) } returns frequencyBins
+        every { frequencyBinsFactory.create(audioFrame) } returns frequencyBins
         every { hueFactory.create(any()) } returns Random.nextFloat()
     }
 
