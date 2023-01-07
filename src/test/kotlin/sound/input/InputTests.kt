@@ -52,7 +52,7 @@ class InputTests {
     }
 
     @Test
-    fun `return an audio frame when the data line has data available`() {
+    fun `return an audio signal when the data line has data available`() {
         val sut = createSUT()
         every { delegate.receiveAudioSignal(any()) } answers { sut.stopListening() }
         sut.listenForAudioSamples(delegate)
