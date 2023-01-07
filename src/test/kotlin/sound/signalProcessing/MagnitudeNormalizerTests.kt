@@ -12,6 +12,7 @@ class MagnitudeNormalizerTests {
         return MagnitudeNormalizer()
     }
 
+    // TODO: Check the math on this
     @Test
     fun `normalize the magnitudes by dividing the magnitude by the sample size`() {
         val sut = createSUT()

@@ -1,26 +1,25 @@
 package sound.signalProcessing
 
 import sound.input.samples.AudioSignal
+import sound.signalProcessing.hannFilter.HannFilterInterface
+import sound.signalProcessing.hannFilter.NormalizedHannFilter
+import sound.signalProcessing.interpolator.InterpolatorInterface
+import sound.signalProcessing.interpolator.NormalizedInterpolator
 
 interface SignalProcessorInterface {
     fun process(audioSignal: AudioSignal, lowestFrequency: Float): DoubleArray
 }
 
-// TODO: This name feels fishy
 class SignalProcessor(
     private val sampleExtractor: SampleExtractorInterface = SampleExtractor(),
-    private val interpolator: InterpolatorInterface = Interpolator(),
-    private val hannFilter: HannFilterInterface = HannFilter(),
-    private val hannFilterCorrector: HannFilterCorrectorInterface = HannFilterCorrector(),
-    private val fftAlgorithm: FftAlgorithmInterface = FftAlgorithm()
+    private val hannFilter: HannFilterInterface = NormalizedHannFilter(),
+    private val interpolator: InterpolatorInterface = NormalizedInterpolator()
 ) : SignalProcessorInterface {
 
     override fun process(audioSignal: AudioSignal, lowestFrequency: Float): DoubleArray {
         val fewestSamplesNeeded = sampleExtractor.extract(audioSignal, lowestFrequency)
-        val interpolatedSamples = interpolator.interpolate(fewestSamplesNeeded, audioSignal.sampleRate.toInt())
-        val filteredSignal = hannFilter.filter(interpolatedSamples)
-        val correctedSignal = hannFilterCorrector.correct(filteredSignal)
-        return fftAlgorithm.calculateMagnitudes(correctedSignal)
+        val filteredSamples = hannFilter.filter(fewestSamplesNeeded)
+        return interpolator.interpolate(filteredSamples, audioSignal.sampleRate.toInt())
     }
 
 }

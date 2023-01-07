@@ -5,8 +5,11 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import sound.signalProcessing.hannFilter.HannFilterInterface
+import sound.signalProcessing.interpolator.InterpolatorInterface
 import toolkit.monkeyTest.nextAudioSignal
 import toolkit.monkeyTest.nextDoubleArray
 import kotlin.random.Random
@@ -14,27 +17,21 @@ import kotlin.random.Random
 class SignalProcessorTests {
 
     private val sampleExtractor: SampleExtractorInterface = mockk()
-    private val interpolator: InterpolatorInterface = mockk()
     private var hannFilter: HannFilterInterface = mockk()
-    private val hannFilterCorrector: HannFilterCorrectorInterface = mockk()
-    private var fftAlgorithm: FftAlgorithmInterface = mockk()
+    private val interpolator: InterpolatorInterface = mockk()
 
     private val audioSignal = nextAudioSignal()
     private val lowestFrequency = Random.nextFloat()
 
     private val extractedSamples = nextDoubleArray()
-    private val interpolatedSamples = nextDoubleArray()
     private val filteredSamples = nextDoubleArray()
-    private val correctedSamples = nextDoubleArray()
-    private val magnitudes = nextDoubleArray()
+    private val interpolatedSamples = nextDoubleArray()
 
     @BeforeEach
     fun setup() {
         every { sampleExtractor.extract(any(), any()) } returns extractedSamples
-        every { interpolator.interpolate(any(), any()) } returns interpolatedSamples
         every { hannFilter.filter(any()) } returns filteredSamples
-        every { hannFilterCorrector.correct(any()) } returns correctedSamples
-        every { fftAlgorithm.calculateMagnitudes(any()) } returns magnitudes
+        every { interpolator.interpolate(any(), any()) } returns interpolatedSamples
     }
 
     @AfterEach
@@ -45,10 +42,8 @@ class SignalProcessorTests {
     private fun createSUT(): SignalProcessor {
         return SignalProcessor(
             sampleExtractor = sampleExtractor,
-            interpolator = interpolator,
             hannFilter = hannFilter,
-            hannFilterCorrector = hannFilterCorrector,
-            fftAlgorithm = fftAlgorithm
+            interpolator = interpolator
         )
     }
 
@@ -60,31 +55,24 @@ class SignalProcessorTests {
     }
 
     @Test
-    fun `the extracted samples are interpolated to increase frequency resolution`() {
+    fun `the extracted samples go through a window filter to prevent smearing`() {
         val sut = createSUT()
         sut.process(audioSignal, lowestFrequency)
-        verify { interpolator.interpolate(extractedSamples, audioSignal.sampleRate.toInt()) }
+        verify { hannFilter.filter(extractedSamples) }
     }
 
     @Test
-    fun `the interpolated samples go through a hann filter to prevent smearing`() {
+    fun `the filtered samples are interpolated to increase frequency resolution`() {
         val sut = createSUT()
         sut.process(audioSignal, lowestFrequency)
-        verify { hannFilter.filter(interpolatedSamples) }
+        verify { interpolator.interpolate(filteredSamples, audioSignal.sampleRate.toInt()) }
     }
 
     @Test
-    fun `the filtered samples have their amplitudes corrected`() {
+    fun `return the interpolated samples`() {
         val sut = createSUT()
-        sut.process(audioSignal, lowestFrequency)
-        verify { hannFilterCorrector.correct(filteredSamples) }
-    }
-
-    @Test
-    fun `the corrected samples are processed by FFT to identify the magnitudes of frequencies present`() {
-        val sut = createSUT()
-        sut.process(audioSignal, lowestFrequency)
-        verify { fftAlgorithm.calculateMagnitudes(correctedSamples) }
+        val samples = sut.process(audioSignal, lowestFrequency)
+        assertArrayEquals(interpolatedSamples, samples, 0.001)
     }
 
 }

@@ -1,52 +1,35 @@
 package sound.signalProcessing
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test
-import kotlin.math.sin
+import toolkit.generators.SineWaveGenerator
 
 class FftAlgorithmTests {
 
-    private val signalFrequency = 50
-    private val sampleRate = 44100
-    private val signal = createSignal(signalFrequency)
+    private val sampleRate = 48000.0
+    private val signalFrequency = 12000
+    private val sampleSize = 4
+    private val signal = SineWaveGenerator(sampleRate).generate(signalFrequency, sampleSize)
 
     private fun createSUT(): FftAlgorithm {
         return FftAlgorithm()
     }
 
     @Test
-    fun `apply the fft algorithm`() {
+    fun `extract the magnitudes from a signal`() {
         val sut = createSUT()
         val magnitudes = sut.calculateMagnitudes(signal)
-        val frequencyOfGreatestMagnitude = frequencyOfGreatestMagnitude(magnitudes)
-        assertEquals(signalFrequency, frequencyOfGreatestMagnitude)
+        val expected = doubleArrayOf(0.0, 2.0)
+        assertArrayEquals(expected, magnitudes, 0.001)
     }
 
-
-    // Reference: the "Make 50 hz signal" section from https://github.com/wendykierp/JTransforms/issues/4#issuecomment-199352683
-    private fun createSignal(frequency: Int): DoubleArray {
-        val signal = DoubleArray(sampleRate)
-
-        for (i in signal.indices) {
-            val t = i * (1 / sampleRate.toDouble())
-            signal[i] = sin(2 * Math.PI * frequency * t)
-        }
-
-        return signal
-    }
-
-    private fun frequencyOfGreatestMagnitude(magnitudes: DoubleArray): Int? {
-        val greatestMagnitude = greatestMagnitudeIn(magnitudes)
-
-        return if (greatestMagnitude != null) {
-            magnitudes.indexOfFirst { it == greatestMagnitude }
-        } else {
-            null
-        }
-    }
-
-    private fun greatestMagnitudeIn(magnitudes: DoubleArray): Double? {
-        return magnitudes.maxOrNull()
+    @Test
+    fun `protect the input signal from modification by reference`() {
+        val sut = createSUT()
+        val input = doubleArrayOf(1.0, 2.0)
+        sut.calculateMagnitudes(input)
+        val expected = doubleArrayOf(1.0, 2.0)
+        assertArrayEquals(expected, input, 0.001)
     }
 
 }

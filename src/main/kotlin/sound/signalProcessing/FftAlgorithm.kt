@@ -10,11 +10,16 @@ interface FftAlgorithmInterface {
 // Reference: https://github.com/wendykierp/JTransforms/issues/4#issue-142313147
 class FftAlgorithm : FftAlgorithmInterface {
 
-    // TODO: Implement test to protect input
     override fun calculateMagnitudes(samples: DoubleArray): DoubleArray {
-        val doubleFFT = DoubleFFT_1D(samples.size.toLong())
-        doubleFFT.realForward(samples)
-        return getMagnitudes(samples)
+        val fftData = performFFT(samples)
+        return getMagnitudes(fftData)
+    }
+
+    private fun performFFT(samples: DoubleArray): DoubleArray {
+        val output = samples.copyOf()
+        val doubleFFT = DoubleFFT_1D(output.size.toLong())
+        doubleFFT.realForward(output)
+        return output
     }
 
     private fun getMagnitudes(samples: DoubleArray): DoubleArray {

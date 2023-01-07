@@ -1,4 +1,4 @@
-package sound.signalProcessing
+package sound.signalProcessing.hannFilter
 
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test

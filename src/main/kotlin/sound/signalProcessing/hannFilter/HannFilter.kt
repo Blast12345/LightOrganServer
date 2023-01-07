@@ -1,4 +1,4 @@
-package sound.signalProcessing
+package sound.signalProcessing.hannFilter
 
 import kotlin.math.PI
 import kotlin.math.cos

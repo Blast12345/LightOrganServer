@@ -8,9 +8,11 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import sound.input.samples.AudioSignal
 import sound.signalProcessing.FftAlgorithmInterface
 import sound.signalProcessing.MagnitudeNormalizerInterface
 import sound.signalProcessing.SignalProcessorInterface
+import toolkit.generators.SineWaveGenerator
 import toolkit.monkeyTest.nextAudioSignal
 import toolkit.monkeyTest.nextDoubleArray
 import toolkit.monkeyTest.nextFrequencyBins
@@ -102,6 +104,15 @@ class FrequencyBinsServiceTests {
         assertEquals(supportedBins, frequencyBins)
         verify { signalProcessor.process(audioSignal, 20F) }
         verify { supportedFrequencyBinsFilter.filter(allBins, 20F) }
+    }
+
+    @Test
+    fun `some integration test`() {
+        val sut = FrequencyBinsService()
+        val samples = SineWaveGenerator(48000.0).generate(50, 48000)
+        val audioSignal = AudioSignal(samples, 48000F)
+        val frequencyBins = sut.getFrequencyBins(audioSignal)
+        println("ASDF")
     }
 
 }

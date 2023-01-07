@@ -1,4 +1,4 @@
-package sound.signalProcessing
+package sound.signalProcessing.interpolator
 
 interface InterpolatorInterface {
     fun interpolate(samples: DoubleArray, desiredSize: Int): DoubleArray

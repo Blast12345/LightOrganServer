@@ -18,7 +18,7 @@ class SampleExtractor(
     private fun getNewSampleSize(signal: AudioSignal, lowestFrequency: Float): Int {
         return sampleSizeCalculator.calculate(lowestFrequency, signal.sampleRate)
     }
-    
+
     private fun getLatestSamples(signal: AudioSignal, sampleSize: Int): DoubleArray {
         val latestSamples = signal.samples.takeLast(sampleSize)
         return latestSamples.toDoubleArray()
