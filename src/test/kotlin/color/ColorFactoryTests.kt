@@ -19,12 +19,12 @@ class ColorFactoryTests {
     private var frequencyBinsFactory: FrequencyBinsFactoryInterface = mockk()
     private var hueFactory: HueFactoryInterface = mockk()
 
-    private val audioFrame = nextAudioSignal()
+    private val audioSignal = nextAudioSignal()
     private val frequencyBins = nextFrequencyBins()
 
     @BeforeEach
     fun setup() {
-        every { frequencyBinsFactory.create(audioFrame) } returns frequencyBins
+        every { frequencyBinsFactory.create(audioSignal) } returns frequencyBins
         every { hueFactory.create(any()) } returns Random.nextFloat()
     }
 
@@ -45,7 +45,7 @@ class ColorFactoryTests {
         val sut = createSUT()
         val hue = Random.nextFloat()
         every { hueFactory.create(frequencyBins) } returns hue
-        val actual = sut.create(audioFrame)
+        val actual = sut.create(audioSignal)
         assertEquals(hue, actual.getHue(), 0.001F)
     }
 
@@ -53,7 +53,7 @@ class ColorFactoryTests {
     fun `the color is black when there is no hue`() {
         val sut = createSUT()
         every { hueFactory.create(any()) } returns null
-        val actual = sut.create(audioFrame)
+        val actual = sut.create(audioSignal)
         assertEquals(Color.black, actual)
     }
 

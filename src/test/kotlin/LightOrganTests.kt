@@ -53,14 +53,14 @@ class LightOrganTests {
     }
 
     @Test
-    fun `send a color to the server when an audio frame is received`() {
+    fun `send a color to the server when an audio signal is received`() {
         val sut = createSUT()
         sut.receiveAudioSignal(audioSignal)
         verify { server.sendColor(any()) }
     }
 
     @Test
-    fun `the sent color is calculated from the audio frame`() {
+    fun `the sent color is calculated from the audio signal`() {
         val sut = createSUT()
         val color = nextColor()
         every { colorFactory.create(any()) } returns color

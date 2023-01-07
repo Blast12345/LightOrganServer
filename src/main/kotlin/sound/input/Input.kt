@@ -42,18 +42,18 @@ class Input(
     }
 
     private fun returnNextSampleTo(delegate: InputDelegate) {
-        val nextAudioFrame = getNextAudioFrame()
-        delegate.receiveAudioSignal(nextAudioFrame)
+        val nextAudioSignal = getNextAudioSignal()
+        delegate.receiveAudioSignal(nextAudioSignal)
     }
 
-    private fun getNextAudioFrame(): AudioSignal {
+    private fun getNextAudioSignal(): AudioSignal {
         return audioSignalFactory.create(
-            rawSamples = getNextFrame(),
+            samples = getNewestSamples(),
             format = getAudioFormat()
         )
     }
 
-    private fun getNextFrame(): ByteArray {
+    private fun getNewestSamples(): ByteArray {
         val newData = getNewData()
         updateBufferWith(newData)
         return samplesBuffer
