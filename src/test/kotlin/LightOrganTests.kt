@@ -20,7 +20,6 @@ class LightOrganTests {
     private var input: InputInterface = mockk()
     private var server: ServerInterface = mockk()
     private var colorFactory: ColorFactoryInterface = mockk()
-    private var frequencyBinsFactory: FrequencyBinsFactoryInterface = mockk()
     private var systemTime: SystemTimeInterface = mockk()
     private val audioFrame = nextAudioFrame()
     private val oneSixtiethSecond = 1.0 / 60.0
@@ -31,7 +30,6 @@ class LightOrganTests {
         every { input.listenForAudioSamples(any()) } returns Unit
         every { server.sendColor(any()) } returns Unit
         every { colorFactory.create(any()) } returns nextColor()
-        every { frequencyBinsFactory.create(any(), any()) } returns nextFrequencyBins()
         every { systemTime.currentTimeInSeconds() } returns Random.nextDouble()
     }
 
@@ -45,7 +43,6 @@ class LightOrganTests {
             input = input,
             server = server,
             colorFactory = colorFactory,
-            frequencyBinsFactory = frequencyBinsFactory,
             systemTime = systemTime
         )
     }
@@ -60,36 +57,17 @@ class LightOrganTests {
     @Test
     fun `send a color to the server when an audio frame is received`() {
         val sut = createSUT()
-
         sut.receiveAudioFrame(audioFrame)
         verify { server.sendColor(any()) }
     }
 
     @Test
-    fun `the sent color is computed from frequency bins`() {
+    fun `the sent color is calculated from the audio frame`() {
         val sut = createSUT()
         val color = nextColor()
         every { colorFactory.create(any()) } returns color
         sut.receiveAudioFrame(audioFrame)
         verify { server.sendColor(color) }
-    }
-
-    @Test
-    fun `the frequency bins are created from the audio frame`() {
-        val sut = createSUT()
-        val frequencyBins = nextFrequencyBins()
-        every { frequencyBinsFactory.create(any(), any()) } returns frequencyBins
-        sut.receiveAudioFrame(audioFrame)
-        verify { colorFactory.create(frequencyBins) }
-    }
-
-    @Test
-    fun `the lowest supported frequency is 20hz`() {
-        // NOTE: This is for practical reasons.
-        // Lower frequencies are uncommon in music and supporting them will add latency.
-        val sut = createSUT()
-        sut.receiveAudioFrame(audioFrame)
-        verify { frequencyBinsFactory.create(any(), 20F) }
     }
 
     @Test
