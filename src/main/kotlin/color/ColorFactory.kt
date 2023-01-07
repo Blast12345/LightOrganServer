@@ -1,8 +1,8 @@
 package color
 
 import sound.frequencyBins.FrequencyBinList
-import sound.frequencyBins.FrequencyBinListFactory
-import sound.frequencyBins.FrequencyBinListFactoryInterface
+import sound.frequencyBins.FrequencyBinsService
+import sound.frequencyBins.FrequencyBinsServiceInterface
 import sound.input.samples.AudioSignal
 import java.awt.Color
 
@@ -11,7 +11,7 @@ interface ColorFactoryInterface {
 }
 
 class ColorFactory(
-    private val frequencyBinListFactory: FrequencyBinListFactoryInterface = FrequencyBinListFactory(),
+    private val frequencyBinsService: FrequencyBinsServiceInterface = FrequencyBinsService(),
     private val hueFactory: HueFactoryInterface = HueFactory()
 ) : ColorFactoryInterface {
 
@@ -21,7 +21,7 @@ class ColorFactory(
     }
 
     private fun getFrequencyBins(audioSignal: AudioSignal): FrequencyBinList {
-        return frequencyBinListFactory.create(audioSignal)
+        return frequencyBinsService.getFrequencyBins(audioSignal)
     }
 
     private fun getColor(frequencyBins: FrequencyBinList): Color {

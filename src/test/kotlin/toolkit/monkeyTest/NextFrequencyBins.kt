@@ -4,8 +4,7 @@ import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 import kotlin.random.Random
 
-fun nextFrequencyBins(): FrequencyBinList {
-    val length = Random.nextInt() % 10
+fun nextFrequencyBins(length: Int = Random.nextInt() % 10): FrequencyBinList {
     var list: MutableList<FrequencyBin> = mutableListOf()
 
     for (i in 0 until length) {
