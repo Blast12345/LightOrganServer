@@ -1,9 +1,9 @@
 package color
 
-import sound.frequencyBins.*
+import sound.frequencyBins.FrequencyBinList
 
 interface HueFactoryInterface {
-    fun create(frequencyBins: FrequencyBins): Float?
+    fun create(frequencyBins: FrequencyBinList): Float?
 }
 
 class HueFactory(
@@ -12,7 +12,7 @@ class HueFactory(
     private val maximumFrequencyFinder: MaximumFrequencyFinderInterface = MaximumFrequencyFinder()
 ) : HueFactoryInterface {
 
-    override fun create(frequencyBins: FrequencyBins): Float? {
+    override fun create(frequencyBins: FrequencyBinList): Float? {
         val bassBins = getBassBins(frequencyBins)
         val averageFrequency = averageFrequencyCalculator.calculate(bassBins)
         val minimumFrequency = minimumFrequencyFinder.find(bassBins)
@@ -20,7 +20,7 @@ class HueFactory(
         return getHue(averageFrequency, minimumFrequency, maximumFrequency)
     }
 
-    private fun getBassBins(frequencyBins: FrequencyBins): FrequencyBins {
+    private fun getBassBins(frequencyBins: FrequencyBinList): FrequencyBinList {
         return frequencyBins.filter { it.frequency < 120F }
     }
 

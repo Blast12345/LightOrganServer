@@ -1,8 +1,10 @@
-package sound.frequencyBins
+package color
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import sound.frequencyBins.FrequencyBin
+import sound.frequencyBins.FrequencyBinList
 
 class AverageFrequencyCalculatorTests {
 
@@ -25,16 +27,16 @@ class AverageFrequencyCalculatorTests {
     @Test
     fun `the average frequency is null when the frequency bin list is empty`() {
         val sut = createSUT()
-        val emptyList: FrequencyBins = emptyList()
+        val emptyList: FrequencyBinList = emptyList()
         val averageFrequency = sut.calculate(emptyList)
         assertNull(averageFrequency)
     }
 
     @Test
-    fun `the average frequency is null when the frequency bins have no amplitude`() {
+    fun `the average frequency is null when the frequency bins have no magnitude`() {
         val sut = createSUT()
-        val listWithNoAmplitudes: FrequencyBins = listOf(bin1)
-        val averageFrequency = sut.calculate(listWithNoAmplitudes)
+        val listWithNoMagnitudes: FrequencyBinList = listOf(bin1)
+        val averageFrequency = sut.calculate(listWithNoMagnitudes)
         assertNull(averageFrequency)
     }
 

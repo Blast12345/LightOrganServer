@@ -1,18 +1,18 @@
 package sound.signalProcessing
 
-interface AmplitudeFactoryInterface {
+interface MagnitudeFactoryInterface {
     fun create(samples: DoubleArray): DoubleArray
 }
 
-class AmplitudeFactory(
+class MagnitudeFactory(
     private val fftAlgorithm: FftAlgorithmInterface = FftAlgorithm(),
     private val hannWindowFilter: HannWindowFilterInterface = HannWindowFilter(),
     private val denoiser: DenoiserInterface = Denoiser()
-) : AmplitudeFactoryInterface {
+) : MagnitudeFactoryInterface {
 
     override fun create(samples: DoubleArray): DoubleArray {
         val hannWindowOutput = hannWindowFilter.filter(samples)
-        val fftOutput = fftAlgorithm.calculateRelativeAmplitudes(hannWindowOutput)
+        val fftOutput = fftAlgorithm.calculateMagnitudes(hannWindowOutput)
         return denoiser.denoise(fftOutput)
     }
 

@@ -1,8 +1,10 @@
-package sound.frequencyBins
+package color
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import sound.frequencyBins.FrequencyBin
+import sound.frequencyBins.FrequencyBinList
 
 class MaximumFrequencyFinderTests {
 
@@ -25,7 +27,7 @@ class MaximumFrequencyFinderTests {
     @Test
     fun `the maximum frequency is null when the frequency bin list is empty`() {
         val sut = createSUT()
-        val emptyList: FrequencyBins = emptyList()
+        val emptyList: FrequencyBinList = emptyList()
         val maximumFrequency = sut.find(emptyList)
         assertNull(maximumFrequency)
     }

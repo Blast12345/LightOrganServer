@@ -1,4 +1,4 @@
-package sound.frequencyBins
+package sound.signalProcessing
 
 import kotlin.math.pow
 

@@ -9,10 +9,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.frequencyBins.AverageFrequencyCalculator
 import sound.frequencyBins.FrequencyBin
-import sound.frequencyBins.MaximumFrequencyFinder
-import sound.frequencyBins.MinimumFrequencyFinder
 import toolkit.monkeyTest.nextFrequencyBins
 import kotlin.random.Random
 

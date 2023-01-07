@@ -48,12 +48,12 @@ class Input(
 
     private fun getNextAudioSignal(): AudioSignal {
         return audioSignalFactory.create(
-            samples = getNewSamples(),
+            samples = getNewestSamples(),
             format = getAudioFormat()
         )
     }
 
-    private fun getNewSamples(): ByteArray {
+    private fun getNewestSamples(): ByteArray {
         val newData = getNewData()
         updateBufferWith(newData)
         return samplesBuffer

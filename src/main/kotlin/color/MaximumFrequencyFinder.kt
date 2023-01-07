@@ -1,12 +1,15 @@
-package sound.frequencyBins
+package color
+
+import sound.frequencyBins.FrequencyBin
+import sound.frequencyBins.FrequencyBinList
 
 interface MaximumFrequencyFinderInterface {
-    fun find(frequencyBins: FrequencyBins): Float?
+    fun find(frequencyBins: FrequencyBinList): Float?
 }
 
 class MaximumFrequencyFinder : MaximumFrequencyFinderInterface {
 
-    override fun find(frequencyBins: FrequencyBins): Float? {
+    override fun find(frequencyBins: FrequencyBinList): Float? {
         return if (frequencyBins.isNotEmpty()) {
             getMaximumFrequency(frequencyBins)
         } else {
@@ -14,17 +17,17 @@ class MaximumFrequencyFinder : MaximumFrequencyFinderInterface {
         }
     }
 
-    private fun getMaximumFrequency(frequencyBins: FrequencyBins): Float {
+    private fun getMaximumFrequency(frequencyBins: FrequencyBinList): Float {
         val frequencyBin = getMaximumFrequencyBin(frequencyBins)
         return frequencyBin.frequency
     }
 
-    private fun getMaximumFrequencyBin(frequencyBins: FrequencyBins): FrequencyBin {
+    private fun getMaximumFrequencyBin(frequencyBins: FrequencyBinList): FrequencyBin {
         val sortedFrequencyBins = sorted(frequencyBins)
         return sortedFrequencyBins.last()
     }
 
-    private fun sorted(frequencyBins: FrequencyBins): FrequencyBins {
+    private fun sorted(frequencyBins: FrequencyBinList): FrequencyBinList {
         return frequencyBins.sortedBy { it.frequency }
     }
 
