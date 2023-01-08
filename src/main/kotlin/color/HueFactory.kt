@@ -23,6 +23,7 @@ class HueFactory(
     }
 
     private fun getBassBins(frequencyBins: FrequencyBinList): FrequencyBinList {
+        // TODO: Create a BassBinsFilter
         return frequencyBins.filter { it.frequency < 120F }
     }
 

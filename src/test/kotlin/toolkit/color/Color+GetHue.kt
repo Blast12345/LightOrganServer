@@ -1,4 +1,4 @@
-package toolkit
+package toolkit.color
 
 import java.awt.Color
 
