@@ -1,4 +1,4 @@
-package sound.signalProcessing
+package sound.fft
 
 interface MagnitudeNormalizerInterface {
     fun normalize(magnitudes: DoubleArray, sampleSize: Int): DoubleArray
