@@ -1,6 +1,5 @@
 package color
 
-import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 
 interface MinimumFrequencyFinderInterface {
@@ -10,25 +9,7 @@ interface MinimumFrequencyFinderInterface {
 class MinimumFrequencyFinder : MinimumFrequencyFinderInterface {
 
     override fun find(frequencyBins: FrequencyBinList): Float? {
-        return if (frequencyBins.isNotEmpty()) {
-            getMinimumFrequency(frequencyBins)
-        } else {
-            null
-        }
-    }
-
-    private fun getMinimumFrequency(frequencyBins: FrequencyBinList): Float {
-        val frequencyBin = getMinimumFrequencyBin(frequencyBins)
-        return frequencyBin.frequency
-    }
-
-    private fun getMinimumFrequencyBin(frequencyBins: FrequencyBinList): FrequencyBin {
-        val sortedFrequencyBins = sorted(frequencyBins)
-        return sortedFrequencyBins.first()
-    }
-
-    private fun sorted(frequencyBins: FrequencyBinList): FrequencyBinList {
-        return frequencyBins.sortedBy { it.frequency }
+        return frequencyBins.minOfOrNull { it.frequency }
     }
 
 }

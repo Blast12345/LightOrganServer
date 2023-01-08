@@ -16,6 +16,7 @@ import toolkit.color.getSaturation
 import toolkit.monkeyTest.nextAudioSignal
 import toolkit.monkeyTest.nextFrequencyBin
 import toolkit.monkeyTest.nextFrequencyBins
+import java.awt.Color
 import kotlin.random.Random
 
 class ColorFactoryTests {
@@ -36,7 +37,7 @@ class ColorFactoryTests {
     fun setup() {
         every { frequencyBinsService.getFrequencyBins(any()) } returns frequencyBins
         every { dominantFrequencyBinFinder.find(any()) } returns dominantFrequencyBin
-        every { hueFactory.create(any()) } returns hue
+        every { hueFactory.create(any(), any()) } returns hue
         every { brightnessFactory.create(any()) } returns brightness
     }
 
@@ -59,7 +60,15 @@ class ColorFactoryTests {
         val sut = createSUT()
         val color = sut.create(audioSignal)
         assertEquals(hue, color.getHue(), 0.01F)
-        verify { hueFactory.create(frequencyBins) } // TODO: Expand me
+        verify { hueFactory.create(dominantFrequencyBin, frequencyBins) }
+    }
+
+    @Test
+    fun `the color is black when the hue is null`() {
+        val sut = createSUT()
+        every { hueFactory.create(any(), any()) } returns null
+        val color = sut.create(audioSignal)
+        assertEquals(Color.black, color)
     }
 
     @Test

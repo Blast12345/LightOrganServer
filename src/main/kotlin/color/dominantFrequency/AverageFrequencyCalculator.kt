@@ -1,4 +1,4 @@
-package color
+package color.dominantFrequency
 
 import sound.frequencyBins.FrequencyBinList
 

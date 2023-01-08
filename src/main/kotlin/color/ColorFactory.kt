@@ -35,16 +35,15 @@ class ColorFactory(
     }
 
     private fun getColor(dominantBin: FrequencyBin, frequencyBins: FrequencyBinList): Color {
-        return Color.getHSBColor(
-            getHue(dominantBin, frequencyBins),
-            getSaturation(),
-            getBrightness(dominantBin)
+        return getColor(
+            hue = getHue(dominantBin, frequencyBins),
+            saturation = getSaturation(),
+            brightness = getBrightness(dominantBin)
         )
     }
 
-    private fun getHue(dominantBin: FrequencyBin, frequencyBinList: FrequencyBinList): Float {
-        // TODO: Update hue factory to return non-optional
-        return hueFactory.create(frequencyBinList)!!
+    private fun getHue(dominantBin: FrequencyBin, frequencyBinList: FrequencyBinList): Float? {
+        return hueFactory.create(dominantBin, frequencyBinList)
     }
 
     private fun getSaturation(): Float {
@@ -53,6 +52,14 @@ class ColorFactory(
 
     private fun getBrightness(dominantBin: FrequencyBin): Float {
         return brightnessFactory.create(dominantBin)
+    }
+
+    private fun getColor(hue: Float?, saturation: Float, brightness: Float): Color {
+        return if (hue != null) {
+            Color.getHSBColor(hue, saturation, brightness)
+        } else {
+            Color.black
+        }
     }
 
 }
