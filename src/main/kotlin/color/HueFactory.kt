@@ -1,5 +1,9 @@
 package color
 
+import color.frequenyFinders.MaximumFrequencyFinder
+import color.frequenyFinders.MaximumFrequencyFinderInterface
+import color.frequenyFinders.MinimumFrequencyFinder
+import color.frequenyFinders.MinimumFrequencyFinderInterface
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 
