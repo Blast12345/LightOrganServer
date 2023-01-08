@@ -1,4 +1,4 @@
-package color
+package color.frequenyFinders
 
 import sound.frequencyBins.FrequencyBinList
 

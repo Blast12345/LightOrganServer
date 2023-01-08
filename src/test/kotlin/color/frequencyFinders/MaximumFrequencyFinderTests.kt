@@ -1,5 +1,6 @@
-package color
+package color.frequencyFinders
 
+import color.frequenyFinders.MaximumFrequencyFinder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
