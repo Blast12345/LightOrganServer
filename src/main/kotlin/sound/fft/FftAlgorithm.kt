@@ -1,18 +1,18 @@
-package sound.signalProcessing
+package sound.fft
 
 import org.jtransforms.fft.DoubleFFT_1D
 import kotlin.math.sqrt
 
 interface FftAlgorithmInterface {
-    fun calculateMagnitudes(samples: DoubleArray): DoubleArray
+    fun calculateRelativeMagnitudes(samples: DoubleArray): DoubleArray
 }
 
 // Reference: https://github.com/wendykierp/JTransforms/issues/4#issue-142313147
 class FftAlgorithm : FftAlgorithmInterface {
 
-    override fun calculateMagnitudes(samples: DoubleArray): DoubleArray {
+    override fun calculateRelativeMagnitudes(samples: DoubleArray): DoubleArray {
         val fftData = performFFT(samples)
-        return getMagnitudes(fftData)
+        return getRelativeMagnitudes(fftData)
     }
 
     private fun performFFT(samples: DoubleArray): DoubleArray {
@@ -22,9 +22,9 @@ class FftAlgorithm : FftAlgorithmInterface {
         return output
     }
 
-    private fun getMagnitudes(samples: DoubleArray): DoubleArray {
-        // NOTE: I'm not entirely sure why we divide by two.
-        // Maybe this is due to the Nyquist Frequency?
+    private fun getRelativeMagnitudes(samples: DoubleArray): DoubleArray {
+        // NOTE: The output is half the size of the input because it requires
+        // two indices (a real number and imaginary number) to calculate the magnitude
         val magnitudes = DoubleArray(samples.size / 2)
 
         for (i in magnitudes.indices) {
@@ -37,7 +37,11 @@ class FftAlgorithm : FftAlgorithmInterface {
     }
 
     private fun calculateMagnitude(real: Double, imaginary: Double): Double {
-        return sqrt(real * real + imaginary * imaginary)
+        // NOTE: My magnitudes are consistently half of what I would expect.
+        // I'm guessing this is because FFT results are mirrored, but I'm only using one side.
+        // Because I'm ignoring the other side, my energy is halved.
+        // I must multiply by two to compensate.
+        return sqrt(real * real + imaginary * imaginary) * 2
     }
 
 }

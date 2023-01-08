@@ -14,6 +14,8 @@ class HueFactory(
 
     override fun create(frequencyBins: FrequencyBinList): Float? {
         val bassBins = getBassBins(frequencyBins)
+        // TODO: Given the poor frequency resolution, average is not the best algorithm.
+        // Try peak frequency or increasing the magnitudes by some power.
         val averageFrequency = averageFrequencyCalculator.calculate(bassBins)
         val minimumFrequency = minimumFrequencyFinder.find(bassBins)
         val maximumFrequency = maximumFrequencyFinder.find(bassBins)

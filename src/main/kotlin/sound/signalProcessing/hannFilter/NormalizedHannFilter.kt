@@ -9,4 +9,5 @@ class NormalizedHannFilter(
         val filteredSamples = hannFilter.filter(signal)
         return hannFilterNormalizer.normalize(filteredSamples)
     }
+
 }
