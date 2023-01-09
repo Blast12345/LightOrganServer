@@ -4,8 +4,6 @@ import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 import sound.frequencyBins.finders.FrequencyBinFinder
 import sound.frequencyBins.finders.FrequencyBinFinderInterface
-import sound.frequencyBins.interpolators.MagnitudeInterpolator
-import sound.frequencyBins.interpolators.MagnitudeInterpolatorInterface
 
 interface MagnitudeEstimatorInterface {
     fun estimate(frequency: Float, frequencyBins: FrequencyBinList): Float?
@@ -18,15 +16,12 @@ class MagnitudeEstimator(
 
     override fun estimate(frequency: Float, frequencyBins: FrequencyBinList): Float? {
         val exactBin = getExactFrequencyBin(frequency, frequencyBins)
-
-        if (exactBin != null) {
-            return exactBin.magnitude
-        }
-
         val lowerNeighbor = getLowerNeighbor(frequency, frequencyBins)
         val higherNeighbor = getHigherNeighbor(frequency, frequencyBins)
 
-        return if (lowerNeighbor != null && higherNeighbor != null) {
+        return if (exactBin != null) {
+            exactBin.magnitude
+        } else if (lowerNeighbor != null && higherNeighbor != null) {
             interpolate(frequency, lowerNeighbor, higherNeighbor)
         } else if (lowerNeighbor != null) {
             lowerNeighbor.magnitude
