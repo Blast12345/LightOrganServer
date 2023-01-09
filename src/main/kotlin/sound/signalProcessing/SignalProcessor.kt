@@ -3,8 +3,8 @@ package sound.signalProcessing
 import sound.input.samples.AudioSignal
 import sound.signalProcessing.hannFilter.HannFilterInterface
 import sound.signalProcessing.hannFilter.NormalizedHannFilter
-import sound.signalProcessing.interpolator.InterpolatorInterface
-import sound.signalProcessing.interpolator.NormalizedInterpolator
+import sound.signalProcessing.zeroPaddingInterpolator.NormalizedZeroPaddingInterpolator
+import sound.signalProcessing.zeroPaddingInterpolator.ZeroPaddingInterpolatorInterface
 
 interface SignalProcessorInterface {
     fun process(audioSignal: AudioSignal, lowestFrequency: Float): DoubleArray
@@ -13,7 +13,7 @@ interface SignalProcessorInterface {
 class SignalProcessor(
     private val sampleExtractor: SampleExtractorInterface = SampleExtractor(),
     private val hannFilter: HannFilterInterface = NormalizedHannFilter(),
-    private val interpolator: InterpolatorInterface = NormalizedInterpolator()
+    private val interpolator: ZeroPaddingInterpolatorInterface = NormalizedZeroPaddingInterpolator()
 ) : SignalProcessorInterface {
 
     override fun process(audioSignal: AudioSignal, lowestFrequency: Float): DoubleArray {

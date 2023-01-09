@@ -1,15 +1,15 @@
-package sound.signalProcessing.interpolator
+package sound.signalProcessing.zeroPaddingInterpolator
 
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test
 
-class InterpolatorNormalizerTests {
+class ZeroPaddingInterpolatorNormalizerTests {
 
     private val signal = doubleArrayOf(1.0, 2.0)
     private val originalSize = 1
 
-    private fun createSUT(): InterpolatorNormalizer {
-        return InterpolatorNormalizer()
+    private fun createSUT(): ZeroPaddingInterpolatorNormalizer {
+        return ZeroPaddingInterpolatorNormalizer()
     }
 
     @Test

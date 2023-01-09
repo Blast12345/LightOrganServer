@@ -1,4 +1,4 @@
-package sound.signalProcessing.interpolator
+package sound.signalProcessing.zeroPaddingInterpolator
 
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextDoubleArray
 import kotlin.random.Random
 
-class NormalizedInterpolatorTests {
+class NormalizedZeroPaddingInterpolatorTests {
 
-    private var interpolator: InterpolatorInterface = mockk()
-    private val interpolatorNormalizer: InterpolatorNormalizerInterface = mockk()
+    private var interpolator: ZeroPaddingInterpolatorInterface = mockk()
+    private val interpolatorNormalizer: ZeroPaddingInterpolatorNormalizerInterface = mockk()
 
     private val signal = nextDoubleArray()
     private val desiredSize = Random.nextInt()
@@ -33,8 +33,8 @@ class NormalizedInterpolatorTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): NormalizedInterpolator {
-        return NormalizedInterpolator(
+    private fun createSUT(): NormalizedZeroPaddingInterpolator {
+        return NormalizedZeroPaddingInterpolator(
             interpolator = interpolator,
             interpolatorNormalizer = interpolatorNormalizer
         )

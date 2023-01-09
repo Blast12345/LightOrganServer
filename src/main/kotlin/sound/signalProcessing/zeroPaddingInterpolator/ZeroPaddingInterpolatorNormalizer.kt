@@ -1,10 +1,10 @@
-package sound.signalProcessing.interpolator
+package sound.signalProcessing.zeroPaddingInterpolator
 
-interface InterpolatorNormalizerInterface {
+interface ZeroPaddingInterpolatorNormalizerInterface {
     fun normalize(interpolatedSamples: DoubleArray, originalSize: Int): DoubleArray
 }
 
-class InterpolatorNormalizer : InterpolatorNormalizerInterface {
+class ZeroPaddingInterpolatorNormalizer : ZeroPaddingInterpolatorNormalizerInterface {
 
     override fun normalize(interpolatedSamples: DoubleArray, originalSize: Int): DoubleArray {
         val percentOfOriginalSamples = calculatePercentOfOriginalSamples(interpolatedSamples, originalSize)
