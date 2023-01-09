@@ -1,69 +1,38 @@
 package color
 
-import color.frequenyFinders.MaximumFrequencyFinder
-import color.frequenyFinders.MaximumFrequencyFinderInterface
-import color.frequenyFinders.MinimumFrequencyFinder
-import color.frequenyFinders.MinimumFrequencyFinderInterface
 import sound.frequencyBins.FrequencyBin
-import sound.frequencyBins.FrequencyBinList
 
 interface HueFactoryInterface {
-    fun create(dominantBin: FrequencyBin, frequencyBins: FrequencyBinList): Float?
+    fun create(
+        dominantBin: FrequencyBin,
+        lowestFrequencyBin: FrequencyBin,
+        highestFrequencyBin: FrequencyBin
+    ): Float
 }
 
-class HueFactory(
-    private val minimumFrequencyFinder: MinimumFrequencyFinderInterface = MinimumFrequencyFinder(),
-    private val maximumFrequencyFinder: MaximumFrequencyFinderInterface = MaximumFrequencyFinder()
-) : HueFactoryInterface {
+class HueFactory() : HueFactoryInterface {
 
-    override fun create(dominantBin: FrequencyBin, frequencyBins: FrequencyBinList): Float? {
+    override fun create(
+        dominantBin: FrequencyBin,
+        lowestFrequencyBin: FrequencyBin,
+        highestFrequencyBin: FrequencyBin
+    ): Float {
         return getHue(
-            averageFrequency = getDominantFrequency(dominantBin),
-            minimumFrequency = getMinimumFrequency(frequencyBins),
-            maximumFrequency = getMaximumFrequency(frequencyBins)
+            dominantFrequency = dominantBin.frequency,
+            lowestFrequency = lowestFrequencyBin.frequency,
+            highestFrequency = highestFrequencyBin.frequency
         )
     }
 
-    private fun getDominantFrequency(dominantBin: FrequencyBin): Float {
-        return dominantBin.frequency
-    }
-
-    private fun getMinimumFrequency(frequencyBins: FrequencyBinList): Float? {
-        return minimumFrequencyFinder.find(frequencyBins)
-    }
-
-    private fun getMaximumFrequency(frequencyBins: FrequencyBinList): Float? {
-        return maximumFrequencyFinder.find(frequencyBins)
-    }
-
     private fun getHue(
-        averageFrequency: Float,
-        minimumFrequency: Float?,
-        maximumFrequency: Float?
-    ): Float? {
-        return if (minimumFrequency != null && maximumFrequency != null) {
-            getHue(averageFrequency, minimumFrequency, maximumFrequency)
-        } else {
-            null
-        }
-    }
+        dominantFrequency: Float,
+        lowestFrequency: Float,
+        highestFrequency: Float
+    ): Float {
+        val frequencyRange = highestFrequency - lowestFrequency
+        val positionInRange = dominantFrequency - lowestFrequency
+        return positionInRange / frequencyRange
 
-    private fun getHue(
-        averageFrequency: Float,
-        minimumFrequency: Float,
-        maximumFrequency: Float
-    ): Float? {
-        return if (maximumFrequency == 0F) {
-            null
-        } else {
-            val adjustedAverage = averageFrequency - minimumFrequency
-            val range = maximumFrequency - minimumFrequency
-            getHue(adjustedAverage, range)
-        }
-    }
-
-    private fun getHue(adjustedAverage: Float, range: Float): Float {
-        return adjustedAverage / range
     }
 
 }

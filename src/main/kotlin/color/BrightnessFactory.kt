@@ -9,7 +9,11 @@ interface BrightnessFactoryInterface {
 class BrightnessFactory : BrightnessFactoryInterface {
 
     override fun create(frequency: FrequencyBin): Float {
-        return frequency.magnitude
+        return if (frequency.magnitude < 1) {
+            frequency.magnitude
+        } else {
+            1F
+        }
     }
 
 }
