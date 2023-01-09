@@ -2,6 +2,8 @@ package sound.frequencyBins
 
 import sound.fft.RelativeMagnitudesCalculator
 import sound.fft.RelativeMagnitudesCalculatorInterface
+import sound.frequencyBins.filters.SupportedFrequencyBinsFilter
+import sound.frequencyBins.filters.SupportedFrequencyBinsFilterInterface
 import sound.input.samples.AudioSignal
 import sound.signalProcessing.SignalProcessor
 import sound.signalProcessing.SignalProcessorInterface

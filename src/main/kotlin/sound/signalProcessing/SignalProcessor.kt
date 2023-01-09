@@ -19,6 +19,7 @@ class SignalProcessor(
     override fun process(audioSignal: AudioSignal, lowestFrequency: Float): DoubleArray {
         val fewestSamplesNeeded = sampleExtractor.extract(audioSignal, lowestFrequency)
         val filteredSamples = hannFilter.filter(fewestSamplesNeeded)
+        // TODO: Interpolate to power of 2 (e.g. 65,536)
         return interpolator.interpolate(filteredSamples, audioSignal.sampleRate.toInt())
     }
 

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.fft.RelativeMagnitudesCalculatorInterface
+import sound.frequencyBins.filters.SupportedFrequencyBinsFilterInterface
 import sound.input.samples.AudioSignal
 import sound.signalProcessing.SignalProcessorInterface
 import toolkit.generators.SineWaveGenerator

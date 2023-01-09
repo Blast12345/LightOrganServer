@@ -1,11 +1,11 @@
 package color
 
-import color.dominantFrequency.DominantFrequencyBinFactory
-import color.dominantFrequency.DominantFrequencyBinFactoryInterface
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 import sound.frequencyBins.FrequencyBinsService
 import sound.frequencyBins.FrequencyBinsServiceInterface
+import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactory
+import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactoryInterface
 import sound.frequencyBins.filters.BassBinsFilter
 import sound.frequencyBins.filters.BassBinsFilterInterface
 import sound.frequencyBins.finders.FrequencyBinFinder

@@ -1,6 +1,5 @@
 package color
 
-import color.dominantFrequency.DominantFrequencyBinFactoryInterface
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.frequencyBins.FrequencyBinsServiceInterface
+import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactoryInterface
 import sound.frequencyBins.filters.BassBinsFilterInterface
 import sound.frequencyBins.finders.FrequencyBinFinderInterface
 import toolkit.color.getBrightness
