@@ -88,6 +88,7 @@ class FrequencyBinsServiceTests {
 
     @Test
     fun `the lowest supported bin is 20hz`() {
+        // TODO: We should support lower (e.g. 20) for signal processing, but higher (e.g. 30) for bass bins
         val sut = createSUT()
         val frequencyBins = sut.getFrequencyBins(audioSignal)
         assertEquals(supportedBins, frequencyBins)
