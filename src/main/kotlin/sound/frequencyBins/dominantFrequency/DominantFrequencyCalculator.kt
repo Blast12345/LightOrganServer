@@ -7,7 +7,6 @@ interface DominantFrequencyCalculatorInterface {
     fun calculate(frequencyBins: FrequencyBinList): Float?
 }
 
-// TODO: Test me
 class DominantFrequencyCalculator : DominantFrequencyCalculatorInterface {
 
     // ENHANCEMENT: Introduce an averaging algorithm if we can clean up the smeared data
