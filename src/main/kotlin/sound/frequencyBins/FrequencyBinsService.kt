@@ -2,6 +2,8 @@ package sound.frequencyBins
 
 import sound.fft.RelativeMagnitudesCalculator
 import sound.fft.RelativeMagnitudesCalculatorInterface
+import sound.frequencyBins.filters.FrequencyBinListDenoiser
+import sound.frequencyBins.filters.FrequencyBinListDenoiserInterface
 import sound.frequencyBins.filters.SupportedFrequencyBinsFilter
 import sound.frequencyBins.filters.SupportedFrequencyBinsFilterInterface
 import sound.input.samples.AudioSignal
@@ -17,7 +19,8 @@ class FrequencyBinsService(
     private val relativeMagnitudesCalculator: RelativeMagnitudesCalculatorInterface = RelativeMagnitudesCalculator(),
     private val granularityCalculator: GranularityCalculatorInterface = GranularityCalculator(),
     private val frequencyBinListFactory: FrequencyBinListFactoryInterface = FrequencyBinListFactory(),
-    private val supportedFrequencyBinsFilter: SupportedFrequencyBinsFilterInterface = SupportedFrequencyBinsFilter()
+    private val supportedFrequencyBinsFilter: SupportedFrequencyBinsFilterInterface = SupportedFrequencyBinsFilter(),
+    private val frequencyBinListDenoiser: FrequencyBinListDenoiserInterface = FrequencyBinListDenoiser()
 ) : FrequencyBinsServiceInterface {
 
     private val lowestSupportedFrequency = 20F
@@ -27,7 +30,8 @@ class FrequencyBinsService(
         val magnitudes = getMagnitudes(processedSamples)
         val granularity = getGranularity(magnitudes.size, audioSignal.sampleRate)
         val allBins = getAllBins(magnitudes, granularity)
-        return getSupportedBins(allBins)
+        val supportedBins = getSupportedBins(allBins)
+        return getDenoisedBins(supportedBins)
     }
 
     private fun getProcessedSamples(audioSignal: AudioSignal): DoubleArray {
@@ -48,6 +52,10 @@ class FrequencyBinsService(
 
     private fun getSupportedBins(frequencyBins: FrequencyBinList): FrequencyBinList {
         return supportedFrequencyBinsFilter.filter(frequencyBins, lowestSupportedFrequency)
+    }
+
+    private fun getDenoisedBins(frequencyBins: FrequencyBinList): FrequencyBinList {
+        return frequencyBinListDenoiser.denoise(frequencyBins)
     }
 
 }
