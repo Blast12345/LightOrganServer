@@ -1,4 +1,6 @@
-package sound.frequencyBins
+package sound.frequencyBins.filters
+
+import sound.frequencyBins.FrequencyBinList
 
 interface SupportedFrequencyBinsFilterInterface {
     fun filter(frequencyBins: FrequencyBinList, lowestFrequency: Float): FrequencyBinList

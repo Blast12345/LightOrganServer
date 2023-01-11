@@ -1,10 +1,10 @@
-package sound.signalProcessing.interpolator
+package sound.signalProcessing.zeroPaddingInterpolator
 
-interface InterpolatorInterface {
+interface ZeroPaddingInterpolatorInterface {
     fun interpolate(samples: DoubleArray, desiredSize: Int): DoubleArray
 }
 
-class Interpolator : InterpolatorInterface {
+class ZeroPaddingInterpolator : ZeroPaddingInterpolatorInterface {
 
     override fun interpolate(samples: DoubleArray, desiredSize: Int): DoubleArray {
         val sizeDifference = desiredSize - samples.size

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.signalProcessing.hannFilter.HannFilterInterface
-import sound.signalProcessing.interpolator.InterpolatorInterface
+import sound.signalProcessing.zeroPaddingInterpolator.ZeroPaddingInterpolatorInterface
 import toolkit.monkeyTest.nextAudioSignal
 import toolkit.monkeyTest.nextDoubleArray
 import kotlin.random.Random
@@ -18,7 +18,7 @@ class SignalProcessorTests {
 
     private val sampleExtractor: SampleExtractorInterface = mockk()
     private var hannFilter: HannFilterInterface = mockk()
-    private val interpolator: InterpolatorInterface = mockk()
+    private val interpolator: ZeroPaddingInterpolatorInterface = mockk()
 
     private val audioSignal = nextAudioSignal()
     private val lowestFrequency = Random.nextFloat()

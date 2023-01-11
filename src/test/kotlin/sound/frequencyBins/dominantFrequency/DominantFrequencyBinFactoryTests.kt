@@ -1,0 +1,67 @@
+package sound.frequencyBins.dominantFrequency
+
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import sound.frequencyBins.FrequencyBin
+import toolkit.monkeyTest.nextFrequencyBins
+import kotlin.random.Random
+
+class DominantFrequencyBinFactoryTests {
+
+    private var dominantFrequencyCalculator: DominantFrequencyCalculatorInterface = mockk()
+    private var magnitudeInterpolator: MagnitudeEstimatorInterface = mockk()
+
+    private val frequencyBins = nextFrequencyBins()
+
+    private val dominantFrequency = Random.nextFloat()
+    private val estimatedMagnitude = Random.nextFloat()
+
+    @BeforeEach
+    fun setup() {
+        every { dominantFrequencyCalculator.calculate(frequencyBins) } returns dominantFrequency
+        every { magnitudeInterpolator.estimate(dominantFrequency, frequencyBins) } returns estimatedMagnitude
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
+    }
+
+    private fun createSUT(): DominantFrequencyBinFactory {
+        return DominantFrequencyBinFactory(
+            dominantFrequencyCalculator = dominantFrequencyCalculator,
+            magnitudeInterpolator = magnitudeInterpolator
+        )
+    }
+
+    @Test
+    fun `return the dominant frequency bin`() {
+        val sut = createSUT()
+        val frequencyBin = sut.create(frequencyBins)
+        val expected = FrequencyBin(dominantFrequency, estimatedMagnitude)
+        assertEquals(expected, frequencyBin)
+    }
+
+    @Test
+    fun `return null when there is no dominant frequency`() {
+        val sut = createSUT()
+        every { dominantFrequencyCalculator.calculate(any()) } returns null
+        val frequencyBin = sut.create(frequencyBins)
+        assertNull(frequencyBin)
+    }
+
+    @Test
+    fun `return null when there is no estimated magnitude`() {
+        val sut = createSUT()
+        every { dominantFrequencyCalculator.calculate(any()) } returns null
+        val frequencyBin = sut.create(frequencyBins)
+        assertNull(frequencyBin)
+    }
+
+}

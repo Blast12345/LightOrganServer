@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.fft.RelativeMagnitudesCalculatorInterface
+import sound.frequencyBins.filters.FrequencyBinListDenoiserInterface
+import sound.frequencyBins.filters.SupportedFrequencyBinsFilterInterface
 import sound.input.samples.AudioSignal
 import sound.signalProcessing.SignalProcessorInterface
 import toolkit.generators.SineWaveGenerator
@@ -24,6 +26,7 @@ class FrequencyBinsServiceTests {
     private var granularityCalculator: GranularityCalculatorInterface = mockk()
     private var frequencyBinListFactory: FrequencyBinListFactoryInterface = mockk()
     private var supportedFrequencyBinsFilter: SupportedFrequencyBinsFilterInterface = mockk()
+    private val frequencyBinListDenoiser: FrequencyBinListDenoiserInterface = mockk()
 
     private val audioSignal = nextAudioSignal()
 
@@ -32,6 +35,7 @@ class FrequencyBinsServiceTests {
     private val granularity = Random.nextFloat()
     private val allBins = nextFrequencyBins()
     private val supportedBins = nextFrequencyBins()
+    private val denoisedBins = nextFrequencyBins()
 
     @BeforeEach
     fun setup() {
@@ -40,6 +44,7 @@ class FrequencyBinsServiceTests {
         every { granularityCalculator.calculate(any(), any()) } returns granularity
         every { frequencyBinListFactory.create(any(), any()) } returns allBins
         every { supportedFrequencyBinsFilter.filter(any(), any()) } returns supportedBins
+        every { frequencyBinListDenoiser.denoise(any()) } returns denoisedBins
     }
 
     @AfterEach
@@ -53,7 +58,8 @@ class FrequencyBinsServiceTests {
             relativeMagnitudesCalculator = relativeMagnitudesCalculator,
             granularityCalculator = granularityCalculator,
             frequencyBinListFactory = frequencyBinListFactory,
-            supportedFrequencyBinsFilter = supportedFrequencyBinsFilter
+            supportedFrequencyBinsFilter = supportedFrequencyBinsFilter,
+            frequencyBinListDenoiser = frequencyBinListDenoiser
         )
     }
 
@@ -88,10 +94,17 @@ class FrequencyBinsServiceTests {
     @Test
     fun `the lowest supported bin is 20hz`() {
         val sut = createSUT()
-        val frequencyBins = sut.getFrequencyBins(audioSignal)
-        assertEquals(supportedBins, frequencyBins)
+        sut.getFrequencyBins(audioSignal)
         verify { signalProcessor.process(audioSignal, 20F) }
         verify { supportedFrequencyBinsFilter.filter(allBins, 20F) }
+    }
+
+    @Test
+    fun `the supported bins are denoised`() {
+        val sut = createSUT()
+        val frequencyBins = sut.getFrequencyBins(audioSignal)
+        assertEquals(denoisedBins, frequencyBins)
+        verify { frequencyBinListDenoiser.denoise(supportedBins) }
     }
 
     @Test

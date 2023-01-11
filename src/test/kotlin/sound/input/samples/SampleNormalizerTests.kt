@@ -3,7 +3,7 @@ package sound.input.samples
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import toolkit.byteArrayOf
+import toolkit.byteArray.byteArrayOf
 import java.nio.ByteOrder
 import javax.sound.sampled.AudioFormat
 

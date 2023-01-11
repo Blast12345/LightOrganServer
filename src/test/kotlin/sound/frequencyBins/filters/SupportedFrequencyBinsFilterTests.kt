@@ -1,7 +1,8 @@
-package sound.frequencyBins
+package sound.frequencyBins.filters
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import sound.frequencyBins.FrequencyBin
 
 class SupportedFrequencyBinsFilterTests {
 
