@@ -1,7 +1,6 @@
 package sound.frequencyBins.filters
 
 import config.Config
-import config.HighPassFilter
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 
@@ -10,9 +9,10 @@ interface BassFrequencyBinsFilterInterface {
 }
 
 class BassFrequencyBinsFilter(
-    highPassFilter: HighPassFilter = Config().highPassFilter
+    config: Config
 ) : BassFrequencyBinsFilterInterface {
 
+    private val highPassFilter = config.highPassFilter
     private val highPassFrequency = highPassFilter.frequency
     private val rollOffRange = highPassFilter.rollOffRange
     private val highestFrequency = highPassFrequency + rollOffRange

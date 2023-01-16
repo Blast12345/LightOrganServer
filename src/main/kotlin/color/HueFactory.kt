@@ -9,8 +9,10 @@ interface HueFactoryInterface {
 }
 
 class HueFactory(
-    private val colorWheel: ColorWheel = Config().colorWheel
+    config: Config
 ) : HueFactoryInterface {
+
+    private val colorWheel: ColorWheel = config.colorWheel
 
     override fun create(frequencyBin: FrequencyBin): Float {
         return getBaseHue(frequencyBin) + getHueOffset()

@@ -1,4 +1,5 @@
 import color.ColorFactoryInterface
+import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -15,6 +16,7 @@ import kotlin.random.Random
 
 class LightOrganTests {
 
+    private var config: Config = mockk()
     private var input: InputInterface = mockk()
     private var server: ServerInterface = mockk()
     private var colorFactory: ColorFactoryInterface = mockk()
@@ -38,6 +40,7 @@ class LightOrganTests {
 
     private fun createSUT(): LightOrgan {
         return LightOrgan(
+            config = config,
             input = input,
             server = server,
             colorFactory = colorFactory,

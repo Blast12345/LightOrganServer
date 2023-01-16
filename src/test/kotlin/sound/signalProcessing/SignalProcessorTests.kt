@@ -1,5 +1,6 @@
 package sound.signalProcessing
 
+import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -16,22 +17,25 @@ import kotlin.random.Random
 
 class SignalProcessorTests {
 
-    private val sampleSize: Int = Random.nextInt()
+    private var config: Config = mockk()
     private val sampleExtractor: SampleExtractorInterface = mockk()
     private var hannFilter: HannFilterInterface = mockk()
     private val interpolator: ZeroPaddingInterpolatorInterface = mockk()
-    private val interpolatedSampleSize: Int = Random.nextInt()
 
     private val audioSignal = nextAudioSignal()
 
+    private val sampleSize: Int = Random.nextInt()
     private val extractedSamples = nextDoubleArray()
     private val filteredSamples = nextDoubleArray()
+    private val interpolatedSampleSize: Int = Random.nextInt()
     private val interpolatedSamples = nextDoubleArray()
 
     @BeforeEach
     fun setup() {
+        every { config.sampleSize } returns sampleSize
         every { sampleExtractor.extract(any(), any()) } returns extractedSamples
         every { hannFilter.filter(any()) } returns filteredSamples
+        every { config.interpolatedSampleSize } returns interpolatedSampleSize
         every { interpolator.interpolate(any(), any()) } returns interpolatedSamples
     }
 
@@ -42,11 +46,10 @@ class SignalProcessorTests {
 
     private fun createSUT(): SignalProcessor {
         return SignalProcessor(
-            sampleSize = sampleSize,
+            config = config,
             sampleExtractor = sampleExtractor,
             hannFilter = hannFilter,
-            interpolator = interpolator,
-            interpolatedSampleSize = interpolatedSampleSize
+            interpolator = interpolator
         )
     }
 

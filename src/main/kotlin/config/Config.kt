@@ -1,10 +1,21 @@
 package config
 
-// TODO: Document the config
-data class Config(
-    val colorWheel: ColorWheel = ColorWheel(40F, 120F, 0.25F),
-    val highPassFilter: HighPassFilter = HighPassFilter(120F, 15F),
-    val sampleSize: Int = 4096,
-    val interpolatedSampleSize: Int = 65536,
-    val magnitudeEstimationStrategy: MagnitudeEstimationStrategy = MagnitudeEstimationStrategy(5)
-)
+interface Config {
+    // Helps identify a hue for a given frequency
+    val colorWheel: ColorWheel
+
+    // Defines the upper range of bass frequency bins
+    val highPassFilter: HighPassFilter
+
+    // Then number of audio samples to use to identify frequencies
+    // Higher values increase accuracy, but also increase latency
+    val sampleSize: Int
+
+    // We interpolate the sample size to a higher value to reveal obscured frequencies,
+    // increasing the accuracy of frequency calculations.
+    // Higher values and values that are not powers of 2 increase processing time.
+    val interpolatedSampleSize: Int
+
+    // Helps determine how we estimate the dominant frequency's magnitude
+    val magnitudeEstimationStrategy: MagnitudeEstimationStrategy
+}

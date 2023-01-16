@@ -1,16 +1,22 @@
 package sound.frequencyBins.dominantFrequency.magnitude.averagePeakStrategy
 
+import config.Config
+import config.MagnitudeEstimationStrategy
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.frequencyBins.FrequencyBin
 import kotlin.random.Random
 
 class MagnitudeAveragePeakEstimatorTests {
 
-    private val numberOfPeaksToUse = 3
+    private var config: Config = mockk()
 
     private val frequency = Random.nextFloat()
-
     private val bin1 = FrequencyBin(10F, 1F)
     private val bin2 = FrequencyBin(20F, 5F)
     private val bin3 = FrequencyBin(30F, 2F)
@@ -18,9 +24,23 @@ class MagnitudeAveragePeakEstimatorTests {
     private val bin5 = FrequencyBin(40F, 0F)
     private val frequencyBins = listOf(bin1, bin2, bin3, bin4, bin5)
 
+    private val magnitudeEstimationStrategy: MagnitudeEstimationStrategy = mockk()
+    private val numberOfPeaksToUse: Int = 3
+
+    @BeforeEach
+    fun setup() {
+        every { config.magnitudeEstimationStrategy } returns magnitudeEstimationStrategy
+        every { magnitudeEstimationStrategy.numberOfPeaksToUse } returns numberOfPeaksToUse
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
+    }
+
     private fun createSUT(): MagnitudeAveragePeakEstimator {
         return MagnitudeAveragePeakEstimator(
-            numberOfPeaksToUse = numberOfPeaksToUse
+            config = config
         )
     }
 

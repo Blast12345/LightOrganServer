@@ -1,5 +1,6 @@
 package color
 
+import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -21,6 +22,7 @@ import kotlin.random.Random
 
 class ColorFactoryTests {
 
+    private var config: Config = mockk()
     private var frequencyBinsService: FrequencyBinsServiceInterface = mockk()
     private val bassFrequencyBinsFilter: BassFrequencyBinsFilterInterface = mockk()
     private var dominantFrequencyBinFactory: DominantFrequencyBinFactoryInterface = mockk()
@@ -51,6 +53,7 @@ class ColorFactoryTests {
 
     private fun createSUT(): ColorFactory {
         return ColorFactory(
+            config = config,
             frequencyBinsService = frequencyBinsService,
             bassFrequencyBinsFilter = bassFrequencyBinsFilter,
             dominantFrequencyBinFactory = dominantFrequencyBinFactory,

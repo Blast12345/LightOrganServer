@@ -12,12 +12,14 @@ interface SignalProcessorInterface {
 }
 
 class SignalProcessor(
-    private val sampleSize: Int = Config().sampleSize,
+    config: Config,
     private val sampleExtractor: SampleExtractorInterface = SampleExtractor(),
     private val hannFilter: HannFilterInterface = NormalizedHannFilter(),
-    private val interpolator: ZeroPaddingInterpolatorInterface = NormalizedZeroPaddingInterpolator(),
-    private val interpolatedSampleSize: Int = Config().interpolatedSampleSize
+    private val interpolator: ZeroPaddingInterpolatorInterface = NormalizedZeroPaddingInterpolator()
 ) : SignalProcessorInterface {
+
+    private val sampleSize = config.sampleSize
+    private val interpolatedSampleSize: Int = config.interpolatedSampleSize
 
     override fun process(audioSignal: AudioSignal): DoubleArray {
         val extractedSamples = sampleExtractor.extract(audioSignal, sampleSize)
