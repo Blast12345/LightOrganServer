@@ -9,13 +9,14 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.frequencyBins.FrequencyBin
+import sound.frequencyBins.dominantFrequency.magnitude.MagnitudeEstimator
 import toolkit.monkeyTest.nextFrequencyBins
 import kotlin.random.Random
 
 class DominantFrequencyBinFactoryTests {
 
     private var dominantFrequencyCalculator: DominantFrequencyCalculatorInterface = mockk()
-    private var magnitudeInterpolator: MagnitudeEstimatorInterface = mockk()
+    private var magnitudeEstimator: MagnitudeEstimator = mockk()
 
     private val frequencyBins = nextFrequencyBins()
 
@@ -25,7 +26,7 @@ class DominantFrequencyBinFactoryTests {
     @BeforeEach
     fun setup() {
         every { dominantFrequencyCalculator.calculate(frequencyBins) } returns dominantFrequency
-        every { magnitudeInterpolator.estimate(dominantFrequency, frequencyBins) } returns estimatedMagnitude
+        every { magnitudeEstimator.estimate(dominantFrequency, frequencyBins) } returns estimatedMagnitude
     }
 
     @AfterEach
@@ -36,7 +37,7 @@ class DominantFrequencyBinFactoryTests {
     private fun createSUT(): DominantFrequencyBinFactory {
         return DominantFrequencyBinFactory(
             dominantFrequencyCalculator = dominantFrequencyCalculator,
-            magnitudeInterpolator = magnitudeInterpolator
+            magnitudeEstimator = magnitudeEstimator
         )
     }
 
