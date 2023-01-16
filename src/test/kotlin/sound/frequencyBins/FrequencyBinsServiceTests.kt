@@ -1,5 +1,6 @@
 package sound.frequencyBins
 
+import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -20,6 +21,7 @@ import kotlin.random.Random
 
 class FrequencyBinsServiceTests {
 
+    private var config: Config = mockk()
     private var signalProcessor: SignalProcessorInterface = mockk()
     private var relativeMagnitudesCalculator: RelativeMagnitudesCalculatorInterface = mockk()
     private var granularityCalculator: GranularityCalculatorInterface = mockk()
@@ -31,7 +33,7 @@ class FrequencyBinsServiceTests {
     private val processedSamples = nextDoubleArray()
     private val magnitudes = nextDoubleArray()
     private val granularity = Random.nextFloat()
-    private val frequencyBins = nextFrequencyBins()
+    private val frequencyBinList = nextFrequencyBins()
     private val denoisedFrequencyBins = nextFrequencyBins()
 
     @BeforeEach
@@ -39,7 +41,7 @@ class FrequencyBinsServiceTests {
         every { signalProcessor.process(any()) } returns processedSamples
         every { relativeMagnitudesCalculator.calculate(any()) } returns magnitudes
         every { granularityCalculator.calculate(any(), any()) } returns granularity
-        every { frequencyBinListFactory.create(any(), any()) } returns frequencyBins
+        every { frequencyBinListFactory.create(any(), any()) } returns frequencyBinList
         every { frequencyBinListDenoiser.denoise(any()) } returns denoisedFrequencyBins
     }
 
@@ -50,6 +52,7 @@ class FrequencyBinsServiceTests {
 
     private fun createSUT(): FrequencyBinsService {
         return FrequencyBinsService(
+            config = config,
             signalProcessor = signalProcessor,
             relativeMagnitudesCalculator = relativeMagnitudesCalculator,
             granularityCalculator = granularityCalculator,
@@ -91,15 +94,19 @@ class FrequencyBinsServiceTests {
         val sut = createSUT()
         val frequencyBins = sut.getFrequencyBins(audioSignal)
         assertEquals(denoisedFrequencyBins, frequencyBins)
-        verify { frequencyBinListDenoiser.denoise(frequencyBins) }
+        verify { frequencyBinListDenoiser.denoise(frequencyBinList) }
     }
 
     @Test
     fun `a 50hz signal produces an amplitude of 1 in a 50hz bin`() {
         // NOTE: This is an integration test
+        every { config.interpolatedSampleSize } returns 48000
+        every { config.sampleSize } returns 4096
+        val sut = FrequencyBinsService(config)
+
         val fiftyHertzSignal = createAudioSignal(50F)
-        val sut = FrequencyBinsService()
         val frequencyBins = sut.getFrequencyBins(fiftyHertzSignal)
+
         val fiftyHertzBin = frequencyBins.first { it.frequency == 50F }
         assertEquals(1F, fiftyHertzBin.magnitude, 0.001F)
     }

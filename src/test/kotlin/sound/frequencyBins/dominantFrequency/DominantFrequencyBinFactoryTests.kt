@@ -1,5 +1,6 @@
 package sound.frequencyBins.dominantFrequency
 
+import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -14,6 +15,8 @@ import toolkit.monkeyTest.nextFrequencyBins
 import kotlin.random.Random
 
 class DominantFrequencyBinFactoryTests {
+
+    private var config: Config = mockk()
 
     private var dominantFrequencyCalculator: DominantFrequencyCalculatorInterface = mockk()
     private var magnitudeEstimator: MagnitudeEstimator = mockk()
@@ -36,6 +39,7 @@ class DominantFrequencyBinFactoryTests {
 
     private fun createSUT(): DominantFrequencyBinFactory {
         return DominantFrequencyBinFactory(
+            config = config,
             dominantFrequencyCalculator = dominantFrequencyCalculator,
             magnitudeEstimator = magnitudeEstimator
         )

@@ -1,5 +1,6 @@
 import color.ColorFactory
 import color.ColorFactoryInterface
+import config.Config
 import server.Server
 import server.ServerInterface
 import sound.input.InputDelegate
@@ -10,9 +11,10 @@ import wrappers.SystemTimeInterface
 import java.awt.Color
 
 class LightOrgan(
+    config: Config,
     private val input: InputInterface,
     private val server: ServerInterface = Server(),
-    private val colorFactory: ColorFactoryInterface = ColorFactory(),
+    private val colorFactory: ColorFactoryInterface = ColorFactory(config),
     private val systemTime: SystemTimeInterface = SystemTime()
 ) : InputDelegate {
 

@@ -5,8 +5,10 @@ import sound.frequencyBins.FrequencyBinList
 import sound.frequencyBins.dominantFrequency.magnitude.MagnitudeEstimator
 
 class MagnitudeAveragePeakEstimator(
-    private val numberOfPeaksToUse: Int = Config().magnitudeEstimationStrategy.numberOfPeaksToUse
+    config: Config
 ) : MagnitudeEstimator {
+
+    private val numberOfPeaksToUse: Int = config.magnitudeEstimationStrategy.numberOfPeaksToUse
 
     override fun estimate(frequency: Float, frequencyBins: FrequencyBinList): Float? {
         val peakMagnitudes = getPeakMagnitudes(frequencyBins)

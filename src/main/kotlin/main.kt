@@ -1,9 +1,11 @@
+import config.Config
 import sound.input.Input
 import sound.input.finder.InputFinder
 
 fun main() {
     val input = findInput()
-    startLightOrganWith(input)
+    val config = DefaultConfig()
+    startLightOrganWith(input, config)
 }
 
 private fun findInput(): Input {
@@ -11,7 +13,7 @@ private fun findInput(): Input {
     return Input(targetDataLine)
 }
 
-private fun startLightOrganWith(input: Input) {
-    val lightOrgan = LightOrgan(input)
+private fun startLightOrganWith(input: Input, config: Config) {
+    val lightOrgan = LightOrgan(config, input)
     lightOrgan.start()
 }
