@@ -20,6 +20,7 @@ class SignalProcessorTests {
     private val sampleExtractor: SampleExtractorInterface = mockk()
     private var hannFilter: HannFilterInterface = mockk()
     private val interpolator: ZeroPaddingInterpolatorInterface = mockk()
+    private val interpolatedSampleSize: Int = Random.nextInt()
 
     private val audioSignal = nextAudioSignal()
 
@@ -44,7 +45,8 @@ class SignalProcessorTests {
             sampleSize = sampleSize,
             sampleExtractor = sampleExtractor,
             hannFilter = hannFilter,
-            interpolator = interpolator
+            interpolator = interpolator,
+            interpolatedSampleSize = interpolatedSampleSize
         )
     }
 
@@ -66,7 +68,7 @@ class SignalProcessorTests {
     fun `the filtered samples are interpolated to increase frequency resolution`() {
         val sut = createSUT()
         sut.process(audioSignal)
-        verify { interpolator.interpolate(filteredSamples, audioSignal.sampleRate.toInt()) }
+        verify { interpolator.interpolate(filteredSamples, interpolatedSampleSize) }
     }
 
     @Test
