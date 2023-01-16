@@ -1,5 +1,6 @@
 package color
 
+import config.ColorWheel
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sound.frequencyBins.FrequencyBin

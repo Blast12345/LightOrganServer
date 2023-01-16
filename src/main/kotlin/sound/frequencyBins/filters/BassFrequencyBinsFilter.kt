@@ -1,15 +1,64 @@
 package sound.frequencyBins.filters
 
+import config.Config
+import config.HighPassFilter
+import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 
 interface BassFrequencyBinsFilterInterface {
     fun filter(frequencyBins: FrequencyBinList): FrequencyBinList
 }
 
-class BassFrequencyBinsFilter : BassFrequencyBinsFilterInterface {
+class BassFrequencyBinsFilter(
+    highPassFilter: HighPassFilter = Config().highPassFilter
+) : BassFrequencyBinsFilterInterface {
+
+    private val highPassFrequency = highPassFilter.frequency
+    private val rollOffRange = highPassFilter.rollOffRange
+    private val highestFrequency = highPassFrequency + rollOffRange
 
     override fun filter(frequencyBins: FrequencyBinList): FrequencyBinList {
-        return frequencyBins.filter { it.frequency <= 120.0 }
+        val binsInRange = getFrequencyBinsInRange(frequencyBins)
+        return applyRollOff(binsInRange)
+    }
+
+    private fun getFrequencyBinsInRange(frequencyBins: FrequencyBinList): FrequencyBinList {
+        return frequencyBins.filter { it.frequency <= highestFrequency }
+    }
+
+    private fun applyRollOff(frequencyBins: FrequencyBinList): FrequencyBinList {
+        return frequencyBins.map { frequencyBin ->
+            val isAboveHighPassFrequency = frequencyBin.frequency > highPassFrequency
+
+            if (isAboveHighPassFrequency) {
+                getRolledOfFrequencyBin(frequencyBin)
+            } else {
+                frequencyBin
+            }
+        }
+    }
+
+    private fun getRolledOfFrequencyBin(frequencyBin: FrequencyBin): FrequencyBin {
+        return FrequencyBin(
+            frequency = frequencyBin.frequency,
+            magnitude = getRolledOfMagnitude(frequencyBin)
+        )
+    }
+
+    private fun getRolledOfMagnitude(frequencyBin: FrequencyBin): Float {
+        return calculateLinearRollOff(
+            magnitude = frequencyBin.magnitude,
+            progress = getProgressInRollOff(frequencyBin.frequency)
+        )
+    }
+
+    private fun getProgressInRollOff(frequency: Float): Float {
+        val positionInRollOff = frequency - highPassFrequency
+        return (positionInRollOff / rollOffRange)
+    }
+
+    private fun calculateLinearRollOff(magnitude: Float, progress: Float): Float {
+        return magnitude * (1 - progress)
     }
 
 }
