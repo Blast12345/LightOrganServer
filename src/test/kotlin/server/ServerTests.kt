@@ -7,18 +7,16 @@ import java.awt.Color
 
 class ServerTests {
 
-    private lateinit var timeUtility: FakeTimeUtility
     private lateinit var socket: FakeUdpSocket
     private val color = Color.blue
 
     @BeforeEach
     fun setup() {
-        timeUtility = FakeTimeUtility()
         socket = FakeUdpSocket()
     }
 
     private fun createSUT(): Server {
-        return Server(timeUtility, socket)
+        return Server(socket)
     }
 
     @Test
