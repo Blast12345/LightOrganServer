@@ -15,14 +15,14 @@ class SignalProcessor(
     private val sampleSize: Int = Config().sampleSize,
     private val sampleExtractor: SampleExtractorInterface = SampleExtractor(),
     private val hannFilter: HannFilterInterface = NormalizedHannFilter(),
-    private val interpolator: ZeroPaddingInterpolatorInterface = NormalizedZeroPaddingInterpolator()
+    private val interpolator: ZeroPaddingInterpolatorInterface = NormalizedZeroPaddingInterpolator(),
+    private val interpolatedSampleSize: Int = Config().interpolatedSampleSize
 ) : SignalProcessorInterface {
 
     override fun process(audioSignal: AudioSignal): DoubleArray {
-        val fewestSamplesNeeded = sampleExtractor.extract(audioSignal, sampleSize)
-        val filteredSamples = hannFilter.filter(fewestSamplesNeeded)
-        // TODO: Interpolate to power of 2 (e.g. 65,536)
-        return interpolator.interpolate(filteredSamples, audioSignal.sampleRate.toInt())
+        val extractedSamples = sampleExtractor.extract(audioSignal, sampleSize)
+        val filteredSamples = hannFilter.filter(extractedSamples)
+        return interpolator.interpolate(filteredSamples, interpolatedSampleSize)
     }
 
 }
