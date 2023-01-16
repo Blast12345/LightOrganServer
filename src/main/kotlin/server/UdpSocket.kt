@@ -25,7 +25,14 @@ class UdpSocket : UdpSocketInterface {
     }
 
     private fun createPacket(message: String, address: String, port: Int): DatagramPacket {
-        val buffer = message.toByteArray()
+        return createPacket(
+            buffer = message.toByteArray(),
+            address = address,
+            port = port
+        )
+    }
+
+    private fun createPacket(buffer: ByteArray, address: String, port: Int): DatagramPacket {
         return DatagramPacket(
             buffer,
             buffer.size,
