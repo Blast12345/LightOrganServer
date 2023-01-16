@@ -31,22 +31,4 @@ class ServerTests {
         assertEquals(socket.port, 9999)
     }
 
-    @Test
-    fun `a timestamp is updated when a color is sent`() {
-        val sut = createSUT()
-        sut.sendColor(color)
-        assertEquals(timeUtility.currentTimeInMillisecondsValue, sut.lastColorTimestampInMilliseconds)
-    }
-
-    @Test
-    fun `compute the time since the last color`() {
-        val sut = createSUT()
-        val startTime: Long = 0
-        val duration: Long = 100
-        val endTime: Long = startTime + duration
-        sut.lastColorTimestampInMilliseconds = startTime
-        timeUtility.currentTimeInMillisecondsValue = endTime
-        assertEquals(duration, sut.millisecondsSinceLastSentColor)
-    }
-
 }

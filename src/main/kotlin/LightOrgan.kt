@@ -21,6 +21,7 @@ class LightOrgan(
     private var timestampOfLastSentColor = 0.0
 
     fun start() {
+        // TODO: Listen on one thread and process colors on another
         input.listenForAudioSamples(this)
     }
 
@@ -33,11 +34,18 @@ class LightOrgan(
     private fun sendColorToServer(audioSignal: AudioSignal) {
         val color = getColor(audioSignal)
         server.sendColor(color)
+        printLatency()
         updateTimestampOfLastSentColor()
     }
 
     private fun getColor(audioSignal: AudioSignal): Color {
         return colorFactory.create(audioSignal)
+    }
+
+    private fun printLatency() {
+        val latencyInSeconds = secondsSinceLastSentColor()
+        val latencyInMilliseconds = latencyInSeconds * 1000
+        println("Latency: ${latencyInMilliseconds.toInt()}")
     }
 
     private fun updateTimestampOfLastSentColor() {
