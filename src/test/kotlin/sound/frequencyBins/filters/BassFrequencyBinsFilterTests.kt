@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sound.frequencyBins.FrequencyBin
 
-class BassBinsFilterTests {
+class BassFrequencyBinsFilterTests {
 
     private val bin1 = FrequencyBin(119F, 0F)
     private val bin2 = FrequencyBin(120F, 0F)
@@ -12,8 +12,8 @@ class BassBinsFilterTests {
     private val frequencyBins = listOf(bin1, bin2, bin3)
 
 
-    private fun createSUT(): BassBinsFilter {
-        return BassBinsFilter()
+    private fun createSUT(): BassFrequencyBinsFilter {
+        return BassFrequencyBinsFilter()
     }
 
     @Test

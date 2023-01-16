@@ -13,10 +13,10 @@ class HueFactoryTests {
     }
 
     @Test
-    fun `return the dominant frequency's position in the color wheel`() {
+    fun `return the frequency's position in the color wheel`() {
         val sut = createSUT()
-        val dominantFrequencyBin = FrequencyBin(60F, 0F)
-        val hue = sut.create(dominantFrequencyBin)
+        val frequencyBin = FrequencyBin(60F, 0F)
+        val hue = sut.create(frequencyBin)
         assertEquals(0.5F, hue)
     }
 

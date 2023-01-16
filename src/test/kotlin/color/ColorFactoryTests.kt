@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.frequencyBins.FrequencyBinsServiceInterface
 import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactoryInterface
-import sound.frequencyBins.filters.BassBinsFilterInterface
+import sound.frequencyBins.filters.BassFrequencyBinsFilterInterface
 import toolkit.color.getBrightness
 import toolkit.color.getHue
 import toolkit.color.getSaturation
@@ -22,7 +22,7 @@ import kotlin.random.Random
 class ColorFactoryTests {
 
     private var frequencyBinsService: FrequencyBinsServiceInterface = mockk()
-    private val bassBinsFilter: BassBinsFilterInterface = mockk()
+    private val bassFrequencyBinsFilter: BassFrequencyBinsFilterInterface = mockk()
     private var dominantFrequencyBinFactory: DominantFrequencyBinFactoryInterface = mockk()
     private var hueFactory: HueFactoryInterface = mockk()
     private var brightnessFactory: BrightnessFactoryInterface = mockk()
@@ -30,7 +30,7 @@ class ColorFactoryTests {
     private val audioSignal = nextAudioSignal()
 
     private val frequencyBins = nextFrequencyBins()
-    private val bassBins = nextFrequencyBins()
+    private val bassFrequencyBins = nextFrequencyBins()
     private val dominantFrequencyBin = nextFrequencyBin()
     private val hue = Random.nextFloat()
     private val brightness = Random.nextFloat()
@@ -38,8 +38,8 @@ class ColorFactoryTests {
     @BeforeEach
     fun setup() {
         every { frequencyBinsService.getFrequencyBins(audioSignal) } returns frequencyBins
-        every { bassBinsFilter.filter(frequencyBins) } returns bassBins
-        every { dominantFrequencyBinFactory.create(bassBins) } returns dominantFrequencyBin
+        every { bassFrequencyBinsFilter.filter(frequencyBins) } returns bassFrequencyBins
+        every { dominantFrequencyBinFactory.create(bassFrequencyBins) } returns dominantFrequencyBin
         every { hueFactory.create(dominantFrequencyBin) } returns hue
         every { brightnessFactory.create(dominantFrequencyBin) } returns brightness
     }
@@ -52,7 +52,7 @@ class ColorFactoryTests {
     private fun createSUT(): ColorFactory {
         return ColorFactory(
             frequencyBinsService = frequencyBinsService,
-            bassBinsFilter = bassBinsFilter,
+            bassFrequencyBinsFilter = bassFrequencyBinsFilter,
             dominantFrequencyBinFactory = dominantFrequencyBinFactory,
             hueFactory = hueFactory,
             brightnessFactory = brightnessFactory

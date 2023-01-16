@@ -6,8 +6,8 @@ import sound.frequencyBins.FrequencyBinsService
 import sound.frequencyBins.FrequencyBinsServiceInterface
 import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactory
 import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactoryInterface
-import sound.frequencyBins.filters.BassBinsFilter
-import sound.frequencyBins.filters.BassBinsFilterInterface
+import sound.frequencyBins.filters.BassFrequencyBinsFilter
+import sound.frequencyBins.filters.BassFrequencyBinsFilterInterface
 import sound.input.samples.AudioSignal
 import java.awt.Color
 
@@ -18,7 +18,7 @@ interface ColorFactoryInterface {
 class ColorFactory(
     // TODO: Maybe there should be a BassBinsService? Creating AND filtering the bins here feels smelly.
     private val frequencyBinsService: FrequencyBinsServiceInterface = FrequencyBinsService(),
-    private val bassBinsFilter: BassBinsFilterInterface = BassBinsFilter(),
+    private val bassFrequencyBinsFilter: BassFrequencyBinsFilterInterface = BassFrequencyBinsFilter(),
     private val dominantFrequencyBinFactory: DominantFrequencyBinFactoryInterface = DominantFrequencyBinFactory(),
     private val hueFactory: HueFactoryInterface = HueFactory(),
     private val brightnessFactory: BrightnessFactoryInterface = BrightnessFactory()
@@ -27,9 +27,9 @@ class ColorFactory(
     private val defaultColor = Color.black
 
     override fun create(audioSignal: AudioSignal): Color {
-        val frequencyBins = getFrequencyBins(audioSignal)
-        val bassBins = getBassBins(frequencyBins)
-        val dominantBin = getDominantBin(bassBins) ?: return defaultColor
+        val bins = getFrequencyBins(audioSignal)
+        val bassBins = getBassFrequencyBins(bins)
+        val dominantBin = getDominantFrequencyBin(bassBins) ?: return defaultColor
         return getColor(dominantBin)
     }
 
@@ -37,32 +37,32 @@ class ColorFactory(
         return frequencyBinsService.getFrequencyBins(audioSignal)
     }
 
-    private fun getBassBins(frequencyBins: FrequencyBinList): FrequencyBinList {
-        return bassBinsFilter.filter(frequencyBins)
+    private fun getBassFrequencyBins(frequencyBins: FrequencyBinList): FrequencyBinList {
+        return bassFrequencyBinsFilter.filter(frequencyBins)
     }
 
-    private fun getDominantBin(frequencyBins: FrequencyBinList): FrequencyBin? {
+    private fun getDominantFrequencyBin(frequencyBins: FrequencyBinList): FrequencyBin? {
         return dominantFrequencyBinFactory.create(frequencyBins)
     }
 
-    private fun getColor(dominantBin: FrequencyBin): Color {
+    private fun getColor(frequencyBin: FrequencyBin): Color {
         return Color.getHSBColor(
-            getHue(dominantBin),
+            getHue(frequencyBin),
             getSaturation(),
-            getBrightness(dominantBin)
+            getBrightness(frequencyBin)
         )
     }
 
-    private fun getHue(dominantBin: FrequencyBin): Float {
-        return hueFactory.create(dominantBin)
+    private fun getHue(frequencyBin: FrequencyBin): Float {
+        return hueFactory.create(frequencyBin)
     }
 
     private fun getSaturation(): Float {
         return 1F
     }
 
-    private fun getBrightness(dominantBin: FrequencyBin): Float {
-        return brightnessFactory.create(dominantBin)
+    private fun getBrightness(frequencyBin: FrequencyBin): Float {
+        return brightnessFactory.create(frequencyBin)
     }
 
 }

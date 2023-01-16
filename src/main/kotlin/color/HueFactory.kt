@@ -4,20 +4,20 @@ import Config
 import sound.frequencyBins.FrequencyBin
 
 interface HueFactoryInterface {
-    fun create(dominantBin: FrequencyBin): Float
+    fun create(frequencyBin: FrequencyBin): Float
 }
 
 class HueFactory(
     private val colorWheel: ColorWheel = Config().colorWheel
 ) : HueFactoryInterface {
 
-    override fun create(dominantBin: FrequencyBin): Float {
-        return getBaseHue(dominantBin) + getHueOffset()
+    override fun create(frequencyBin: FrequencyBin): Float {
+        return getBaseHue(frequencyBin) + getHueOffset()
     }
 
-    private fun getBaseHue(dominantBin: FrequencyBin): Float {
+    private fun getBaseHue(frequencyBin: FrequencyBin): Float {
         val frequencyRange = getFrequencyRange()
-        val positionInRange = getPositionInRange(dominantBin)
+        val positionInRange = getPositionInRange(frequencyBin)
         return positionInRange / frequencyRange
     }
 
@@ -25,8 +25,8 @@ class HueFactory(
         return colorWheel.endingFrequency - colorWheel.startingFrequency
     }
 
-    private fun getPositionInRange(dominantBin: FrequencyBin): Float {
-        return dominantBin.frequency - colorWheel.startingFrequency
+    private fun getPositionInRange(frequencyBin: FrequencyBin): Float {
+        return frequencyBin.frequency - colorWheel.startingFrequency
     }
 
     private fun getHueOffset(): Float {
