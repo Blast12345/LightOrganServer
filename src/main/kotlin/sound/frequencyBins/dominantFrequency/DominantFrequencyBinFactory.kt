@@ -2,6 +2,8 @@ package sound.frequencyBins.dominantFrequency
 
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
+import sound.frequencyBins.dominantFrequency.magnitude.MagnitudeEstimator
+import sound.frequencyBins.dominantFrequency.magnitude.averagePeakStrategy.MagnitudeAveragePeakEstimator
 
 interface DominantFrequencyBinFactoryInterface {
     fun create(frequencyBins: FrequencyBinList): FrequencyBin?
@@ -9,7 +11,7 @@ interface DominantFrequencyBinFactoryInterface {
 
 class DominantFrequencyBinFactory(
     private val dominantFrequencyCalculator: DominantFrequencyCalculatorInterface = DominantFrequencyCalculator(),
-    private val magnitudeInterpolator: MagnitudeEstimatorInterface = MagnitudeEstimator(),
+    private val magnitudeEstimator: MagnitudeEstimator = MagnitudeAveragePeakEstimator()
 ) : DominantFrequencyBinFactoryInterface {
 
     override fun create(frequencyBins: FrequencyBinList): FrequencyBin? {
@@ -23,7 +25,7 @@ class DominantFrequencyBinFactory(
     }
 
     private fun getEstimatedMagnitude(frequency: Float, frequencyBins: FrequencyBinList): Float? {
-        return magnitudeInterpolator.estimate(frequency, frequencyBins)
+        return magnitudeEstimator.estimate(frequency, frequencyBins)
     }
 
 }
