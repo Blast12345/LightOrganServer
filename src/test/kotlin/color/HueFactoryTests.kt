@@ -13,7 +13,7 @@ class HueFactoryTests {
     }
 
     @Test
-    fun `return the frequency's position in the color wheel`() {
+    fun `return the frequency's relative position in the color wheel`() {
         val sut = createSUT()
         val frequencyBin = FrequencyBin(60F, 0F)
         val hue = sut.create(frequencyBin)
