@@ -31,21 +31,21 @@ class BassFrequencyBinsFilter(
             val isAboveHighPassFrequency = frequencyBin.frequency > highPassFrequency
 
             if (isAboveHighPassFrequency) {
-                getRolledOfFrequencyBin(frequencyBin)
+                getRolledOffFrequencyBin(frequencyBin)
             } else {
                 frequencyBin
             }
         }
     }
 
-    private fun getRolledOfFrequencyBin(frequencyBin: FrequencyBin): FrequencyBin {
+    private fun getRolledOffFrequencyBin(frequencyBin: FrequencyBin): FrequencyBin {
         return FrequencyBin(
             frequency = frequencyBin.frequency,
-            magnitude = getRolledOfMagnitude(frequencyBin)
+            magnitude = getRolledOffMagnitude(frequencyBin)
         )
     }
 
-    private fun getRolledOfMagnitude(frequencyBin: FrequencyBin): Float {
+    private fun getRolledOffMagnitude(frequencyBin: FrequencyBin): Float {
         return calculateLinearRollOff(
             magnitude = frequencyBin.magnitude,
             progress = getProgressInRollOff(frequencyBin.frequency)
