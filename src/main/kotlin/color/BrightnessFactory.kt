@@ -8,6 +8,7 @@ interface BrightnessFactoryInterface {
 
 class BrightnessFactory : BrightnessFactoryInterface {
 
+    // TODO: Improve logic around really low values. There is a lot of flickering.
     override fun create(frequency: FrequencyBin): Float {
         return if (frequency.magnitude < 1) {
             frequency.magnitude

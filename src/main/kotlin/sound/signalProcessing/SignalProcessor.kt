@@ -1,6 +1,6 @@
 package sound.signalProcessing
 
-import Config
+import config.Config
 import sound.input.samples.AudioSignal
 import sound.signalProcessing.hannFilter.HannFilterInterface
 import sound.signalProcessing.hannFilter.NormalizedHannFilter
