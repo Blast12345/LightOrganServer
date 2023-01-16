@@ -6,18 +6,17 @@ import sound.frequencyBins.FrequencyBin
 
 class HueFactoryTests {
 
-    private val lowestFrequencyBin = FrequencyBin(50F, 0F)
-    private val dominantFrequencyBin = FrequencyBin(75F, 0F)
-    private val highestFrequencyBin = FrequencyBin(100F, 0F)
+    private val colorWheel = ColorWheel(40F, 120F, 0.25F)
 
     private fun createSUT(): HueFactory {
-        return HueFactory()
+        return HueFactory(colorWheel)
     }
 
     @Test
-    fun `the hue is corresponds to the position of the dominant frequency within the provided range`() {
+    fun `return the frequency's relative position in the color wheel`() {
         val sut = createSUT()
-        val hue = sut.create(dominantFrequencyBin, lowestFrequencyBin, highestFrequencyBin)
+        val frequencyBin = FrequencyBin(60F, 0F)
+        val hue = sut.create(frequencyBin)
         assertEquals(0.5F, hue)
     }
 

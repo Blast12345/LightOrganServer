@@ -9,8 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.frequencyBins.FrequencyBinsServiceInterface
 import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactoryInterface
-import sound.frequencyBins.filters.BassBinsFilterInterface
-import sound.frequencyBins.finders.FrequencyBinFinderInterface
+import sound.frequencyBins.filters.BassFrequencyBinsFilterInterface
 import toolkit.color.getBrightness
 import toolkit.color.getHue
 import toolkit.color.getSaturation
@@ -23,8 +22,7 @@ import kotlin.random.Random
 class ColorFactoryTests {
 
     private var frequencyBinsService: FrequencyBinsServiceInterface = mockk()
-    private val bassBinsFilter: BassBinsFilterInterface = mockk()
-    private val frequencyBinFinder: FrequencyBinFinderInterface = mockk()
+    private val bassFrequencyBinsFilter: BassFrequencyBinsFilterInterface = mockk()
     private var dominantFrequencyBinFactory: DominantFrequencyBinFactoryInterface = mockk()
     private var hueFactory: HueFactoryInterface = mockk()
     private var brightnessFactory: BrightnessFactoryInterface = mockk()
@@ -32,9 +30,7 @@ class ColorFactoryTests {
     private val audioSignal = nextAudioSignal()
 
     private val frequencyBins = nextFrequencyBins()
-    private val bassBins = nextFrequencyBins()
-    private val lowestBin = nextFrequencyBin()
-    private val highestBin = nextFrequencyBin()
+    private val bassFrequencyBins = nextFrequencyBins()
     private val dominantFrequencyBin = nextFrequencyBin()
     private val hue = Random.nextFloat()
     private val brightness = Random.nextFloat()
@@ -42,11 +38,9 @@ class ColorFactoryTests {
     @BeforeEach
     fun setup() {
         every { frequencyBinsService.getFrequencyBins(audioSignal) } returns frequencyBins
-        every { bassBinsFilter.filter(frequencyBins) } returns bassBins
-        every { frequencyBinFinder.findLowest(bassBins) } returns lowestBin
-        every { frequencyBinFinder.findHighest(bassBins) } returns highestBin
-        every { dominantFrequencyBinFactory.create(bassBins) } returns dominantFrequencyBin
-        every { hueFactory.create(dominantFrequencyBin, lowestBin, highestBin) } returns hue
+        every { bassFrequencyBinsFilter.filter(frequencyBins) } returns bassFrequencyBins
+        every { dominantFrequencyBinFactory.create(bassFrequencyBins) } returns dominantFrequencyBin
+        every { hueFactory.create(dominantFrequencyBin) } returns hue
         every { brightnessFactory.create(dominantFrequencyBin) } returns brightness
     }
 
@@ -58,8 +52,7 @@ class ColorFactoryTests {
     private fun createSUT(): ColorFactory {
         return ColorFactory(
             frequencyBinsService = frequencyBinsService,
-            bassBinsFilter = bassBinsFilter,
-            frequencyBinFinder = frequencyBinFinder,
+            bassFrequencyBinsFilter = bassFrequencyBinsFilter,
             dominantFrequencyBinFactory = dominantFrequencyBinFactory,
             hueFactory = hueFactory,
             brightnessFactory = brightnessFactory
@@ -95,20 +88,5 @@ class ColorFactoryTests {
         assertEquals(Color.black, color)
     }
 
-    @Test
-    fun `return black when a lowest frequency cannot be determined`() {
-        val sut = createSUT()
-        every { frequencyBinFinder.findLowest(any()) } returns null
-        val color = sut.create(audioSignal)
-        assertEquals(Color.black, color)
-    }
-
-    @Test
-    fun `return black when a highest frequency cannot be determined`() {
-        val sut = createSUT()
-        every { frequencyBinFinder.findHighest(any()) } returns null
-        val color = sut.create(audioSignal)
-        assertEquals(Color.black, color)
-    }
 
 }
