@@ -6,7 +6,6 @@ interface WeightedMagnitudeCalculatorInterface {
     fun calculate(frequencyBins: FrequencyBinList): Float
 }
 
-// TODO: Test me
 class WeightedMagnitudeCalculator : WeightedMagnitudeCalculatorInterface {
 
     override fun calculate(frequencyBins: FrequencyBinList): Float {
