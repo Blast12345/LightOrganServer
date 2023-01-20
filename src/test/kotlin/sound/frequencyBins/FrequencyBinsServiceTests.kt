@@ -102,6 +102,8 @@ class FrequencyBinsServiceTests {
         // NOTE: This is an integration test
         every { config.interpolatedSampleSize } returns 48000
         every { config.sampleSize } returns 4096
+        every { config.audioFormat.channels } returns 1
+        every { config.magnitudeMultiplier } returns 1F
         val sut = FrequencyBinsService(config)
 
         val fiftyHertzSignal = createAudioSignal(50F)

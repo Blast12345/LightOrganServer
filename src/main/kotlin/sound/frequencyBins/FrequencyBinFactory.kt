@@ -10,11 +10,12 @@ class FrequencyBinFactory(
     config: Config
 ) : FrequencyBinFactoryInterface {
     
+    private val numberOfChannels = config.audioFormat.channels
     private val magnitudeMultiplier = config.magnitudeMultiplier
 
     override fun create(index: Int, granularity: Float, magnitude: Double): FrequencyBin {
         return FrequencyBin(
-            frequency = index * granularity * 2, // TODO: Account for number of channels
+            frequency = index * granularity * numberOfChannels,
             magnitude = magnitude.toFloat() * magnitudeMultiplier
         )
     }

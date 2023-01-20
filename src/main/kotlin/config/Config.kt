@@ -1,7 +1,10 @@
 package config
 
+import javax.sound.sampled.AudioFormat
+
 interface Config {
-    // TODO: Input device
+    // The audio format of the input
+    val audioFormat: AudioFormat
 
     // Helps identify a hue for a given frequency
     val colorWheel: ColorWheel
@@ -16,6 +19,7 @@ interface Config {
     // We interpolate the sample size to a higher value to reveal obscured frequencies,
     // increasing the accuracy of frequency calculations.
     // Higher values and values that are not powers of 2 increase processing time.
+    // TODO: Maybe abandon interpolation in favor of DFTs
     val interpolatedSampleSize: Int
 
     // Helps determine how we estimate the dominant frequency's magnitude
