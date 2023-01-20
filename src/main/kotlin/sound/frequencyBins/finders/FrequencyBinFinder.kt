@@ -4,33 +4,35 @@ import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 
 interface FrequencyBinFinderInterface {
-    fun findExact(frequency: Float, frequencyBins: FrequencyBinList): FrequencyBin?
-    fun findLowerNeighbor(frequency: Float, frequencyBins: FrequencyBinList): FrequencyBin?
-    fun findHigherNeighbor(frequency: Float, frequencyBins: FrequencyBinList): FrequencyBin?
-    fun findLowest(frequencyBins: FrequencyBinList): FrequencyBin?
-    fun findHighest(frequencyBins: FrequencyBinList): FrequencyBin?
+    fun findPeaks(frequencyBins: FrequencyBinList): FrequencyBinList
 }
 
 class FrequencyBinFinder : FrequencyBinFinderInterface {
 
-    override fun findExact(frequency: Float, frequencyBins: FrequencyBinList): FrequencyBin? {
-        return frequencyBins.firstOrNull { it.frequency == frequency }
-    }
+    override fun findPeaks(frequencyBins: FrequencyBinList): FrequencyBinList {
+        val peaks: MutableList<FrequencyBin> = mutableListOf()
 
-    override fun findLowerNeighbor(frequency: Float, frequencyBins: FrequencyBinList): FrequencyBin? {
-        return frequencyBins.lastOrNull { it.frequency < frequency }
-    }
+        for (i in frequencyBins.indices) {
+            val previousBin = frequencyBins.elementAtOrNull(i - 1)
+            val currentBin = frequencyBins.elementAtOrNull(i)
+            val nextBin = frequencyBins.elementAtOrNull(i + 1)
 
-    override fun findHigherNeighbor(frequency: Float, frequencyBins: FrequencyBinList): FrequencyBin? {
-        return frequencyBins.firstOrNull { it.frequency > frequency }
-    }
+            val previousMagnitude = previousBin?.magnitude
+            val currentBinMagnitude = currentBin?.magnitude
+            val nextBinMagnitude = nextBin?.magnitude
 
-    override fun findLowest(frequencyBins: FrequencyBinList): FrequencyBin? {
-        return frequencyBins.minByOrNull { it.frequency }
-    }
+            if (previousMagnitude != null && currentBinMagnitude != null && nextBinMagnitude != null) {
+                val isGreaterThanPrevious = currentBinMagnitude > previousMagnitude
+                val isGreaterThanNext = currentBinMagnitude > nextBinMagnitude
+                val isPeak = isGreaterThanPrevious && isGreaterThanNext
 
-    override fun findHighest(frequencyBins: FrequencyBinList): FrequencyBin? {
-        return frequencyBins.maxByOrNull { it.frequency }
+                if (isPeak) {
+                    peaks.add(currentBin)
+                }
+            }
+        }
+
+        return peaks
     }
 
 }

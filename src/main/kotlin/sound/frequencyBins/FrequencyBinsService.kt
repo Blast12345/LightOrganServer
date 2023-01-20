@@ -18,7 +18,7 @@ class FrequencyBinsService(
     private val signalProcessor: SignalProcessorInterface = SignalProcessor(config),
     private val relativeMagnitudesCalculator: RelativeMagnitudesCalculatorInterface = RelativeMagnitudesCalculator(),
     private val granularityCalculator: GranularityCalculatorInterface = GranularityCalculator(),
-    private val frequencyBinListFactory: FrequencyBinListFactoryInterface = FrequencyBinListFactory(),
+    private val frequencyBinListFactory: FrequencyBinListFactoryInterface = FrequencyBinListFactory(config),
     private val frequencyBinListDenoiser: FrequencyBinListDenoiserInterface = FrequencyBinListDenoiser()
 ) : FrequencyBinsServiceInterface {
 

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.frequencyBins.FrequencyBin
+import sound.frequencyBins.dominantFrequency.frequency.DominantFrequencyCalculatorInterface
 import sound.frequencyBins.dominantFrequency.magnitude.MagnitudeEstimator
 import toolkit.monkeyTest.nextFrequencyBins
 import kotlin.random.Random
