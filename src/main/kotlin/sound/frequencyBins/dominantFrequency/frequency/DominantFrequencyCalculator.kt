@@ -9,7 +9,9 @@ interface DominantFrequencyCalculatorInterface {
 }
 
 class DominantFrequencyCalculator(
-    private val frequencyBinFinder: FrequencyBinFinderInterface = FrequencyBinFinder()
+    private val frequencyBinFinder: FrequencyBinFinderInterface = FrequencyBinFinder(),
+    private val weightedMagnitudeCalculator: WeightedMagnitudeCalculatorInterface = WeightedMagnitudeCalculator(),
+    private val totalMagnitudeCalculator: TotalMagnitudeCalculatorInterface = TotalMagnitudeCalculator()
 ) : DominantFrequencyCalculatorInterface {
 
     override fun calculate(frequencyBins: FrequencyBinList): Float? {
@@ -23,20 +25,12 @@ class DominantFrequencyCalculator(
         return frequencyBinFinder.findPeaks(frequencyBins)
     }
 
-    // TODO: Extract
     private fun weightedMagnitude(frequencyBins: FrequencyBinList): Float {
-        var weightedMagnitude = 0F
-
-        for (frequencyBin in frequencyBins) {
-            weightedMagnitude += frequencyBin.frequency * frequencyBin.magnitude
-        }
-
-        return weightedMagnitude
+        return weightedMagnitudeCalculator.calculate(frequencyBins)
     }
 
-    // TODO: Extract
     private fun totalMagnitude(frequencyBins: FrequencyBinList): Float {
-        return frequencyBins.map { it.magnitude }.sum()
+        return totalMagnitudeCalculator.calculate(frequencyBins)
     }
 
     private fun averageFrequency(weightedMagnitude: Float, totalMagnitude: Float): Float? {

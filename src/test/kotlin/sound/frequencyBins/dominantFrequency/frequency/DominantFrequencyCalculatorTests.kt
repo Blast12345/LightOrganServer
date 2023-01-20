@@ -3,29 +3,32 @@ package sound.frequencyBins.dominantFrequency.frequency
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.finders.FrequencyBinFinder
 import toolkit.monkeyTest.nextFrequencyBins
+import kotlin.random.Random
 
 class DominantFrequencyCalculatorTests {
 
     private val frequencyBinFinder: FrequencyBinFinder = mockk()
+    private val weightedMagnitudeCalculator: WeightedMagnitudeCalculatorInterface = mockk()
+    private val totalMagnitudeCalculator: TotalMagnitudeCalculatorInterface = mockk()
 
     private val frequencyBins = nextFrequencyBins()
 
-    private val peakBin1 = FrequencyBin(10F, 2F)
-    private val peakBin2 = FrequencyBin(20F, 8F)
-    private val peakFrequencyBins = listOf(peakBin1, peakBin2)
+    private val peakFrequencyBins = nextFrequencyBins()
+    private val weightedMagnitude = Random.nextFloat()
+    private val totalMagnitude = Random.nextFloat()
 
     @BeforeEach
     fun setup() {
         every { frequencyBinFinder.findPeaks(any()) } returns peakFrequencyBins
+        every { weightedMagnitudeCalculator.calculate(any()) } returns weightedMagnitude
+        every { totalMagnitudeCalculator.calculate(any()) } returns totalMagnitude
     }
 
     @AfterEach
@@ -35,24 +38,26 @@ class DominantFrequencyCalculatorTests {
 
     private fun createSUT(): DominantFrequencyCalculator {
         return DominantFrequencyCalculator(
-            frequencyBinFinder = frequencyBinFinder
+            frequencyBinFinder = frequencyBinFinder,
+            weightedMagnitudeCalculator = weightedMagnitudeCalculator,
+            totalMagnitudeCalculator = totalMagnitudeCalculator
         )
     }
 
     @Test
     fun `return the weighted average of the peak frequencies`() {
         val sut = createSUT()
+        every { weightedMagnitudeCalculator.calculate(peakFrequencyBins) } returns 20F
+        every { totalMagnitudeCalculator.calculate(peakFrequencyBins) } returns 5F
         val actual = sut.calculate(frequencyBins)
-        assertEquals(18F, actual)
-        verify { frequencyBinFinder.findPeaks(frequencyBins) }
+        assertEquals(4F, actual)
     }
 
     @Test
     fun `return null the total magnitude is zero`() {
         val sut = createSUT()
-        every { frequencyBinFinder.findPeaks(any()) } returns peakFrequencyBins
-        val quietBin = FrequencyBin(10F, 0F)
-        val frequencyBins = listOf(quietBin)
+        every { weightedMagnitudeCalculator.calculate(peakFrequencyBins) } returns 20F
+        every { totalMagnitudeCalculator.calculate(peakFrequencyBins) } returns 0F
         val actual = sut.calculate(frequencyBins)
         assertNull(actual)
     }
