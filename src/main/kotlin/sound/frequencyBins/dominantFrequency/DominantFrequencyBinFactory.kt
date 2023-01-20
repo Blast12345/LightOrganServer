@@ -3,6 +3,8 @@ package sound.frequencyBins.dominantFrequency
 import config.Config
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
+import sound.frequencyBins.dominantFrequency.frequency.DominantFrequencyCalculator
+import sound.frequencyBins.dominantFrequency.frequency.DominantFrequencyCalculatorInterface
 import sound.frequencyBins.dominantFrequency.magnitude.MagnitudeEstimator
 import sound.frequencyBins.dominantFrequency.magnitude.averagePeakStrategy.MagnitudeAveragePeakEstimator
 

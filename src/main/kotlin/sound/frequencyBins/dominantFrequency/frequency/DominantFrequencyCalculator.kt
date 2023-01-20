@@ -1,19 +1,29 @@
-package sound.frequencyBins.dominantFrequency
+package sound.frequencyBins.dominantFrequency.frequency
 
 import sound.frequencyBins.FrequencyBinList
+import sound.frequencyBins.finders.FrequencyBinFinder
+import sound.frequencyBins.finders.FrequencyBinFinderInterface
 
 interface DominantFrequencyCalculatorInterface {
     fun calculate(frequencyBins: FrequencyBinList): Float?
 }
 
-class DominantFrequencyCalculator : DominantFrequencyCalculatorInterface {
+class DominantFrequencyCalculator(
+    private val frequencyBinFinder: FrequencyBinFinderInterface = FrequencyBinFinder()
+) : DominantFrequencyCalculatorInterface {
 
     override fun calculate(frequencyBins: FrequencyBinList): Float? {
-        val weightedMagnitude = weightedMagnitude(frequencyBins)
-        val totalMagnitude = totalMagnitude(frequencyBins)
+        val peakBins = getPeakFrequencyBins(frequencyBins)
+        val weightedMagnitude = weightedMagnitude(peakBins)
+        val totalMagnitude = totalMagnitude(peakBins)
         return averageFrequency(weightedMagnitude, totalMagnitude)
     }
 
+    private fun getPeakFrequencyBins(frequencyBins: FrequencyBinList): FrequencyBinList {
+        return frequencyBinFinder.findPeaks(frequencyBins)
+    }
+
+    // TODO: Extract
     private fun weightedMagnitude(frequencyBins: FrequencyBinList): Float {
         var weightedMagnitude = 0F
 
@@ -24,6 +34,7 @@ class DominantFrequencyCalculator : DominantFrequencyCalculatorInterface {
         return weightedMagnitude
     }
 
+    // TODO: Extract
     private fun totalMagnitude(frequencyBins: FrequencyBinList): Float {
         return frequencyBins.map { it.magnitude }.sum()
     }
