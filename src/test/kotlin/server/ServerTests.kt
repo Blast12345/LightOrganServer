@@ -1,32 +1,52 @@
 package server
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import config.Config
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import toolkit.monkeyTest.nextClient
 import java.awt.Color
 
 class ServerTests {
 
-    private lateinit var socket: FakeUdpSocket
+    private val config: Config = mockk()
+    private val socket: UdpSocket = mockk()
+
     private val color = Color.blue
+    private val colorString = "0,0,255"
+
+    private val client1 = nextClient()
+    private val client2 = nextClient()
+    private val clients = listOf(client1, client2)
 
     @BeforeEach
     fun setup() {
-        socket = FakeUdpSocket()
+        every { config.clients } returns clients
+        every { socket.send(any(), any()) } returns Unit
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
     }
 
     private fun createSUT(): Server {
-        return Server(socket)
+        return Server(
+            config = config,
+            socket = socket
+        )
     }
 
     @Test
-    fun `the server can send a color`() {
+    fun `the server sends the color to each client`() {
         val sut = createSUT()
         sut.sendColor(color)
-        assertEquals(socket.message, "${color.red},${color.green},${color.blue}")
-        // NOTE: We are assuming this is hardcoded for the MVP.
-        assertEquals(socket.address, "192.168.1.55")
-        assertEquals(socket.port, 9999)
+        verify { socket.send(colorString, client1) }
+        verify { socket.send(colorString, client2) }
     }
 
 }

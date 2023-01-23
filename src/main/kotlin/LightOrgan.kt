@@ -13,7 +13,7 @@ import java.awt.Color
 class LightOrgan(
     config: Config,
     private val input: InputInterface,
-    private val server: ServerInterface = Server(),
+    private val server: ServerInterface = Server(config),
     private val colorFactory: ColorFactoryInterface = ColorFactory(config),
     private val systemTime: SystemTimeInterface = SystemTime()
 ) : InputDelegate {

@@ -6,6 +6,9 @@ interface Config {
     // The audio format of the input
     val audioFormat: AudioFormat
 
+    // The clients listening for colors
+    val clients: List<Client>
+
     // Helps identify a hue for a given frequency
     val colorWheel: ColorWheel
 
