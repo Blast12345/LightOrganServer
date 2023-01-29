@@ -6,6 +6,7 @@ interface InputFinderInterface {
     fun getInput(): TargetDataLine
 }
 
+// TODO: InputLineFinder? TargetDataLineFinder?
 class InputFinder(
     private val allInputsFinder: AllInputsFinderInterface = AllInputsFinder()
 ) : InputFinderInterface {
