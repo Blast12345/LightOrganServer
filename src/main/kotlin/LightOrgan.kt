@@ -27,6 +27,7 @@ class LightOrgan(
     }
 
     override fun receiveAudioSignal(audioSignal: AudioSignal) {
+        // TODO: Update frame algorithm to use state; this may be doubling latency
         if (shouldSendNextColor()) {
             sendColorToServer(audioSignal)
         }
