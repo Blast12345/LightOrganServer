@@ -1,6 +1,8 @@
 package sound.input
 
 import io.mockk.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,6 +15,8 @@ class InputTests {
 
     private var dataLine: TargetDataLine = mockk()
     private var audioSignalFactory: AudioSignalFactoryInterface = mockk()
+    private var dispatcher: CoroutineDispatcher = UnconfinedTestDispatcher()
+
     private var delegate: InputDelegate = mockk()
 
     private val bufferSize = 4096
@@ -39,7 +43,11 @@ class InputTests {
     }
 
     private fun createSUT(): Input {
-        return Input(dataLine, audioSignalFactory)
+        return Input(
+            dataLine = dataLine,
+            audioSignalFactory = audioSignalFactory,
+            dispatcher = dispatcher
+        )
     }
 
     @Test

@@ -23,7 +23,6 @@ class LightOrgan(
     private var timestampOfLastSentColor = 0.0
 
     fun start() {
-        // TODO: Listen on one thread and process colors on another
         input.listenForAudioSamples(this)
     }
 

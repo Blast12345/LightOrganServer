@@ -1,5 +1,6 @@
 package sound.input
 
+import kotlinx.coroutines.*
 import sound.input.samples.AudioSignal
 import sound.input.samples.AudioSignalFactory
 import sound.input.samples.AudioSignalFactoryInterface
@@ -12,11 +13,13 @@ interface InputInterface {
 
 class Input(
     private val dataLine: TargetDataLine,
-    private val audioSignalFactory: AudioSignalFactoryInterface = AudioSignalFactory()
+    private val audioSignalFactory: AudioSignalFactoryInterface = AudioSignalFactory(),
+    private val scope: CoroutineScope = MainScope(),
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : InputInterface {
 
     private var samplesBuffer = ByteArray(dataLine.bufferSize)
-    private var shouldListen: Boolean = false
+    private var job: Job? = null
 
     init {
         dataLine.open()
@@ -24,16 +27,17 @@ class Input(
     }
 
     override fun listenForAudioSamples(delegate: InputDelegate) {
-        shouldListen = true
-        watchForNewData(delegate)
+        job = scope.launch(dispatcher) {
+            while (isActive) {
+                checkForNewAudioSignal(delegate)
+                delay(1)
+            }
+        }
     }
 
-    private fun watchForNewData(delegate: InputDelegate) {
-        // NOTE: New data becomes available every ~10 ms. I don't know how this delay is derived.
-        while (shouldListen) {
-            if (hasDataAvailable()) {
-                returnNextSampleTo(delegate)
-            }
+    private fun checkForNewAudioSignal(delegate: InputDelegate) {
+        if (hasDataAvailable()) {
+            returnNextSampleTo(delegate)
         }
     }
 
@@ -42,8 +46,8 @@ class Input(
     }
 
     private fun returnNextSampleTo(delegate: InputDelegate) {
-        val nextAudioSignal = getNextAudioSignal()
-        delegate.receiveAudioSignal(nextAudioSignal)
+        val newAudioSignal = getNextAudioSignal()
+        delegate.receiveAudioSignal(newAudioSignal)
     }
 
     private fun getNextAudioSignal(): AudioSignal {
@@ -76,7 +80,7 @@ class Input(
     }
 
     fun stopListening() {
-        shouldListen = false
+        job?.cancel()
     }
 
 }

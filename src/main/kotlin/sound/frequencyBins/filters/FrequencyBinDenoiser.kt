@@ -16,6 +16,7 @@ class FrequencyBinDenoiser : FrequencyBinDenoiserInterface {
     }
 
     // ENHANCEMENT: There may be a more elegant method; perhaps subtracting the average of the 10 lowest bins?
+    // TODO: Make denoising threshold configurable
     private fun getMagnitude(magnitude: Float): Float {
         return if (magnitude < 0.01) {
             0F
