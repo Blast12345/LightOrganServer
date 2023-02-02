@@ -34,7 +34,7 @@ class InputTests {
         every { dataLine.read(any(), 0, bytesAvailable) } returns bytesRead
         every { dataLine.format } returns format
         every { audioSignalFactory.create(any(), format) } returns audioSignal
-        every { delegate.receiveAudioSignal(any()) } returns Unit
+        every { delegate.receivedAudio(any()) } returns Unit
     }
 
     @AfterEach
@@ -62,9 +62,9 @@ class InputTests {
     @Test
     fun `return an audio signal when the data line has data available`() {
         val sut = createSUT()
-        every { delegate.receiveAudioSignal(any()) } answers { sut.stopListening() }
-        sut.listenForAudioSamples(delegate)
-        verify { delegate.receiveAudioSignal(audioSignal) }
+        every { delegate.receivedAudio(any()) } answers { sut.stopListening() }
+        sut.listenForAudio(delegate)
+        verify { delegate.receivedAudio(audioSignal) }
     }
 
 }

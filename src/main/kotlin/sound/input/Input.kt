@@ -8,7 +8,7 @@ import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
 interface InputInterface {
-    fun listenForAudioSamples(delegate: InputDelegate)
+    fun listenForAudio(delegate: InputDelegate)
 }
 
 class Input(
@@ -26,11 +26,11 @@ class Input(
         dataLine.start()
     }
 
-    override fun listenForAudioSamples(delegate: InputDelegate) {
+    override fun listenForAudio(delegate: InputDelegate) {
         job = scope.launch(dispatcher) {
             while (isActive) {
                 checkForNewAudioSignal(delegate)
-                delay(1)
+                delay(1) // TODO: Compute the delay based on the average time between data becoming available
             }
         }
     }
@@ -47,7 +47,7 @@ class Input(
 
     private fun returnNextSampleTo(delegate: InputDelegate) {
         val newAudioSignal = getNextAudioSignal()
-        delegate.receiveAudioSignal(newAudioSignal)
+        delegate.receivedAudio(newAudioSignal)
     }
 
     private fun getNextAudioSignal(): AudioSignal {

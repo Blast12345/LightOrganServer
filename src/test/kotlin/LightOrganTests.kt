@@ -5,32 +5,37 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import server.ServerInterface
 import sound.input.InputInterface
 import toolkit.monkeyTest.nextAudioSignal
 import toolkit.monkeyTest.nextColor
-import wrappers.SystemTimeInterface
-import kotlin.random.Random
+import java.awt.Color
 
 class LightOrganTests {
 
     private var config: Config = mockk()
     private var input: InputInterface = mockk()
-    private var server: ServerInterface = mockk()
+    private var audioCache: AudioCacheInterface = mockk()
+    private var colorBroadcaster: ColorBroadcasterInterface = mockk()
     private var colorFactory: ColorFactoryInterface = mockk()
-    private var systemTime: SystemTimeInterface = mockk()
-    private val audioSignal = nextAudioSignal()
-    private val oneSixtiethSecond = 1.0 / 60.0
-    private val twoSixtiethsSecond = oneSixtiethSecond * 2.0
+
+    private val receivedAudio = nextAudioSignal()
+
+    private val cachedAudio = nextAudioSignal()
+    private val nextColor = nextColor()
 
     @BeforeEach
     fun setup() {
-        every { input.listenForAudioSamples(any()) } returns Unit
-        every { server.sendColor(any()) } returns Unit
-        every { colorFactory.create(any()) } returns nextColor()
-        every { systemTime.currentTimeInSeconds() } returns Random.nextDouble()
+        every { input.listenForAudio(any()) } returns Unit
+        every { audioCache.setAudio(any()) } returns Unit
+        every { audioCache.getAudio() } returns cachedAudio
+        every { audioCache.clear() } returns Unit
+        every { colorBroadcaster.startBroadcasting(any()) } returns Unit
+        every { colorFactory.create(any()) } returns nextColor
+//        every { server.sendColor(any()) } returns Unit
+//        every { systemTime.currentTimeInSeconds() } returns Random.nextDouble()
     }
 
     @AfterEach
@@ -42,49 +47,73 @@ class LightOrganTests {
         return LightOrgan(
             config = config,
             input = input,
-            server = server,
-            colorFactory = colorFactory,
-            systemTime = systemTime
+            audioCache = audioCache,
+            colorBroadcaster = colorBroadcaster,
+            colorFactory = colorFactory
         )
     }
 
     @Test
-    fun `start listening to the input for audio`() {
+    fun `start listening for audio at initialization`() {
         val sut = createSUT()
-        sut.start()
-        verify { input.listenForAudioSamples(sut) }
+        verify { input.listenForAudio(sut) }
     }
 
     @Test
-    fun `send a color to the server when an audio signal is received`() {
+    fun `the cache is updated when new audio is received`() {
         val sut = createSUT()
-        sut.receiveAudioSignal(audioSignal)
-        verify { server.sendColor(any()) }
+        sut.receivedAudio(receivedAudio)
+        verify { audioCache.setAudio(receivedAudio) }
     }
 
     @Test
-    fun `the sent color is calculated from the audio signal`() {
+    fun `start broadcasting colors at initialization`() {
         val sut = createSUT()
-        val color = nextColor()
-        every { colorFactory.create(any()) } returns color
-        sut.receiveAudioSignal(audioSignal)
-        verify { server.sendColor(color) }
+        verify { colorBroadcaster.startBroadcasting(sut) }
     }
 
     @Test
-    fun `limit the number of colors per second to 60 to prevent saturation`() {
+    fun `not ready for broadcast when audio cache has no audio`() {
+        val sut = createSUT()
+        every { audioCache.getAudio() } returns null
+
+        val actual = sut.isReadyForNextBroadcast()
+
+        assertFalse(actual)
+    }
+
+    @Test
+    fun `ready for broadcast when audio cache is has audio`() {
+        val sut = createSUT()
+        val actual = sut.isReadyForNextBroadcast()
+        assertTrue(actual)
+    }
+
+    @Test
+    fun `the next color is created from the cached audio`() {
         val sut = createSUT()
 
-        every { systemTime.currentTimeInSeconds() } returns oneSixtiethSecond
-        sut.receiveAudioSignal(audioSignal)
-        verify(exactly = 1) { server.sendColor(any()) }
+        val actual = sut.getNextColor()
 
-        sut.receiveAudioSignal(audioSignal)
-        verify(exactly = 1) { server.sendColor(any()) }
+        assertEquals(nextColor, actual)
+        verify { colorFactory.create(cachedAudio) }
+    }
 
-        every { systemTime.currentTimeInSeconds() } returns twoSixtiethsSecond
-        sut.receiveAudioSignal(audioSignal)
-        verify(exactly = 2) { server.sendColor(any()) }
+    @Test
+    fun `the next color black when there is no cached audio`() {
+        val sut = createSUT()
+        every { audioCache.getAudio() } returns null
+
+        val actual = sut.getNextColor()
+
+        assertEquals(Color.black, actual)
+    }
+
+    @Test
+    fun `the cache is cleared when the next color is created`() {
+        val sut = createSUT()
+        sut.getNextColor()
+        verify { audioCache.clear() }
     }
 
 }

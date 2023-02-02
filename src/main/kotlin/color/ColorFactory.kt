@@ -48,6 +48,8 @@ class ColorFactory(
     }
 
     private fun getColor(frequencyBin: FrequencyBin): Color {
+        // TODO: Create a normalized color? 0,255,255 is roughly two times brighter than 0,255,255
+        // This may solve some of the "flickeriness"
         return Color.getHSBColor(
             getHue(frequencyBin),
             getSaturation(),

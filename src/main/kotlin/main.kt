@@ -6,17 +6,16 @@ import sound.input.finder.InputFinder
 
 fun main(): Unit = runBlocking {
     launch {
-        startLightOrgan()
+        createLightOrgan()
         keepAlive()
     }
 }
 
-private fun startLightOrgan() {
+private fun createLightOrgan(): LightOrgan {
     val dataLine = InputFinder().getInput()
     val input = Input(dataLine)
     val config = DefaultConfig(dataLine.format)
-    val lightOrgan = LightOrgan(config, input)
-    lightOrgan.start()
+    return LightOrgan(config, input)
 }
 
 private suspend fun keepAlive() {
