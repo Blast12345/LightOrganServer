@@ -18,8 +18,8 @@ class Input(
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : InputInterface {
 
-    private var samplesBuffer = ByteArray(dataLine.bufferSize)
     private var job: Job? = null
+    private var samplesBuffer = ByteArray(dataLine.bufferSize)
 
     init {
         dataLine.open()

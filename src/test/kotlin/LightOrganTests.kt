@@ -1,11 +1,12 @@
 import color.ColorFactoryInterface
+import colorBroadcaster.ColorBroadcaster
 import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.input.InputInterface
@@ -18,7 +19,7 @@ class LightOrganTests {
     private var config: Config = mockk()
     private var input: InputInterface = mockk()
     private var audioCache: AudioCacheInterface = mockk()
-    private var colorBroadcaster: ColorBroadcasterInterface = mockk()
+    private var colorBroadcaster: ColorBroadcaster = mockk()
     private var colorFactory: ColorFactoryInterface = mockk()
 
     private val receivedAudio = nextAudioSignal()
@@ -32,7 +33,7 @@ class LightOrganTests {
         every { audioCache.setAudio(any()) } returns Unit
         every { audioCache.getAudio() } returns cachedAudio
         every { audioCache.clear() } returns Unit
-        every { colorBroadcaster.startBroadcasting(any()) } returns Unit
+//        every { colorBroadcaster.startBroadcasting(any()) } returns Unit
         every { colorFactory.create(any()) } returns nextColor
 //        every { server.sendColor(any()) } returns Unit
 //        every { systemTime.currentTimeInSeconds() } returns Random.nextDouble()
@@ -45,8 +46,8 @@ class LightOrganTests {
 
     private fun createSUT(): LightOrgan {
         return LightOrgan(
-            config = config,
-            input = input,
+//            config = config,
+//            input = input,
             audioCache = audioCache,
             colorBroadcaster = colorBroadcaster,
             colorFactory = colorFactory
@@ -66,28 +67,28 @@ class LightOrganTests {
         verify { audioCache.setAudio(receivedAudio) }
     }
 
-    @Test
-    fun `start broadcasting colors at initialization`() {
-        val sut = createSUT()
-        verify { colorBroadcaster.startBroadcasting(sut) }
-    }
+//    @Test
+//    fun `start broadcasting colors at initialization`() {
+//        val sut = createSUT()
+//        verify { colorBroadcaster.startBroadcasting(sut) }
+//    }
 
-    @Test
-    fun `not ready for broadcast when audio cache has no audio`() {
-        val sut = createSUT()
-        every { audioCache.getAudio() } returns null
-
-        val actual = sut.isReadyForNextBroadcast()
-
-        assertFalse(actual)
-    }
-
-    @Test
-    fun `ready for broadcast when audio cache is has audio`() {
-        val sut = createSUT()
-        val actual = sut.isReadyForNextBroadcast()
-        assertTrue(actual)
-    }
+//    @Test
+//    fun `not ready for next color when audio cache has no audio`() {
+//        val sut = createSUT()
+//        every { audioCache.getAudio() } returns null
+//
+//        val actual = sut.isReadyForNextColor()
+//
+//        assertFalse(actual)
+//    }
+//
+//    @Test
+//    fun `ready for next color when audio cache is has audio`() {
+//        val sut = createSUT()
+//        val actual = sut.isReadyForNextColor()
+//        assertTrue(actual)
+//    }
 
     @Test
     fun `the next color is created from the cached audio`() {

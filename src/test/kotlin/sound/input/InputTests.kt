@@ -51,7 +51,7 @@ class InputTests {
     }
 
     @Test
-    fun `open and start a data line on initialization`() {
+    fun `open and start a data line at initialization`() {
         createSUT()
         verifyOrder {
             dataLine.open()

@@ -15,7 +15,7 @@ private fun createLightOrgan(): LightOrgan {
     val dataLine = InputFinder().getInput()
     val input = Input(dataLine)
     val config = DefaultConfig(dataLine.format)
-    return LightOrgan(config, input)
+    return LightOrgan(config)
 }
 
 private suspend fun keepAlive() {

@@ -25,4 +25,5 @@ compileKotlin {
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
 }
