@@ -1,40 +1,35 @@
 package sound.input
 
-import io.mockk.*
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.input.samples.AudioSignal
-import sound.input.samples.AudioSignalFactoryInterface
+import sound.input.samples.AudioSignalFactory
+import toolkit.monkeyTest.nextAudioSignal
 import javax.sound.sampled.AudioFormat
-import javax.sound.sampled.TargetDataLine
+import kotlin.random.Random
+
 
 class InputTests {
 
-    private var dataLine: TargetDataLine = mockk()
-    private var audioSignalFactory: AudioSignalFactoryInterface = mockk()
-    private var dispatcher: CoroutineDispatcher = UnconfinedTestDispatcher()
+    private val targetDataLineListener: TargetDataLineListener = mockk()
+    private val buffer: AudioBuffer = mockk()
+    private val audioClipFactory: AudioSignalFactory = mockk()
+    private val delegate: InputDelegate = mockk()
 
-    private var delegate: InputDelegate = mockk()
-
-    private val bufferSize = 4096
-    private val bytesAvailable = 1024
-    private val bytesRead = 1024
-    private val format = AudioFormat(44100F, 8, 1, true, true)
-    private val audioSignal = AudioSignal(doubleArrayOf(1.1), 44100F)
+    private val newSamples = Random.nextBytes(1024)
+    private val format: AudioFormat = mockk()
+    private val updatedBuffer = Random.nextBytes(1024)
+    private val audioClip = nextAudioSignal()
 
     @BeforeEach
     fun setup() {
-        every { dataLine.bufferSize } returns bufferSize
-        every { dataLine.open() } returns Unit
-        every { dataLine.start() } returns Unit
-        every { dataLine.available() } returns bytesAvailable
-        every { dataLine.read(any(), 0, bytesAvailable) } returns bytesRead
-        every { dataLine.format } returns format
-        every { audioSignalFactory.create(any(), format) } returns audioSignal
-        every { delegate.receivedAudio(any()) } returns Unit
+        every { buffer.updatedWith(any()) } returns updatedBuffer
+        every { audioClipFactory.create(any(), any()) } returns audioClip
+        every { delegate.received(any()) } returns Unit
     }
 
     @AfterEach
@@ -44,27 +39,32 @@ class InputTests {
 
     private fun createSUT(): Input {
         return Input(
-            dataLine = dataLine,
-            audioSignalFactory = audioSignalFactory,
-            dispatcher = dispatcher
+            targetDataLineListener = targetDataLineListener,
+            buffer = buffer,
+            audioClipFactory = audioClipFactory,
+            delegate = delegate
         )
     }
 
     @Test
-    fun `open and start a data line at initialization`() {
-        createSUT()
-        verifyOrder {
-            dataLine.open()
-            dataLine.start()
-        }
+    fun `update the buffer when new samples are received`() {
+        val sut = createSUT()
+        sut.received(newSamples, format)
+        verify { buffer.updatedWith(newSamples) }
     }
 
     @Test
-    fun `return an audio signal when the data line has data available`() {
+    fun `the updated buffer is used to create an audio clip`() {
         val sut = createSUT()
-        every { delegate.receivedAudio(any()) } answers { sut.stopListening() }
-        sut.listenForAudio(delegate)
-        verify { delegate.receivedAudio(audioSignal) }
+        sut.received(newSamples, format)
+        verify { audioClipFactory.create(updatedBuffer, format) }
+    }
+
+    @Test
+    fun `the audio clip is give to the delegate`() {
+        val sut = createSUT()
+        sut.received(newSamples, format)
+        verify { delegate.received(audioClip) }
     }
 
 }

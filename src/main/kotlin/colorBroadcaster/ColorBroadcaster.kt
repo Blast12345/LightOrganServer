@@ -6,10 +6,6 @@ import server.Server
 import server.ServerInterface
 import java.awt.Color
 
-interface ColorBroadcasterDelegate {
-    fun getNextColor(): Color?
-}
-
 class ColorBroadcaster(
     scope: CoroutineScope = MainScope(),
     private val config: Config,

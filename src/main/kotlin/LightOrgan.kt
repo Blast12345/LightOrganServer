@@ -39,11 +39,10 @@ class LightOrgan : InputDelegate, ColorBroadcasterDelegate {
 //        input.listenForAudio(this)
     }
 
-    override fun receivedAudio(audioSignal: AudioSignal) {
+    override fun received(audioSignal: AudioSignal) {
         audioCache.setAudio(audioSignal)
     }
 
-    // TODO:
     override fun getNextColor(): Color? {
         val audio = audioCache.getAudio()
         audioCache.clear()
