@@ -1,7 +1,9 @@
 package sound.input
 
+import config.Config
 import sound.input.samples.AudioSignalFactory
 import javax.sound.sampled.AudioFormat
+import javax.sound.sampled.TargetDataLine
 
 class Input : TargetDataLineListenerDelegate {
 
@@ -19,6 +21,17 @@ class Input : TargetDataLineListenerDelegate {
         this.targetDataLineListener = targetDataLineListener
         this.buffer = buffer
         this.audioClipFactory = audioClipFactory
+        this.delegate = delegate
+    }
+
+    constructor(
+        dataLine: TargetDataLine,
+        config: Config,
+        delegate: InputDelegate
+    ) {
+        this.targetDataLineListener = TargetDataLineListener(dataLine, this, config)
+        this.buffer = AudioBuffer(dataLine.bufferSize)
+        this.audioClipFactory = AudioSignalFactory()
         this.delegate = delegate
     }
 

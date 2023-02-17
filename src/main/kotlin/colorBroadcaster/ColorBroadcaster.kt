@@ -7,13 +7,17 @@ import server.ServerInterface
 import java.awt.Color
 
 class ColorBroadcaster(
-    scope: CoroutineScope = MainScope(),
     private val config: Config,
     private val delegate: ColorBroadcasterDelegate,
+    private val scope: CoroutineScope = MainScope(),
     private val server: ServerInterface = Server(config),
 ) {
 
     init {
+        startBroadcastingColors()
+    }
+
+    private fun startBroadcastingColors() {
         scope.launch {
             while (isActive) {
                 broadcastNextColorIfAble()

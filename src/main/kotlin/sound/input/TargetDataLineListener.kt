@@ -4,7 +4,6 @@ import config.Config
 import kotlinx.coroutines.*
 import javax.sound.sampled.TargetDataLine
 
-// TODO: Test me
 class TargetDataLineListener(
     private val dataLine: TargetDataLine,
     private val delegate: TargetDataLineListenerDelegate,
@@ -37,7 +36,7 @@ class TargetDataLineListener(
 
         if (hasBytesToRead) {
             val newSamples = getNewSamples(bytesToRead)
-            delegate.received(newSamples, dataLine.format) // TODO: Update test for format
+            delegate.received(newSamples, dataLine.format)
         }
     }
 

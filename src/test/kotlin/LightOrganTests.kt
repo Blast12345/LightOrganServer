@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import sound.input.Input
 import toolkit.monkeyTest.nextAudioSignal
 import toolkit.monkeyTest.nextColor
 
@@ -17,9 +18,13 @@ class LightOrganTests {
 
     private var config: Config = mockk()
 
-    //    private var input: InputInterface = mockk()
+    // TODO: It is a little smelly that I'm not doing anything with this
+    // But the principle I was following is that class should need to be "started" after initialization.
+    // Anything remotely like a start function (e.g. beginListeningWith(delegate) ) creates significant test smells.
+    // maybe init with delegate as null and have a setDelegate function; test can use the intializer version and prod code can use the set
+    private var input: Input = mockk()
     private var audioCache: AudioCacheInterface = mockk()
-    private var colorBroadcaster: ColorBroadcaster = mockk()
+    private var colorBroadcaster: ColorBroadcaster = mockk() // TODO: Or this.
     private var colorFactory: ColorFactoryInterface = mockk()
 
     private val receivedAudio = nextAudioSignal()
@@ -29,11 +34,9 @@ class LightOrganTests {
 
     @BeforeEach
     fun setup() {
-//        every { input.listenForAudio(any()) } returns Unit
         every { audioCache.setAudio(any()) } returns Unit
         every { audioCache.getAudio() } returns cachedAudio
         every { audioCache.clear() } returns Unit
-//        every { colorBroadcaster.startBroadcasting(any()) } returns Unit
         every { colorFactory.create(any()) } returns nextColor
     }
 
@@ -44,23 +47,15 @@ class LightOrganTests {
 
     private fun createSUT(): LightOrgan {
         return LightOrgan(
-//            config = config,
-//            input = input,
+            input = input,
             audioCache = audioCache,
             colorBroadcaster = colorBroadcaster,
             colorFactory = colorFactory
         )
     }
 
-    // TODO:
-//    @Test
-//    fun `start listening for audio at initialization`() {
-//        val sut = createSUT()
-//        verify { input.listenForAudio(sut) }
-//    }
-
     @Test
-    fun `the cache is updated when new audio is received`() {
+    fun `the audio cache is updated when new audio is received`() {
         val sut = createSUT()
         sut.received(receivedAudio)
         verify { audioCache.setAudio(receivedAudio) }

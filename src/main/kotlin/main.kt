@@ -12,9 +12,8 @@ fun main(): Unit = runBlocking {
 
 private fun createLightOrgan(): LightOrgan {
     val dataLine = InputFinder().getInput()
-//    val input = Input(dataLine)
-    val config = DefaultConfig(dataLine.format)
-    return LightOrgan(config)
+    val config = DefaultConfig()
+    return LightOrgan(dataLine, config)
 }
 
 private suspend fun keepAlive() {
