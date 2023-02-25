@@ -1,20 +1,25 @@
-import config.Config
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import sound.input.Input
 import sound.input.finder.InputFinder
-import javax.sound.sampled.TargetDataLine
 
-fun main() {
-    val dataLine = findDataLine()
-    val input = Input(dataLine)
+fun main(): Unit = runBlocking {
+    launch {
+        createLightOrgan()
+        keepAlive()
+    }
+}
+
+private fun createLightOrgan(): LightOrgan {
+    val dataLine = InputFinder().getInput()
     val config = DefaultConfig(dataLine.format)
-    startLightOrganWith(input, config)
+    val input = Input(dataLine, config)
+    return LightOrgan(config, input)
 }
 
-private fun findDataLine(): TargetDataLine {
-    return InputFinder().getInput()
-}
-
-private fun startLightOrganWith(input: Input, config: Config) {
-    val lightOrgan = LightOrgan(config, input)
-    lightOrgan.start()
+private suspend fun keepAlive() {
+    while (true) {
+        delay(100)
+    }
 }

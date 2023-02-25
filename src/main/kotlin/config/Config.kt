@@ -32,4 +32,8 @@ interface Config {
     // Setting this "just right" will maximize dynamic range,
     // but setting it too high or too low will decrease dynamic range
     val magnitudeMultiplier: Float
+
+    // A lower value will increase responsiveness, but increase CPU usage.
+    // A higher value will decrease responsiveness, but decrease CPU usage.
+    val millisecondsToWaitBetweenCheckingForNewAudio: Long
 }
