@@ -9,7 +9,7 @@ interface BassFrequencyBinsFilterInterface {
 }
 
 class BassFrequencyBinsFilter(
-    config: Config
+    private val config: Config = Config()
 ) : BassFrequencyBinsFilterInterface {
 
     private val highPassFilter = config.highPassFilter

@@ -6,7 +6,7 @@ import javax.sound.sampled.TargetDataLine
 
 class TargetDataLineListener(
     private val dataLine: TargetDataLine,
-    private val config: Config,
+    private val config: Config = Config(),
     private var delegate: TargetDataLineListenerDelegate? = null,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 ) {

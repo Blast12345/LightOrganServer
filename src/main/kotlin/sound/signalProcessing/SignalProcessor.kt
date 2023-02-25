@@ -12,7 +12,7 @@ interface SignalProcessorInterface {
 }
 
 class SignalProcessor(
-    config: Config,
+    private val config: Config = Config(),
     private val sampleExtractor: SampleExtractorInterface = SampleExtractor(),
     private val hannFilter: HannFilterInterface = NormalizedHannFilter(),
     private val interpolator: ZeroPaddingInterpolatorInterface = NormalizedZeroPaddingInterpolator()

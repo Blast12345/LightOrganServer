@@ -1,6 +1,5 @@
 package color
 
-import config.Config
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 import sound.frequencyBins.FrequencyBinsService
@@ -17,12 +16,11 @@ interface ColorFactoryInterface {
 }
 
 class ColorFactory(
-    config: Config,
     // TODO: Maybe there should be a BassBinsService? Creating AND filtering the bins here feels smelly.
-    private val frequencyBinsService: FrequencyBinsServiceInterface = FrequencyBinsService(config),
-    private val bassFrequencyBinsFilter: BassFrequencyBinsFilterInterface = BassFrequencyBinsFilter(config),
-    private val dominantFrequencyBinFactory: DominantFrequencyBinFactoryInterface = DominantFrequencyBinFactory(config),
-    private val hueFactory: HueFactoryInterface = HueFactory(config),
+    private val frequencyBinsService: FrequencyBinsServiceInterface = FrequencyBinsService(),
+    private val bassFrequencyBinsFilter: BassFrequencyBinsFilterInterface = BassFrequencyBinsFilter(),
+    private val dominantFrequencyBinFactory: DominantFrequencyBinFactoryInterface = DominantFrequencyBinFactory(),
+    private val hueFactory: HueFactoryInterface = HueFactory(),
     private val brightnessFactory: BrightnessFactoryInterface = BrightnessFactory()
 ) : ColorFactoryInterface {
 

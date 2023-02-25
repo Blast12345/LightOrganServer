@@ -1,6 +1,5 @@
 package sound.frequencyBins
 
-import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -14,7 +13,6 @@ import kotlin.random.Random
 
 class FrequencyBinListFactoryTests {
 
-    private val config: Config = mockk()
     private var frequencyBinFactory: FrequencyBinFactoryInterface = mockk()
 
     private val magnitudes = nextDoubleArray(length = 2)
@@ -34,7 +32,6 @@ class FrequencyBinListFactoryTests {
 
     private fun createSUT(): FrequencyBinListFactory {
         return FrequencyBinListFactory(
-            config = config,
             frequencyBinFactory = frequencyBinFactory
         )
     }

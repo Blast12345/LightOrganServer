@@ -1,5 +1,6 @@
 package sound.input.samples
 
+import wrappers.audioFormat.AudioFormatWrapper
+
 // TODO: Rename to AudioClip?
-// TODO: AudioFormat instead of sampleRate
-data class AudioSignal(val samples: DoubleArray, val sampleRate: Float)
+data class AudioSignal(val samples: DoubleArray, val format: AudioFormatWrapper)

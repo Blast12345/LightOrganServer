@@ -9,7 +9,7 @@ interface HueFactoryInterface {
 }
 
 class HueFactory(
-    config: Config
+    private val config: Config = Config()
 ) : HueFactoryInterface {
 
     private val colorWheel: ColorWheel = config.colorWheel

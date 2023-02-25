@@ -1,6 +1,5 @@
 package sound.input
 
-import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -18,7 +17,6 @@ import kotlin.random.Random
 class InputTests {
 
     private var dataLine: TargetDataLine = mockk()
-    private var config: Config = mockk()
     private val delegate: InputDelegate = mockk()
     private val targetDataLineListener: TargetDataLineListener = mockk()
     private val buffer: AudioBuffer = mockk()
@@ -45,7 +43,6 @@ class InputTests {
     private fun createSUT(): Input {
         return Input(
             dataLine = dataLine,
-            config = config,
             delegate = delegate,
             targetDataLineListener = targetDataLineListener,
             buffer = buffer,

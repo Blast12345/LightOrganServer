@@ -7,15 +7,14 @@ interface FrequencyBinFactoryInterface {
 }
 
 class FrequencyBinFactory(
-    config: Config
+    private val config: Config = Config()
 ) : FrequencyBinFactoryInterface {
-    
-    private val numberOfChannels = config.audioFormat.channels
+
     private val magnitudeMultiplier = config.magnitudeMultiplier
 
     override fun create(index: Int, granularity: Float, magnitude: Double): FrequencyBin {
         return FrequencyBin(
-            frequency = index * granularity * numberOfChannels,
+            frequency = index * granularity,
             magnitude = magnitude.toFloat() * magnitudeMultiplier
         )
     }

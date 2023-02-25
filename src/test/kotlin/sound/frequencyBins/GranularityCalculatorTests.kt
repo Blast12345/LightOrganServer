@@ -14,6 +14,8 @@ class GranularityCalculatorTests {
 
     private val numberOfBins = 50
     private val sampleRate = Random.nextFloat()
+    private val numberOfChannels = 2
+
     private val nyquistFrequency = 100F
 
     @BeforeEach
@@ -28,11 +30,10 @@ class GranularityCalculatorTests {
     }
 
     @Test
-    fun `the granularity is the Nyquist Frequency divided by the number of bins`() {
+    fun `the granularity is the Nyquist Frequency divided by the number of bins times the number of channels`() {
         val sut = createSUT()
-        val granularity = sut.calculate(numberOfBins, sampleRate)
-        val expected = 2F
-        assertEquals(expected, granularity, 0.001F)
+        val granularity = sut.calculate(numberOfBins, sampleRate, numberOfChannels)
+        assertEquals(4F, granularity, 0.001F)
         verify { nyquistFrequencyCalculator.calculate(sampleRate) }
     }
 }

@@ -8,7 +8,7 @@ interface ServerInterface {
 }
 
 class Server(
-    config: Config,
+    private val config: Config = Config(),
     private val socket: UdpSocketInterface = UdpSocket()
 ) : ServerInterface {
 

@@ -3,24 +3,31 @@ package sound.input.samples
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import toolkit.monkeyTest.nextAudioFormatWrapper
 import toolkit.monkeyTest.nextDoubleArray
+import wrappers.audioFormat.AudioFormatWrapperFactory
 import javax.sound.sampled.AudioFormat
-import kotlin.random.Random
 
 class AudioSignalFactoryTests {
 
-    private var sampleNormalizer: SampleNormalizer = mockk()
-    private var format: AudioFormat = mockk()
+    private val sampleNormalizer: SampleNormalizer = mockk()
+    private val audioFormatWrapperFactory: AudioFormatWrapperFactory = mockk()
+
     private val rawSamples = byteArrayOf(1, 2, 3)
+    private val format: AudioFormat = mockk()
+
+    private val normalizedSamples = nextDoubleArray()
+    private val wrappedFormat = nextAudioFormatWrapper()
 
     @BeforeEach
     fun setup() {
-        every { sampleNormalizer.normalize(any(), any()) } returns nextDoubleArray()
-        every { format.sampleRate } returns Random.nextFloat()
+        every { sampleNormalizer.normalize(any(), any()) } returns normalizedSamples
+        every { audioFormatWrapperFactory.create(any()) } returns wrappedFormat
     }
 
     @AfterEach
@@ -29,29 +36,26 @@ class AudioSignalFactoryTests {
     }
 
     private fun createSUT(): AudioSignalFactory {
-        return AudioSignalFactory(sampleNormalizer)
+        return AudioSignalFactory(
+            sampleNormalizer = sampleNormalizer,
+            audioFormatWrapperFactory = audioFormatWrapperFactory
+        )
     }
 
     @Test
     fun `normalize the audio so that different formats can be interpreted the same`() {
         val sut = createSUT()
-        val normalizedSamples = doubleArrayOf(1.1, 2.2, 3.3)
-        every { sampleNormalizer.normalize(rawSamples, any()) } returns normalizedSamples
-
         val actual = sut.create(rawSamples, format)
-
         assertEquals(normalizedSamples, actual.samples)
+        verify { sampleNormalizer.normalize(rawSamples, format) }
     }
 
     @Test
-    fun `the sample rate is provided from the audio format`() {
+    fun `the audio format is wrapped`() {
         val sut = createSUT()
-        val sampleRate = Random.nextFloat()
-        every { format.sampleRate } returns sampleRate
-
         val actual = sut.create(rawSamples, format)
-
-        assertEquals(sampleRate, actual.sampleRate)
+        assertEquals(wrappedFormat, actual.format)
+        verify { audioFormatWrapperFactory.create(format) }
     }
 
 }
