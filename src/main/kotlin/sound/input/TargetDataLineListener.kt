@@ -6,9 +6,9 @@ import javax.sound.sampled.TargetDataLine
 
 class TargetDataLineListener(
     private val dataLine: TargetDataLine,
-    private val delegate: TargetDataLineListenerDelegate,
     private val config: Config,
-    private val scope: CoroutineScope = MainScope()
+    private var delegate: TargetDataLineListenerDelegate? = null,
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 ) {
 
     init {
@@ -25,7 +25,7 @@ class TargetDataLineListener(
         scope.launch {
             while (isActive) {
                 giveDelegateNewSamplesIfAble()
-                enforceCheckLimit()
+                enforceRateLimit()
             }
         }
     }
@@ -35,9 +35,13 @@ class TargetDataLineListener(
         val hasBytesToRead = bytesToRead > 0
 
         if (hasBytesToRead) {
-            val newSamples = getNewSamples(bytesToRead)
-            delegate.received(newSamples, dataLine.format)
+            giveDelegateNewSamples(bytesToRead)
         }
+    }
+
+    private fun giveDelegateNewSamples(bytesToRead: Int) {
+        val newSamples = getNewSamples(bytesToRead)
+        delegate?.received(newSamples, dataLine.format)
     }
 
     private fun getNewSamples(bytes: Int): ByteArray {
@@ -46,8 +50,16 @@ class TargetDataLineListener(
         return newSamples
     }
 
-    private suspend fun enforceCheckLimit() {
+    private suspend fun enforceRateLimit() {
         delay(config.millisecondsToWaitBetweenCheckingForNewAudio)
+    }
+
+    fun setDelegate(delegate: TargetDataLineListenerDelegate) {
+        this.delegate = delegate
+    }
+
+    fun getDelegate(): TargetDataLineListenerDelegate? {
+        return delegate
     }
 
 }

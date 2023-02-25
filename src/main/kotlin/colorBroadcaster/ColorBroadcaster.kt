@@ -10,7 +10,7 @@ class ColorBroadcaster(
     private val config: Config,
     private val delegate: ColorBroadcasterDelegate,
     private val scope: CoroutineScope = MainScope(),
-    private val server: ServerInterface = Server(config),
+    private val server: ServerInterface = Server(config)
 ) {
 
     init {

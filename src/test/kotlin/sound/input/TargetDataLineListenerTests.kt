@@ -8,6 +8,7 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import javax.sound.sampled.AudioFormat
@@ -61,7 +62,7 @@ class TargetDataLineListenerTests {
     }
 
     @Test
-    fun `prepare the data line to be read from`() {
+    fun `prepare the data line to be read from during initialization`() {
         createSUT()
         verifyOrder {
             dataLine.open()
@@ -89,6 +90,21 @@ class TargetDataLineListenerTests {
         coVerify(exactly = 2) { dataLine.available() }
 
         scope.coroutineContext.cancelChildren()
+    }
+
+    @Test
+    fun `get the delegate`() {
+        val sut = createSUT()
+        val actual = sut.getDelegate()
+        assertEquals(delegate, actual)
+    }
+
+    @Test
+    fun `set the delegate`() {
+        val sut = createSUT()
+        val newDelegate: TargetDataLineListenerDelegate = mockk()
+        sut.setDelegate(newDelegate)
+        assertEquals(sut.getDelegate(), newDelegate)
     }
 
 }

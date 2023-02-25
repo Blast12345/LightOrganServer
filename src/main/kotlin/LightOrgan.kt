@@ -1,55 +1,32 @@
 import color.ColorFactory
 import color.ColorFactoryInterface
-import colorBroadcaster.ColorBroadcaster
-import colorBroadcaster.ColorBroadcasterDelegate
 import config.Config
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import server.Server
+import server.ServerInterface
 import sound.input.Input
 import sound.input.InputDelegate
 import sound.input.samples.AudioSignal
-import java.awt.Color
-import javax.sound.sampled.TargetDataLine
 
-class LightOrgan : InputDelegate, ColorBroadcasterDelegate {
+class LightOrgan(
+    config: Config,
+    input: Input,
+    private val colorFactory: ColorFactoryInterface = ColorFactory(config),
+    private val server: ServerInterface = Server(config),
+    private val colorScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+) : InputDelegate {
 
-    private val input: Input
-    private val audioCache: AudioCacheInterface
-    private val colorBroadcaster: ColorBroadcaster
-    private val colorFactory: ColorFactoryInterface
-
-    constructor(
-        input: Input,
-        audioCache: AudioCacheInterface,
-        colorBroadcaster: ColorBroadcaster,
-        colorFactory: ColorFactoryInterface
-    ) {
-        this.input = input
-        this.audioCache = audioCache
-        this.colorBroadcaster = colorBroadcaster
-        this.colorFactory = colorFactory
-    }
-
-    constructor(
-        dataLine: TargetDataLine,
-        config: Config
-    ) {
-        input = Input(dataLine, config, this)
-        audioCache = AudioCache()
-        colorBroadcaster = ColorBroadcaster(config, this)
-        colorFactory = ColorFactory(config)
+    init {
+        input.setDelegate(this)
     }
 
     override fun received(audio: AudioSignal) {
-        audioCache.setAudio(audio)
-    }
-
-    override fun getNextColor(): Color? {
-        val audio = audioCache.getAudio()
-        audioCache.clear()
-
-        return if (audio != null) {
-            colorFactory.create(audio)
-        } else {
-            null
+        colorScope.launch {
+            val color = colorFactory.create(audio)
+            server.sendColor(color)
         }
     }
 

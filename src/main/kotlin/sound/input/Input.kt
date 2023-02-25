@@ -5,40 +5,31 @@ import sound.input.samples.AudioSignalFactory
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
-class Input : TargetDataLineListenerDelegate {
+class Input(
+    dataLine: TargetDataLine,
+    config: Config,
+    private var delegate: InputDelegate? = null,
+    targetDataLineListener: TargetDataLineListener = TargetDataLineListener(dataLine, config),
+    private val buffer: AudioBuffer = AudioBuffer(dataLine.bufferSize),
+    private val audioClipFactory: AudioSignalFactory = AudioSignalFactory()
+) : TargetDataLineListenerDelegate {
 
-    private val targetDataLineListener: TargetDataLineListener
-    private val buffer: AudioBuffer
-    private val audioClipFactory: AudioSignalFactory
-    private val delegate: InputDelegate
+    init {
+        targetDataLineListener.setDelegate(this)
+    }
 
-    constructor(
-        targetDataLineListener: TargetDataLineListener,
-        buffer: AudioBuffer,
-        audioClipFactory: AudioSignalFactory,
-        delegate: InputDelegate
-    ) {
-        this.targetDataLineListener = targetDataLineListener
-        this.buffer = buffer
-        this.audioClipFactory = audioClipFactory
+    fun setDelegate(delegate: InputDelegate) {
         this.delegate = delegate
     }
 
-    constructor(
-        dataLine: TargetDataLine,
-        config: Config,
-        delegate: InputDelegate
-    ) {
-        this.targetDataLineListener = TargetDataLineListener(dataLine, this, config)
-        this.buffer = AudioBuffer(dataLine.bufferSize)
-        this.audioClipFactory = AudioSignalFactory()
-        this.delegate = delegate
+    fun getDelegate(): InputDelegate? {
+        return delegate
     }
 
     override fun received(newSamples: ByteArray, format: AudioFormat) {
         val updatedSamples = buffer.updatedWith(newSamples)
         val audioClip = audioClipFactory.create(updatedSamples, format)
-        delegate.received(audioClip)
+        delegate?.received(audioClip)
     }
 
 }
