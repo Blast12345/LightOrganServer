@@ -12,5 +12,4 @@ class DefaultConfig(
     override val magnitudeEstimationStrategy = MagnitudeEstimationStrategy(5)
     override val magnitudeMultiplier: Float = 1.25F
     override val millisecondsToWaitBetweenCheckingForNewAudio: Long = 1
-    override val millisecondsToWaitBetweenCheckingForNextColor: Long = 1
 }
