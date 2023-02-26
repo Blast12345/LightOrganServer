@@ -1,6 +1,7 @@
 package sound.frequencyBins.filters
 
 import config.Config
+import config.ConfigSingleton
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 
@@ -9,7 +10,7 @@ interface BassFrequencyBinsFilterInterface {
 }
 
 class BassFrequencyBinsFilter(
-    private val config: Config = Config()
+    private val config: Config = ConfigSingleton
 ) : BassFrequencyBinsFilterInterface {
 
     private val highPassFilter = config.highPassFilter

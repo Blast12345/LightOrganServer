@@ -51,7 +51,7 @@ class AudioSignalFactoryTests {
     }
 
     @Test
-    fun `the audio format is wrapped`() {
+    fun `the audio format is wrapped to help with mocking`() {
         val sut = createSUT()
         val actual = sut.create(rawSamples, format)
         assertEquals(wrappedFormat, actual.format)

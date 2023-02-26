@@ -1,12 +1,13 @@
 package sound.input
 
 import config.Config
+import config.ConfigSingleton
 import kotlinx.coroutines.*
 import javax.sound.sampled.TargetDataLine
 
 class TargetDataLineListener(
     private val dataLine: TargetDataLine,
-    private val config: Config = Config(),
+    private val config: Config = ConfigSingleton,
     private var delegate: TargetDataLineListenerDelegate? = null,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 ) {

@@ -1,6 +1,7 @@
 package server
 
 import config.Config
+import config.ConfigSingleton
 import java.awt.Color
 
 interface ServerInterface {
@@ -8,7 +9,7 @@ interface ServerInterface {
 }
 
 class Server(
-    private val config: Config = Config(),
+    private val config: Config = ConfigSingleton,
     private val socket: UdpSocketInterface = UdpSocket()
 ) : ServerInterface {
 

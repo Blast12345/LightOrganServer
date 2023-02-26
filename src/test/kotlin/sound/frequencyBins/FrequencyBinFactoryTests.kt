@@ -43,4 +43,18 @@ class FrequencyBinFactoryTests {
         assertEquals(expected, frequencyBin)
     }
 
+    @Test
+    fun `the frequency is the index times granularity`() {
+        val sut = createSUT()
+        val actual = sut.create(index, granularity, magnitude)
+        assertEquals(10F, actual.frequency)
+    }
+
+    @Test
+    fun `the magnitude is the original magnitude times the multiplier`() {
+        val sut = createSUT()
+        val actual = sut.create(index, granularity, magnitude)
+        assertEquals(14F, actual.magnitude)
+    }
+
 }

@@ -1,5 +1,7 @@
 package sound.frequencyBins
 
+import config.ConfigSingleton
+import config.TestConfig
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -10,10 +12,13 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.fft.RelativeMagnitudesCalculatorInterface
 import sound.frequencyBins.filters.FrequencyBinListDenoiserInterface
+import sound.input.samples.AudioSignal
 import sound.signalProcessing.SignalProcessorInterface
+import toolkit.generators.SineWaveGenerator
 import toolkit.monkeyTest.nextAudioSignal
 import toolkit.monkeyTest.nextDoubleArray
 import toolkit.monkeyTest.nextFrequencyBins
+import wrappers.audioFormat.AudioFormatWrapper
 import kotlin.random.Random
 
 class FrequencyBinsServiceTests {
@@ -98,26 +103,26 @@ class FrequencyBinsServiceTests {
         verify { frequencyBinListDenoiser.denoise(frequencyBinList) }
     }
 
-    // TODO:
-//    @Test
-//    fun `a 50hz signal produces an amplitude of 1 in a 50hz bin`() {
-//        // NOTE: This is an integration test
-//        every { config.interpolatedSampleSize } returns 48000
-//        every { config.sampleSize } returns 4096
-//        every { config.magnitudeMultiplier } returns 1F
-//        val sut = FrequencyBinsService(config)
-//
-//        val fiftyHertzSignal = createAudioSignal(50F)
-//        val frequencyBins = sut.getFrequencyBins(fiftyHertzSignal)
-//
-//        val fiftyHertzBin = frequencyBins.first { it.frequency == 50F }
-//        assertEquals(1F, fiftyHertzBin.magnitude, 0.001F)
-//    }
-//
-//    private fun createAudioSignal(frequency: Float): AudioSignal {
-//        val audioFormat = AudioFormatWrapper(48000F, 1)
-//        val samples = SineWaveGenerator(48000F).generate(frequency, 48000)
-//        return AudioSignal(samples, audioFormat)
-//    }
+    @Test
+    // NOTE: This is an integration test
+    fun `a 50hz signal produces an amplitude of 1 in a 50hz bin`() {
+        // The singleton feels a smelly, but passing the config through every class is burdensome.
+        // TODO: Maybe use dependency injection?
+        ConfigSingleton = TestConfig()
+
+        val sut = FrequencyBinsService()
+
+        val fiftyHertzSignal = createAudioSignal(50F)
+        val frequencyBins = sut.getFrequencyBins(fiftyHertzSignal)
+
+        val fiftyHertzBin = frequencyBins.first { it.frequency == 50F }
+        assertEquals(1F, fiftyHertzBin.magnitude, 0.001F)
+    }
+
+    private fun createAudioSignal(frequency: Float): AudioSignal {
+        val audioFormat = AudioFormatWrapper(48000F, 1)
+        val samples = SineWaveGenerator(48000F).generate(frequency, 48000)
+        return AudioSignal(samples, audioFormat)
+    }
 
 }
