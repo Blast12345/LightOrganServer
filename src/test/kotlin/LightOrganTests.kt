@@ -1,5 +1,4 @@
 import color.ColorFactoryInterface
-import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -18,7 +17,6 @@ import toolkit.monkeyTest.nextColor
 
 class LightOrganTests {
 
-    private var config: Config = mockk()
     private var input: Input = mockk()
     private var colorFactory: ColorFactoryInterface = mockk()
     private var server: ServerInterface = mockk()
@@ -45,7 +43,6 @@ class LightOrganTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun createSUT(): LightOrgan {
         return LightOrgan(
-            config = config,
             input = input,
             colorFactory = colorFactory,
             server = server,

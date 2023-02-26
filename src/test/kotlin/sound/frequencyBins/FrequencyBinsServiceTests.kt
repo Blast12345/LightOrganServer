@@ -1,6 +1,7 @@
 package sound.frequencyBins
 
-import config.Config
+import config.ConfigSingleton
+import config.TestConfig
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -17,11 +18,11 @@ import toolkit.generators.SineWaveGenerator
 import toolkit.monkeyTest.nextAudioSignal
 import toolkit.monkeyTest.nextDoubleArray
 import toolkit.monkeyTest.nextFrequencyBins
+import wrappers.audioFormat.AudioFormatWrapper
 import kotlin.random.Random
 
 class FrequencyBinsServiceTests {
 
-    private var config: Config = mockk()
     private var signalProcessor: SignalProcessorInterface = mockk()
     private var relativeMagnitudesCalculator: RelativeMagnitudesCalculatorInterface = mockk()
     private var granularityCalculator: GranularityCalculatorInterface = mockk()
@@ -40,7 +41,7 @@ class FrequencyBinsServiceTests {
     fun setup() {
         every { signalProcessor.process(any()) } returns processedSamples
         every { relativeMagnitudesCalculator.calculate(any()) } returns magnitudes
-        every { granularityCalculator.calculate(any(), any()) } returns granularity
+        every { granularityCalculator.calculate(any(), any(), any()) } returns granularity
         every { frequencyBinListFactory.create(any(), any()) } returns frequencyBinList
         every { frequencyBinListDenoiser.denoise(any()) } returns denoisedFrequencyBins
     }
@@ -52,7 +53,6 @@ class FrequencyBinsServiceTests {
 
     private fun createSUT(): FrequencyBinsService {
         return FrequencyBinsService(
-            config = config,
             signalProcessor = signalProcessor,
             relativeMagnitudesCalculator = relativeMagnitudesCalculator,
             granularityCalculator = granularityCalculator,
@@ -79,7 +79,13 @@ class FrequencyBinsServiceTests {
     fun `the granularity of the bins is calculated`() {
         val sut = createSUT()
         sut.getFrequencyBins(audioSignal)
-        verify { granularityCalculator.calculate(magnitudes.size, audioSignal.sampleRate) }
+        verify {
+            granularityCalculator.calculate(
+                magnitudes.size,
+                audioSignal.format.sampleRate,
+                audioSignal.format.numberOfChannels
+            )
+        }
     }
 
     @Test
@@ -98,13 +104,13 @@ class FrequencyBinsServiceTests {
     }
 
     @Test
+    // NOTE: This is an integration test
     fun `a 50hz signal produces an amplitude of 1 in a 50hz bin`() {
-        // NOTE: This is an integration test
-        every { config.interpolatedSampleSize } returns 48000
-        every { config.sampleSize } returns 4096
-        every { config.audioFormat.channels } returns 1
-        every { config.magnitudeMultiplier } returns 1F
-        val sut = FrequencyBinsService(config)
+        // The singleton feels a smelly, but passing the config through every class is burdensome.
+        // TODO: Maybe use dependency injection?
+        ConfigSingleton = TestConfig()
+
+        val sut = FrequencyBinsService()
 
         val fiftyHertzSignal = createAudioSignal(50F)
         val frequencyBins = sut.getFrequencyBins(fiftyHertzSignal)
@@ -114,8 +120,9 @@ class FrequencyBinsServiceTests {
     }
 
     private fun createAudioSignal(frequency: Float): AudioSignal {
+        val audioFormat = AudioFormatWrapper(48000F, 1)
         val samples = SineWaveGenerator(48000F).generate(frequency, 48000)
-        return AudioSignal(samples, 48000F)
+        return AudioSignal(samples, audioFormat)
     }
 
 }

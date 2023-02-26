@@ -18,12 +18,10 @@ class FrequencyBinFactoryTests {
     private val magnitude = 7.0
 
     private val magnitudeMultiplier = 2F
-    private val numberOfChannels = 2
 
     @BeforeEach
     fun setup() {
         every { config.magnitudeMultiplier } returns magnitudeMultiplier
-        every { config.audioFormat.channels } returns numberOfChannels
     }
 
     @AfterEach
@@ -41,8 +39,22 @@ class FrequencyBinFactoryTests {
     fun `create a frequency bin`() {
         val sut = createSUT()
         val frequencyBin = sut.create(index, granularity, magnitude)
-        val expected = FrequencyBin(20F, 14F)
+        val expected = FrequencyBin(10F, 14F)
         assertEquals(expected, frequencyBin)
+    }
+
+    @Test
+    fun `the frequency is the index times granularity`() {
+        val sut = createSUT()
+        val actual = sut.create(index, granularity, magnitude)
+        assertEquals(10F, actual.frequency)
+    }
+
+    @Test
+    fun `the magnitude is the original magnitude times the multiplier`() {
+        val sut = createSUT()
+        val actual = sut.create(index, granularity, magnitude)
+        assertEquals(14F, actual.magnitude)
     }
 
 }

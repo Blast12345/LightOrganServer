@@ -1,21 +1,21 @@
 package sound.frequencyBins
 
 import config.Config
+import config.ConfigSingleton
 
 interface FrequencyBinFactoryInterface {
     fun create(index: Int, granularity: Float, magnitude: Double): FrequencyBin
 }
 
 class FrequencyBinFactory(
-    config: Config
+    private val config: Config = ConfigSingleton
 ) : FrequencyBinFactoryInterface {
-    
-    private val numberOfChannels = config.audioFormat.channels
+
     private val magnitudeMultiplier = config.magnitudeMultiplier
 
     override fun create(index: Int, granularity: Float, magnitude: Double): FrequencyBin {
         return FrequencyBin(
-            frequency = index * granularity * numberOfChannels,
+            frequency = index * granularity,
             magnitude = magnitude.toFloat() * magnitudeMultiplier
         )
     }

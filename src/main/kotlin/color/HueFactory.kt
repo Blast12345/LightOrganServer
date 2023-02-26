@@ -2,6 +2,7 @@ package color
 
 import config.ColorWheel
 import config.Config
+import config.ConfigSingleton
 import sound.frequencyBins.FrequencyBin
 
 interface HueFactoryInterface {
@@ -9,7 +10,7 @@ interface HueFactoryInterface {
 }
 
 class HueFactory(
-    config: Config
+    private val config: Config = ConfigSingleton
 ) : HueFactoryInterface {
 
     private val colorWheel: ColorWheel = config.colorWheel

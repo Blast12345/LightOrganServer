@@ -1,6 +1,5 @@
 package sound.frequencyBins.dominantFrequency
 
-import config.Config
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 import sound.frequencyBins.dominantFrequency.frequency.DominantFrequencyCalculator
@@ -13,9 +12,8 @@ interface DominantFrequencyBinFactoryInterface {
 }
 
 class DominantFrequencyBinFactory(
-    config: Config,
     private val dominantFrequencyCalculator: DominantFrequencyCalculatorInterface = DominantFrequencyCalculator(),
-    private val magnitudeEstimator: MagnitudeEstimator = MagnitudeAveragePeakEstimator(config)
+    private val magnitudeEstimator: MagnitudeEstimator = MagnitudeAveragePeakEstimator()
 ) : DominantFrequencyBinFactoryInterface {
 
     override fun create(frequencyBins: FrequencyBinList): FrequencyBin? {

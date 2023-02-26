@@ -1,11 +1,12 @@
 package sound.frequencyBins.dominantFrequency.magnitude.averagePeakStrategy
 
 import config.Config
+import config.ConfigSingleton
 import sound.frequencyBins.FrequencyBinList
 import sound.frequencyBins.dominantFrequency.magnitude.MagnitudeEstimator
 
 class MagnitudeAveragePeakEstimator(
-    config: Config
+    private val config: Config = ConfigSingleton
 ) : MagnitudeEstimator {
 
     private val numberOfPeaksToUse: Int = config.magnitudeEstimationStrategy.numberOfPeaksToUse
