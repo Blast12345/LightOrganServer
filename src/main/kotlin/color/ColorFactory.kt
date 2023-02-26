@@ -30,6 +30,7 @@ class ColorFactory(
         val bins = getFrequencyBins(audioSignal)
         val bassBins = getBassFrequencyBins(bins)
         val dominantBin = getDominantFrequencyBin(bassBins) ?: return defaultColor
+        println("Dominant: ${dominantBin.frequency}")
         return getColor(dominantBin)
     }
 
