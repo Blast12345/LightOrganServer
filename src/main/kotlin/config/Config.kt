@@ -30,5 +30,5 @@ open class Config(
 
     // A lower value will increase responsiveness, but increase CPU usage.
     // A higher value will decrease responsiveness, but decrease CPU usage.
-    val millisecondsToWaitBetweenCheckingForNewAudio: Long
+    var millisecondsToWaitBetweenCheckingForNewAudio: Long
 )
