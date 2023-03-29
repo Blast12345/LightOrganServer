@@ -6,9 +6,9 @@ import kotlinx.coroutines.*
 import javax.sound.sampled.TargetDataLine
 
 class TargetDataLineListener(
+    val listeners: MutableSet<TargetDataLineListenerDelegate> = mutableSetOf(),
     private val dataLine: TargetDataLine,
     private val config: Config = ConfigSingleton,
-    private var delegate: TargetDataLineListenerDelegate? = null,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 ) {
 
@@ -22,6 +22,8 @@ class TargetDataLineListener(
         dataLine.start()
     }
 
+    // NOTE: This seems very computationally expensive.
+    // Is there a better way to accomplish this?
     private fun startListeningForAudio() {
         scope.launch {
             while (isActive) {
@@ -42,7 +44,10 @@ class TargetDataLineListener(
 
     private fun giveDelegateNewSamples(bytesToRead: Int) {
         val newSamples = getNewSamples(bytesToRead)
-        delegate?.received(newSamples, dataLine.format)
+
+        listeners.forEach {
+            it.received(newSamples, dataLine.format)
+        }
     }
 
     private fun getNewSamples(bytes: Int): ByteArray {
@@ -53,14 +58,6 @@ class TargetDataLineListener(
 
     private suspend fun enforceRateLimit() {
         delay(config.millisecondsToWaitBetweenCheckingForNewAudio)
-    }
-
-    fun setDelegate(delegate: TargetDataLineListenerDelegate) {
-        this.delegate = delegate
-    }
-
-    fun getDelegate(): TargetDataLineListenerDelegate? {
-        return delegate
     }
 
 }

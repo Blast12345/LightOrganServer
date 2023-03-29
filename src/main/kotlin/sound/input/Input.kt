@@ -5,29 +5,24 @@ import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
 class Input(
-    dataLine: TargetDataLine,
-    private var delegate: InputDelegate? = null,
-    targetDataLineListener: TargetDataLineListener = TargetDataLineListener(dataLine),
+    val dataLine: TargetDataLine,
+    val listeners: MutableSet<InputDelegate> = mutableSetOf(),
+    targetDataLineListener: TargetDataLineListener = TargetDataLineListener(dataLine = dataLine),
     private val buffer: AudioBuffer = AudioBuffer(dataLine.bufferSize),
     private val audioClipFactory: AudioSignalFactory = AudioSignalFactory()
 ) : TargetDataLineListenerDelegate {
 
     init {
-        targetDataLineListener.setDelegate(this)
-    }
-
-    fun setDelegate(delegate: InputDelegate) {
-        this.delegate = delegate
-    }
-
-    fun getDelegate(): InputDelegate? {
-        return delegate
+        targetDataLineListener.listeners.add(this)
     }
 
     override fun received(newSamples: ByteArray, format: AudioFormat) {
         val updatedSamples = buffer.updatedWith(newSamples)
         val audioClip = audioClipFactory.create(updatedSamples, format)
-        delegate?.received(audioClip)
+
+        listeners.forEach {
+            it.received(audioClip)
+        }
     }
 
 }

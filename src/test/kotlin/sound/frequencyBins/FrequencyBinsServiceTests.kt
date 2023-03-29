@@ -105,7 +105,7 @@ class FrequencyBinsServiceTests {
 
     @Test
     // NOTE: This is an integration test
-    fun `a 50hz signal produces an amplitude of 1 in a 50hz bin`() {
+    fun `a 50hz signal produces an amplitude of 1 in a 50 Hz bin`() {
         // The singleton feels a smelly, but passing the config through every class is burdensome.
         // TODO: Maybe use dependency injection?
         ConfigSingleton = TestConfig()
