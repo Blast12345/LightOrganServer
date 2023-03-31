@@ -6,11 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import gui.ViewModel
-import gui.shared.LabelledCheckbox
-import gui.shared.Tile
-import gui.shared.wrappers.SimpleSpacer
-import gui.shared.wrappers.SimpleText
-import gui.shared.wrappers.SimpleTooltipArea
+import gui.basicComponents.LabelledCheckbox
+import gui.basicComponents.Tile
+import gui.wrappers.SimpleSpacer
+import gui.wrappers.SimpleText
+import gui.wrappers.SimpleTooltipArea
 
 @Composable
 fun SynestheticTile(

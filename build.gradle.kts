@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.8.0"
+    kotlin("plugin.serialization") version "1.8.10"
     id("org.jetbrains.compose") version "1.3.0"
 }
 
@@ -12,6 +13,7 @@ repositories {
 dependencies {
     implementation("com.github.wendykierp:JTransforms:3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
     implementation(compose.desktop.currentOs)
 
     // Unit Testing

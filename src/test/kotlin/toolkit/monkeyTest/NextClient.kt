@@ -1,6 +1,6 @@
 package toolkit.monkeyTest
 
-import config.Client
+import config.children.Client
 import kotlin.random.Random
 
 fun nextClient(): Client {

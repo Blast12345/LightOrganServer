@@ -1,4 +1,4 @@
-package gui.shared.wrappers
+package gui.wrappers
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size

@@ -1,8 +1,8 @@
 package color
 
-import config.ColorWheel
 import config.Config
 import config.ConfigSingleton
+import config.children.ColorWheel
 import sound.frequencyBins.FrequencyBin
 
 interface HueFactoryInterface {

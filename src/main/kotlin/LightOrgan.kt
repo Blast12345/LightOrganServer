@@ -12,6 +12,7 @@ import sound.input.samples.AudioSignal
 import java.awt.Color
 
 class LightOrgan(
+    private val newColor: (Color) -> Unit,
     private val input: Input,
     private val colorFactory: ColorFactoryInterface = ColorFactory(),
     private val server: ServerInterface = Server(),
@@ -35,7 +36,7 @@ class LightOrgan(
 
     private fun broadcastColor(color: Color) {
         server.sendColor(color)
-        // TODO: Pubsub color
+        newColor(color)
     }
 
 }

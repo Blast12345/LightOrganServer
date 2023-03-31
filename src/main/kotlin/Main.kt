@@ -9,8 +9,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import gui.Theme
 import gui.ViewModel
-import gui.shared.Theme
 import gui.tiles.Color.ColorTile
 import gui.tiles.Stats.StatsTile
 import gui.tiles.Synesthetic.SynestheticTile

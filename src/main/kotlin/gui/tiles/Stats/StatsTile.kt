@@ -5,11 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import gui.ViewModel
-import gui.shared.Tile
-import gui.shared.wrappers.SimpleSpacer
-import gui.shared.wrappers.SimpleText
-import gui.shared.wrappers.SimpleTooltipArea
+import gui.basicComponents.Tile
+import gui.wrappers.SimpleSpacer
+import gui.wrappers.SimpleText
+import gui.wrappers.SimpleTooltipArea
 
+// TODO: Maybe it is excusable for stats to take full view model, recalculated each time
+// TODO: Latency can be on the color tile
 @Preview
 @Composable
 fun StatsTile(
@@ -24,8 +26,6 @@ fun StatsTile(
         lowestDiscernibleFrequencyInformation(viewModel.lowestDiscernibleFrequency.value)
         SimpleSpacer(6)
         resolutionInformation(viewModel.frequencyResolution.value)
-        SimpleSpacer(6)
-        serverLatencyInformation(viewModel.serverLatency.value)
     }
 }
 
@@ -87,23 +87,6 @@ private fun resolutionInformation(value: String) {
         content = {
             SimpleText(
                 text = "Frequency Resolution: $value",
-                fontSize = 12
-            )
-        }
-    )
-}
-
-@Composable
-private fun serverLatencyInformation(value: String) {
-    SimpleTooltipArea(
-        text = "This is time between colors being broadcast to the clients.\n" +
-                "\n" +
-                "A lower value is better because the color will be shown closer to when the relevant sound(s) occurred.\n" +
-                "\n" +
-                "Many factors impact this, so it cannot simply be calculated.",
-        content = {
-            SimpleText(
-                text = "Server Latency: $value",
                 fontSize = 12
             )
         }

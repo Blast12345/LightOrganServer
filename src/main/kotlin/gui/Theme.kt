@@ -1,4 +1,4 @@
-package gui.shared
+package gui
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors

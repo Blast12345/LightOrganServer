@@ -4,6 +4,7 @@ import LightOrgan
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import config.ConfigSingleton
+import config.ConfigStorage
 import sound.input.Input
 import sound.input.finder.InputFinder
 
@@ -22,15 +23,19 @@ class DefaultInputFactory {
 class ViewModel {
 
     private var input = DefaultInputFactory().create()
-    private var lightOrgan = LightOrgan(input)
+    private var lightOrgan = LightOrgan(
+        newColor = {
+            color.value = it.toComposeColor()
+        },
+        input = input
+    )
 
-    val startAutomatically = mutableStateOf(false)
+    val startAutomatically = mutableStateOf(ConfigSingleton.startAutomatically)
     val isRunning = mutableStateOf(false)
     val color = mutableStateOf(Color.Black)
     val durationOfAudioUsed = mutableStateOf("")
     val lowestDiscernibleFrequency = mutableStateOf("")
     val frequencyResolution = mutableStateOf("")
-    val serverLatency = mutableStateOf("")
 
     init {
         updateDurationOfAudioUsed()
@@ -39,7 +44,8 @@ class ViewModel {
     }
 
     fun startAutomaticallyPressed(value: Boolean) {
-        // TODO:
+        ConfigSingleton.startAutomatically = value
+        ConfigStorage().set(ConfigSingleton)
         startAutomatically.value = value
     }
 
@@ -60,7 +66,7 @@ class ViewModel {
     private fun formattedDurationOfAudioUsed(): String {
         return formatted(
             value = calculateSecondsOfAudioUsed(),
-            unitOfMeasure = " seconds"
+            unitOfMeasure = "seconds"
         )
     }
 
@@ -79,7 +85,7 @@ class ViewModel {
     private fun formattedLowestDiscernibleFrequency(): String {
         return formatted(
             value = calculateLowestDiscernibleFrequency(),
-            unitOfMeasure = " Hz"
+            unitOfMeasure = "Hz"
         )
     }
 
@@ -96,7 +102,7 @@ class ViewModel {
     private fun formattedFrequencyResolution(): String {
         return formatted(
             value = calculateFrequencyResolution(),
-            unitOfMeasure = " Hz"
+            unitOfMeasure = "Hz"
         )
     }
 

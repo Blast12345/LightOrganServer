@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import gui.ViewModel
-import gui.shared.Tile
-import gui.shared.wrappers.SimpleSpacer
-import gui.shared.wrappers.SimpleText
+import gui.basicComponents.Tile
+import gui.wrappers.SimpleSpacer
+import gui.wrappers.SimpleText
 
 @Preview
 @Composable

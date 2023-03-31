@@ -1,5 +1,9 @@
 package config
 
+import config.children.ColorWheel
+import config.children.HighPassFilter
+import config.children.MagnitudeEstimationStrategy
+
 class TestConfig : Config(
     clients = listOf(),
     colorWheel = ColorWheel(40F, 120F, 0.25F),

@@ -1,4 +1,4 @@
-package gui.shared.wrappers
+package gui.wrappers
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.padding
