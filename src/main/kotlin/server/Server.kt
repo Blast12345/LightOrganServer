@@ -8,6 +8,7 @@ interface ServerInterface {
     fun sendColor(color: Color)
 }
 
+// TODO: I should double check that UDP is significantly faster than TCP for my use case.
 class Server(
     private val config: Config = ConfigSingleton,
     private val socket: UdpSocketInterface = UdpSocket()

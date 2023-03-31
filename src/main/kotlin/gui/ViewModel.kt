@@ -1,12 +1,8 @@
 package gui
 
-import androidx.compose.runtime.MutableState
+import LightOrgan
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
-import config.ConfigSingleton
-import gui.tiles.Stats.StatsViewModel
-import gui.tiles.Stats.StatsViewModelFactory
-import gui.tiles.Synesthetic.SynestheticViewModel
 import sound.input.Input
 import sound.input.finder.InputFinder
 
@@ -22,28 +18,52 @@ class DefaultInputFactory {
 }
 
 // TODO: Test me
-data class ViewModel(
-    val defaultInputFactory: DefaultInputFactory = DefaultInputFactory(),
-    val input: MutableState<Input> = mutableStateOf(defaultInputFactory.create()),
-    val statsViewModelFactory: StatsViewModelFactory = StatsViewModelFactory(),
-    var synestheticViewModel: MutableState<SynestheticViewModel> = mutableStateOf(SynestheticViewModel(input = input.value)),
-    var currentColor: MutableState<Color> = mutableStateOf(Color.Black),
-    var statsViewModel: MutableState<StatsViewModel> = mutableStateOf(
-        statsViewModelFactory.create(
-            input.value,
-            ConfigSingleton
-        )
-    )
-) {
+class ViewModel {
 
-    private fun updateSynestheticTile() {
-        // TODO: Factory
-//        synestheticViewModel.value = createSynestheticViewModel()
+    val startAutomatically = mutableStateOf(false)
+    val isRunning = mutableStateOf(false)
+    val color = mutableStateOf(Color.Black)
+    val durationOfAudioUsed = mutableStateOf("")
+    val lowestDiscernibleFrequency = mutableStateOf("")
+    val frequencyResolution = mutableStateOf("")
+    val serverLatency = mutableStateOf("")
+    private var input = DefaultInputFactory().create()
+    private var lightOrgan = LightOrgan(input)
+
+    fun startAutomaticallyPressed(value: Boolean) {
+        // TODO:
+        startAutomatically.value = value
     }
 
-    private fun updateStatsTile() {
-//        statsViewModel.value = statsViewModelFactory.create(input, ConfigSingleton)
+    fun startPressed() {
+        lightOrgan.start()
+        isRunning.value = true
+    }
+
+    fun stopPressed() {
+        lightOrgan.stop()
+        isRunning.value = false
     }
 
 }
 
+
+fun java.awt.Color.toComposeColor(): androidx.compose.ui.graphics.Color {
+    return androidx.compose.ui.graphics.Color.hsv(
+        hue = getHue() * 360,
+        saturation = getSaturation(),
+        value = getBrightness()
+    )
+}
+
+fun java.awt.Color.getHue(): Float {
+    return java.awt.Color.RGBtoHSB(red, green, blue, null)[0]
+}
+
+fun java.awt.Color.getSaturation(): Float {
+    return java.awt.Color.RGBtoHSB(red, green, blue, null)[1]
+}
+
+fun java.awt.Color.getBrightness(): Float {
+    return java.awt.Color.RGBtoHSB(red, green, blue, null)[2]
+}

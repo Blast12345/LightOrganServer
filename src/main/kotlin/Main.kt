@@ -11,7 +11,7 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import gui.ViewModel
 import gui.shared.Theme
-import gui.tiles.ColorTile
+import gui.tiles.Color.ColorTile
 import gui.tiles.Stats.StatsTile
 import gui.tiles.Synesthetic.SynestheticTile
 
@@ -28,9 +28,11 @@ fun main() = application {
 @Preview
 @Composable
 private fun gui() {
+    val viewModel = remember { ViewModel() }
+
     Theme {
         Background()
-        MainRow()
+        MainRow(viewModel)
     }
 }
 
@@ -44,7 +46,7 @@ private fun Background() {
 }
 
 @Composable
-private fun MainRow() {
+private fun MainRow(viewModel: ViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -53,10 +55,8 @@ private fun MainRow() {
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        val viewModel = remember { ViewModel() }
-
         SynestheticTile(
-            viewModel = viewModel.synestheticViewModel.value,
+            viewModel = viewModel,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
 
@@ -66,7 +66,7 @@ private fun MainRow() {
         )
 
         StatsTile(
-            viewModel = viewModel.statsViewModel.value,
+            viewModel = viewModel,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
     }

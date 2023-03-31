@@ -5,6 +5,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import gui.ViewModel
 import gui.shared.LabelledCheckbox
 import gui.shared.Tile
 import gui.shared.wrappers.SimpleSpacer
@@ -13,7 +14,7 @@ import gui.shared.wrappers.SimpleTooltipArea
 
 @Composable
 fun SynestheticTile(
-    viewModel: SynestheticViewModel,
+    viewModel: ViewModel,
     modifier: Modifier = Modifier
 ) {
     Tile(modifier) {
@@ -35,7 +36,7 @@ private fun title() {
 }
 
 @Composable
-private fun startAutomaticallyToggle(viewModel: SynestheticViewModel) {
+private fun startAutomaticallyToggle(viewModel: ViewModel) {
     SimpleTooltipArea(
         text = "Start automatically when the application is launched.",
         content = { startAutomaticallyLabelledCheckbox(viewModel) }
@@ -43,16 +44,16 @@ private fun startAutomaticallyToggle(viewModel: SynestheticViewModel) {
 }
 
 @Composable
-private fun startAutomaticallyLabelledCheckbox(viewModel: SynestheticViewModel) {
+private fun startAutomaticallyLabelledCheckbox(viewModel: ViewModel) {
     LabelledCheckbox(
         label = "Start automatically",
         isChecked = viewModel.startAutomatically.value,
-        didChange = { viewModel.startAutomatically(it) }
+        didChange = { viewModel.startAutomaticallyPressed(it) }
     )
 }
 
 @Composable
-private fun startOrStopButton(viewModel: SynestheticViewModel) {
+private fun startOrStopButton(viewModel: ViewModel) {
     if (viewModel.isRunning.value) {
         stopButton(viewModel)
     } else {
@@ -61,7 +62,7 @@ private fun startOrStopButton(viewModel: SynestheticViewModel) {
 }
 
 @Composable
-private fun startButton(viewModel: SynestheticViewModel) {
+private fun startButton(viewModel: ViewModel) {
     Button(
         content = { Text("Start") },
         onClick = { viewModel.startPressed() }
@@ -69,7 +70,7 @@ private fun startButton(viewModel: SynestheticViewModel) {
 }
 
 @Composable
-private fun stopButton(viewModel: SynestheticViewModel) {
+private fun stopButton(viewModel: ViewModel) {
     Button(
         content = { Text("Stop") },
         onClick = { viewModel.stopPressed() }

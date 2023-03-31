@@ -4,6 +4,7 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import gui.ViewModel
 import gui.shared.Tile
 import gui.shared.wrappers.SimpleSpacer
 import gui.shared.wrappers.SimpleText
@@ -12,19 +13,19 @@ import gui.shared.wrappers.SimpleTooltipArea
 @Preview
 @Composable
 fun StatsTile(
-    viewModel: StatsViewModel,
+    viewModel: ViewModel,
     modifier: Modifier = Modifier
 ) {
     Tile(modifier) {
         title()
         SimpleSpacer(12)
-        durationOfAudioUsedInformation(viewModel.durationOfAudioUsed)
+        durationOfAudioUsedInformation(viewModel.durationOfAudioUsed.value)
         SimpleSpacer(6)
-        lowestDiscernibleFrequencyInformation(viewModel.lowestDiscernibleFrequency)
+        lowestDiscernibleFrequencyInformation(viewModel.lowestDiscernibleFrequency.value)
         SimpleSpacer(6)
-        resolutionInformation(viewModel.frequencyResolution)
+        resolutionInformation(viewModel.frequencyResolution.value)
         SimpleSpacer(6)
-        serverLatencyInformation(viewModel.serverLatency)
+        serverLatencyInformation(viewModel.serverLatency.value)
     }
 }
 

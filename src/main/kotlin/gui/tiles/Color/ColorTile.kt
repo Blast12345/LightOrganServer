@@ -1,4 +1,4 @@
-package gui.tiles
+package gui.tiles.Color
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import gui.ViewModel
 import gui.shared.Tile
@@ -22,7 +23,7 @@ fun ColorTile(
     Tile(modifier) {
         title()
         SimpleSpacer(12)
-        colorBox(viewModel)
+        colorBox(viewModel.color.value)
     }
 }
 
@@ -36,11 +37,11 @@ private fun title() {
 }
 
 @Composable
-private fun colorBox(viewModel: ViewModel) {
+private fun colorBox(color: Color) {
     Box(
         Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .background(viewModel.currentColor.value)
+            .background(color)
     )
 }
