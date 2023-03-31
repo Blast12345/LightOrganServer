@@ -18,9 +18,6 @@ class LightOrgan(
     private val colorScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 ) : InputDelegate {
 
-    val isRunning: Boolean
-        get() = input.listeners.contains(this)
-
     fun start() {
         input.listeners.add(this)
     }

@@ -69,5 +69,6 @@ private fun MainRow(viewModel: ViewModel) {
             viewModel = viewModel,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
+
     }
 }
