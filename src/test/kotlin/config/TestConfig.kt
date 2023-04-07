@@ -4,7 +4,7 @@ import config.children.ColorWheel
 import config.children.HighPassFilter
 import config.children.MagnitudeEstimationStrategy
 
-class TestConfig : Config(
+val TestConfig = Config(
     clients = listOf(),
     colorWheel = ColorWheel(40F, 120F, 0.25F),
     highPassFilter = HighPassFilter(120F, 15F),

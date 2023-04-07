@@ -1,6 +1,6 @@
 package toolkit.monkeyTest
 
-import sound.input.samples.AudioSignal
+import lightOrgan.sound.input.samples.AudioSignal
 
 fun nextAudioSignal(samples: DoubleArray = nextDoubleArray()): AudioSignal {
     return AudioSignal(
