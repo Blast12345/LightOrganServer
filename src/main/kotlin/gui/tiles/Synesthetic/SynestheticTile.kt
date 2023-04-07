@@ -5,7 +5,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import gui.ViewModel
+import gui.DashboardViewModel
 import gui.basicComponents.LabelledCheckbox
 import gui.basicComponents.Tile
 import gui.wrappers.SimpleSpacer
@@ -14,15 +14,15 @@ import gui.wrappers.SimpleTooltipArea
 
 @Composable
 fun SynestheticTile(
-    viewModel: ViewModel,
+    dashboardViewModel: DashboardViewModel,
     modifier: Modifier = Modifier
 ) {
     Tile(modifier) {
         title()
         SimpleSpacer(16)
-        startAutomaticallyToggle(viewModel)
+        startAutomaticallyToggle(dashboardViewModel)
         SimpleSpacer(16)
-        startOrStopButton(viewModel)
+        startOrStopButton(dashboardViewModel)
     }
 }
 
@@ -36,43 +36,43 @@ private fun title() {
 }
 
 @Composable
-private fun startAutomaticallyToggle(viewModel: ViewModel) {
+private fun startAutomaticallyToggle(dashboardViewModel: DashboardViewModel) {
     SimpleTooltipArea(
         text = "Start automatically when the application is launched.",
-        content = { startAutomaticallyLabelledCheckbox(viewModel) }
+        content = { startAutomaticallyLabelledCheckbox(dashboardViewModel) }
     )
 }
 
 @Composable
-private fun startAutomaticallyLabelledCheckbox(viewModel: ViewModel) {
+private fun startAutomaticallyLabelledCheckbox(dashboardViewModel: DashboardViewModel) {
     LabelledCheckbox(
         label = "Start automatically",
-        isChecked = viewModel.startAutomatically.value,
-        didChange = { viewModel.startAutomaticallyPressed(it) }
+        isChecked = dashboardViewModel.startAutomatically.value,
+        didChange = { dashboardViewModel.startAutomaticallyPressed(it) }
     )
 }
 
 @Composable
-private fun startOrStopButton(viewModel: ViewModel) {
-    if (viewModel.isRunning.value) {
-        stopButton(viewModel)
+private fun startOrStopButton(dashboardViewModel: DashboardViewModel) {
+    if (dashboardViewModel.isRunning.value) {
+        stopButton(dashboardViewModel)
     } else {
-        startButton(viewModel)
+        startButton(dashboardViewModel)
     }
 }
 
 @Composable
-private fun startButton(viewModel: ViewModel) {
+private fun startButton(dashboardViewModel: DashboardViewModel) {
     Button(
         content = { Text("Start") },
-        onClick = { viewModel.startPressed() }
+        onClick = { dashboardViewModel.startPressed() }
     )
 }
 
 @Composable
-private fun stopButton(viewModel: ViewModel) {
+private fun stopButton(dashboardViewModel: DashboardViewModel) {
     Button(
         content = { Text("Stop") },
-        onClick = { viewModel.stopPressed() }
+        onClick = { dashboardViewModel.stopPressed() }
     )
 }

@@ -20,7 +20,7 @@ class DefaultInputFactory {
 }
 
 // TODO: Test me
-class ViewModel {
+class DashboardViewModel {
 
     private var input = DefaultInputFactory().create()
     private var lightOrgan = LightOrgan(
@@ -38,9 +38,16 @@ class ViewModel {
     val frequencyResolution = mutableStateOf("")
 
     init {
+        startLightOrganIfNeeded()
         updateDurationOfAudioUsed()
         updateLowestDiscernibleFrequency()
         updateFrequencyResolution()
+    }
+
+    private fun startLightOrganIfNeeded() {
+        if (ConfigStorage().get()?.startAutomatically == true) {
+            startPressed()
+        }
     }
 
     fun startAutomaticallyPressed(value: Boolean) {

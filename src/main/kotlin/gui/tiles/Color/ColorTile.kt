@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import gui.ViewModel
+import gui.DashboardViewModel
 import gui.basicComponents.Tile
 import gui.wrappers.SimpleSpacer
 import gui.wrappers.SimpleText
@@ -17,13 +17,13 @@ import gui.wrappers.SimpleText
 @Preview
 @Composable
 fun ColorTile(
-    viewModel: ViewModel,
+    dashboardViewModel: DashboardViewModel,
     modifier: Modifier = Modifier
 ) {
     Tile(modifier) {
         title()
         SimpleSpacer(12)
-        colorBox(viewModel.color.value)
+        colorBox(dashboardViewModel.color.value)
     }
 }
 

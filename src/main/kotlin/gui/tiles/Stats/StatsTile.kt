@@ -4,7 +4,7 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import gui.ViewModel
+import gui.DashboardViewModel
 import gui.basicComponents.Tile
 import gui.wrappers.SimpleSpacer
 import gui.wrappers.SimpleText
@@ -15,17 +15,17 @@ import gui.wrappers.SimpleTooltipArea
 @Preview
 @Composable
 fun StatsTile(
-    viewModel: ViewModel,
+    dashboardViewModel: DashboardViewModel,
     modifier: Modifier = Modifier
 ) {
     Tile(modifier) {
         title()
         SimpleSpacer(12)
-        durationOfAudioUsedInformation(viewModel.durationOfAudioUsed.value)
+        durationOfAudioUsedInformation(dashboardViewModel.durationOfAudioUsed.value)
         SimpleSpacer(6)
-        lowestDiscernibleFrequencyInformation(viewModel.lowestDiscernibleFrequency.value)
+        lowestDiscernibleFrequencyInformation(dashboardViewModel.lowestDiscernibleFrequency.value)
         SimpleSpacer(6)
-        resolutionInformation(viewModel.frequencyResolution.value)
+        resolutionInformation(dashboardViewModel.frequencyResolution.value)
     }
 }
 

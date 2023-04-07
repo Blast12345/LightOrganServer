@@ -1,9 +1,6 @@
 import color.ColorFactory
 import color.ColorFactoryInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import server.Server
 import server.ServerInterface
 import sound.input.Input
@@ -30,7 +27,12 @@ class LightOrgan(
     override fun received(audio: AudioSignal) {
         colorScope.launch {
             val color = colorFactory.create(audio)
-            broadcastColor(color)
+
+            // TODO: Eh?
+            withContext(Dispatchers.Main) {
+                broadcastColor(color)
+            }
+
         }
     }
 
