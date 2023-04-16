@@ -1,5 +1,6 @@
 package server
 
+import config.ConfigSingleton
 import config.children.Client
 import java.awt.Color
 
@@ -9,7 +10,7 @@ interface ServerInterface {
 
 // TODO: I should double check that UDP is significantly faster than TCP for my use case.
 class Server(
-    private val clients: List<Client>,
+    private val clients: List<Client> = ConfigSingleton.clients,
     private val socket: UdpSocketInterface = UdpSocket(),
     private val colorMessageFactory: ColorMessageFactory = ColorMessageFactory()
 ) : ServerInterface {

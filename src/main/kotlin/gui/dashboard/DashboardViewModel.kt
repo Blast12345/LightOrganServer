@@ -31,7 +31,7 @@ class DashboardViewModel : LightOrganListener {
 
     private var input = DefaultInputFactory().create()
     private var lightOrgan = LightOrgan(input)
-    private var server = Server(ConfigSingleton.clients)
+    private var server = Server()
 
     val startAutomatically = mutableStateOf(ConfigSingleton.startAutomatically)
     val isRunning = mutableStateOf(false)
