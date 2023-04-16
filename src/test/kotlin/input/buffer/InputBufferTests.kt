@@ -1,24 +1,24 @@
-package sound.input
+package input.buffer
 
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
 
-class AudioBufferTests {
+class InputBufferTests {
 
     private val bufferSize = 4
     private val newSamples1 = byteArrayOf(1)
     private val newSamples2 = byteArrayOf(2, 3)
 
-    private fun createSUT(): AudioBuffer {
-        return AudioBuffer(bufferSize)
+    private fun createSUT(): InputBuffer {
+        return InputBuffer(bufferSize)
     }
 
     @Test
     fun `the updated buffer is the same length as the initial size`() {
         val initialSize = Random.nextInt(1024)
-        val sut = AudioBuffer(initialSize)
+        val sut = InputBuffer(initialSize)
         val updatedSamples = sut.updatedWith(newSamples1)
         assertEquals(initialSize, updatedSamples.size)
     }
