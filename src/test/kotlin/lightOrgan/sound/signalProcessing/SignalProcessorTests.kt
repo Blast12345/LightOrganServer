@@ -11,7 +11,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import toolkit.monkeyTest.nextAudioSignal
+import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextDoubleArray
 import kotlin.random.Random
 
@@ -22,7 +22,7 @@ class SignalProcessorTests {
     private var hannFilter: HannFilterInterface = mockk()
     private val interpolator: ZeroPaddingInterpolatorInterface = mockk()
 
-    private val audioSignal = nextAudioSignal()
+    private val audioFrame = nextAudioFrame()
 
     private val sampleSize: Int = Random.nextInt()
     private val extractedSamples = nextDoubleArray()
@@ -56,28 +56,28 @@ class SignalProcessorTests {
     @Test
     fun `the sample size is reduced to increase responsiveness`() {
         val sut = createSUT()
-        sut.process(audioSignal)
-        verify { sampleExtractor.extract(audioSignal, sampleSize) }
+        sut.process(audioFrame)
+        verify { sampleExtractor.extract(audioFrame, sampleSize) }
     }
 
     @Test
     fun `the extracted samples go through a window filter to prevent smearing`() {
         val sut = createSUT()
-        sut.process(audioSignal)
+        sut.process(audioFrame)
         verify { hannFilter.filter(extractedSamples) }
     }
 
     @Test
     fun `the filtered samples are interpolated to increase frequency resolution`() {
         val sut = createSUT()
-        sut.process(audioSignal)
+        sut.process(audioFrame)
         verify { interpolator.interpolate(filteredSamples, interpolatedSampleSize) }
     }
 
     @Test
     fun `return the interpolated samples`() {
         val sut = createSUT()
-        val samples = sut.process(audioSignal)
+        val samples = sut.process(audioFrame)
         assertArrayEquals(interpolatedSamples, samples, 0.001)
     }
 

@@ -1,14 +1,14 @@
 package lightOrgan.sound.signalProcessing
 
-import input.samples.AudioSignal
+import input.audioFrame.AudioFrame
 
 interface SampleExtractorInterface {
-    fun extract(signal: AudioSignal, sampleSize: Int): DoubleArray
+    fun extract(signal: AudioFrame, sampleSize: Int): DoubleArray
 }
 
 class SampleExtractor() : SampleExtractorInterface {
 
-    override fun extract(signal: AudioSignal, sampleSize: Int): DoubleArray {
+    override fun extract(signal: AudioFrame, sampleSize: Int): DoubleArray {
         val latestSamples = signal.samples.takeLast(sampleSize)
         return latestSamples.toDoubleArray()
     }

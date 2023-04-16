@@ -4,10 +4,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import config.ConfigSingleton
 import config.ConfigStorage
-import input.AudioBuffer
 import input.Input
-import input.TargetDataLineListener
+import input.buffer.InputBuffer
 import input.finder.InputFinder
+import input.lineListener.LineListener
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import lightOrgan.LightOrgan
@@ -19,9 +19,12 @@ class DefaultInputFactory {
 
     fun create(): Input {
         val dataLine = InputFinder().getInput()
-        val targetDataLineListener = TargetDataLineListener(dataLine = dataLine)
-        val buffer = AudioBuffer(bufferSize = dataLine.bufferSize)
-        return Input(targetDataLineListener, buffer)
+        val lineListener = LineListener(dataLine = dataLine)
+        val buffer = InputBuffer(bufferSize = dataLine.bufferSize)
+        return Input(
+            lineListener = lineListener,
+            buffer = buffer
+        )
     }
 
 }

@@ -1,6 +1,6 @@
 package lightOrgan.color
 
-import input.samples.AudioSignal
+import input.audioFrame.AudioFrame
 import lightOrgan.sound.frequencyBins.FrequencyBin
 import lightOrgan.sound.frequencyBins.FrequencyBinList
 import lightOrgan.sound.frequencyBins.FrequencyBinsService
@@ -12,7 +12,7 @@ import lightOrgan.sound.frequencyBins.filters.BassFrequencyBinsFilterInterface
 import java.awt.Color
 
 interface ColorFactoryInterface {
-    fun create(audioSignal: AudioSignal): Color
+    fun create(audioFrame: AudioFrame): Color
 }
 
 class ColorFactory(
@@ -26,16 +26,16 @@ class ColorFactory(
 
     private val defaultColor = Color.black
 
-    override fun create(audioSignal: AudioSignal): Color {
-        val bins = getFrequencyBins(audioSignal)
+    override fun create(audioFrame: AudioFrame): Color {
+        val bins = getFrequencyBins(audioFrame)
         val bassBins = getBassFrequencyBins(bins)
         val dominantBin = getDominantFrequencyBin(bassBins) ?: return defaultColor
         println("Dominant: ${dominantBin.frequency}")
         return getColor(dominantBin)
     }
 
-    private fun getFrequencyBins(audioSignal: AudioSignal): FrequencyBinList {
-        return frequencyBinsService.getFrequencyBins(audioSignal)
+    private fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBinList {
+        return frequencyBinsService.getFrequencyBins(audioFrame)
     }
 
     private fun getBassFrequencyBins(frequencyBins: FrequencyBinList): FrequencyBinList {

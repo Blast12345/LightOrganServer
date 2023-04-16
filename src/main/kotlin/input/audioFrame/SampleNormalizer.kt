@@ -1,4 +1,4 @@
-package input.samples
+package input.audioFrame
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

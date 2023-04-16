@@ -1,6 +1,6 @@
 package lightOrgan.sound.frequencyBins
 
-import input.samples.AudioSignal
+import input.audioFrame.AudioFrame
 import lightOrgan.sound.fft.RelativeMagnitudesCalculator
 import lightOrgan.sound.fft.RelativeMagnitudesCalculatorInterface
 import lightOrgan.sound.frequencyBins.filters.FrequencyBinListDenoiser
@@ -10,7 +10,7 @@ import lightOrgan.sound.signalProcessing.SignalProcessorInterface
 import wrappers.audioFormat.AudioFormatWrapper
 
 interface FrequencyBinsServiceInterface {
-    fun getFrequencyBins(audioSignal: AudioSignal): FrequencyBinList
+    fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBinList
 }
 
 class FrequencyBinsService(
@@ -21,20 +21,20 @@ class FrequencyBinsService(
     private val frequencyBinListDenoiser: FrequencyBinListDenoiserInterface = FrequencyBinListDenoiser()
 ) : FrequencyBinsServiceInterface {
 
-    override fun getFrequencyBins(audioSignal: AudioSignal): FrequencyBinList {
-        val magnitudes = getMagnitudes(audioSignal)
-        val granularity = getGranularity(magnitudes.size, audioSignal.format)
+    override fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBinList {
+        val magnitudes = getMagnitudes(audioFrame)
+        val granularity = getGranularity(magnitudes.size, audioFrame.format)
         val frequencyBins = getFrequencyBins(magnitudes, granularity)
         return getDenoisedBins(frequencyBins)
     }
 
-    private fun getMagnitudes(audioSignal: AudioSignal): DoubleArray {
-        val processedSamples = getProcessedSamples(audioSignal)
+    private fun getMagnitudes(audioFrame: AudioFrame): DoubleArray {
+        val processedSamples = getProcessedSamples(audioFrame)
         return relativeMagnitudesCalculator.calculate(processedSamples)
     }
 
-    private fun getProcessedSamples(audioSignal: AudioSignal): DoubleArray {
-        return signalProcessor.process(audioSignal)
+    private fun getProcessedSamples(audioFrame: AudioFrame): DoubleArray {
+        return signalProcessor.process(audioFrame)
     }
 
     private fun getGranularity(numberOfBins: Int, format: AudioFormatWrapper): Float {

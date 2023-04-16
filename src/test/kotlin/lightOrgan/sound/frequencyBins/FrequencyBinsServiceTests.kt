@@ -2,7 +2,7 @@ package lightOrgan.sound.frequencyBins
 
 import config.ConfigSingleton
 import config.TestConfig
-import input.samples.AudioSignal
+import input.audioFrame.AudioFrame
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.generators.SineWaveGenerator
-import toolkit.monkeyTest.nextAudioSignal
+import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextDoubleArray
 import toolkit.monkeyTest.nextFrequencyBins
 import wrappers.audioFormat.AudioFormatWrapper
@@ -29,7 +29,7 @@ class FrequencyBinsServiceTests {
     private var frequencyBinListFactory: FrequencyBinListFactoryInterface = mockk()
     private val frequencyBinListDenoiser: FrequencyBinListDenoiserInterface = mockk()
 
-    private val audioSignal = nextAudioSignal()
+    private val audioFrame = nextAudioFrame()
 
     private val processedSamples = nextDoubleArray()
     private val magnitudes = nextDoubleArray()
@@ -64,26 +64,26 @@ class FrequencyBinsServiceTests {
     @Test
     fun `the audio signal is processed`() {
         val sut = createSUT()
-        sut.getFrequencyBins(audioSignal)
-        verify { signalProcessor.process(audioSignal) }
+        sut.getFrequencyBins(audioFrame)
+        verify { signalProcessor.process(audioFrame) }
     }
 
     @Test
     fun `the processed signal is has its magnitudes calculated`() {
         val sut = createSUT()
-        sut.getFrequencyBins(audioSignal)
+        sut.getFrequencyBins(audioFrame)
         verify { relativeMagnitudesCalculator.calculate(processedSamples) }
     }
 
     @Test
     fun `the granularity of the bins is calculated`() {
         val sut = createSUT()
-        sut.getFrequencyBins(audioSignal)
+        sut.getFrequencyBins(audioFrame)
         verify {
             granularityCalculator.calculate(
                 magnitudes.size,
-                audioSignal.format.sampleRate,
-                audioSignal.format.numberOfChannels
+                audioFrame.format.sampleRate,
+                audioFrame.format.numberOfChannels
             )
         }
     }
@@ -91,14 +91,14 @@ class FrequencyBinsServiceTests {
     @Test
     fun `frequency bins are created for the magnitudes`() {
         val sut = createSUT()
-        sut.getFrequencyBins(audioSignal)
+        sut.getFrequencyBins(audioFrame)
         verify { frequencyBinListFactory.create(magnitudes, granularity) }
     }
 
     @Test
     fun `the supported bins are denoised`() {
         val sut = createSUT()
-        val frequencyBins = sut.getFrequencyBins(audioSignal)
+        val frequencyBins = sut.getFrequencyBins(audioFrame)
         assertEquals(denoisedFrequencyBins, frequencyBins)
         verify { frequencyBinListDenoiser.denoise(frequencyBinList) }
     }
@@ -112,17 +112,17 @@ class FrequencyBinsServiceTests {
 
         val sut = FrequencyBinsService()
 
-        val fiftyHertzSignal = createAudioSignal(50F)
+        val fiftyHertzSignal = createAudioFrame(50F)
         val frequencyBins = sut.getFrequencyBins(fiftyHertzSignal)
 
         val fiftyHertzBin = frequencyBins.first { it.frequency == 50F }
         assertEquals(1F, fiftyHertzBin.magnitude, 0.001F)
     }
 
-    private fun createAudioSignal(frequency: Float): AudioSignal {
+    private fun createAudioFrame(frequency: Float): AudioFrame {
         val audioFormat = AudioFormatWrapper(48000F, 1)
         val samples = SineWaveGenerator(48000F).generate(frequency, 48000)
-        return AudioSignal(samples, audioFormat)
+        return AudioFrame(samples, audioFormat)
     }
 
 }

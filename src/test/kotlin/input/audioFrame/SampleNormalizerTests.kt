@@ -1,4 +1,4 @@
-package input.samples
+package input.audioFrame
 
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test

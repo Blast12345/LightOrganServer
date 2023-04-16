@@ -1,8 +1,8 @@
 package lightOrgan
 
 import input.Input
-import input.InputDelegate
-import input.samples.AudioSignal
+import input.InputSubscriber
+import input.audioFrame.AudioFrame
 import lightOrgan.color.ColorFactory
 import lightOrgan.color.ColorFactoryInterface
 import java.awt.Color
@@ -14,15 +14,15 @@ interface LightOrganListener {
 class LightOrgan(
     private val input: Input,
     private val colorFactory: ColorFactoryInterface = ColorFactory()
-) : InputDelegate {
+) : InputSubscriber {
 
     val listeners: MutableSet<LightOrganListener> = mutableSetOf()
 
     fun startListeningToInput() {
-        input.listeners.add(this)
+        input.subscribers.add(this)
     }
 
-    override fun received(audio: AudioSignal) {
+    override fun received(audio: AudioFrame) {
         val color = colorFactory.create(audio)
         broadcast(color)
     }
@@ -34,7 +34,7 @@ class LightOrgan(
     }
 
     fun stopListeningToInput() {
-        input.listeners.remove(this)
+        input.subscribers.remove(this)
     }
 
 }

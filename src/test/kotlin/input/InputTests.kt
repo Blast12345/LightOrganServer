@@ -1,6 +1,8 @@
 package input
 
-import input.samples.AudioSignalFactory
+import input.audioFrame.AudioFrameFactory
+import input.buffer.InputBuffer
+import input.lineListener.LineListener
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -9,27 +11,27 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import toolkit.monkeyTest.nextAudioSignal
+import toolkit.monkeyTest.nextAudioFrame
 import javax.sound.sampled.AudioFormat
 import kotlin.random.Random
 
 class InputTests {
 
-    private val delegate: InputDelegate = mockk()
-    private val targetDataLineListener: TargetDataLineListener = mockk()
-    private val buffer: AudioBuffer = mockk()
-    private val audioSignalFactory: AudioSignalFactory = mockk()
+    private val delegate: InputSubscriber = mockk()
+    private val lineListener: LineListener = mockk()
+    private val buffer: InputBuffer = mockk()
+    private val audioFrameFactory: AudioFrameFactory = mockk()
 
-    private val audioClip = nextAudioSignal()
+    private val audioFrame = nextAudioFrame()
     private val newSamples = Random.nextBytes(1024)
     private val audioFormat: AudioFormat = mockk()
     private val updatedBuffer = Random.nextBytes(1024)
 
     @BeforeEach
     fun setup() {
-        every { targetDataLineListener.listeners.add(any()) } returns true
-        every { targetDataLineListener.audioFormat } returns audioFormat
-        every { audioSignalFactory.create(any(), any()) } returns audioClip
+        every { lineListener.subscribers.add(any()) } returns true
+        every { lineListener.audioFormat } returns audioFormat
+        every { audioFrameFactory.create(any(), any()) } returns audioFrame
         every { delegate.received(any()) } returns Unit
         every { buffer.updatedWith(any()) } returns updatedBuffer
     }
@@ -41,16 +43,16 @@ class InputTests {
 
     private fun createSUT(): Input {
         return Input(
-            targetDataLineListener = targetDataLineListener,
+            lineListener = lineListener,
             buffer = buffer,
-            audioSignalFactory = audioSignalFactory
+            audioFrameFactory = audioFrameFactory
         )
     }
 
     @Test
     fun `begins listening to the target data line upon initialization`() {
         val sut = createSUT()
-        verify { targetDataLineListener.listeners.add(sut) }
+        verify { lineListener.subscribers.add(sut) }
     }
 
     @Test
@@ -64,24 +66,24 @@ class InputTests {
     fun `the updated samples from the buffer are used to create an audio clip`() {
         val sut = createSUT()
         sut.received(newSamples)
-        verify { audioSignalFactory.create(updatedBuffer, audioFormat) }
+        verify { audioFrameFactory.create(updatedBuffer, audioFormat) }
     }
 
     @Test
     fun `the audio clip is sent to the listeners`() {
         val sut = createSUT()
-        val listener: InputDelegate = mockk(relaxed = true)
-        sut.listeners.add(listener)
+        val listener: InputSubscriber = mockk(relaxed = true)
+        sut.subscribers.add(listener)
 
         sut.received(newSamples)
 
-        verify(exactly = 1) { listener.received(audioClip) }
+        verify(exactly = 1) { listener.received(audioFrame) }
     }
 
     @Test
     fun `get the audio format`() {
         val sut = createSUT()
-        assertEquals(targetDataLineListener.audioFormat, sut.audioFormat)
+        assertEquals(lineListener.audioFormat, sut.audioFormat)
     }
 
 }

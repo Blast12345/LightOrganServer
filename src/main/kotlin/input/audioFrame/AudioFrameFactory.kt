@@ -1,20 +1,20 @@
-package input.samples
+package input.audioFrame
 
 import wrappers.audioFormat.AudioFormatWrapper
 import wrappers.audioFormat.AudioFormatWrapperFactory
 import javax.sound.sampled.AudioFormat
 
-interface AudioSignalFactoryInterface {
-    fun create(samples: ByteArray, format: AudioFormat): AudioSignal
+interface AudioFrameFactoryInterface {
+    fun create(samples: ByteArray, format: AudioFormat): AudioFrame
 }
 
-class AudioSignalFactory(
+class AudioFrameFactory(
     private val sampleNormalizer: SampleNormalizerInterface = SampleNormalizer(),
     private val audioFormatWrapperFactory: AudioFormatWrapperFactory = AudioFormatWrapperFactory()
-) : AudioSignalFactoryInterface {
+) : AudioFrameFactoryInterface {
 
-    override fun create(samples: ByteArray, format: AudioFormat): AudioSignal {
-        return AudioSignal(
+    override fun create(samples: ByteArray, format: AudioFormat): AudioFrame {
+        return AudioFrame(
             samples = getNormalizedSamples(samples, format),
             format = getWrappedFormat(format)
         )

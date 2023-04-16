@@ -9,7 +9,7 @@ import lightOrgan.color.ColorFactoryInterface
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import toolkit.monkeyTest.nextAudioSignal
+import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextColor
 
 class LightOrganTests {
@@ -17,14 +17,14 @@ class LightOrganTests {
     private var input: Input = mockk()
     private var colorFactory: ColorFactoryInterface = mockk()
 
-    private val receivedAudio = nextAudioSignal()
+    private val receivedAudio = nextAudioFrame()
 
     private val nextColor = nextColor()
 
     @BeforeEach
     fun setup() {
-        every { input.listeners.add(any()) } returns true
-        every { input.listeners.remove(any()) } returns true
+        every { input.subscribers.add(any()) } returns true
+        every { input.subscribers.remove(any()) } returns true
         every { colorFactory.create(any()) } returns nextColor
     }
 
@@ -44,7 +44,7 @@ class LightOrganTests {
     fun `start listening to the input`() {
         val sut = createSUT()
         sut.startListeningToInput()
-        verify { input.listeners.add(sut) }
+        verify { input.subscribers.add(sut) }
     }
 
     @Test
@@ -63,7 +63,7 @@ class LightOrganTests {
     fun `stop listening to the input`() {
         val sut = createSUT()
         sut.stopListeningToInput()
-        verify { input.listeners.remove(sut) }
+        verify { input.subscribers.remove(sut) }
     }
 
 }

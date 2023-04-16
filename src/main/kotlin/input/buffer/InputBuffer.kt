@@ -1,6 +1,6 @@
-package input
+package input.buffer
 
-class AudioBuffer(bufferSize: Int) {
+class InputBuffer(bufferSize: Int) {
 
     private var samplesBuffer = ByteArray(bufferSize)
 
