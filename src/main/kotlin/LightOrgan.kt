@@ -1,5 +1,6 @@
 import color.ColorFactory
 import color.ColorFactoryInterface
+import config.ConfigSingleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -13,7 +14,7 @@ import sound.input.samples.AudioSignal
 class LightOrgan(
     input: Input,
     private val colorFactory: ColorFactoryInterface = ColorFactory(),
-    private val server: ServerInterface = Server(),
+    private val server: ServerInterface = Server(ConfigSingleton.clients),
     private val colorScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 ) : InputDelegate {
 
