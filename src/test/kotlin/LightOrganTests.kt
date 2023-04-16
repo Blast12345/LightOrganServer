@@ -1,4 +1,5 @@
 import color.ColorFactoryInterface
+import input.Input
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -11,8 +12,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import server.ServerInterface
-import sound.input.Input
-import toolkit.monkeyTest.nextAudioSignal
+import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextColor
 
 class LightOrganTests {
@@ -24,13 +24,13 @@ class LightOrganTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     private var colorScope = TestScope()
 
-    private val receivedAudio = nextAudioSignal()
+    private val receivedAudio = nextAudioFrame()
 
     private val nextColor = nextColor()
 
     @BeforeEach
     fun setup() {
-        every { input.setDelegate(any()) } returns Unit
+        every { input.subscribers.add(any()) } returns true
         every { colorFactory.create(any()) } returns nextColor
         every { server.sendColor(any()) } returns Unit
     }
@@ -53,7 +53,7 @@ class LightOrganTests {
     @Test
     fun `begin listening to the input upon initialization`() {
         val sut = createSUT()
-        verify { input.setDelegate(sut) }
+        verify { input.subscribers.add(sut) }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

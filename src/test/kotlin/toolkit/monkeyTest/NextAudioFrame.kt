@@ -1,9 +1,9 @@
 package toolkit.monkeyTest
 
-import sound.input.samples.AudioSignal
+import input.audioFrame.AudioFrame
 
-fun nextAudioSignal(samples: DoubleArray = nextDoubleArray()): AudioSignal {
-    return AudioSignal(
+fun nextAudioFrame(samples: DoubleArray = nextDoubleArray()): AudioFrame {
+    return AudioFrame(
         samples = samples,
         format = nextAudioFormatWrapper()
     )

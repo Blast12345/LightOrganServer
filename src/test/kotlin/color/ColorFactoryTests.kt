@@ -13,7 +13,7 @@ import sound.frequencyBins.filters.BassFrequencyBinsFilterInterface
 import toolkit.color.getBrightness
 import toolkit.color.getHue
 import toolkit.color.getSaturation
-import toolkit.monkeyTest.nextAudioSignal
+import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextFrequencyBin
 import toolkit.monkeyTest.nextFrequencyBins
 import java.awt.Color
@@ -27,7 +27,7 @@ class ColorFactoryTests {
     private var hueFactory: HueFactoryInterface = mockk()
     private var brightnessFactory: BrightnessFactoryInterface = mockk()
 
-    private val audioSignal = nextAudioSignal()
+    private val audioFrame = nextAudioFrame()
 
     private val frequencyBins = nextFrequencyBins()
     private val bassFrequencyBins = nextFrequencyBins()
@@ -37,7 +37,7 @@ class ColorFactoryTests {
 
     @BeforeEach
     fun setup() {
-        every { frequencyBinsService.getFrequencyBins(audioSignal) } returns frequencyBins
+        every { frequencyBinsService.getFrequencyBins(audioFrame) } returns frequencyBins
         every { bassFrequencyBinsFilter.filter(frequencyBins) } returns bassFrequencyBins
         every { dominantFrequencyBinFactory.create(bassFrequencyBins) } returns dominantFrequencyBin
         every { hueFactory.create(dominantFrequencyBin) } returns hue
@@ -62,21 +62,21 @@ class ColorFactoryTests {
     @Test
     fun `the colors hue is determined by the dominant frequency`() {
         val sut = createSUT()
-        val color = sut.create(audioSignal)
+        val color = sut.create(audioFrame)
         assertEquals(hue, color.getHue(), 0.01F)
     }
 
     @Test
     fun `the color is fully saturated`() {
         val sut = createSUT()
-        val color = sut.create(audioSignal)
+        val color = sut.create(audioFrame)
         assertEquals(1F, color.getSaturation(), 0.01F)
     }
 
     @Test
     fun `the colors brightness is determined by the dominant frequency`() {
         val sut = createSUT()
-        val color = sut.create(audioSignal)
+        val color = sut.create(audioFrame)
         assertEquals(brightness, color.getBrightness(), 0.01F)
     }
 
@@ -84,7 +84,7 @@ class ColorFactoryTests {
     fun `return black when a dominant frequency cannot be determined`() {
         val sut = createSUT()
         every { dominantFrequencyBinFactory.create(any()) } returns null
-        val color = sut.create(audioSignal)
+        val color = sut.create(audioFrame)
         assertEquals(Color.black, color)
     }
 

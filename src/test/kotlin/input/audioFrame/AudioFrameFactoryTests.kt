@@ -1,4 +1,4 @@
-package sound.input.samples
+package input.audioFrame
 
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -13,7 +13,7 @@ import toolkit.monkeyTest.nextDoubleArray
 import wrappers.audioFormat.AudioFormatWrapperFactory
 import javax.sound.sampled.AudioFormat
 
-class AudioSignalFactoryTests {
+class AudioFrameFactoryTests {
 
     private val sampleNormalizer: SampleNormalizer = mockk()
     private val audioFormatWrapperFactory: AudioFormatWrapperFactory = mockk()
@@ -35,8 +35,8 @@ class AudioSignalFactoryTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): AudioSignalFactory {
-        return AudioSignalFactory(
+    private fun createSUT(): AudioFrameFactory {
+        return AudioFrameFactory(
             sampleNormalizer = sampleNormalizer,
             audioFormatWrapperFactory = audioFormatWrapperFactory
         )

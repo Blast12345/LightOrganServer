@@ -1,15 +1,15 @@
 package sound.signalProcessing
 
-import sound.input.samples.AudioSignal
+import input.audioFrame.AudioFrame
 
 interface SampleExtractorInterface {
-    fun extract(signal: AudioSignal, sampleSize: Int): DoubleArray
+    fun extract(audioFrame: AudioFrame, sampleSize: Int): DoubleArray
 }
 
 class SampleExtractor() : SampleExtractorInterface {
 
-    override fun extract(signal: AudioSignal, sampleSize: Int): DoubleArray {
-        val latestSamples = signal.samples.takeLast(sampleSize)
+    override fun extract(audioFrame: AudioFrame, sampleSize: Int): DoubleArray {
+        val latestSamples = audioFrame.samples.takeLast(sampleSize)
         return latestSamples.toDoubleArray()
     }
 

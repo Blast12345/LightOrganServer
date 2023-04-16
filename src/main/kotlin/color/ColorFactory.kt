@@ -1,5 +1,6 @@
 package color
 
+import input.audioFrame.AudioFrame
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 import sound.frequencyBins.FrequencyBinsService
@@ -8,11 +9,10 @@ import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactory
 import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactoryInterface
 import sound.frequencyBins.filters.BassFrequencyBinsFilter
 import sound.frequencyBins.filters.BassFrequencyBinsFilterInterface
-import sound.input.samples.AudioSignal
 import java.awt.Color
 
 interface ColorFactoryInterface {
-    fun create(audioSignal: AudioSignal): Color
+    fun create(audioFrame: AudioFrame): Color
 }
 
 class ColorFactory(
@@ -26,16 +26,16 @@ class ColorFactory(
 
     private val defaultColor = Color.black
 
-    override fun create(audioSignal: AudioSignal): Color {
-        val bins = getFrequencyBins(audioSignal)
+    override fun create(audioFrame: AudioFrame): Color {
+        val bins = getFrequencyBins(audioFrame)
         val bassBins = getBassFrequencyBins(bins)
         val dominantBin = getDominantFrequencyBin(bassBins) ?: return defaultColor
         println("Dominant: ${dominantBin.frequency}")
         return getColor(dominantBin)
     }
 
-    private fun getFrequencyBins(audioSignal: AudioSignal): FrequencyBinList {
-        return frequencyBinsService.getFrequencyBins(audioSignal)
+    private fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBinList {
+        return frequencyBinsService.getFrequencyBins(audioFrame)
     }
 
     private fun getBassFrequencyBins(frequencyBins: FrequencyBinList): FrequencyBinList {
