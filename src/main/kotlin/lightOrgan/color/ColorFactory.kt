@@ -1,5 +1,6 @@
 package lightOrgan.color
 
+import input.samples.AudioSignal
 import lightOrgan.sound.frequencyBins.FrequencyBin
 import lightOrgan.sound.frequencyBins.FrequencyBinList
 import lightOrgan.sound.frequencyBins.FrequencyBinsService
@@ -8,7 +9,6 @@ import lightOrgan.sound.frequencyBins.dominantFrequency.DominantFrequencyBinFact
 import lightOrgan.sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactoryInterface
 import lightOrgan.sound.frequencyBins.filters.BassFrequencyBinsFilter
 import lightOrgan.sound.frequencyBins.filters.BassFrequencyBinsFilterInterface
-import lightOrgan.sound.input.samples.AudioSignal
 import java.awt.Color
 
 interface ColorFactoryInterface {

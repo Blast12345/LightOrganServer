@@ -1,10 +1,10 @@
 package lightOrgan
 
+import input.Input
+import input.InputDelegate
+import input.samples.AudioSignal
 import lightOrgan.color.ColorFactory
 import lightOrgan.color.ColorFactoryInterface
-import lightOrgan.sound.input.Input
-import lightOrgan.sound.input.InputDelegate
-import lightOrgan.sound.input.samples.AudioSignal
 import java.awt.Color
 
 interface LightOrganListener {
@@ -13,11 +13,12 @@ interface LightOrganListener {
 
 class LightOrgan(
     private val input: Input,
-    val listeners: MutableSet<LightOrganListener> = mutableSetOf(),
     private val colorFactory: ColorFactoryInterface = ColorFactory()
 ) : InputDelegate {
 
-    fun start() {
+    val listeners: MutableSet<LightOrganListener> = mutableSetOf()
+
+    fun startListeningToInput() {
         input.listeners.add(this)
     }
 
@@ -32,7 +33,7 @@ class LightOrgan(
         }
     }
 
-    fun stop() {
+    fun stopListeningToInput() {
         input.listeners.remove(this)
     }
 

@@ -1,4 +1,4 @@
-package lightOrgan.sound.input
+package input
 
 class AudioBuffer(bufferSize: Int) {
 

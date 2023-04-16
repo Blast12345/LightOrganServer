@@ -2,7 +2,7 @@ package lightOrgan.sound.signalProcessing
 
 import config.Config
 import config.ConfigSingleton
-import lightOrgan.sound.input.samples.AudioSignal
+import input.samples.AudioSignal
 import lightOrgan.sound.signalProcessing.hannFilter.HannFilterInterface
 import lightOrgan.sound.signalProcessing.hannFilter.NormalizedHannFilter
 import lightOrgan.sound.signalProcessing.zeroPaddingInterpolator.NormalizedZeroPaddingInterpolator

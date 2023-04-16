@@ -8,7 +8,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "Synesthetic",
-        state = rememberWindowState(width = 900.dp, height = 600.dp),
+        state = rememberWindowState(width = 900.dp, height = 300.dp),
     ) {
         Dashboard()
     }

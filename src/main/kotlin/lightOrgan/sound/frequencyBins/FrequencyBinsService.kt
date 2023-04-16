@@ -1,10 +1,10 @@
 package lightOrgan.sound.frequencyBins
 
+import input.samples.AudioSignal
 import lightOrgan.sound.fft.RelativeMagnitudesCalculator
 import lightOrgan.sound.fft.RelativeMagnitudesCalculatorInterface
 import lightOrgan.sound.frequencyBins.filters.FrequencyBinListDenoiser
 import lightOrgan.sound.frequencyBins.filters.FrequencyBinListDenoiserInterface
-import lightOrgan.sound.input.samples.AudioSignal
 import lightOrgan.sound.signalProcessing.SignalProcessor
 import lightOrgan.sound.signalProcessing.SignalProcessorInterface
 import wrappers.audioFormat.AudioFormatWrapper

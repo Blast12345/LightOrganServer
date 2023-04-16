@@ -1,4 +1,4 @@
-package lightOrgan.sound.input.samples
+package input.samples
 
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test

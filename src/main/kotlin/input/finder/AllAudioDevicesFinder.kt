@@ -1,4 +1,4 @@
-package lightOrgan.sound.input.finder
+package input.finder
 
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.Mixer

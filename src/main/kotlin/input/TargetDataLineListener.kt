@@ -1,16 +1,19 @@
-package lightOrgan.sound.input
+package input
 
 import config.Config
 import config.ConfigSingleton
 import kotlinx.coroutines.*
+import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
 class TargetDataLineListener(
-    val listeners: MutableSet<TargetDataLineListenerDelegate> = mutableSetOf(),
     private val dataLine: TargetDataLine,
     private val config: Config = ConfigSingleton,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 ) {
+
+    val listeners: MutableSet<TargetDataLineListenerDelegate> = mutableSetOf()
+    val audioFormat: AudioFormat = dataLine.format
 
     init {
         prepareDataLine()
@@ -46,7 +49,7 @@ class TargetDataLineListener(
         val newSamples = getNewSamples(bytesToRead)
 
         listeners.forEach {
-            it.received(newSamples, dataLine.format)
+            it.received(newSamples)
         }
     }
 

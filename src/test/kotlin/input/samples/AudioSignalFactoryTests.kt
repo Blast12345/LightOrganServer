@@ -1,4 +1,4 @@
-package lightOrgan.sound.input.samples
+package input.samples
 
 import io.mockk.clearAllMocks
 import io.mockk.every

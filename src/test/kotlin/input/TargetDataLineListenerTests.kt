@@ -1,4 +1,4 @@
-package lightOrgan.sound.input
+package input
 
 import config.Config
 import io.mockk.*
@@ -20,7 +20,6 @@ class TargetDataLineListenerTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     private val scope = TestScope()
     private var dataLine: TargetDataLine = mockk()
-    private var delegate: TargetDataLineListenerDelegate = mockk()
     private val config: Config = mockk()
 
     private val bytesAvailable = 1024
@@ -42,7 +41,6 @@ class TargetDataLineListenerTests {
             bytesAvailable
         }
 
-        every { delegate.received(any(), any()) } returns Unit
         every { config.millisecondsToWaitBetweenCheckingForNewAudio } returns millisecondsBetweenChecks
     }
 
@@ -56,7 +54,6 @@ class TargetDataLineListenerTests {
         return TargetDataLineListener(
             scope = scope,
             dataLine = dataLine,
-            delegate = delegate,
             config = config
         )
     }
@@ -64,6 +61,7 @@ class TargetDataLineListenerTests {
     @Test
     fun `prepare the data line to be read from during initialization`() {
         createSUT()
+
         verifyOrder {
             dataLine.open()
             dataLine.start()
@@ -72,16 +70,7 @@ class TargetDataLineListenerTests {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `give the delegate new samples and associated format if they are available`() = scope.runTest {
-        createSUT()
-        advanceTimeBy(1)
-        coVerify { delegate.received(newSamples, format) }
-        scope.coroutineContext.cancelChildren()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `check for new samples on the data line every X milliseconds`() = scope.runTest {
+    fun `check data line for new samples every X milliseconds`() = scope.runTest {
         createSUT()
 
         val durationOfTwoLoops = 2 * millisecondsBetweenChecks
@@ -92,19 +81,35 @@ class TargetDataLineListenerTests {
         scope.coroutineContext.cancelChildren()
     }
 
-    @Test
-    fun `get the delegate`() {
-        val sut = createSUT()
-        val actual = sut.getDelegate()
-        assertEquals(delegate, actual)
-    }
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    @Test
+//    fun `give the delegate new samples and associated format if they are available`() = scope.runTest {
+//        createSUT()
+//        advanceTimeBy(1)
+//        coVerify { delegate.received(newSamples) }
+//        scope.coroutineContext.cancelChildren()
+//    }
+
+
+//    @Test
+//    fun `get the delegate`() {
+//        val sut = createSUT()
+//        val actual = sut.getDelegate()
+//        assertEquals(delegate, actual)
+//    }
+//
+//    @Test
+//    fun `set the delegate`() {
+//        val sut = createSUT()
+//        val newDelegate: TargetDataLineListenerDelegate = mockk()
+//        sut.setDelegate(newDelegate)
+//        assertEquals(sut.getDelegate(), newDelegate)
+//    }
 
     @Test
-    fun `set the delegate`() {
+    fun `get the audio format`() {
         val sut = createSUT()
-        val newDelegate: TargetDataLineListenerDelegate = mockk()
-        sut.setDelegate(newDelegate)
-        assertEquals(sut.getDelegate(), newDelegate)
+        assertEquals(dataLine.format, sut.audioFormat)
     }
 
 }

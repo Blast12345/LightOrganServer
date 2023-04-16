@@ -1,6 +1,6 @@
 package lightOrgan.sound.signalProcessing
 
-import lightOrgan.sound.input.samples.AudioSignal
+import input.samples.AudioSignal
 
 interface SampleExtractorInterface {
     fun extract(signal: AudioSignal, sampleSize: Int): DoubleArray

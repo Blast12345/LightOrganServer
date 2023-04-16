@@ -1,4 +1,4 @@
-package lightOrgan.sound.input.finder
+package input.finder
 
 import io.mockk.clearAllMocks
 import io.mockk.every

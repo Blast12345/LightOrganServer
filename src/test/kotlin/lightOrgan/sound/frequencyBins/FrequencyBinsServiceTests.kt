@@ -2,13 +2,13 @@ package lightOrgan.sound.frequencyBins
 
 import config.ConfigSingleton
 import config.TestConfig
+import input.samples.AudioSignal
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import lightOrgan.sound.fft.RelativeMagnitudesCalculatorInterface
 import lightOrgan.sound.frequencyBins.filters.FrequencyBinListDenoiserInterface
-import lightOrgan.sound.input.samples.AudioSignal
 import lightOrgan.sound.signalProcessing.SignalProcessorInterface
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals

@@ -4,21 +4,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import config.ConfigSingleton
 import config.ConfigStorage
+import input.AudioBuffer
+import input.Input
+import input.TargetDataLineListener
+import input.finder.InputFinder
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import lightOrgan.LightOrgan
 import lightOrgan.LightOrganListener
-import lightOrgan.sound.input.Input
-import lightOrgan.sound.input.finder.InputFinder
 import server.Server
-
 
 // TODO: This seems temporary
 class DefaultInputFactory {
 
     fun create(): Input {
         val dataLine = InputFinder().getInput()
-        return Input(dataLine)
+        val targetDataLineListener = TargetDataLineListener(dataLine = dataLine)
+        val buffer = AudioBuffer(bufferSize = dataLine.bufferSize)
+        return Input(targetDataLineListener, buffer)
     }
 
 }
@@ -62,12 +65,12 @@ class DashboardViewModel : LightOrganListener {
     }
 
     fun startPressed() {
-        lightOrgan.start()
+        lightOrgan.startListeningToInput()
         isRunning.value = true
     }
 
     fun stopPressed() {
-        lightOrgan.stop()
+        lightOrgan.stopListeningToInput()
         isRunning.value = false
     }
 
@@ -84,9 +87,9 @@ class DashboardViewModel : LightOrganListener {
 
     private fun calculateSecondsOfAudioUsed(): Float {
         return SecondsOfAudioUsedCalculator().calculate(
-            sampleRate = input.dataLine.format.sampleRate,
+            sampleRate = input.audioFormat.sampleRate,
             sampleSize = ConfigSingleton.sampleSize,
-            numberOfChannels = input.dataLine.format.channels
+            numberOfChannels = input.audioFormat.channels
         )
     }
 
@@ -121,8 +124,8 @@ class DashboardViewModel : LightOrganListener {
     private fun calculateFrequencyResolution(): Float {
         return FrequencyResolutionCalculator().calculate(
             sampleSize = ConfigSingleton.sampleSize,
-            sampleRate = input.dataLine.format.sampleRate,
-            numberOfChannels = input.dataLine.format.channels
+            sampleRate = input.audioFormat.sampleRate,
+            numberOfChannels = input.audioFormat.channels
         )
     }
 
