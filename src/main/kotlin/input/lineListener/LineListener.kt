@@ -54,7 +54,6 @@ class LineListener(
         }
     }
 
-    // TODO: Shorter name
     private suspend fun enforceRateLimit() {
         delay(checkInterval)
     }
