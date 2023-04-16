@@ -1,4 +1,4 @@
-package lightOrgan.server
+package server
 
 import config.children.Client
 import java.net.DatagramPacket

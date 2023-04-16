@@ -8,9 +8,9 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import lightOrgan.LightOrgan
 import lightOrgan.LightOrganListener
-import lightOrgan.server.Server
 import lightOrgan.sound.input.Input
 import lightOrgan.sound.input.finder.InputFinder
+import server.Server
 
 
 // TODO: This seems temporary
@@ -28,7 +28,7 @@ class DashboardViewModel : LightOrganListener {
 
     private var input = DefaultInputFactory().create()
     private var lightOrgan = LightOrgan(input)
-    private var server = Server()
+    private var server = Server(ConfigSingleton.clients)
 
     val startAutomatically = mutableStateOf(ConfigSingleton.startAutomatically)
     val isRunning = mutableStateOf(false)

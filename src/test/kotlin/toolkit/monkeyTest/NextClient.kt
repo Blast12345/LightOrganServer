@@ -6,6 +6,6 @@ import kotlin.random.Random
 fun nextClient(): Client {
     return Client(
         ip = nextString(),
-        port = Random.nextInt()
+        port = Random.nextInt(until = 65535)
     )
 }

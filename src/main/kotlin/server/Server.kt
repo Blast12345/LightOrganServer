@@ -1,7 +1,6 @@
-package lightOrgan.server
+package server
 
-import config.Config
-import config.ConfigSingleton
+import config.children.Client
 import java.awt.Color
 
 interface ServerInterface {
@@ -10,24 +9,24 @@ interface ServerInterface {
 
 // TODO: I should double check that UDP is significantly faster than TCP for my use case.
 class Server(
-    private val config: Config = ConfigSingleton,
-    private val socket: UdpSocketInterface = UdpSocket()
+    private val clients: List<Client>,
+    private val socket: UdpSocketInterface = UdpSocket(),
+    private val colorMessageFactory: ColorMessageFactory = ColorMessageFactory()
 ) : ServerInterface {
 
-    private val clients = config.clients
     private var timestampOfLastSentColor = System.currentTimeMillis()
 
     override fun sendColor(color: Color) {
-        // TODO: ColorStringFactory?
-        val colorString = "${color.red},${color.green},${color.blue}"
-        sendMessage(colorString)
-        printServerLatency()
+        val colorMessage = colorMessageFactory.create(color)
+        sendMessage(colorMessage)
     }
 
     private fun sendMessage(message: String) {
         for (client in clients) {
             socket.send(message, client)
         }
+
+        printServerLatency()
     }
 
     private fun printServerLatency() {
