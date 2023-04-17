@@ -1,8 +1,10 @@
-package lightOrgan.sound.signalProcessing
+package sound.signalProcessing
 
 import config.Config
 import config.ConfigSingleton
 import input.audioFrame.AudioFrame
+import lightOrgan.sound.SampleExtractor
+import lightOrgan.sound.SampleExtractorInterface
 import lightOrgan.sound.signalProcessing.hannFilter.HannFilterInterface
 import lightOrgan.sound.signalProcessing.hannFilter.NormalizedHannFilter
 import lightOrgan.sound.signalProcessing.zeroPaddingInterpolator.NormalizedZeroPaddingInterpolator

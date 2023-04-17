@@ -1,10 +1,11 @@
-package lightOrgan.sound.signalProcessing
+package sound.signalProcessing
 
 import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import lightOrgan.sound.SampleExtractorInterface
 import lightOrgan.sound.signalProcessing.hannFilter.HannFilterInterface
 import lightOrgan.sound.signalProcessing.zeroPaddingInterpolator.ZeroPaddingInterpolatorInterface
 import org.junit.jupiter.api.AfterEach

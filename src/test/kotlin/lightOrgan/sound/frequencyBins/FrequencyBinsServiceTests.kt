@@ -1,4 +1,4 @@
-package lightOrgan.sound.frequencyBins
+package sound.frequencyBins
 
 import config.ConfigSingleton
 import config.TestConfig
@@ -8,12 +8,14 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import lightOrgan.sound.fft.RelativeMagnitudesCalculatorInterface
+import lightOrgan.sound.frequencyBins.FrequencyBinListFactoryInterface
+import lightOrgan.sound.frequencyBins.GranularityCalculatorInterface
 import lightOrgan.sound.frequencyBins.filters.FrequencyBinListDenoiserInterface
-import lightOrgan.sound.signalProcessing.SignalProcessorInterface
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import sound.signalProcessing.SignalProcessorInterface
 import toolkit.generators.SineWaveGenerator
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextDoubleArray
@@ -105,7 +107,7 @@ class FrequencyBinsServiceTests {
 
     @Test
     // NOTE: This is an integration test
-    fun `a 50hz signal produces an amplitude of 1 in a 50 Hz bin`() {
+    fun `a 50hz signal produces an amplitude of 1 in a 50hz bin`() {
         // The singleton feels a smelly, but passing the config through every class is burdensome.
         // TODO: Maybe use dependency injection?
         ConfigSingleton = TestConfig

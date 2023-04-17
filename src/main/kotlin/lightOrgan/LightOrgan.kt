@@ -1,10 +1,10 @@
 package lightOrgan
 
+import color.ColorFactory
+import color.ColorFactoryInterface
 import input.Input
 import input.InputSubscriber
 import input.audioFrame.AudioFrame
-import lightOrgan.color.ColorFactory
-import lightOrgan.color.ColorFactoryInterface
 import java.awt.Color
 
 interface LightOrganListener {

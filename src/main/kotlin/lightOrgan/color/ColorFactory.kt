@@ -1,14 +1,18 @@
-package lightOrgan.color
+package color
 
 import input.audioFrame.AudioFrame
+import lightOrgan.color.BrightnessFactory
+import lightOrgan.color.BrightnessFactoryInterface
+import lightOrgan.color.HueFactory
+import lightOrgan.color.HueFactoryInterface
 import lightOrgan.sound.frequencyBins.FrequencyBin
 import lightOrgan.sound.frequencyBins.FrequencyBinList
-import lightOrgan.sound.frequencyBins.FrequencyBinsService
-import lightOrgan.sound.frequencyBins.FrequencyBinsServiceInterface
 import lightOrgan.sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactory
 import lightOrgan.sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactoryInterface
 import lightOrgan.sound.frequencyBins.filters.BassFrequencyBinsFilter
 import lightOrgan.sound.frequencyBins.filters.BassFrequencyBinsFilterInterface
+import sound.frequencyBins.FrequencyBinsService
+import sound.frequencyBins.FrequencyBinsServiceInterface
 import java.awt.Color
 
 interface ColorFactoryInterface {
@@ -69,5 +73,3 @@ class ColorFactory(
     }
 
 }
-
-

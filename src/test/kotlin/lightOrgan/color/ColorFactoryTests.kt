@@ -1,15 +1,16 @@
 package lightOrgan.color
 
+import color.ColorFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-import lightOrgan.sound.frequencyBins.FrequencyBinsServiceInterface
 import lightOrgan.sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactoryInterface
 import lightOrgan.sound.frequencyBins.filters.BassFrequencyBinsFilterInterface
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import sound.frequencyBins.FrequencyBinsServiceInterface
 import toolkit.color.getBrightness
 import toolkit.color.getHue
 import toolkit.color.getSaturation

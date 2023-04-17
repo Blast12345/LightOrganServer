@@ -1,12 +1,13 @@
-package lightOrgan.sound.frequencyBins
+package sound.frequencyBins
 
 import input.audioFrame.AudioFrame
 import lightOrgan.sound.fft.RelativeMagnitudesCalculator
 import lightOrgan.sound.fft.RelativeMagnitudesCalculatorInterface
+import lightOrgan.sound.frequencyBins.*
 import lightOrgan.sound.frequencyBins.filters.FrequencyBinListDenoiser
 import lightOrgan.sound.frequencyBins.filters.FrequencyBinListDenoiserInterface
-import lightOrgan.sound.signalProcessing.SignalProcessor
-import lightOrgan.sound.signalProcessing.SignalProcessorInterface
+import sound.signalProcessing.SignalProcessor
+import sound.signalProcessing.SignalProcessorInterface
 import wrappers.audioFormat.AudioFormatWrapper
 
 interface FrequencyBinsServiceInterface {

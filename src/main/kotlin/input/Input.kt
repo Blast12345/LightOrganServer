@@ -19,7 +19,6 @@ class Input(
 
     init {
         lineListener.subscribers.add(this)
-
     }
 
     override fun received(newSamples: ByteArray) {
@@ -39,5 +38,5 @@ class Input(
             it.received(audioFrame)
         }
     }
-    
+
 }
