@@ -1,31 +1,28 @@
-package gui.dashboard.tiles.Stats
+package gui.dashboard.tiles.Statistics
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import gui.basicComponents.Tile
-import gui.dashboard.DashboardViewModel
 import gui.wrappers.SimpleSpacer
 import gui.wrappers.SimpleText
 import gui.wrappers.SimpleTooltipArea
 
-// TODO: Maybe it is excusable for stats to take full view model, recalculated each time
-// TODO: Latency can be on the color tile
 @Preview
 @Composable
-fun StatsTile(
-    dashboardViewModel: DashboardViewModel,
+fun StatisticsTile(
+    viewModel: StatisticsViewModel,
     modifier: Modifier = Modifier
 ) {
     Tile(modifier) {
         title()
         SimpleSpacer(12)
-        durationOfAudioUsedInformation(dashboardViewModel.durationOfAudioUsed.value)
+        durationOfAudioUsedInformation(viewModel.durationOfAudioUsed)
         SimpleSpacer(6)
-        lowestDiscernibleFrequencyInformation(dashboardViewModel.lowestDiscernibleFrequency.value)
+        lowestDiscernibleFrequencyInformation(viewModel.lowestDiscernibleFrequency)
         SimpleSpacer(6)
-        resolutionInformation(dashboardViewModel.frequencyResolution.value)
+        resolutionInformation(viewModel.frequencyResolution)
     }
 }
 

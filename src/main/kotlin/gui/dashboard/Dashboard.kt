@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gui.Theme
 import gui.dashboard.tiles.Color.ColorTile
-import gui.dashboard.tiles.Stats.StatsTile
+import gui.dashboard.tiles.Statistics.StatisticsTile
 import gui.dashboard.tiles.Synesthetic.SynestheticTile
 
 @Preview
@@ -53,8 +53,8 @@ private fun MainRow(viewModel: DashboardViewModel) {
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
 
-        StatsTile(
-            dashboardViewModel = viewModel,
+        StatisticsTile(
+            viewModel = viewModel.statisticsViewModelState.value,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
 

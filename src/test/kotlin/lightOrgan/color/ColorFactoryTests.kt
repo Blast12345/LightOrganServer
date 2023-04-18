@@ -1,6 +1,9 @@
 package lightOrgan.color
 
 import color.ColorFactory
+import extensions.getBrightness
+import extensions.getHue
+import extensions.getSaturation
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -11,9 +14,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.frequencyBins.FrequencyBinsServiceInterface
-import toolkit.color.getBrightness
-import toolkit.color.getHue
-import toolkit.color.getSaturation
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextFrequencyBin
 import toolkit.monkeyTest.nextFrequencyBins
