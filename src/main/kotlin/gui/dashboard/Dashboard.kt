@@ -9,9 +9,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gui.Theme
-import gui.dashboard.tiles.Color.ColorTile
-import gui.dashboard.tiles.Statistics.StatisticsTile
-import gui.dashboard.tiles.Synesthetic.SynestheticTile
+import gui.dashboard.tiles.color.ColorTile
+import gui.dashboard.tiles.statistics.StatisticsTile
+import gui.dashboard.tiles.synesthetic.SynestheticTile
 
 @Preview
 @Composable
@@ -49,7 +49,7 @@ private fun MainRow(viewModel: DashboardViewModel) {
         )
 
         ColorTile(
-            dashboardViewModel = viewModel,
+            viewModel = viewModel.colorViewModelState.value,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
 

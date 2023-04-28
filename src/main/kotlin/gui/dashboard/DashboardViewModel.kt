@@ -1,12 +1,12 @@
 package gui.dashboard
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
 import config.ConfigSingleton
 import config.ConfigStorage
-import extensions.toComposeColor
-import gui.dashboard.tiles.Statistics.StatisticsViewModel
-import gui.dashboard.tiles.Statistics.StatisticsViewModelFactory
+import gui.dashboard.tiles.color.ColorViewModel
+import gui.dashboard.tiles.color.ColorViewModelFactory
+import gui.dashboard.tiles.statistics.StatisticsViewModel
+import gui.dashboard.tiles.statistics.StatisticsViewModelFactory
 import input.Input
 import input.buffer.InputBuffer
 import input.finder.InputFinder
@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import lightOrgan.LightOrgan
 import lightOrgan.LightOrganListener
 import server.Server
+import java.awt.Color
 
 // TODO: This seems temporary
 class DefaultInputFactory {
@@ -34,6 +35,7 @@ class DefaultInputFactory {
 
 // TODO: Test me
 class DashboardViewModel(
+    private val colorViewModelFactory: ColorViewModelFactory = ColorViewModelFactory(),
     private val statisticsViewModelFactory: StatisticsViewModelFactory = StatisticsViewModelFactory()
 ) : LightOrganListener {
 
@@ -44,7 +46,7 @@ class DashboardViewModel(
 
     val startAutomatically = mutableStateOf(ConfigSingleton.startAutomatically)
     val isRunning = mutableStateOf(false)
-    val color = mutableStateOf(Color.Black)
+    val colorViewModelState = mutableStateOf(ColorViewModel())
     val statisticsViewModelState = mutableStateOf(StatisticsViewModel())
 
     init {
@@ -79,21 +81,22 @@ class DashboardViewModel(
         isRunning.value = false
     }
 
+    private fun updateColorTile(color: Color = Color.BLACK) {
+        colorViewModelState.value = colorViewModelFactory.create(color)
+    }
+
     private fun updateStatsTile() {
         statisticsViewModelState.value = statisticsViewModelFactory.create(input.audioFormat, config)
     }
 
-    // Helper
-    private fun formatted(value: Float, unitOfMeasure: String): String {
-        val formattedValue = String.format("%.2f", value)
-        return "$formattedValue $unitOfMeasure"
-    }
-
-    override fun new(color: java.awt.Color) {
+    // Color Delegate
+    override fun new(color: Color) {
         server.sendColor(color)
 
         MainScope().launch {
-            this@DashboardViewModel.color.value = color.toComposeColor()
+            this@DashboardViewModel.updateColorTile(
+                color = color
+            )
         }
     }
 

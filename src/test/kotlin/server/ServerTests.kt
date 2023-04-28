@@ -7,8 +7,8 @@ import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import toolkit.monkeyTest.nextAwtColor
 import toolkit.monkeyTest.nextClient
-import toolkit.monkeyTest.nextColor
 import toolkit.monkeyTest.nextString
 
 class ServerTests {
@@ -43,7 +43,7 @@ class ServerTests {
     @Test
     fun `the server sends the color to each client`() {
         val sut = createSUT()
-        val color = nextColor()
+        val color = nextAwtColor()
 
         sut.sendColor(color)
 
@@ -54,7 +54,7 @@ class ServerTests {
     @Test
     fun `the color message is created for the color we are sending`() {
         val sut = createSUT()
-        val color = nextColor()
+        val color = nextAwtColor()
 
         sut.sendColor(color)
 

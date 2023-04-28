@@ -10,7 +10,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextAudioFrame
-import toolkit.monkeyTest.nextColor
+import toolkit.monkeyTest.nextAwtColor
 
 class LightOrganTests {
 
@@ -19,7 +19,7 @@ class LightOrganTests {
 
     private val receivedAudio = nextAudioFrame()
 
-    private val nextColor = nextColor()
+    private val nextColor = nextAwtColor()
 
     @BeforeEach
     fun setup() {

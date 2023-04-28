@@ -1,4 +1,4 @@
-package gui.dashboard.tiles.Statistics
+package gui.dashboard.tiles.statistics
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable

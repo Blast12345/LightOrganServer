@@ -1,4 +1,4 @@
-package gui.dashboard.tiles.Synesthetic
+package gui.dashboard.tiles.synesthetic
 
 import androidx.compose.material.Button
 import androidx.compose.material.Text

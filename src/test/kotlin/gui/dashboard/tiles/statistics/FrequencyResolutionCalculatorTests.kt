@@ -1,6 +1,5 @@
 package gui.dashboard.tiles.statistics
 
-import gui.dashboard.tiles.Statistics.FrequencyResolutionCalculator
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

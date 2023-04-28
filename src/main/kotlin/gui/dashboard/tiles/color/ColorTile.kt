@@ -1,4 +1,4 @@
-package gui.dashboard.tiles.Color
+package gui.dashboard.tiles.color
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
@@ -10,20 +10,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import gui.basicComponents.Tile
-import gui.dashboard.DashboardViewModel
 import gui.wrappers.SimpleSpacer
 import gui.wrappers.SimpleText
 
 @Preview
 @Composable
 fun ColorTile(
-    dashboardViewModel: DashboardViewModel,
+    viewModel: ColorViewModel,
     modifier: Modifier = Modifier
 ) {
     Tile(modifier) {
         title()
         SimpleSpacer(12)
-        colorBox(dashboardViewModel.color.value)
+        colorBox(viewModel.color)
     }
 }
 

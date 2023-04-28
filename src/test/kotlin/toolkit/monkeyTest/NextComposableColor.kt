@@ -1,9 +1,9 @@
 package toolkit.monkeyTest
 
-import java.awt.Color
+import androidx.compose.ui.graphics.Color
 import kotlin.random.Random
 
-fun nextAwtColor(): Color {
+fun nextComposeColor(): Color {
     val red = Random.nextFloat()
     val green = Random.nextFloat()
     val blue = Random.nextFloat()

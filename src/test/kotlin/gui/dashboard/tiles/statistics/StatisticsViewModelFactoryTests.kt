@@ -1,9 +1,5 @@
 package gui.dashboard.tiles.statistics
 
-import gui.dashboard.tiles.Statistics.FrequencyResolutionCalculator
-import gui.dashboard.tiles.Statistics.LowestDiscernibleFrequencyCalculator
-import gui.dashboard.tiles.Statistics.SecondsOfAudioUsedCalculator
-import gui.dashboard.tiles.Statistics.StatisticsViewModelFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

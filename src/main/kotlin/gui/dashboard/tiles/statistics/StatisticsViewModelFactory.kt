@@ -1,4 +1,4 @@
-package gui.dashboard.tiles.Statistics
+package gui.dashboard.tiles.statistics
 
 import config.Config
 import javax.sound.sampled.AudioFormat
