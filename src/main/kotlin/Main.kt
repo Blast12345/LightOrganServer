@@ -1,3 +1,4 @@
+import config.ConfigSingleton
 import input.Input
 import input.buffer.InputBuffer
 import input.finder.InputFinder
@@ -5,10 +6,16 @@ import input.lineListener.LineListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import lightOrgan.LightOrgan
+import server.Server
 
 fun main(): Unit = runBlocking {
     launch {
-        createLightOrgan()
+        val lightOrgan = createLightOrgan()
+
+        val server = Server(ConfigSingleton.clients)
+        lightOrgan.subscribers.add(server)
+
         keepAlive()
     }
 }

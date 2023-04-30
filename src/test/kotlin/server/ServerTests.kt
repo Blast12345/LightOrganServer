@@ -41,24 +41,15 @@ class ServerTests {
     }
 
     @Test
-    fun `the server sends the color to each client`() {
+    fun `when a new color is received then the server sends a string representation of that color`() {
         val sut = createSUT()
         val color = nextColor()
 
-        sut.sendColor(color)
-
-        verify { socket.send(nextColorMessage, client1) }
-        verify { socket.send(nextColorMessage, client2) }
-    }
-
-    @Test
-    fun `the color message is created for the color we are sending`() {
-        val sut = createSUT()
-        val color = nextColor()
-
-        sut.sendColor(color)
+        sut.new(color)
 
         verify { colorMessageFactory.create(color) }
+        verify { socket.send(nextColorMessage, client1) }
+        verify { socket.send(nextColorMessage, client2) }
     }
 
 }
