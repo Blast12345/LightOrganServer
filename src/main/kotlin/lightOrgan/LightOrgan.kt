@@ -7,34 +7,27 @@ import input.InputSubscriber
 import input.audioFrame.AudioFrame
 import java.awt.Color
 
-interface LightOrganListener {
-    fun new(color: Color)
-}
-
 class LightOrgan(
-    private val input: Input,
+    input: Input,
+    val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),
     private val colorFactory: ColorFactoryInterface = ColorFactory()
 ) : InputSubscriber {
 
-    val listeners: MutableSet<LightOrganListener> = mutableSetOf()
-
-    fun startListeningToInput() {
+    init {
         input.subscribers.add(this)
     }
 
-    override fun received(audio: AudioFrame) {
-        val color = colorFactory.create(audio)
-        broadcast(color)
+    override fun received(audioFrame: AudioFrame) {
+        broadcast(
+            color = colorFactory.create(audioFrame)
+        )
     }
 
     private fun broadcast(color: Color) {
-        listeners.forEach {
+        subscribers.forEach {
             it.new(color)
         }
     }
 
-    fun stopListeningToInput() {
-        input.subscribers.remove(this)
-    }
-
 }
+

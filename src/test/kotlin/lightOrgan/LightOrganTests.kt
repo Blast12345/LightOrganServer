@@ -10,21 +10,18 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextAudioFrame
-import toolkit.monkeyTest.nextAwtColor
+import toolkit.monkeyTest.nextColor
 
 class LightOrganTests {
 
     private var input: Input = mockk()
     private var colorFactory: ColorFactoryInterface = mockk()
 
-    private val receivedAudio = nextAudioFrame()
-
-    private val nextColor = nextAwtColor()
+    private val nextColor = nextColor()
 
     @BeforeEach
     fun setup() {
         every { input.subscribers.add(any()) } returns true
-        every { input.subscribers.remove(any()) } returns true
         every { colorFactory.create(any()) } returns nextColor
     }
 
@@ -41,29 +38,22 @@ class LightOrganTests {
     }
 
     @Test
-    fun `start listening to the input`() {
+    fun `the light organ begins listening to the input upon initialization`() {
         val sut = createSUT()
-        sut.startListeningToInput()
         verify { input.subscribers.add(sut) }
     }
 
     @Test
-    fun `send the next color to the listeners when new audio is received`() {
+    fun `send the next color to the subscribers when new audio is received`() {
         val sut = createSUT()
-        val listener: LightOrganListener = mockk(relaxed = true)
-        sut.listeners.add(listener)
+        val listener: LightOrganSubscriber = mockk(relaxed = true)
+        sut.subscribers.add(listener)
 
+        val receivedAudio = nextAudioFrame()
         sut.received(receivedAudio)
 
         verify(exactly = 1) { listener.new(nextColor) }
         verify { colorFactory.create(receivedAudio) }
-    }
-
-    @Test
-    fun `stop listening to the input`() {
-        val sut = createSUT()
-        sut.stopListeningToInput()
-        verify { input.subscribers.remove(sut) }
     }
 
 }
