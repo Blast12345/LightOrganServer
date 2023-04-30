@@ -1,6 +1,5 @@
 package lightOrgan.sound.frequencyBins.filters
 
-import config.Config
 import config.children.HighPassFilter
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -13,7 +12,9 @@ import org.junit.jupiter.api.Test
 
 class BassFrequencyBinsFilterTests {
 
-    private var config: Config = mockk()
+    private val highPassFilter: HighPassFilter = mockk()
+    private val highPassFrequency: Float = 120F
+    private val highPassRollOffRange: Float = 20F
 
     private val bin1 = FrequencyBin(100F, 1F)
     private val bin2 = FrequencyBin(120F, 1F)
@@ -21,9 +22,6 @@ class BassFrequencyBinsFilterTests {
     private val bin4 = FrequencyBin(140F, 1F)
     private val frequencyBins = listOf(bin1, bin2, bin3, bin4)
 
-    private val highPassFilter: HighPassFilter = mockk()
-    private val highPassFrequency: Float = 120F
-    private val highPassRollOffRange: Float = 20F
 
     private val expectedBin1 = FrequencyBin(100F, 1F)
     private val expectedBin2 = FrequencyBin(120F, 1F)
@@ -32,7 +30,6 @@ class BassFrequencyBinsFilterTests {
 
     @BeforeEach
     fun setup() {
-        every { config.highPassFilter } returns highPassFilter
         every { highPassFilter.frequency } returns highPassFrequency
         every { highPassFilter.rollOffRange } returns highPassRollOffRange
     }
@@ -44,7 +41,7 @@ class BassFrequencyBinsFilterTests {
 
     private fun createSUT(): BassFrequencyBinsFilter {
         return BassFrequencyBinsFilter(
-            config = config
+            highPassFilter = highPassFilter
         )
     }
 

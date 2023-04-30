@@ -1,7 +1,6 @@
 package sound.signalProcessing
 
-import config.Config
-import config.ConfigSingleton
+import config.PersistedConfig
 import input.audioFrame.AudioFrame
 import lightOrgan.sound.SampleExtractor
 import lightOrgan.sound.SampleExtractorInterface
@@ -15,14 +14,12 @@ interface SignalProcessorInterface {
 }
 
 class SignalProcessor(
-    private val config: Config = ConfigSingleton,
+    private val sampleSize: Int = PersistedConfig().sampleSize,
+    private val interpolatedSampleSize: Int = PersistedConfig().interpolatedSampleSize,
     private val sampleExtractor: SampleExtractorInterface = SampleExtractor(),
     private val hannFilter: HannFilterInterface = NormalizedHannFilter(),
     private val interpolator: ZeroPaddingInterpolatorInterface = NormalizedZeroPaddingInterpolator()
 ) : SignalProcessorInterface {
-
-    private val sampleSize = config.sampleSize
-    private val interpolatedSampleSize: Int = config.interpolatedSampleSize
 
     override fun process(audioFrame: AudioFrame): DoubleArray {
         val extractedSamples = sampleExtractor.extract(audioFrame, sampleSize)

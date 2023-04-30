@@ -7,8 +7,8 @@ import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import toolkit.monkeyTest.nextAwtColor
 import toolkit.monkeyTest.nextClient
-import toolkit.monkeyTest.nextColor
 import toolkit.monkeyTest.nextString
 
 class ServerTests {
@@ -43,7 +43,7 @@ class ServerTests {
     @Test
     fun `when a new color is received then the server sends a string representation of that color`() {
         val sut = createSUT()
-        val color = nextColor()
+        val color = nextAwtColor()
 
         sut.new(color)
 

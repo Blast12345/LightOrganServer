@@ -1,7 +1,9 @@
 package gui.dashboard.tiles.statistics
 
-data class StatisticsViewModel(
-    val durationOfAudioUsed: String = "",
-    val lowestDiscernibleFrequency: String = "",
-    val frequencyResolution: String = ""
+import androidx.compose.runtime.MutableState
+
+class StatisticsViewModel(
+    val durationOfAudioUsed: MutableState<String>,
+    val lowestDiscernibleFrequency: MutableState<String>,
+    val frequencyResolution: MutableState<String>
 )

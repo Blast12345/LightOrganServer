@@ -1,17 +1,14 @@
 package lightOrgan.sound.frequencyBins.dominantFrequency.magnitude.averagePeakStrategy
 
-import config.Config
-import config.ConfigSingleton
+import config.PersistedConfig
 import lightOrgan.sound.frequencyBins.FrequencyBinList
 import lightOrgan.sound.frequencyBins.dominantFrequency.magnitude.MagnitudeEstimator
 
 class MagnitudeAveragePeakEstimator(
-    private val config: Config = ConfigSingleton
+    private val numberOfPeaksToUse: Int = PersistedConfig().magnitudeEstimationStrategy.numberOfPeaksToUse
 ) : MagnitudeEstimator {
 
-    private val numberOfPeaksToUse: Int = config.magnitudeEstimationStrategy.numberOfPeaksToUse
-
-    override fun estimate(frequency: Float, frequencyBins: FrequencyBinList): Float? {
+    override fun estimate(frequency: Float, frequencyBins: FrequencyBinList): Float {
         val peakMagnitudes = getPeakMagnitudes(frequencyBins)
         val averagePeakMagnitude = peakMagnitudes.average()
         return averagePeakMagnitude.toFloat()

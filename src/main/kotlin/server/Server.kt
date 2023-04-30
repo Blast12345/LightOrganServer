@@ -1,12 +1,13 @@
 package server
 
-import config.Client
+import config.PersistedConfig
+import config.children.Client
 import lightOrgan.LightOrganSubscriber
 import java.awt.Color
 
 // TODO: I should double check that UDP is significantly faster than TCP for my use case.
 class Server(
-    private val clients: List<Client>,
+    private val clients: List<Client> = PersistedConfig().clients,
     private val socket: UdpSocketInterface = UdpSocket(),
     private val colorMessageFactory: ColorMessageFactory = ColorMessageFactory()
 ) : LightOrganSubscriber {

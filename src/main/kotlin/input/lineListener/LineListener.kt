@@ -1,6 +1,6 @@
 package input.lineListener
 
-import config.ConfigSingleton
+import config.PersistedConfig
 import kotlinx.coroutines.*
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
@@ -9,7 +9,7 @@ class LineListener(
     val subscribers: MutableSet<LineListenerSubscriber> = mutableSetOf(),
     private val dataLine: TargetDataLine,
     private val targetDataLineReader: TargetDataLineReader = TargetDataLineReader(),
-    private val checkInterval: Long = ConfigSingleton.millisecondsToWaitBetweenCheckingForNewAudio,
+    private val checkInterval: Long = PersistedConfig().millisecondsToWaitBetweenCheckingForNewAudio,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 ) {
 

@@ -18,11 +18,11 @@ fun StatisticsTile(
     Tile(modifier) {
         title()
         SimpleSpacer(12)
-        durationOfAudioUsedInformation(viewModel.durationOfAudioUsed)
+        durationOfAudioUsedInformation(viewModel.durationOfAudioUsed.value)
         SimpleSpacer(6)
-        lowestDiscernibleFrequencyInformation(viewModel.lowestDiscernibleFrequency)
+        lowestDiscernibleFrequencyInformation(viewModel.lowestDiscernibleFrequency.value)
         SimpleSpacer(6)
-        resolutionInformation(viewModel.frequencyResolution)
+        resolutionInformation(viewModel.frequencyResolution.value)
     }
 }
 

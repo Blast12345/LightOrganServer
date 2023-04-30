@@ -1,13 +1,13 @@
 package gui.dashboard.tiles.color
 
-import extensions.toComposeColor
-import java.awt.Color
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 
 class ColorViewModelFactory {
 
-    fun create(color: Color): ColorViewModel {
+    fun create(): ColorViewModel {
         return ColorViewModel(
-            color = color.toComposeColor()
+            color = mutableStateOf(Color.Black)
         )
     }
 

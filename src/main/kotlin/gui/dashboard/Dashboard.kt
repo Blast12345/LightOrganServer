@@ -44,17 +44,17 @@ private fun MainRow(viewModel: DashboardViewModel) {
     ) {
 
         SynestheticTile(
-            dashboardViewModel = viewModel,
+            viewModel = viewModel.synestheticViewModel,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
 
         ColorTile(
-            viewModel = viewModel.colorViewModelState.value,
+            viewModel = viewModel.colorViewModel,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
 
         StatisticsTile(
-            viewModel = viewModel.statisticsViewModelState.value,
+            viewModel = viewModel.statisticsViewModel,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
 

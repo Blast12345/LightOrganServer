@@ -1,7 +1,7 @@
 package lightOrgan.sound.frequencyBins.filters
 
-import config.Config
-import config.ConfigSingleton
+import config.PersistedConfig
+import config.children.HighPassFilter
 import lightOrgan.sound.frequencyBins.FrequencyBin
 import lightOrgan.sound.frequencyBins.FrequencyBinList
 
@@ -10,10 +10,9 @@ interface BassFrequencyBinsFilterInterface {
 }
 
 class BassFrequencyBinsFilter(
-    private val config: Config = ConfigSingleton
+    highPassFilter: HighPassFilter = PersistedConfig().highPassFilter
 ) : BassFrequencyBinsFilterInterface {
 
-    private val highPassFilter = config.highPassFilter
     private val highPassFrequency = highPassFilter.frequency
     private val rollOffRange = highPassFilter.rollOffRange
     private val highestFrequency = highPassFrequency + rollOffRange

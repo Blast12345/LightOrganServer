@@ -1,7 +1,6 @@
 package lightOrgan.color
 
-import config.Config
-import config.ConfigSingleton
+import config.PersistedConfig
 import config.children.ColorWheel
 import lightOrgan.sound.frequencyBins.FrequencyBin
 
@@ -10,10 +9,8 @@ interface HueFactoryInterface {
 }
 
 class HueFactory(
-    private val config: Config = ConfigSingleton
+    private val colorWheel: ColorWheel = PersistedConfig().colorWheel
 ) : HueFactoryInterface {
-
-    private val colorWheel: ColorWheel = config.colorWheel
 
     override fun create(frequencyBin: FrequencyBin): Float {
         return getBaseHue(frequencyBin) + getHueOffset()

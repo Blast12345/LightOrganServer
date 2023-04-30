@@ -22,7 +22,7 @@ fun ColorTile(
     Tile(modifier) {
         title()
         SimpleSpacer(12)
-        colorBox(viewModel.color)
+        colorBox(viewModel.color.value)
     }
 }
 

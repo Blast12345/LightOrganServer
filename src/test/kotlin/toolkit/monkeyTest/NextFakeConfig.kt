@@ -1,13 +1,17 @@
 package toolkit.monkeyTest
 
-import config.Config
+import config.FakeConfig
 import kotlin.random.Random
 
-fun nextConfig(): Config {
-    return Config(
+fun nextFakeConfig(): FakeConfig {
+    return FakeConfig(
         startAutomatically = Random.nextBoolean(),
+        clients = nextClientList(),
+        colorWheel = nextColorWheel(),
+        highPassFilter = nextHighPassFilter(),
         sampleSize = nextPositiveInt(),
         interpolatedSampleSize = nextPositiveInt(),
+        magnitudeEstimationStrategy = nextMagnitudeEstimationStrategy(),
         magnitudeMultiplier = Random.nextFloat(),
         millisecondsToWaitBetweenCheckingForNewAudio = nextPositiveLong()
     )

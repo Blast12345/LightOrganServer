@@ -1,6 +1,5 @@
 package lightOrgan.color
 
-import config.Config
 import config.children.ColorWheel
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -13,8 +12,6 @@ import org.junit.jupiter.api.Test
 
 class HueFactoryTests {
 
-    private var config: Config = mockk()
-
     private val colorWheel: ColorWheel = mockk()
     private val startingFrequency: Float = 40F
     private val endingFrequency: Float = 120F
@@ -22,7 +19,6 @@ class HueFactoryTests {
 
     @BeforeEach
     fun setup() {
-        every { config.colorWheel } returns colorWheel
         every { colorWheel.startingFrequency } returns startingFrequency
         every { colorWheel.endingFrequency } returns endingFrequency
         every { colorWheel.offset } returns offset
@@ -34,7 +30,9 @@ class HueFactoryTests {
     }
 
     private fun createSUT(): HueFactory {
-        return HueFactory(config)
+        return HueFactory(
+            colorWheel = colorWheel
+        )
     }
 
     @Test

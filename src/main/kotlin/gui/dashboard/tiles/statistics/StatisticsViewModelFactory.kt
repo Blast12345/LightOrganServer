@@ -1,6 +1,8 @@
 package gui.dashboard.tiles.statistics
 
-import config.Config
+import LightOrganStateMachine
+import androidx.compose.runtime.mutableStateOf
+import config.PersistedConfig
 import javax.sound.sampled.AudioFormat
 
 class StatisticsViewModelFactory(
@@ -9,23 +11,24 @@ class StatisticsViewModelFactory(
     private val frequencyResolutionCalculator: FrequencyResolutionCalculator = FrequencyResolutionCalculator()
 ) {
 
-    fun create(audioFormat: AudioFormat, config: Config): StatisticsViewModel {
+    fun create(lightOrganStateMachine: LightOrganStateMachine, persistedConfig: PersistedConfig): StatisticsViewModel {
         // TODO: Are frequency resolution and lowest discernible frequency the same? If so, does it make sense to still differentiate them?
-        val secondsOfAudioUsed = calculateSecondsOfAudioUsed(audioFormat, config)
+        val audioFormat = lightOrganStateMachine.input.audioFormat
+        val secondsOfAudioUsed = calculateSecondsOfAudioUsed(audioFormat, persistedConfig)
         val lowestDiscernibleFrequency = calculateLowestDiscernibleFrequency(secondsOfAudioUsed)
-        val frequencyResolutionCalculator = calculateFrequencyResolution(audioFormat, config)
+        val frequencyResolutionCalculator = calculateFrequencyResolution(audioFormat, persistedConfig)
 
         return StatisticsViewModel(
-            durationOfAudioUsed = formatted(secondsOfAudioUsed, "seconds"),
-            lowestDiscernibleFrequency = formatted(lowestDiscernibleFrequency, "Hz"),
-            frequencyResolution = formatted(frequencyResolutionCalculator, "Hz")
+            durationOfAudioUsed = mutableStateOf(formatted(secondsOfAudioUsed * 1000, "ms")),
+            lowestDiscernibleFrequency = mutableStateOf(formatted(lowestDiscernibleFrequency, "Hz")),
+            frequencyResolution = mutableStateOf(formatted(frequencyResolutionCalculator, "Hz"))
         )
     }
 
-    private fun calculateSecondsOfAudioUsed(audioFormat: AudioFormat, config: Config): Float {
+    private fun calculateSecondsOfAudioUsed(audioFormat: AudioFormat, persistedConfig: PersistedConfig): Float {
         return secondsOfAudioUsedCalculator.calculate(
             sampleRate = audioFormat.sampleRate,
-            sampleSize = config.sampleSize,
+            sampleSize = persistedConfig.sampleSize,
             numberOfChannels = audioFormat.channels
         )
     }
@@ -36,9 +39,9 @@ class StatisticsViewModelFactory(
         )
     }
 
-    private fun calculateFrequencyResolution(audioFormat: AudioFormat, config: Config): Float {
+    private fun calculateFrequencyResolution(audioFormat: AudioFormat, persistedConfig: PersistedConfig): Float {
         return frequencyResolutionCalculator.calculate(
-            sampleSize = config.sampleSize,
+            sampleSize = persistedConfig.sampleSize,
             sampleRate = audioFormat.sampleRate,
             numberOfChannels = audioFormat.channels
         )

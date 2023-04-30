@@ -1,7 +1,5 @@
 package sound.frequencyBins
 
-import config.ConfigSingleton
-import config.TestConfig
 import input.audioFrame.AudioFrame
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -108,9 +106,12 @@ class FrequencyBinsServiceTests {
     @Test
     // NOTE: This is an integration test
     fun `a 50hz signal produces an amplitude of 1 in a 50hz bin`() {
-        // The singleton feels a smelly, but passing the config through every class is burdensome.
+        // The singleton feels a smelly, but passing the persistedConfig through every class is burdensome.
         // TODO: Maybe use dependency injection?
-        ConfigSingleton = TestConfig
+        // ConfigSingleton = TestConfig
+
+//        mockkConstructor(PersistedConfig::class)
+//        every { anyConstructed<PersistedConfig>().millisecondsToWaitBetweenCheckingForNewAudio } returns 1
 
         val sut = FrequencyBinsService()
 
