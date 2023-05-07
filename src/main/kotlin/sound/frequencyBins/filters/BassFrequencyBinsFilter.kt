@@ -5,20 +5,16 @@ import config.ConfigSingleton
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 
-interface BassFrequencyBinsFilterInterface {
-    fun filter(frequencyBins: FrequencyBinList): FrequencyBinList
-}
-
 class BassFrequencyBinsFilter(
     private val config: Config = ConfigSingleton
-) : BassFrequencyBinsFilterInterface {
+) {
 
     private val highPassFilter = config.highPassFilter
     private val highPassFrequency = highPassFilter.frequency
     private val rollOffRange = highPassFilter.rollOffRange
     private val highestFrequency = highPassFrequency + rollOffRange
 
-    override fun filter(frequencyBins: FrequencyBinList): FrequencyBinList {
+    fun filter(frequencyBins: FrequencyBinList): FrequencyBinList {
         val binsInRange = getFrequencyBinsInRange(frequencyBins)
         return applyRollOff(binsInRange)
     }

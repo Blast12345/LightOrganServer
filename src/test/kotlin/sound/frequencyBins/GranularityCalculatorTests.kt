@@ -10,7 +10,7 @@ import kotlin.random.Random
 
 class GranularityCalculatorTests {
 
-    private val nyquistFrequencyCalculator: NyquistFrequencyCalculatorInterface = mockk()
+    private val nyquistFrequencyCalculator: NyquistFrequencyCalculator = mockk()
 
     private val numberOfBins = 50
     private val sampleRate = Random.nextFloat()

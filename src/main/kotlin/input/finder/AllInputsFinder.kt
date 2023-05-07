@@ -4,15 +4,11 @@ import javax.sound.sampled.Line
 import javax.sound.sampled.Mixer
 import javax.sound.sampled.TargetDataLine
 
-interface AllInputsFinderInterface {
-    fun getInputs(): List<TargetDataLine>
-}
-
 class AllInputsFinder(
-    private val allAudioDevicesFinder: AllAudioDevicesFinderInterface = AllAudioDevicesFinder()
-) : AllInputsFinderInterface {
+    private val allAudioDevicesFinder: AllAudioDevicesFinder = AllAudioDevicesFinder()
+) {
 
-    override fun getInputs(): List<TargetDataLine> {
+    fun getInputs(): List<TargetDataLine> {
         return getAudioDevices().flatMap { audioDevice ->
             getTargetDataLines(audioDevice)
         }

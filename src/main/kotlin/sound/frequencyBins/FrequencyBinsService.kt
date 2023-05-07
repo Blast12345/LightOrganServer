@@ -2,26 +2,19 @@ package sound.frequencyBins
 
 import input.audioFrame.AudioFrame
 import sound.fft.RelativeMagnitudesCalculator
-import sound.fft.RelativeMagnitudesCalculatorInterface
 import sound.frequencyBins.filters.FrequencyBinListDenoiser
-import sound.frequencyBins.filters.FrequencyBinListDenoiserInterface
 import sound.signalProcessing.SignalProcessor
-import sound.signalProcessing.SignalProcessorInterface
 import wrappers.audioFormat.AudioFormatWrapper
 
-interface FrequencyBinsServiceInterface {
-    fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBinList
-}
-
 class FrequencyBinsService(
-    private val signalProcessor: SignalProcessorInterface = SignalProcessor(),
-    private val relativeMagnitudesCalculator: RelativeMagnitudesCalculatorInterface = RelativeMagnitudesCalculator(),
-    private val granularityCalculator: GranularityCalculatorInterface = GranularityCalculator(),
-    private val frequencyBinListFactory: FrequencyBinListFactoryInterface = FrequencyBinListFactory(),
-    private val frequencyBinListDenoiser: FrequencyBinListDenoiserInterface = FrequencyBinListDenoiser()
-) : FrequencyBinsServiceInterface {
+    private val signalProcessor: SignalProcessor = SignalProcessor(),
+    private val relativeMagnitudesCalculator: RelativeMagnitudesCalculator = RelativeMagnitudesCalculator(),
+    private val granularityCalculator: GranularityCalculator = GranularityCalculator(),
+    private val frequencyBinListFactory: FrequencyBinListFactory = FrequencyBinListFactory(),
+    private val frequencyBinListDenoiser: FrequencyBinListDenoiser = FrequencyBinListDenoiser()
+) {
 
-    override fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBinList {
+    fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBinList {
         val magnitudes = getMagnitudes(audioFrame)
         val granularity = getGranularity(magnitudes.size, audioFrame.format)
         val frequencyBins = getFrequencyBins(magnitudes, granularity)

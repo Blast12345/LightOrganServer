@@ -13,7 +13,7 @@ import toolkit.monkeyTest.nextFrequencyBin
 
 class FrequencyBinListDenoiserTests {
 
-    private val frequencyBinDenoiser: FrequencyBinDenoiserInterface = mockk()
+    private val frequencyBinDenoiser: FrequencyBinDenoiser = mockk()
 
     private val bin1 = FrequencyBin(10F, 1F)
     private val bin2 = FrequencyBin(20F, 2F)

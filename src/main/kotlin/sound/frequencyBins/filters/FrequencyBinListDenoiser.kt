@@ -2,15 +2,11 @@ package sound.frequencyBins.filters
 
 import sound.frequencyBins.FrequencyBinList
 
-interface FrequencyBinListDenoiserInterface {
-    fun denoise(frequencyBins: FrequencyBinList): FrequencyBinList
-}
-
 class FrequencyBinListDenoiser(
-    private val frequencyBinDenoiser: FrequencyBinDenoiserInterface = FrequencyBinDenoiser()
-) : FrequencyBinListDenoiserInterface {
+    private val frequencyBinDenoiser: FrequencyBinDenoiser = FrequencyBinDenoiser()
+) {
 
-    override fun denoise(frequencyBins: FrequencyBinList): FrequencyBinList {
+    fun denoise(frequencyBins: FrequencyBinList): FrequencyBinList {
         return frequencyBins.map { frequencyBin ->
             frequencyBinDenoiser.denoise(frequencyBin)
         }

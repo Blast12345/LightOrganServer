@@ -3,12 +3,12 @@ package sound.signalProcessing.hannFilter
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test
 
-class HannFilterTests {
+class StandardHannFilterTests {
 
     private val samples = doubleArrayOf(0.0, 1.1, 2.2, 3.3)
 
-    private fun createSUT(): HannFilter {
-        return HannFilter()
+    private fun createSUT(): StandardHannFilter {
+        return StandardHannFilter()
     }
 
     @Test

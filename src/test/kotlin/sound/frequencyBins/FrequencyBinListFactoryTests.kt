@@ -13,7 +13,7 @@ import kotlin.random.Random
 
 class FrequencyBinListFactoryTests {
 
-    private var frequencyBinFactory: FrequencyBinFactoryInterface = mockk()
+    private var frequencyBinFactory: FrequencyBinFactory = mockk()
 
     private val magnitudes = nextDoubleArray(length = 2)
     private val granularity = Random.nextFloat()

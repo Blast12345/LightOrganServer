@@ -1,20 +1,15 @@
 package sound.frequencyBins.dominantFrequency.frequency
 
 import sound.frequencyBins.FrequencyBinList
-import sound.frequencyBins.finders.FrequencyBinFinder
-import sound.frequencyBins.finders.FrequencyBinFinderInterface
-
-interface DominantFrequencyCalculatorInterface {
-    fun calculate(frequencyBins: FrequencyBinList): Float?
-}
+import sound.frequencyBins.finders.PeakFrequencyBinsFinder
 
 class DominantFrequencyCalculator(
-    private val frequencyBinFinder: FrequencyBinFinderInterface = FrequencyBinFinder(),
-    private val weightedMagnitudeCalculator: WeightedMagnitudeCalculatorInterface = WeightedMagnitudeCalculator(),
-    private val totalMagnitudeCalculator: TotalMagnitudeCalculatorInterface = TotalMagnitudeCalculator()
-) : DominantFrequencyCalculatorInterface {
+    private val peakFrequencyBinsFinder: PeakFrequencyBinsFinder = PeakFrequencyBinsFinder(),
+    private val weightedMagnitudeCalculator: WeightedMagnitudeCalculator = WeightedMagnitudeCalculator(),
+    private val totalMagnitudeCalculator: TotalMagnitudeCalculator = TotalMagnitudeCalculator()
+) {
 
-    override fun calculate(frequencyBins: FrequencyBinList): Float? {
+    fun calculate(frequencyBins: FrequencyBinList): Float? {
         val peakBins = getPeakFrequencyBins(frequencyBins)
         val weightedMagnitude = weightedMagnitude(peakBins)
         val totalMagnitude = totalMagnitude(peakBins)
@@ -22,7 +17,7 @@ class DominantFrequencyCalculator(
     }
 
     private fun getPeakFrequencyBins(frequencyBins: FrequencyBinList): FrequencyBinList {
-        return frequencyBinFinder.findPeaks(frequencyBins)
+        return peakFrequencyBinsFinder.find(frequencyBins)
     }
 
     private fun weightedMagnitude(frequencyBins: FrequencyBinList): Float {

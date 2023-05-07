@@ -1,6 +1,6 @@
 package lightOrgan
 
-import color.ColorFactoryInterface
+import color.ColorFactory
 import input.Input
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -15,7 +15,7 @@ import toolkit.monkeyTest.nextColor
 class LightOrganTests {
 
     private var input: Input = mockk()
-    private var colorFactory: ColorFactoryInterface = mockk()
+    private var colorFactory: ColorFactory = mockk()
 
     private val nextColor = nextColor()
 

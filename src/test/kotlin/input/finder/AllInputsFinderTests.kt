@@ -14,7 +14,7 @@ import javax.sound.sampled.TargetDataLine
 class AllInputsFinderTests {
 
     private var input1: TargetDataLine = mockk()
-    private var allAudioDevicesFinder: AllAudioDevicesFinderInterface = mockk()
+    private var allAudioDevicesFinder: AllAudioDevicesFinder = mockk()
     private val inputs = listOf(input1)
     private var mixer1: Mixer = mockk()
     private var mixer2: Mixer = mockk()
