@@ -11,7 +11,7 @@ class ColorViewModelFactoryTests {
     }
 
     @Test
-    fun `the color is black by default`() {
+    fun `the color defaults to black`() {
         val sut = createSUT()
         val viewModel = sut.create()
         assertEquals(Color.Black, viewModel.color.value)

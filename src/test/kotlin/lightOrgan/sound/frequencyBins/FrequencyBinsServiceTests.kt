@@ -108,9 +108,9 @@ class FrequencyBinsServiceTests {
     fun `a 50hz signal produces an amplitude of 1 in a 50hz bin`() {
         // The singleton feels a smelly, but passing the persistedConfig through every class is burdensome.
         // TODO: Maybe use dependency injection?
-        // ConfigSingleton = TestConfig
+        ConfigSingleton = TestConfig
 
-//        mockkConstructor(PersistedConfig::class)
+//        mockkConstructor(StateFlow::class)
 //        every { anyConstructed<PersistedConfig>().millisecondsToWaitBetweenCheckingForNewAudio } returns 1
 
         val sut = FrequencyBinsService()

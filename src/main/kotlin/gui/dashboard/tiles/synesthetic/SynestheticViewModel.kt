@@ -2,33 +2,30 @@ package gui.dashboard.tiles.synesthetic
 
 import LightOrganStateMachine
 import androidx.compose.runtime.MutableState
+import config.Config
 import config.PersistedConfig
 
-// TODO: Test me
 class SynestheticViewModel(
     val startAutomatically: MutableState<Boolean>,
     val isRunning: MutableState<Boolean>,
-    private val lightOrganStateMachine: LightOrganStateMachine,
-    private val persistedConfig: PersistedConfig = PersistedConfig()
+    val lightOrganStateMachine: LightOrganStateMachine,
+    private val config: Config = PersistedConfig()
 ) {
 
-    fun setStartAutomatically(value: Boolean) {
-        persistedConfig.startAutomatically = value
-        startAutomatically.value = value
+    fun toggleStartAutomatically() {
+        val newValue = !startAutomatically.value
+        startAutomatically.value = newValue
+        config.startAutomatically = newValue
     }
 
     fun start() {
         lightOrganStateMachine.start()
-        updateRunningState() // TODO: Maybe there should be a way to observe the running state?
-    }
-
-    private fun updateRunningState() {
-        isRunning.value = lightOrganStateMachine.isRunning
+        isRunning.value = true
     }
 
     fun stop() {
         lightOrganStateMachine.stop()
-        updateRunningState()
+        isRunning.value = false
     }
 
 }

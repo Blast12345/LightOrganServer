@@ -2,14 +2,13 @@ package gui.dashboard.tiles.synesthetic
 
 import LightOrganStateMachine
 import androidx.compose.runtime.mutableStateOf
-import config.PersistedConfig
+import config.Config
 
-// TODO: Test me
 class SynestheticViewModelFactory {
 
-    fun create(lightOrganStateMachine: LightOrganStateMachine, persistedConfig: PersistedConfig): SynestheticViewModel {
+    fun create(lightOrganStateMachine: LightOrganStateMachine, config: Config): SynestheticViewModel {
         return SynestheticViewModel(
-            startAutomatically = mutableStateOf(persistedConfig.startAutomatically),
+            startAutomatically = mutableStateOf(config.startAutomatically),
             isRunning = mutableStateOf(lightOrganStateMachine.isRunning),
             lightOrganStateMachine = lightOrganStateMachine
         )

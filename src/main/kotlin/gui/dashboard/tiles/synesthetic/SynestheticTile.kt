@@ -23,7 +23,7 @@ fun SynestheticTile(
 
         startAutomaticallyToggle(
             startAutomatically = viewModel.startAutomatically.value,
-            didChange = { viewModel.setStartAutomatically(it) }
+            didChange = { viewModel.toggleStartAutomatically() }
         )
 
         SimpleSpacer(16)

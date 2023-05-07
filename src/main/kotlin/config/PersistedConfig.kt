@@ -13,7 +13,7 @@ class PersistedConfig(
     override var startAutomatically: Boolean
         get() = preferences.getBoolean(startAutomaticallyKey, false)
         set(value) = preferences.putBoolean(startAutomaticallyKey, value)
-    private val startAutomaticallyKey = "startAutomatically"
+    private val startAutomaticallyKey = "startAutomaticallyKey"
 
     override val clients: List<Client> = listOf()
     override val colorWheel: ColorWheel = ColorWheel(40F, 120F, 0.25F)
