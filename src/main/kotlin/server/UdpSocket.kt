@@ -5,16 +5,12 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 
-interface UdpSocketInterface {
-    fun send(message: String, client: Client)
-}
-
 // TODO: Test me?
-class UdpSocket : UdpSocketInterface {
+class UdpSocket {
 
     private val socket = DatagramSocket()
 
-    override fun send(message: String, client: Client) {
+    fun send(message: String, client: Client) {
         send(message, client.ip, client.port)
     }
 

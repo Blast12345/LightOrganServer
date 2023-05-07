@@ -1,12 +1,12 @@
 package sound.signalProcessing.hannFilter
 
 class NormalizedHannFilter(
-    private val hannFilter: HannFilterInterface = HannFilter(),
-    private val hannFilterNormalizer: HannFilterNormalizerInterface = HannFilterNormalizer(),
-) : HannFilterInterface {
+    private val standardHannFilter: StandardHannFilter = StandardHannFilter(),
+    private val hannFilterNormalizer: HannFilterNormalizer = HannFilterNormalizer(),
+) : HannFilter {
 
     override fun filter(signal: DoubleArray): DoubleArray {
-        val filteredSamples = hannFilter.filter(signal)
+        val filteredSamples = standardHannFilter.filter(signal)
         return hannFilterNormalizer.normalize(filteredSamples)
     }
 

@@ -3,16 +3,16 @@ package sound.signalProcessing
 import config.Config
 import config.ConfigProvider
 import input.audioFrame.AudioFrame
-import sound.signalProcessing.hannFilter.HannFilterInterface
+import sound.signalProcessing.hannFilter.HannFilter
 import sound.signalProcessing.hannFilter.NormalizedHannFilter
 import sound.signalProcessing.zeroPaddingInterpolator.NormalizedZeroPaddingInterpolator
-import sound.signalProcessing.zeroPaddingInterpolator.ZeroPaddingInterpolatorInterface
+import sound.signalProcessing.zeroPaddingInterpolator.ZeroPaddingInterpolator
 
 class SignalProcessor(
     private val config: Config = ConfigProvider().current,
-    private val sampleExtractor: SampleExtractorInterface = SampleExtractor(),
-    private val hannFilter: HannFilterInterface = NormalizedHannFilter(),
-    private val interpolator: ZeroPaddingInterpolatorInterface = NormalizedZeroPaddingInterpolator()
+    private val sampleExtractor: SampleExtractor = SampleExtractor(),
+    private val hannFilter: HannFilter = NormalizedHannFilter(),
+    private val interpolator: ZeroPaddingInterpolator = NormalizedZeroPaddingInterpolator()
 ) {
 
     fun process(audioFrame: AudioFrame): DoubleArray {

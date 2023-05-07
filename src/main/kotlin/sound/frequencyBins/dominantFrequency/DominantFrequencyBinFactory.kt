@@ -3,20 +3,15 @@ package sound.frequencyBins.dominantFrequency
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 import sound.frequencyBins.dominantFrequency.frequency.DominantFrequencyCalculator
-import sound.frequencyBins.dominantFrequency.frequency.DominantFrequencyCalculatorInterface
+import sound.frequencyBins.dominantFrequency.magnitude.AveragePeakMagnitudeEstimator
 import sound.frequencyBins.dominantFrequency.magnitude.MagnitudeEstimator
-import sound.frequencyBins.dominantFrequency.magnitude.averagePeakStrategy.MagnitudeAveragePeakEstimator
-
-interface DominantFrequencyBinFactoryInterface {
-    fun create(frequencyBins: FrequencyBinList): FrequencyBin?
-}
 
 class DominantFrequencyBinFactory(
-    private val dominantFrequencyCalculator: DominantFrequencyCalculatorInterface = DominantFrequencyCalculator(),
-    private val magnitudeEstimator: MagnitudeEstimator = MagnitudeAveragePeakEstimator()
-) : DominantFrequencyBinFactoryInterface {
+    private val dominantFrequencyCalculator: DominantFrequencyCalculator = DominantFrequencyCalculator(),
+    private val magnitudeEstimator: MagnitudeEstimator = AveragePeakMagnitudeEstimator()
+) {
 
-    override fun create(frequencyBins: FrequencyBinList): FrequencyBin? {
+    fun create(frequencyBins: FrequencyBinList): FrequencyBin? {
         val dominantFrequency = getDominantFrequency(frequencyBins) ?: return null
         val estimatedMagnitude = getEstimatedMagnitude(dominantFrequency, frequencyBins) ?: return null
         return FrequencyBin(dominantFrequency, estimatedMagnitude)

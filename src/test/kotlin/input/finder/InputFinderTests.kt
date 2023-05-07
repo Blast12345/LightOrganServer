@@ -11,7 +11,7 @@ import toolkit.monkeyTest.nextTargetDataLineList
 
 class InputFinderTests {
 
-    private var allInputsFinder: AllInputsFinderInterface = mockk()
+    private var allInputsFinder: AllInputsFinder = mockk()
     private val targetDataLines = nextTargetDataLineList(2)
 
     @BeforeEach

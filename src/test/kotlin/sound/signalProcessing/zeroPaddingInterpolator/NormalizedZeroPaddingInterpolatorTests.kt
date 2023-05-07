@@ -13,8 +13,8 @@ import kotlin.random.Random
 
 class NormalizedZeroPaddingInterpolatorTests {
 
-    private var interpolator: ZeroPaddingInterpolatorInterface = mockk()
-    private val interpolatorNormalizer: ZeroPaddingInterpolatorNormalizerInterface = mockk()
+    private var interpolator: StandardZeroPaddingInterpolator = mockk()
+    private val interpolatorNormalizer: ZeroPaddingInterpolatorNormalizer = mockk()
 
     private val signal = nextDoubleArray()
     private val desiredSize = Random.nextInt()

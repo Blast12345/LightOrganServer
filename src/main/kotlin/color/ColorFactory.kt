@@ -4,18 +4,16 @@ import input.audioFrame.AudioFrame
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 import sound.frequencyBins.FrequencyBinsService
-import sound.frequencyBins.FrequencyBinsServiceInterface
 import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactory
-import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactoryInterface
 import sound.frequencyBins.filters.BassFrequencyBinsFilter
 import java.awt.Color
 
 class ColorFactory(
     // TODO: Maybe there should be a BassBinsService? Creating AND filtering the bins here feels smelly.
-    private val frequencyBinsService: FrequencyBinsServiceInterface = FrequencyBinsService(),
+    private val frequencyBinsService: FrequencyBinsService = FrequencyBinsService(),
     private val bassFrequencyBinsFilter: BassFrequencyBinsFilter = BassFrequencyBinsFilter(),
-    private val dominantFrequencyBinFactory: DominantFrequencyBinFactoryInterface = DominantFrequencyBinFactory(),
-    private val hueFactory: HueFactoryInterface = HueFactory(),
+    private val dominantFrequencyBinFactory: DominantFrequencyBinFactory = DominantFrequencyBinFactory(),
+    private val hueFactory: HueFactory = HueFactory(),
     private val brightnessFactory: BrightnessFactory = BrightnessFactory()
 ) {
 

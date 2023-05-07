@@ -12,8 +12,8 @@ import toolkit.monkeyTest.nextDoubleArray
 
 class NormalizedHannFilterTests {
 
-    private var hannFilter: HannFilterInterface = mockk()
-    private val hannFilterNormalizer: HannFilterNormalizerInterface = mockk()
+    private var standardHannFilter: StandardHannFilter = mockk()
+    private val hannFilterNormalizer: HannFilterNormalizer = mockk()
 
     private val signal = nextDoubleArray()
 
@@ -22,7 +22,7 @@ class NormalizedHannFilterTests {
 
     @BeforeEach
     fun setup() {
-        every { hannFilter.filter(any()) } returns filterOutput
+        every { standardHannFilter.filter(any()) } returns filterOutput
         every { hannFilterNormalizer.normalize(any()) } returns normalizerOutput
     }
 
@@ -33,7 +33,7 @@ class NormalizedHannFilterTests {
 
     private fun createSUT(): NormalizedHannFilter {
         return NormalizedHannFilter(
-            hannFilter = hannFilter,
+            standardHannFilter = standardHannFilter,
             hannFilterNormalizer = hannFilterNormalizer
         )
     }
@@ -43,7 +43,7 @@ class NormalizedHannFilterTests {
         val sut = createSUT()
         val filteredSignal = sut.filter(signal)
         assertArrayEquals(normalizerOutput, filteredSignal, 0.001)
-        verify { hannFilter.filter(signal) }
+        verify { standardHannFilter.filter(signal) }
         verify { hannFilterNormalizer.normalize(filterOutput) }
     }
 

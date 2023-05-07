@@ -1,14 +1,10 @@
 package sound.frequencyBins
 
-interface FrequencyBinListFactoryInterface {
-    fun create(magnitudes: DoubleArray, granularity: Float): FrequencyBinList
-}
-
 class FrequencyBinListFactory(
-    private val frequencyBinFactory: FrequencyBinFactoryInterface = FrequencyBinFactory()
-) : FrequencyBinListFactoryInterface {
+    private val frequencyBinFactory: FrequencyBinFactory = FrequencyBinFactory()
+) {
 
-    override fun create(magnitudes: DoubleArray, granularity: Float): FrequencyBinList {
+    fun create(magnitudes: DoubleArray, granularity: Float): FrequencyBinList {
         val frequencyBins: MutableList<FrequencyBin> = mutableListOf()
 
         magnitudes.forEachIndexed { index, magnitude ->

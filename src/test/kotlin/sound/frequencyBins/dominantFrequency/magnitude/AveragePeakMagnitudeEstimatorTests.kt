@@ -1,4 +1,4 @@
-package sound.frequencyBins.dominantFrequency.magnitude.averagePeakStrategy
+package sound.frequencyBins.dominantFrequency.magnitude
 
 import config.Config
 import config.children.MagnitudeEstimationStrategy
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 import sound.frequencyBins.FrequencyBin
 import kotlin.random.Random
 
-class MagnitudeAveragePeakEstimatorTests {
+class AveragePeakMagnitudeEstimatorTests {
 
     private var config: Config = mockk()
 
@@ -38,8 +38,8 @@ class MagnitudeAveragePeakEstimatorTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): MagnitudeAveragePeakEstimator {
-        return MagnitudeAveragePeakEstimator(
+    private fun createSUT(): AveragePeakMagnitudeEstimator {
+        return AveragePeakMagnitudeEstimator(
             config = config
         )
     }

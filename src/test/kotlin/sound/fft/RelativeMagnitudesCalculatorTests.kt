@@ -12,8 +12,8 @@ import toolkit.monkeyTest.nextDoubleArray
 
 class RelativeMagnitudesCalculatorTests {
 
-    private var fftAlgorithm: FftAlgorithmInterface = mockk()
-    private var magnitudeNormalizer: MagnitudeNormalizerInterface = mockk()
+    private var fftAlgorithm: FftAlgorithm = mockk()
+    private var magnitudeNormalizer: MagnitudeNormalizer = mockk()
 
     private val signal = nextDoubleArray()
 
@@ -47,5 +47,5 @@ class RelativeMagnitudesCalculatorTests {
         verify { magnitudeNormalizer.normalize(fftOutput, signal.size) }
 
     }
-    
+
 }

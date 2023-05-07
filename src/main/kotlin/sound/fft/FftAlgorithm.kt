@@ -3,14 +3,10 @@ package sound.fft
 import org.jtransforms.fft.DoubleFFT_1D
 import kotlin.math.sqrt
 
-interface FftAlgorithmInterface {
-    fun calculateRelativeMagnitudes(samples: DoubleArray): DoubleArray
-}
-
 // Reference: https://github.com/wendykierp/JTransforms/issues/4#issue-142313147
-class FftAlgorithm : FftAlgorithmInterface {
+class FftAlgorithm {
 
-    override fun calculateRelativeMagnitudes(samples: DoubleArray): DoubleArray {
+    fun calculateRelativeMagnitudes(samples: DoubleArray): DoubleArray {
         val fftData = performFFT(samples)
         return getRelativeMagnitudes(fftData)
     }

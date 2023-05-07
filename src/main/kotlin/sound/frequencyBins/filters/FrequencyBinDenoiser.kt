@@ -2,13 +2,9 @@ package sound.frequencyBins.filters
 
 import sound.frequencyBins.FrequencyBin
 
-interface FrequencyBinDenoiserInterface {
-    fun denoise(frequencyBin: FrequencyBin): FrequencyBin
-}
+class FrequencyBinDenoiser {
 
-class FrequencyBinDenoiser : FrequencyBinDenoiserInterface {
-
-    override fun denoise(frequencyBin: FrequencyBin): FrequencyBin {
+    fun denoise(frequencyBin: FrequencyBin): FrequencyBin {
         return FrequencyBin(
             frequency = frequencyBin.frequency,
             magnitude = getMagnitude(frequencyBin.magnitude)

@@ -3,13 +3,9 @@ package input.finder
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.Mixer
 
-interface AllAudioDevicesFinderInterface {
-    fun getAudioDevices(): List<Mixer>
-}
+class AllAudioDevicesFinder {
 
-class AllAudioDevicesFinder : AllAudioDevicesFinderInterface {
-
-    override fun getAudioDevices(): List<Mixer> {
+    fun getAudioDevices(): List<Mixer> {
         return getMixerInfo().map { AudioSystem.getMixer(it) }
     }
 
