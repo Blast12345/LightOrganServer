@@ -1,38 +1,16 @@
-import config.ConfigSingleton
-import input.Input
-import input.buffer.InputBuffer
-import input.finder.InputFinder
-import input.lineListener.LineListener
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import lightOrgan.LightOrgan
-import server.Server
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
+import gui.dashboard.Dashboard
 
-fun main(): Unit = runBlocking {
-    launch {
-        val lightOrgan = createLightOrgan()
-
-        val server = Server(ConfigSingleton.clients)
-        lightOrgan.subscribers.add(server)
-
-        keepAlive()
+fun main() = application {
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "Synesthetic",
+        state = rememberWindowState(width = 900.dp, height = 300.dp),
+    ) {
+        Dashboard()
     }
-}
-
-private fun createLightOrgan(): LightOrgan {
-    val dataLine = InputFinder().getInput()
-    val lineListener = LineListener(dataLine = dataLine)
-    val buffer = InputBuffer(bufferSize = dataLine.bufferSize)
-    val input = Input(
-        lineListener = lineListener,
-        buffer = buffer
-    )
-    return LightOrgan(input)
-}
-
-private suspend fun keepAlive() {
-    while (true) {
-        delay(100)
-    }
+    
 }

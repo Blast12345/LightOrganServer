@@ -1,5 +1,6 @@
 package input.lineListener
 
+import config.Config
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelChildren
@@ -21,6 +22,7 @@ class LineListenerTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     private val scope = TestScope()
 
+    private val config: Config = mockk()
     private val subscriber: LineListenerSubscriber = mockk()
     private val dataLine: TargetDataLine = mockk()
     private val targetDataLineReader: TargetDataLineReader = mockk()
@@ -31,6 +33,7 @@ class LineListenerTests {
 
     @BeforeEach
     fun setup() {
+        every { config.millisecondsToWaitBetweenCheckingForNewAudio } returns checkInterval
         every { subscriber.received(any()) } returns Unit
         every { dataLine.open() } returns Unit
         every { dataLine.start() } returns Unit
@@ -46,10 +49,10 @@ class LineListenerTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun createSUT(): LineListener {
         return LineListener(
+            config = config,
             subscribers = mutableSetOf(subscriber),
             dataLine = dataLine,
             targetDataLineReader = targetDataLineReader,
-            checkInterval = checkInterval,
             scope = scope
         )
     }

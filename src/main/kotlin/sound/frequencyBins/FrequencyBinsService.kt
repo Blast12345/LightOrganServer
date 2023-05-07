@@ -6,7 +6,6 @@ import sound.fft.RelativeMagnitudesCalculatorInterface
 import sound.frequencyBins.filters.FrequencyBinListDenoiser
 import sound.frequencyBins.filters.FrequencyBinListDenoiserInterface
 import sound.signalProcessing.SignalProcessor
-import sound.signalProcessing.SignalProcessorInterface
 import wrappers.audioFormat.AudioFormatWrapper
 
 interface FrequencyBinsServiceInterface {
@@ -14,7 +13,7 @@ interface FrequencyBinsServiceInterface {
 }
 
 class FrequencyBinsService(
-    private val signalProcessor: SignalProcessorInterface = SignalProcessor(),
+    private val signalProcessor: SignalProcessor = SignalProcessor(),
     private val relativeMagnitudesCalculator: RelativeMagnitudesCalculatorInterface = RelativeMagnitudesCalculator(),
     private val granularityCalculator: GranularityCalculatorInterface = GranularityCalculator(),
     private val frequencyBinListFactory: FrequencyBinListFactoryInterface = FrequencyBinListFactory(),

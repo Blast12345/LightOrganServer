@@ -1,7 +1,7 @@
 package color
 
-import config.ColorWheel
 import config.Config
+import config.children.ColorWheel
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

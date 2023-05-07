@@ -1,5 +1,6 @@
 package server
 
+import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -13,16 +14,18 @@ import toolkit.monkeyTest.nextString
 
 class ServerTests {
 
-    private val client1 = nextClient()
-    private val client2 = nextClient()
-    private val clients = listOf(client1, client2)
+    private val config: Config = mockk()
     private val socket: UdpSocket = mockk()
     private val colorMessageFactory: ColorMessageFactory = mockk()
 
+    private val client1 = nextClient()
+    private val client2 = nextClient()
+    private val clients = listOf(client1, client2)
     private val nextColorMessage = nextString()
 
     @BeforeEach
     fun setup() {
+        every { config.clients } returns clients
         every { socket.send(any(), any()) } returns Unit
         every { colorMessageFactory.create(any()) } returns nextColorMessage
     }
@@ -34,7 +37,7 @@ class ServerTests {
 
     private fun createSUT(): Server {
         return Server(
-            clients = clients,
+            config = config,
             socket = socket,
             colorMessageFactory = colorMessageFactory
         )

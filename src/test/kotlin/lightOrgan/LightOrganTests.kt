@@ -1,7 +1,6 @@
 package lightOrgan
 
 import color.ColorFactoryInterface
-import input.Input
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -14,14 +13,12 @@ import toolkit.monkeyTest.nextColor
 
 class LightOrganTests {
 
-    private var input: Input = mockk()
     private var colorFactory: ColorFactoryInterface = mockk()
 
     private val nextColor = nextColor()
 
     @BeforeEach
     fun setup() {
-        every { input.subscribers.add(any()) } returns true
         every { colorFactory.create(any()) } returns nextColor
     }
 
@@ -32,15 +29,8 @@ class LightOrganTests {
 
     private fun createSUT(): LightOrgan {
         return LightOrgan(
-            input = input,
             colorFactory = colorFactory
         )
-    }
-
-    @Test
-    fun `the light organ begins listening to the input upon initialization`() {
-        val sut = createSUT()
-        verify { input.subscribers.add(sut) }
     }
 
     @Test

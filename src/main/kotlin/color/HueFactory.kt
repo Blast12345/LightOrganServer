@@ -1,21 +1,18 @@
 package color
 
-import config.ColorWheel
 import config.Config
-import config.ConfigSingleton
+import config.ConfigProvider
+import config.children.ColorWheel
 import sound.frequencyBins.FrequencyBin
 
-interface HueFactoryInterface {
-    fun create(frequencyBin: FrequencyBin): Float
-}
-
 class HueFactory(
-    private val config: Config = ConfigSingleton
-) : HueFactoryInterface {
+    private val config: Config = ConfigProvider().current
+) {
 
-    private val colorWheel: ColorWheel = config.colorWheel
+    private val colorWheel: ColorWheel
+        get() = config.colorWheel
 
-    override fun create(frequencyBin: FrequencyBin): Float {
+    fun create(frequencyBin: FrequencyBin): Float {
         return getBaseHue(frequencyBin) + getHueOffset()
     }
 

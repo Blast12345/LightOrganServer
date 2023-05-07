@@ -1,12 +1,13 @@
 package server
 
-import config.Client
+import config.Config
+import config.ConfigProvider
 import lightOrgan.LightOrganSubscriber
 import java.awt.Color
 
 // TODO: I should double check that UDP is significantly faster than TCP for my use case.
 class Server(
-    private val clients: List<Client>,
+    private val config: Config = ConfigProvider().current,
     private val socket: UdpSocketInterface = UdpSocket(),
     private val colorMessageFactory: ColorMessageFactory = ColorMessageFactory()
 ) : LightOrganSubscriber {
@@ -19,7 +20,7 @@ class Server(
     }
 
     private fun sendMessage(message: String) {
-        for (client in clients) {
+        for (client in config.clients) {
             socket.send(message, client)
         }
 

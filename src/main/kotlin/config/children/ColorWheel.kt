@@ -1,4 +1,4 @@
-package config
+package config.children
 
 data class ColorWheel(
     val startingFrequency: Float,

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.frequencyBins.FrequencyBinsServiceInterface
 import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactoryInterface
-import sound.frequencyBins.filters.BassFrequencyBinsFilterInterface
+import sound.frequencyBins.filters.BassFrequencyBinsFilter
 import toolkit.color.getBrightness
 import toolkit.color.getHue
 import toolkit.color.getSaturation
@@ -22,7 +22,7 @@ import kotlin.random.Random
 class ColorFactoryTests {
 
     private var frequencyBinsService: FrequencyBinsServiceInterface = mockk()
-    private val bassFrequencyBinsFilter: BassFrequencyBinsFilterInterface = mockk()
+    private val bassFrequencyBinsFilter: BassFrequencyBinsFilter = mockk()
     private var dominantFrequencyBinFactory: DominantFrequencyBinFactoryInterface = mockk()
     private var hueFactory: HueFactoryInterface = mockk()
     private var brightnessFactory: BrightnessFactoryInterface = mockk()
