@@ -8,13 +8,13 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.frequencyBins.finders.FrequencyBinFinder
+import sound.frequencyBins.finders.PeakFrequencyBinsFinder
 import toolkit.monkeyTest.nextFrequencyBins
 import kotlin.random.Random
 
 class DominantFrequencyCalculatorTests {
 
-    private val frequencyBinFinder: FrequencyBinFinder = mockk()
+    private val peakFrequencyBinsFinder: PeakFrequencyBinsFinder = mockk()
     private val weightedMagnitudeCalculator: WeightedMagnitudeCalculator = mockk()
     private val totalMagnitudeCalculator: TotalMagnitudeCalculator = mockk()
 
@@ -26,7 +26,7 @@ class DominantFrequencyCalculatorTests {
 
     @BeforeEach
     fun setup() {
-        every { frequencyBinFinder.findPeaks(any()) } returns peakFrequencyBins
+        every { peakFrequencyBinsFinder.find(any()) } returns peakFrequencyBins
         every { weightedMagnitudeCalculator.calculate(any()) } returns weightedMagnitude
         every { totalMagnitudeCalculator.calculate(any()) } returns totalMagnitude
     }
@@ -38,7 +38,7 @@ class DominantFrequencyCalculatorTests {
 
     private fun createSUT(): DominantFrequencyCalculator {
         return DominantFrequencyCalculator(
-            frequencyBinFinder = frequencyBinFinder,
+            peakFrequencyBinsFinder = peakFrequencyBinsFinder,
             weightedMagnitudeCalculator = weightedMagnitudeCalculator,
             totalMagnitudeCalculator = totalMagnitudeCalculator
         )

@@ -3,9 +3,9 @@ package sound.frequencyBins.finders
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 
-class FrequencyBinFinder {
+class PeakFrequencyBinsFinder {
 
-    fun findPeaks(frequencyBins: FrequencyBinList): FrequencyBinList {
+    fun find(frequencyBins: FrequencyBinList): FrequencyBinList {
         val peaks: MutableList<FrequencyBin> = mutableListOf()
 
         for (i in frequencyBins.indices) {

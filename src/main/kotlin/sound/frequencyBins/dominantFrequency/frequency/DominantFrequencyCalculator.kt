@@ -1,10 +1,10 @@
 package sound.frequencyBins.dominantFrequency.frequency
 
 import sound.frequencyBins.FrequencyBinList
-import sound.frequencyBins.finders.FrequencyBinFinder
+import sound.frequencyBins.finders.PeakFrequencyBinsFinder
 
 class DominantFrequencyCalculator(
-    private val frequencyBinFinder: FrequencyBinFinder = FrequencyBinFinder(),
+    private val peakFrequencyBinsFinder: PeakFrequencyBinsFinder = PeakFrequencyBinsFinder(),
     private val weightedMagnitudeCalculator: WeightedMagnitudeCalculator = WeightedMagnitudeCalculator(),
     private val totalMagnitudeCalculator: TotalMagnitudeCalculator = TotalMagnitudeCalculator()
 ) {
@@ -17,7 +17,7 @@ class DominantFrequencyCalculator(
     }
 
     private fun getPeakFrequencyBins(frequencyBins: FrequencyBinList): FrequencyBinList {
-        return frequencyBinFinder.findPeaks(frequencyBins)
+        return peakFrequencyBinsFinder.find(frequencyBins)
     }
 
     private fun weightedMagnitude(frequencyBins: FrequencyBinList): Float {
