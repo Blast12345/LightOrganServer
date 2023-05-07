@@ -8,8 +8,8 @@ class ZeroPaddingInterpolatorTests {
 
     private val samples = doubleArrayOf(1.0, 2.0)
 
-    private fun createSUT(): ZeroPaddingInterpolator {
-        return ZeroPaddingInterpolator()
+    private fun createSUT(): StandardZeroPaddingInterpolator {
+        return StandardZeroPaddingInterpolator()
     }
 
     @Test

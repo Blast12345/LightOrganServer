@@ -7,7 +7,7 @@ import java.awt.Color
 // TODO: I should double check that UDP is significantly faster than TCP for my use case.
 class Server(
     private val clients: List<Client>,
-    private val socket: UdpSocketInterface = UdpSocket(),
+    private val socket: UdpSocket = UdpSocket(),
     private val colorMessageFactory: ColorMessageFactory = ColorMessageFactory()
 ) : LightOrganSubscriber {
 

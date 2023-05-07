@@ -1,12 +1,8 @@
 package sound.frequencyBins
 
-interface NyquistFrequencyCalculatorInterface {
-    fun calculate(sampleRate: Float): Float
-}
+class NyquistFrequencyCalculator {
 
-class NyquistFrequencyCalculator : NyquistFrequencyCalculatorInterface {
-
-    override fun calculate(sampleRate: Float): Float {
+    fun calculate(sampleRate: Float): Float {
         return sampleRate / 2
     }
 

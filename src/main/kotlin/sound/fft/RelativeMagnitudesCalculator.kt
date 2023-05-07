@@ -1,15 +1,11 @@
 package sound.fft
 
-interface RelativeMagnitudesCalculatorInterface {
-    fun calculate(signal: DoubleArray): DoubleArray
-}
-
 class RelativeMagnitudesCalculator(
-    private val fftAlgorithm: FftAlgorithmInterface = FftAlgorithm(),
-    private val magnitudeNormalizer: MagnitudeNormalizerInterface = MagnitudeNormalizer()
-) : RelativeMagnitudesCalculatorInterface {
+    private val fftAlgorithm: FftAlgorithm = FftAlgorithm(),
+    private val magnitudeNormalizer: MagnitudeNormalizer = MagnitudeNormalizer()
+) {
 
-    override fun calculate(signal: DoubleArray): DoubleArray {
+    fun calculate(signal: DoubleArray): DoubleArray {
         val magnitudes = fftAlgorithm.calculateRelativeMagnitudes(signal)
         return magnitudeNormalizer.normalize(magnitudes, signal.size)
     }

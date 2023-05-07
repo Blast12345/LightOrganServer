@@ -15,8 +15,8 @@ import kotlin.random.Random
 class DominantFrequencyCalculatorTests {
 
     private val frequencyBinFinder: FrequencyBinFinder = mockk()
-    private val weightedMagnitudeCalculator: WeightedMagnitudeCalculatorInterface = mockk()
-    private val totalMagnitudeCalculator: TotalMagnitudeCalculatorInterface = mockk()
+    private val weightedMagnitudeCalculator: WeightedMagnitudeCalculator = mockk()
+    private val totalMagnitudeCalculator: TotalMagnitudeCalculator = mockk()
 
     private val frequencyBins = nextFrequencyBins()
 

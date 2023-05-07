@@ -11,9 +11,9 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.fft.RelativeMagnitudesCalculatorInterface
-import sound.frequencyBins.filters.FrequencyBinListDenoiserInterface
-import sound.signalProcessing.SignalProcessorInterface
+import sound.fft.RelativeMagnitudesCalculator
+import sound.frequencyBins.filters.FrequencyBinListDenoiser
+import sound.signalProcessing.SignalProcessor
 import toolkit.generators.SineWaveGenerator
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextDoubleArray
@@ -23,11 +23,11 @@ import kotlin.random.Random
 
 class FrequencyBinsServiceTests {
 
-    private var signalProcessor: SignalProcessorInterface = mockk()
-    private var relativeMagnitudesCalculator: RelativeMagnitudesCalculatorInterface = mockk()
-    private var granularityCalculator: GranularityCalculatorInterface = mockk()
-    private var frequencyBinListFactory: FrequencyBinListFactoryInterface = mockk()
-    private val frequencyBinListDenoiser: FrequencyBinListDenoiserInterface = mockk()
+    private var signalProcessor: SignalProcessor = mockk()
+    private var relativeMagnitudesCalculator: RelativeMagnitudesCalculator = mockk()
+    private var granularityCalculator: GranularityCalculator = mockk()
+    private var frequencyBinListFactory: FrequencyBinListFactory = mockk()
+    private val frequencyBinListDenoiser: FrequencyBinListDenoiser = mockk()
 
     private val audioFrame = nextAudioFrame()
 

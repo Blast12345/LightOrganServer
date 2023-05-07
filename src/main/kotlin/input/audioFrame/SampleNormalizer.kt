@@ -4,14 +4,10 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import javax.sound.sampled.AudioFormat
 
-interface SampleNormalizerInterface {
-    fun normalize(formatSpecificSamples: ByteArray, format: AudioFormat): DoubleArray
-}
-
 // Reference: https://stackoverflow.com/questions/29560491/fourier-transforming-a-byte-array
-class SampleNormalizer : SampleNormalizerInterface {
+class SampleNormalizer {
 
-    override fun normalize(formatSpecificSamples: ByteArray, format: AudioFormat): DoubleArray {
+    fun normalize(formatSpecificSamples: ByteArray, format: AudioFormat): DoubleArray {
         val bitDepth = getBitDepth(format)
         val buffer = getBuffer(formatSpecificSamples, format)
         return getNormalizedSamples(bitDepth, buffer)

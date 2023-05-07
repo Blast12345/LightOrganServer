@@ -1,7 +1,6 @@
 package lightOrgan
 
 import color.ColorFactory
-import color.ColorFactoryInterface
 import input.Input
 import input.InputSubscriber
 import input.audioFrame.AudioFrame
@@ -10,7 +9,7 @@ import java.awt.Color
 class LightOrgan(
     input: Input,
     val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),
-    private val colorFactory: ColorFactoryInterface = ColorFactory()
+    private val colorFactory: ColorFactory = ColorFactory()
 ) : InputSubscriber {
 
     init {

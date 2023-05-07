@@ -1,15 +1,11 @@
 package sound.signalProcessing.hannFilter
 
-interface HannFilterNormalizerInterface {
-    fun normalize(windowedSignal: DoubleArray): DoubleArray
-}
-
 // Reference: https://community.sw.siemens.com/s/article/window-correction-factors
-class HannFilterNormalizer() : HannFilterNormalizerInterface {
+class HannFilterNormalizer {
 
     private val correctionFactor = 2.0
 
-    override fun normalize(windowedSignal: DoubleArray): DoubleArray {
+    fun normalize(windowedSignal: DoubleArray): DoubleArray {
         val correctedSignal = windowedSignal.map { it * correctionFactor }
         return correctedSignal.toDoubleArray()
     }
