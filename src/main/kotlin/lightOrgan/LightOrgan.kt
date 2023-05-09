@@ -6,9 +6,17 @@ import input.audioFrame.AudioFrame
 import java.awt.Color
 
 class LightOrgan(
-    val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),
+    private val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),
     private val colorFactory: ColorFactory = ColorFactory()
 ) : InputSubscriber {
+
+    fun checkIfSubscribed(subscriber: LightOrganSubscriber): Boolean {
+        return subscribers.contains(subscriber)
+    }
+
+    fun addSubscriber(subscriber: LightOrganSubscriber) {
+        subscribers.add(subscriber)
+    }
 
     override fun received(audioFrame: AudioFrame) {
         broadcast(

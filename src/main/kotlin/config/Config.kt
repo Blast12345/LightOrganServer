@@ -15,7 +15,8 @@ class Config(
     val interpolatedSampleSize: Int = 65536,
     val magnitudeEstimationStrategy: MagnitudeEstimationStrategy = MagnitudeEstimationStrategy(5),
     val magnitudeMultiplier: Float = 1.25F,
-    val millisecondsToWaitBetweenCheckingForNewAudio: Long = 1
+    val millisecondsToWaitBetweenCheckingForNewAudio: Long = 1,
+    val noiseFloor: Float = 0.1F
 )
 
 

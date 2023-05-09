@@ -6,6 +6,7 @@ import kotlin.random.Random
 
 fun nextConfig(): Config {
     return Config(
-        startAutomatically = MutableStateFlow(Random.nextBoolean())
+        startAutomatically = MutableStateFlow(Random.nextBoolean()),
+        noiseFloor = Random.nextFloat()
     )
 }

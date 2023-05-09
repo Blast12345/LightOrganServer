@@ -1,25 +1,28 @@
 import input.Input
+import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.LightOrgan
 import lightOrgan.LightOrganSubscriber
 
+// TODO: Test me
 class LightOrganStateMachine(
-    val input: Input = DefaultInputFactory().create(),
+    private val input: Input = DefaultInputFinder().find(),
     private val lightOrgan: LightOrgan = LightOrgan(),
 ) {
 
-    val isRunning: Boolean
-        get() = input.subscribers.contains(lightOrgan)
+    val isRunning: MutableStateFlow<Boolean> = MutableStateFlow(input.checkIfSubscribed(lightOrgan))
 
     fun start() {
-        input.subscribers.add(lightOrgan)
+        input.addSubscriber(lightOrgan)
+        isRunning.value = true
     }
 
     fun stop() {
-        input.subscribers.remove(lightOrgan)
+        input.removeSubscriber(lightOrgan)
+        isRunning.value = false
     }
 
     fun addSubscriber(subscriber: LightOrganSubscriber) {
-        lightOrgan.subscribers.add(subscriber)
+        lightOrgan.addSubscriber(subscriber)
     }
 
 }

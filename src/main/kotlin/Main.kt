@@ -12,5 +12,4 @@ fun main() = application {
     ) {
         Dashboard()
     }
-    
 }

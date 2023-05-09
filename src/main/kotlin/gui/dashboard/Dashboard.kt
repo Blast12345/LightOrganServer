@@ -13,9 +13,9 @@ import gui.dashboard.tiles.SynestheticTile
 
 @Preview
 @Composable
-fun Dashboard() {
-    val viewModel = remember { DashboardViewModel() }
-
+fun Dashboard(
+    viewModel: DashboardViewModel = remember { DashboardViewModel() }
+) {
     Theme {
         Background()
         MainRow(viewModel)

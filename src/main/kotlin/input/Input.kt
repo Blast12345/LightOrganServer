@@ -8,7 +8,7 @@ import input.lineListener.LineListenerSubscriber
 import javax.sound.sampled.AudioFormat
 
 class Input(
-    val subscribers: MutableSet<InputSubscriber> = mutableSetOf(),
+    private val subscribers: MutableSet<InputSubscriber> = mutableSetOf(),
     private val lineListener: LineListener,
     private val buffer: InputBuffer,
     private val audioFrameFactory: AudioFrameFactory = AudioFrameFactory()
@@ -19,6 +19,18 @@ class Input(
 
     init {
         lineListener.subscribers.add(this)
+    }
+
+    fun addSubscriber(subscriber: InputSubscriber) {
+        subscribers.add(subscriber)
+    }
+
+    fun removeSubscriber(subscriber: InputSubscriber) {
+        subscribers.remove(subscriber)
+    }
+
+    fun checkIfSubscribed(subscriber: InputSubscriber): Boolean {
+        return subscribers.contains(subscriber)
     }
 
     override fun received(newSamples: ByteArray) {

@@ -1,7 +1,6 @@
 package gui.dashboard.tiles
 
 import LightOrganStateMachine
-import androidx.compose.runtime.mutableStateOf
 import config.Config
 import config.ConfigProvider
 
@@ -12,7 +11,7 @@ class SynestheticViewModelFactory(
     fun create(lightOrganStateMachine: LightOrganStateMachine): SynestheticViewModel {
         return SynestheticViewModel(
             startAutomatically = config.startAutomatically,
-            isRunning = mutableStateOf(lightOrganStateMachine.isRunning),
+            isRunning = lightOrganStateMachine.isRunning,
             lightOrganStateMachine = lightOrganStateMachine
         )
     }

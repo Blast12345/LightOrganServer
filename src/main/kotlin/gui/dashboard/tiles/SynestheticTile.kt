@@ -22,7 +22,7 @@ fun SynestheticTile(
         val foo by viewModel.startAutomatically.collectAsState()
         startAutomaticallyToggle(
             startAutomatically = foo,
-            didChange = { viewModel.setStartAutomatically(it) }
+            didChange = { viewModel.startAutomatically.value = it }
         )
 
         SimpleSpacer(16)
