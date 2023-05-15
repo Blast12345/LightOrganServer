@@ -1,13 +1,13 @@
 package sound.frequencyBins.filters
 
+import ConfigSingleton
 import config.Config
-import config.ConfigProvider
 import sound.frequencyBins.FrequencyBin
 
 class FrequencyBinDenoiser(
-    private val config: Config = ConfigProvider().current
+    private val config: Config = ConfigSingleton
 ) {
-    
+
     private val noiseFloor: Float
         get() = config.noiseFloor
 

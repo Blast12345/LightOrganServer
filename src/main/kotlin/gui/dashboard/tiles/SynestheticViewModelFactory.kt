@@ -1,11 +1,11 @@
 package gui.dashboard.tiles
 
+import ConfigSingleton
 import LightOrganStateMachine
 import config.Config
-import config.ConfigProvider
 
 class SynestheticViewModelFactory(
-    private val config: Config = ConfigProvider().current
+    private val config: Config = ConfigSingleton
 ) {
 
     fun create(lightOrganStateMachine: LightOrganStateMachine): SynestheticViewModel {

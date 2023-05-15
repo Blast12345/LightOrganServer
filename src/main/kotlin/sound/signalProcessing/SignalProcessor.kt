@@ -1,7 +1,7 @@
 package sound.signalProcessing
 
+import ConfigSingleton
 import config.Config
-import config.ConfigProvider
 import input.audioFrame.AudioFrame
 import sound.signalProcessing.hannFilter.HannFilter
 import sound.signalProcessing.hannFilter.NormalizedHannFilter
@@ -9,7 +9,7 @@ import sound.signalProcessing.zeroPaddingInterpolator.NormalizedZeroPaddingInter
 import sound.signalProcessing.zeroPaddingInterpolator.ZeroPaddingInterpolator
 
 class SignalProcessor(
-    private val config: Config = ConfigProvider().current,
+    private val config: Config = ConfigSingleton,
     private val sampleExtractor: SampleExtractor = SampleExtractor(),
     private val hannFilter: HannFilter = NormalizedHannFilter(),
     private val interpolator: ZeroPaddingInterpolator = NormalizedZeroPaddingInterpolator()

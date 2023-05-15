@@ -1,12 +1,12 @@
 package color
 
+import ConfigSingleton
 import config.Config
-import config.ConfigProvider
 import config.children.ColorWheel
 import sound.frequencyBins.FrequencyBin
 
 class HueFactory(
-    private val config: Config = ConfigProvider().current
+    private val config: Config = ConfigSingleton
 ) {
 
     private val colorWheel: ColorWheel

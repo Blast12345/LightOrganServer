@@ -1,13 +1,13 @@
 package sound.frequencyBins.filters
 
+import ConfigSingleton
 import config.Config
-import config.ConfigProvider
 import config.children.HighPassFilter
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 
 class BassFrequencyBinsFilter(
-    private val config: Config = ConfigProvider().current
+    private val config: Config = ConfigSingleton
 ) {
 
     fun filter(frequencyBins: FrequencyBinList): FrequencyBinList {

@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gui.Theme
@@ -14,7 +13,7 @@ import gui.dashboard.tiles.SynestheticTile
 @Preview
 @Composable
 fun Dashboard(
-    viewModel: DashboardViewModel = remember { DashboardViewModel() }
+    viewModel: DashboardViewModel
 ) {
     Theme {
         Background()

@@ -1,14 +1,14 @@
 package input.lineListener
 
+import ConfigSingleton
 import config.Config
-import config.ConfigProvider
 import kotlinx.coroutines.*
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
 class LineListener(
     val subscribers: MutableSet<LineListenerSubscriber> = mutableSetOf(),
-    private val config: Config = ConfigProvider().current, // TODO: Ensure ALL of these are tested
+    private val config: Config = ConfigSingleton,
     private val dataLine: TargetDataLine,
     private val targetDataLineReader: TargetDataLineReader = TargetDataLineReader(),
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)

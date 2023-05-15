@@ -38,6 +38,20 @@ class SynestheticViewModelTests {
     }
 
     @Test
+    fun `the light organ starts automatically when the start automatically is true`() {
+        every { startAutomatically.value } returns true
+        createSUT()
+        verify { lightOrganStateMachine.start() }
+    }
+
+    @Test
+    fun `the light organ does not start automatically when start automatically is false`() {
+        every { startAutomatically.value } returns false
+        createSUT()
+        verify(exactly = 0) { lightOrganStateMachine.start() }
+    }
+
+    @Test
     fun `start the light organ`() {
         val sut = createSUT()
         sut.start()
