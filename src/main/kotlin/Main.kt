@@ -14,7 +14,7 @@ fun main(): Unit = runBlocking {
         val lightOrgan = createLightOrgan()
 
         val server = Server(ConfigSingleton.clients)
-        lightOrgan.subscribers.add(server)
+        lightOrgan.addSubscriber(server)
 
         keepAlive()
     }
