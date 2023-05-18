@@ -6,8 +6,8 @@ import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
 class LineListener(
-    val subscribers: MutableSet<LineListenerSubscriber> = mutableSetOf(),
     private val dataLine: TargetDataLine,
+    val subscribers: MutableSet<LineListenerSubscriber> = mutableSetOf(),
     private val targetDataLineReader: TargetDataLineReader = TargetDataLineReader(),
     private val checkInterval: Long = ConfigSingleton.millisecondsToWaitBetweenCheckingForNewAudio,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)

@@ -1,14 +1,12 @@
-package input.finder
+package input.finders
 
 import javax.sound.sampled.TargetDataLine
 
-// TODO: InputLineFinder? TargetDataLineFinder?
-class InputFinder(
+class DefaultTargetDataLineFinder(
     private val allInputsFinder: AllInputsFinder = AllInputsFinder()
 ) {
 
-    // NOTE: This could be extended in the future to take a searchable string
-    fun getInput(): TargetDataLine {
+    fun find(): TargetDataLine {
         val inputs = allInputsFinder.getInputs()
         return inputs.first()
     }

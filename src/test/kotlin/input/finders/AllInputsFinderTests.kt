@@ -1,4 +1,4 @@
-package input.finder
+package input.finders
 
 import io.mockk.clearAllMocks
 import io.mockk.every
