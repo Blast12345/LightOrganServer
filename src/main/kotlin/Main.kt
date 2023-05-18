@@ -1,8 +1,8 @@
 import config.ConfigSingleton
 import input.Input
 import input.buffer.InputBuffer
-import input.finders.DefaultTargetDataLineFinder
 import input.lineListener.LineListener
+import input.targetDataLine.DefaultTargetDataLineFinder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

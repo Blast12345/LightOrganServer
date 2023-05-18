@@ -1,8 +1,8 @@
-package input.finders
+package input
 
-import input.Input
 import input.buffer.InputBufferFactory
 import input.lineListener.LineListenerFactory
+import input.targetDataLine.DefaultTargetDataLineFinder
 import io.mockk.mockk
 import io.mockk.mockkConstructor
 import io.mockk.verify

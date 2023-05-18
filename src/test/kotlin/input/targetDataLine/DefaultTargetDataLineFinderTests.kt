@@ -1,4 +1,4 @@
-package input.finders
+package input.targetDataLine
 
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -11,12 +11,12 @@ import toolkit.monkeyTest.nextTargetDataLineList
 
 class DefaultTargetDataLineFinderTests {
 
-    private var allInputsFinder: AllInputsFinder = mockk()
+    private var targetDataLinesFinder: TargetDataLinesFinder = mockk()
     private val targetDataLines = nextTargetDataLineList(2)
 
     @BeforeEach
     fun setup() {
-        every { allInputsFinder.getInputs() } returns targetDataLines
+        every { targetDataLinesFinder.find() } returns targetDataLines
     }
 
     @AfterEach
@@ -25,11 +25,11 @@ class DefaultTargetDataLineFinderTests {
     }
 
     private fun createSUT(): DefaultTargetDataLineFinder {
-        return DefaultTargetDataLineFinder(allInputsFinder)
+        return DefaultTargetDataLineFinder(targetDataLinesFinder)
     }
 
     @Test
-    fun `return the first input`() {
+    fun `return the first data line`() {
         val sut = createSUT()
         val actual = sut.find()
         assertEquals(targetDataLines.first(), actual)

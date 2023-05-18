@@ -1,10 +1,10 @@
-package input.finders
+package input
 
-import input.Input
 import input.buffer.InputBuffer
 import input.buffer.InputBufferFactory
 import input.lineListener.LineListener
 import input.lineListener.LineListenerFactory
+import input.targetDataLine.DefaultTargetDataLineFinder
 
 // TODO: Test me
 class DefaultInputFactory(
