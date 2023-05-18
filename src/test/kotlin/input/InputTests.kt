@@ -8,6 +8,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,23 +18,20 @@ import kotlin.random.Random
 
 class InputTests {
 
-    private val delegate: InputSubscriber = mockk()
     private val lineListener: LineListener = mockk()
     private val buffer: InputBuffer = mockk()
     private val audioFrameFactory: AudioFrameFactory = mockk()
+    private val subscriber1: InputSubscriber = mockk(relaxed = true)
+    private val subscriber2: InputSubscriber = mockk(relaxed = true)
 
-    private val audioFrame = nextAudioFrame()
-    private val newSamples = Random.nextBytes(1024)
+    private val newSamples = Random.nextBytes(4)
+    private val updatedBuffer = Random.nextBytes(4)
     private val audioFormat: AudioFormat = mockk()
-    private val updatedBuffer = Random.nextBytes(1024)
+    private val audioFrame = nextAudioFrame()
 
     @BeforeEach
     fun setup() {
-        every { lineListener.subscribers.add(any()) } returns true
-        every { lineListener.audioFormat } returns audioFormat
-        every { audioFrameFactory.create(any(), any()) } returns audioFrame
-        every { delegate.received(any()) } returns Unit
-        every { buffer.updatedWith(any()) } returns updatedBuffer
+        every { lineListener.addSubscriber(any()) } returns Unit
     }
 
     @AfterEach
@@ -45,45 +43,73 @@ class InputTests {
         return Input(
             lineListener = lineListener,
             buffer = buffer,
-            audioFrameFactory = audioFrameFactory
+            audioFrameFactory = audioFrameFactory,
+            subscribers = mutableSetOf(subscriber1, subscriber2)
         )
     }
 
     @Test
-    fun `begins listening to the target data line upon initialization`() {
+    fun `begin listening to the target data line upon initialization`() {
         val sut = createSUT()
-        verify { lineListener.subscribers.add(sut) }
+        verify { lineListener.addSubscriber(sut) }
     }
 
     @Test
-    fun `the buffer is updated when samples are received`() {
+    fun `send the audio frame to the subscribers when new samples are received`() {
         val sut = createSUT()
-        sut.received(newSamples)
-        verify { buffer.updatedWith(newSamples) }
-    }
-
-    @Test
-    fun `the updated samples from the buffer are used to create an audio clip`() {
-        val sut = createSUT()
-        sut.received(newSamples)
-        verify { audioFrameFactory.create(updatedBuffer, audioFormat) }
-    }
-
-    @Test
-    fun `the audio clip is sent to the listeners`() {
-        val sut = createSUT()
-        val listener: InputSubscriber = mockk(relaxed = true)
-        sut.subscribers.add(listener)
+        every { buffer.updatedWith(newSamples) } returns updatedBuffer
+        every { lineListener.audioFormat } returns audioFormat
+        every { audioFrameFactory.create(updatedBuffer, audioFormat) } returns audioFrame
 
         sut.received(newSamples)
 
-        verify(exactly = 1) { listener.received(audioFrame) }
+        verify(exactly = 1) { subscriber1.received(audioFrame) }
+        verify(exactly = 1) { subscriber2.received(audioFrame) }
     }
 
     @Test
     fun `get the audio format`() {
         val sut = createSUT()
+        every { lineListener.audioFormat } returns audioFormat
         assertEquals(lineListener.audioFormat, sut.audioFormat)
+    }
+
+    @Test
+    fun `check if a potential subscriber is subscribed when it is`() {
+        val sut = createSUT()
+
+        val actual = sut.checkIfSubscribed(subscriber1)
+
+        Assertions.assertTrue(actual)
+    }
+
+    @Test
+    fun `check if a potential subscriber is subscribed when it is not`() {
+        val sut = createSUT()
+
+        val newSubscriber: InputSubscriber = mockk()
+        val actual = sut.checkIfSubscribed(newSubscriber)
+
+        Assertions.assertFalse(actual)
+    }
+
+    @Test
+    fun `add a subscriber`() {
+        val sut = createSUT()
+
+        val newSubscriber: InputSubscriber = mockk()
+        sut.addSubscriber(newSubscriber)
+
+        Assertions.assertTrue(sut.checkIfSubscribed(newSubscriber))
+    }
+
+    @Test
+    fun `remove a subscriber`() {
+        val sut = createSUT()
+
+        sut.removeSubscriber(subscriber1)
+
+        Assertions.assertFalse(sut.checkIfSubscribed(subscriber1))
     }
 
 }
