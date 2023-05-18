@@ -8,12 +8,12 @@ import java.awt.Color
 
 class LightOrgan(
     input: Input,
-    val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),
-    private val colorFactory: ColorFactory = ColorFactory()
+    private val colorFactory: ColorFactory = ColorFactory(),
+    private val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf()
 ) : InputSubscriber {
 
     init {
-        input.subscribers.add(this)
+        input.addSubscriber(this)
     }
 
     override fun received(audioFrame: AudioFrame) {
@@ -26,6 +26,14 @@ class LightOrgan(
         subscribers.forEach {
             it.new(color)
         }
+    }
+
+    fun checkIfSubscribed(subscriber: LightOrganSubscriber): Boolean {
+        return subscribers.contains(subscriber)
+    }
+
+    fun addSubscriber(subscriber: LightOrganSubscriber) {
+        subscribers.add(subscriber)
     }
 
 }
