@@ -10,14 +10,6 @@ class LightOrgan(
     private val colorFactory: ColorFactory = ColorFactory()
 ) : InputSubscriber {
 
-    fun checkIfSubscribed(subscriber: LightOrganSubscriber): Boolean {
-        return subscribers.contains(subscriber)
-    }
-
-    fun addSubscriber(subscriber: LightOrganSubscriber) {
-        subscribers.add(subscriber)
-    }
-
     override fun received(audioFrame: AudioFrame) {
         broadcast(
             color = colorFactory.create(audioFrame)
@@ -28,6 +20,14 @@ class LightOrgan(
         subscribers.forEach {
             it.new(color)
         }
+    }
+
+    fun checkIfSubscribed(subscriber: LightOrganSubscriber): Boolean {
+        return subscribers.contains(subscriber)
+    }
+
+    fun addSubscriber(subscriber: LightOrganSubscriber) {
+        subscribers.add(subscriber)
     }
 
 }

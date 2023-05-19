@@ -7,11 +7,11 @@ import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
 class LineListener(
-    val subscribers: MutableSet<LineListenerSubscriber> = mutableSetOf(),
-    private val config: Config = ConfigSingleton,
     private val dataLine: TargetDataLine,
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
     private val targetDataLineReader: TargetDataLineReader = TargetDataLineReader(),
-    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val subscribers: MutableSet<LineListenerSubscriber> = mutableSetOf(),
+    private val config: Config = ConfigSingleton
 ) {
 
     private val checkInterval: Long
@@ -30,7 +30,6 @@ class LineListener(
         dataLine.start()
     }
 
-    // TODO: Verify that this is the best approach
     private fun startListeningForAudio() {
         scope.launch {
             while (isActive) {
@@ -60,6 +59,14 @@ class LineListener(
 
     private suspend fun enforceRateLimit() {
         delay(checkInterval)
+    }
+
+    fun checkIfSubscribed(subscriber: LineListenerSubscriber): Boolean {
+        return subscribers.contains(subscriber)
+    }
+
+    fun addSubscriber(subscriber: LineListenerSubscriber) {
+        subscribers.add(subscriber)
     }
 
 }

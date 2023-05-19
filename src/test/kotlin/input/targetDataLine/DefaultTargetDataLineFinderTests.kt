@@ -1,4 +1,4 @@
-package input.finder
+package input.targetDataLine
 
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -9,14 +9,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextTargetDataLineList
 
-class InputFinderTests {
+class DefaultTargetDataLineFinderTests {
 
-    private var allInputsFinder: AllInputsFinder = mockk()
+    private var targetDataLinesFinder: TargetDataLinesFinder = mockk()
     private val targetDataLines = nextTargetDataLineList(2)
 
     @BeforeEach
     fun setup() {
-        every { allInputsFinder.getInputs() } returns targetDataLines
+        every { targetDataLinesFinder.find() } returns targetDataLines
     }
 
     @AfterEach
@@ -24,14 +24,14 @@ class InputFinderTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): InputFinder {
-        return InputFinder(allInputsFinder)
+    private fun createSUT(): DefaultTargetDataLineFinder {
+        return DefaultTargetDataLineFinder(targetDataLinesFinder)
     }
 
     @Test
-    fun `return the first input`() {
+    fun `return the first data line`() {
         val sut = createSUT()
-        val actual = sut.getInput()
+        val actual = sut.find()
         assertEquals(targetDataLines.first(), actual)
     }
 

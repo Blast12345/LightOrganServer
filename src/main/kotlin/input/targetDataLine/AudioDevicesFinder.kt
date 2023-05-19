@@ -1,11 +1,11 @@
-package input.finder
+package input.targetDataLine
 
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.Mixer
 
-class AllAudioDevicesFinder {
+class AudioDevicesFinder {
 
-    fun getAudioDevices(): List<Mixer> {
+    fun find(): List<Mixer> {
         return getMixerInfo().map { AudioSystem.getMixer(it) }
     }
 

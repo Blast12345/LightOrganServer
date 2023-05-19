@@ -1,6 +1,5 @@
 package input.lineListener
 
-import config.Config
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelChildren
@@ -8,11 +7,11 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextByteArray
-import toolkit.monkeyTest.nextPositiveLong
+import toolkit.monkeyTest.nextConfig
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 import kotlin.random.Random
@@ -22,24 +21,14 @@ class LineListenerTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     private val scope = TestScope()
 
-    private val config: Config = mockk()
-    private val subscriber: LineListenerSubscriber = mockk()
-    private val dataLine: TargetDataLine = mockk()
+    private val dataLine: TargetDataLine = mockk(relaxed = true)
     private val targetDataLineReader: TargetDataLineReader = mockk()
-    private val checkInterval = nextPositiveLong()
+    private val subscriber1: LineListenerSubscriber = mockk(relaxed = true)
+    private val subscriber2: LineListenerSubscriber = mockk(relaxed = true)
+    private val config = nextConfig()
 
     private val newSamples = nextByteArray()
     private val format: AudioFormat = mockk()
-
-    @BeforeEach
-    fun setup() {
-        every { config.millisecondsToWaitBetweenCheckingForNewAudio } returns checkInterval
-        every { subscriber.received(any()) } returns Unit
-        every { dataLine.open() } returns Unit
-        every { dataLine.start() } returns Unit
-        every { targetDataLineReader.getAvailableData(any()) } returns newSamples
-        every { dataLine.format } returns format
-    }
 
     @AfterEach
     fun teardown() {
@@ -49,11 +38,11 @@ class LineListenerTests {
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun createSUT(): LineListener {
         return LineListener(
-            config = config,
-            subscribers = mutableSetOf(subscriber),
             dataLine = dataLine,
+            scope = scope,
             targetDataLineReader = targetDataLineReader,
-            scope = scope
+            subscribers = mutableSetOf(subscriber1, subscriber2),
+            config = config
         )
     }
 
@@ -71,9 +60,10 @@ class LineListenerTests {
     @Test
     fun `the data line is checked for new data every X milliseconds`() = scope.runTest {
         createSUT()
+        every { targetDataLineReader.getAvailableData(dataLine) } returns newSamples
 
         val iterations = Random.nextInt(1, 8)
-        val durationOfTwoLoops = iterations * checkInterval
+        val durationOfTwoLoops = iterations * config.millisecondsToWaitBetweenCheckingForNewAudio
         advanceTimeBy(durationOfTwoLoops)
 
         coVerify(exactly = iterations) { targetDataLineReader.getAvailableData(dataLine) }
@@ -85,29 +75,62 @@ class LineListenerTests {
     @Test
     fun `samples are given to the subscribers`() = scope.runTest {
         createSUT()
+        every { targetDataLineReader.getAvailableData(dataLine) } returns newSamples
 
         advanceTimeBy(1)
-
-        coVerify { subscriber.received(newSamples) }
         scope.coroutineContext.cancelChildren()
+
+        coVerify { subscriber1.received(newSamples) }
+        coVerify { subscriber2.received(newSamples) }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `empty samples are not given to the subscribers`() = scope.runTest {
         createSUT()
-        every { targetDataLineReader.getAvailableData(any()) } returns nextByteArray(0)
+        every { targetDataLineReader.getAvailableData(dataLine) } returns nextByteArray(0)
 
         advanceTimeBy(1)
-
-        coVerify(exactly = 0) { subscriber.received(any()) }
         scope.coroutineContext.cancelChildren()
+
+        coVerify(exactly = 0) { subscriber1.received(any()) }
+        coVerify(exactly = 0) { subscriber2.received(any()) }
     }
 
     @Test
     fun `get the audio format`() {
         val sut = createSUT()
+        every { dataLine.format } returns format
         assertEquals(dataLine.format, sut.audioFormat)
+    }
+
+    @Test
+    fun `check if a potential subscriber is subscribed when it is`() {
+        val sut = createSUT()
+
+        val actual = sut.checkIfSubscribed(subscriber1)
+
+        Assertions.assertTrue(actual)
+    }
+
+    @Test
+    fun `check if a potential subscriber is subscribed when it is not`() {
+        val sut = createSUT()
+
+        val newSubscriber: LineListenerSubscriber = mockk()
+        val actual = sut.checkIfSubscribed(newSubscriber)
+
+        Assertions.assertFalse(actual)
+    }
+
+    @Test
+    fun `add a subscriber`() {
+        val sut = createSUT()
+
+        val newSubscriber: LineListenerSubscriber = mockk()
+        sut.addSubscriber(newSubscriber)
+
+        Assertions.assertTrue(sut.checkIfSubscribed(newSubscriber))
     }
 
 }

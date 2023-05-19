@@ -1,3 +1,4 @@
+import input.DefaultInputFactory
 import input.Input
 import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.LightOrgan
@@ -5,7 +6,7 @@ import lightOrgan.LightOrganSubscriber
 
 // TODO: Test me
 class LightOrganStateMachine(
-    private val input: Input = DefaultInputFinder().find(),
+    private val input: Input = DefaultInputFactory().create(),
     private val lightOrgan: LightOrgan = LightOrgan(),
 ) {
 
