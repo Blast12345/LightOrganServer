@@ -2,6 +2,7 @@ package server
 
 import ConfigSingleton
 import config.Config
+import config.children.Client
 import lightOrgan.LightOrganSubscriber
 import java.awt.Color
 
@@ -20,12 +21,15 @@ class Server(
     }
 
     private fun sendMessage(message: String) {
-        for (client in config.clients) {
+        for (client in clients) {
             socket.send(message, client)
         }
 
         printServerLatency()
     }
+
+    private val clients: Set<Client>
+        get() = config.clients
 
     private fun printServerLatency() {
         val timeBetweenColors = System.currentTimeMillis() - timestampOfLastSentColor
