@@ -1,8 +1,5 @@
 import config.ConfigSingleton
-import input.Input
-import input.buffer.InputBuffer
-import input.finder.InputFinder
-import input.lineListener.LineListener
+import input.DefaultInputFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -21,13 +18,7 @@ fun main(): Unit = runBlocking {
 }
 
 private fun createLightOrgan(): LightOrgan {
-    val dataLine = InputFinder().getInput()
-    val lineListener = LineListener(dataLine = dataLine)
-    val buffer = InputBuffer(bufferSize = dataLine.bufferSize)
-    val input = Input(
-        lineListener = lineListener,
-        buffer = buffer
-    )
+    val input = DefaultInputFactory().create()
     return LightOrgan(input)
 }
 

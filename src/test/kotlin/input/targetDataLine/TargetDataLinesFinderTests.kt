@@ -1,4 +1,4 @@
-package input.finder
+package input.targetDataLine
 
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -11,10 +11,10 @@ import toolkit.monkeyTest.nextTargetLineInfo
 import javax.sound.sampled.Mixer
 import javax.sound.sampled.TargetDataLine
 
-class AllInputsFinderTests {
+class TargetDataLinesFinderTests {
 
     private var input1: TargetDataLine = mockk()
-    private var allAudioDevicesFinder: AllAudioDevicesFinder = mockk()
+    private var audioDevicesFinder: AudioDevicesFinder = mockk()
     private val inputs = listOf(input1)
     private var mixer1: Mixer = mockk()
     private var mixer2: Mixer = mockk()
@@ -27,7 +27,7 @@ class AllInputsFinderTests {
         every { mixer1.getLine(targetLineInfo) } returns input1
         every { mixer2.targetLineInfo } returns arrayOf()
         every { mixer2.getLine(targetLineInfo) } returns null
-        every { allAudioDevicesFinder.getAudioDevices() } returns audioDevices
+        every { audioDevicesFinder.find() } returns audioDevices
     }
 
     @AfterEach
@@ -35,14 +35,14 @@ class AllInputsFinderTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): AllInputsFinder {
-        return AllInputsFinder(allAudioDevicesFinder)
+    private fun createSUT(): TargetDataLinesFinder {
+        return TargetDataLinesFinder(audioDevicesFinder)
     }
 
     @Test
-    fun `find all inputs`() {
+    fun `find all target data lines`() {
         val sut = createSUT()
-        val actual = sut.getInputs()
+        val actual = sut.find()
         assertEquals(inputs, actual)
     }
 

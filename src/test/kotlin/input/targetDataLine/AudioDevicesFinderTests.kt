@@ -1,4 +1,4 @@
-package input.finder
+package input.targetDataLine
 
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -11,7 +11,7 @@ import toolkit.monkeyTest.nextMixer
 import toolkit.monkeyTest.nextMixerInfo
 import javax.sound.sampled.AudioSystem
 
-class AllAudioDevicesFinderTests {
+class AudioDevicesFinderTests {
 
     private val mixerInfo = nextMixerInfo()
     private val mixer = nextMixer()
@@ -29,14 +29,14 @@ class AllAudioDevicesFinderTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): AllAudioDevicesFinder {
-        return AllAudioDevicesFinder()
+    private fun createSUT(): AudioDevicesFinder {
+        return AudioDevicesFinder()
     }
 
     @Test
     fun `find all audio devices`() {
         val sut = createSUT()
-        val actual = sut.getAudioDevices()
+        val actual = sut.find()
         assertEquals(mixers, actual)
     }
 

@@ -1,21 +1,21 @@
-package input.finder
+package input.targetDataLine
 
 import javax.sound.sampled.Line
 import javax.sound.sampled.Mixer
 import javax.sound.sampled.TargetDataLine
 
-class AllInputsFinder(
-    private val allAudioDevicesFinder: AllAudioDevicesFinder = AllAudioDevicesFinder()
+class TargetDataLinesFinder(
+    private val audioDevicesFinder: AudioDevicesFinder = AudioDevicesFinder()
 ) {
 
-    fun getInputs(): List<TargetDataLine> {
+    fun find(): List<TargetDataLine> {
         return getAudioDevices().flatMap { audioDevice ->
             getTargetDataLines(audioDevice)
         }
     }
 
     private fun getAudioDevices(): List<Mixer> {
-        return allAudioDevicesFinder.getAudioDevices()
+        return audioDevicesFinder.find()
     }
 
     private fun getTargetDataLines(audioDevice: Mixer): List<TargetDataLine> {
