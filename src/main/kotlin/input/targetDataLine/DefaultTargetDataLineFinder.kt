@@ -7,8 +7,11 @@ class DefaultTargetDataLineFinder(
 ) {
 
     fun find(): TargetDataLine {
-        val inputs = targetDataLinesFinder.find()
-        return inputs.first()
+        return findTargetDataLines().first()
+    }
+
+    private fun findTargetDataLines(): List<TargetDataLine> {
+        return targetDataLinesFinder.find()
     }
 
 }
