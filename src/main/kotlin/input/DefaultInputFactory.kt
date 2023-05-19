@@ -1,12 +1,9 @@
 package input
 
-import input.buffer.InputBuffer
 import input.buffer.InputBufferFactory
-import input.lineListener.LineListener
 import input.lineListener.LineListenerFactory
 import input.targetDataLine.DefaultTargetDataLineFinder
 
-// TODO: Test me
 class DefaultInputFactory(
     defaultTargetDataLineFinder: DefaultTargetDataLineFinder = DefaultTargetDataLineFinder(),
     private val lineListenerFactory: LineListenerFactory = LineListenerFactory(),
@@ -17,17 +14,9 @@ class DefaultInputFactory(
 
     fun create(): Input {
         return Input(
-            lineListener = getLineListener(),
-            buffer = getBuffer()
+            lineListener = lineListenerFactory.create(targetDataLine),
+            buffer = inputBufferFactory.create(targetDataLine)
         )
-    }
-
-    private fun getLineListener(): LineListener {
-        return lineListenerFactory.create(targetDataLine)
-    }
-
-    private fun getBuffer(): InputBuffer {
-        return inputBufferFactory.create(targetDataLine)
     }
 
 }
