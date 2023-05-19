@@ -4,7 +4,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.LightOrgan
 import lightOrgan.LightOrganSubscriber
 
-// TODO: Test me
 class LightOrganStateMachine(
     private val input: Input = DefaultInputFactory().create(),
     private val lightOrgan: LightOrgan = LightOrgan(),
