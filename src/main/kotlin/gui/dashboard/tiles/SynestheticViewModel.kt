@@ -10,7 +10,6 @@ class SynestheticViewModel(
     val lightOrganStateMachine: LightOrganStateMachine
 ) {
 
-    // TODO: Test
     init {
         startLightOrganIfNeeded()
     }

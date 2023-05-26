@@ -5,7 +5,11 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import config.ConfigFactory
 import gui.dashboard.Dashboard
+import gui.dashboard.DashboardViewModel
 import gui.dashboard.DashboardViewModelFactory
+import input.DefaultInputFactory
+import input.Input
+import lightOrgan.LightOrgan
 import server.Server
 
 val ConfigSingleton = ConfigFactory().create()
@@ -16,11 +20,30 @@ fun main() = application {
         title = "Synesthetic",
         state = rememberWindowState(width = 900.dp, height = 300.dp),
     ) {
-        val viewModelFactory = DashboardViewModelFactory()
-        val lightOrganStateMachine = LightOrganStateMachine()
-        val server = Server()
-        lightOrganStateMachine.addSubscriber(server)
-        val viewModel = remember { viewModelFactory.create(lightOrganStateMachine) }
+        val viewModel = remember { getDashboardViewModel() }
         Dashboard(viewModel)
     }
+}
+
+private fun getDashboardViewModel(): DashboardViewModel {
+    return DashboardViewModelFactory().create(
+        lightOrganStateMachine = getLightOrganStateMachine()
+    )
+}
+
+private fun getLightOrganStateMachine(): LightOrganStateMachine {
+    return LightOrganStateMachine(
+        input = getDefaultInput(),
+        lightOrgan = getLightOrgan()
+    )
+}
+
+private fun getDefaultInput(): Input {
+    return DefaultInputFactory().create()
+}
+
+private fun getLightOrgan(): LightOrgan {
+    return LightOrgan(
+        subscribers = mutableSetOf(Server())
+    )
 }

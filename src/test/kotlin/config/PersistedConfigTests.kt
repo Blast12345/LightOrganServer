@@ -29,13 +29,6 @@ class PersistedConfigTests {
     fun `start automatically is read from preferences`() {
         val sut = createSUT()
         sut.startAutomatically
-        verify { preferences.getBoolean(startAutomaticallyKey, any()) }
-    }
-
-    @Test
-    fun `start automatically defaults to false`() {
-        val sut = createSUT()
-        sut.startAutomatically
         verify { preferences.getBoolean(startAutomaticallyKey, false) }
     }
 
