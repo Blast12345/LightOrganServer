@@ -1,7 +1,7 @@
 package gui.dashboard
 
-import gui.dashboard.tiles.SynestheticViewModel
+import gui.dashboard.tiles.LightOrganViewModel
 
 class DashboardViewModel(
-    val synestheticViewModel: SynestheticViewModel
+    val lightOrganViewModel: LightOrganViewModel
 )

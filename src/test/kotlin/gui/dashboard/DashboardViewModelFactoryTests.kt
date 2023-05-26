@@ -1,8 +1,8 @@
 package gui.dashboard
 
 import LightOrganStateMachine
-import gui.dashboard.tiles.SynestheticViewModel
-import gui.dashboard.tiles.SynestheticViewModelFactory
+import gui.dashboard.tiles.LightOrganViewModel
+import gui.dashboard.tiles.LightOrganViewModelFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -13,15 +13,15 @@ import org.junit.jupiter.api.Test
 
 class DashboardViewModelFactoryTests {
 
-    private val synestheticViewModelFactory: SynestheticViewModelFactory = mockk()
+    private val lightOrganViewModelFactory: LightOrganViewModelFactory = mockk()
 
     private val lightOrganStateMachine: LightOrganStateMachine = mockk()
 
-    private val synestheticViewModel: SynestheticViewModel = mockk()
+    private val lightOrganViewModel: LightOrganViewModel = mockk()
 
     @BeforeEach
     fun setup() {
-        every { synestheticViewModelFactory.create(lightOrganStateMachine) } returns synestheticViewModel
+        every { lightOrganViewModelFactory.create(lightOrganStateMachine) } returns lightOrganViewModel
     }
 
     @AfterEach
@@ -31,7 +31,7 @@ class DashboardViewModelFactoryTests {
 
     private fun createSUT(): DashboardViewModelFactory {
         return DashboardViewModelFactory(
-            synestheticViewModelFactory = synestheticViewModelFactory
+            lightOrganViewModelFactory = lightOrganViewModelFactory
         )
     }
 
@@ -39,7 +39,7 @@ class DashboardViewModelFactoryTests {
     fun `contains an element that controls the light organ`() {
         val sut = createSUT()
         val viewModel = sut.create(lightOrganStateMachine)
-        assertEquals(synestheticViewModel, viewModel.synestheticViewModel)
+        assertEquals(lightOrganViewModel, viewModel.lightOrganViewModel)
     }
 
 }

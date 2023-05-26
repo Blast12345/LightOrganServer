@@ -4,12 +4,12 @@ import ConfigSingleton
 import LightOrganStateMachine
 import config.Config
 
-class SynestheticViewModelFactory(
+class LightOrganViewModelFactory(
     private val config: Config = ConfigSingleton
 ) {
 
-    fun create(lightOrganStateMachine: LightOrganStateMachine): SynestheticViewModel {
-        return SynestheticViewModel(
+    fun create(lightOrganStateMachine: LightOrganStateMachine): LightOrganViewModel {
+        return LightOrganViewModel(
             startAutomatically = config.startAutomatically,
             isRunning = lightOrganStateMachine.isRunning,
             lightOrganStateMachine = lightOrganStateMachine

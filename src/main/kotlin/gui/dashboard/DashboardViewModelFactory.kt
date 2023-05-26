@@ -1,15 +1,15 @@
 package gui.dashboard
 
 import LightOrganStateMachine
-import gui.dashboard.tiles.SynestheticViewModelFactory
+import gui.dashboard.tiles.LightOrganViewModelFactory
 
 class DashboardViewModelFactory(
-    private val synestheticViewModelFactory: SynestheticViewModelFactory = SynestheticViewModelFactory()
+    private val lightOrganViewModelFactory: LightOrganViewModelFactory = LightOrganViewModelFactory()
 ) {
 
     fun create(lightOrganStateMachine: LightOrganStateMachine): DashboardViewModel {
         return DashboardViewModel(
-            synestheticViewModel = synestheticViewModelFactory.create(lightOrganStateMachine)
+            lightOrganViewModel = lightOrganViewModelFactory.create(lightOrganStateMachine)
         )
     }
 

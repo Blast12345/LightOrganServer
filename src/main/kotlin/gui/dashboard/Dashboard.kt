@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gui.Theme
-import gui.dashboard.tiles.SynestheticTile
+import gui.dashboard.tiles.LightOrganTile
 
 @Preview
 @Composable
@@ -40,8 +40,8 @@ private fun MainRow(viewModel: DashboardViewModel) {
             .padding(16.dp)
     ) {
 
-        SynestheticTile(
-            viewModel = viewModel.synestheticViewModel,
+        LightOrganTile(
+            viewModel = viewModel.lightOrganViewModel,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
 

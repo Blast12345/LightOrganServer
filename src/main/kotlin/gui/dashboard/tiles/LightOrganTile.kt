@@ -10,8 +10,8 @@ import androidx.compose.ui.text.font.FontWeight
 import gui.basicComponents.*
 
 @Composable
-fun SynestheticTile(
-    viewModel: SynestheticViewModel,
+fun LightOrganTile(
+    viewModel: LightOrganViewModel,
     modifier: Modifier = Modifier
 ) {
     Tile(modifier) {
@@ -38,7 +38,7 @@ fun SynestheticTile(
 @Composable
 private fun title() {
     SimpleText(
-        text = "Synesthetic",
+        text = "Light Organ",
         fontSize = 32,
         fontWeight = FontWeight.Bold
     )

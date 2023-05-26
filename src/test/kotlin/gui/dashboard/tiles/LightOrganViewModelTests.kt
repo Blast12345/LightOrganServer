@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
 
-class SynestheticViewModelTests {
+class LightOrganViewModelTests {
 
     private val startAutomatically: MutableStateFlow<Boolean> = mockk()
     private val isRunning: MutableStateFlow<Boolean> = mockk(relaxed = true)
@@ -29,8 +29,8 @@ class SynestheticViewModelTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): SynestheticViewModel {
-        return SynestheticViewModel(
+    private fun createSUT(): LightOrganViewModel {
+        return LightOrganViewModel(
             startAutomatically = startAutomatically,
             isRunning = isRunning,
             lightOrganStateMachine = lightOrganStateMachine
