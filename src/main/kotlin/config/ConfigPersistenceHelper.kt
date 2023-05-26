@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-// TODO: Use me
 class ConfigPersistenceHelper(
     private val persistedConfig: PersistedConfig = PersistedConfig(),
     // Enhancement: Create more granular dispatchers and/or scopes

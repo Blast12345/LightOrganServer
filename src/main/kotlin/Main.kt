@@ -4,6 +4,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import config.ConfigFactory
+import config.ConfigPersistenceHelper
 import gui.dashboard.Dashboard
 import gui.dashboard.DashboardViewModel
 import gui.dashboard.DashboardViewModelFactory
@@ -15,6 +16,8 @@ import server.Server
 val ConfigSingleton = ConfigFactory().create()
 
 fun main() = application {
+    persistConfigChanges()
+
     Window(
         onCloseRequest = ::exitApplication,
         title = "Synesthetic",
@@ -23,6 +26,11 @@ fun main() = application {
         val viewModel = remember { getDashboardViewModel() }
         Dashboard(viewModel)
     }
+}
+
+private fun persistConfigChanges() {
+    val persistenceHelper = ConfigPersistenceHelper()
+    persistenceHelper.persistStateChanges(ConfigSingleton)
 }
 
 private fun getDashboardViewModel(): DashboardViewModel {
