@@ -8,9 +8,6 @@ class FrequencyBinDenoiser(
     private val config: Config = ConfigSingleton
 ) {
 
-    private val noiseFloor: Float
-        get() = config.noiseFloor
-
     fun denoise(frequencyBin: FrequencyBin): FrequencyBin {
         return FrequencyBin(
             frequency = frequencyBin.frequency,
@@ -25,5 +22,8 @@ class FrequencyBinDenoiser(
             magnitude
         }
     }
+
+    private val noiseFloor: Float
+        get() = config.noiseFloor
 
 }

@@ -5,16 +5,21 @@ import config.children.Client
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.random.Random
 
-fun nextConfig(clients: Set<Client> = nextClients()): Config {
+fun nextConfig(
+    clients: Set<Client> = nextClients(),
+    sampleSize: Int = nextPositiveInt(),
+    interpolatedSampleSize: Int = nextPositiveInt(),
+    magnitudeMultiplier: Float = Random.nextFloat()
+): Config {
     return Config(
         startAutomatically = MutableStateFlow(Random.nextBoolean()),
         clients = clients,
         colorWheel = nextColorWheel(),
         highPassFilter = nextHighPassFilter(),
-        sampleSize = nextPositiveInt(),
-        interpolatedSampleSize = nextPositiveInt(),
+        sampleSize = sampleSize,
+        interpolatedSampleSize = interpolatedSampleSize,
         magnitudeEstimationStrategy = nextMagnitudeEstimationStrategy(),
-        magnitudeMultiplier = Random.nextFloat(),
+        magnitudeMultiplier = magnitudeMultiplier,
         millisecondsToWaitBetweenCheckingForNewAudio = nextPositiveLong(),
         noiseFloor = Random.nextFloat()
     )
