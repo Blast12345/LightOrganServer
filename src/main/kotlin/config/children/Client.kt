@@ -1,4 +1,4 @@
-package config
+package config.children
 
 data class Client(
     val ip: String,

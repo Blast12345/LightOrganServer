@@ -1,15 +1,12 @@
 package color
 
-import config.ColorWheel
-import config.Config
-import config.ConfigSingleton
+import ConfigSingleton
+import config.children.ColorWheel
 import sound.frequencyBins.FrequencyBin
 
 class HueFactory(
-    private val config: Config = ConfigSingleton
+    private val colorWheel: ColorWheel = ConfigSingleton.colorWheel
 ) {
-
-    private val colorWheel: ColorWheel = config.colorWheel
 
     fun create(frequencyBin: FrequencyBin): Float {
         return getBaseHue(frequencyBin) + getHueOffset()

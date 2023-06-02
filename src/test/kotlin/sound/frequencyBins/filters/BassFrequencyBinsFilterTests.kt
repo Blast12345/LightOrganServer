@@ -1,7 +1,7 @@
 package sound.frequencyBins.filters
 
 import config.Config
-import config.HighPassFilter
+import config.children.HighPassFilter
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

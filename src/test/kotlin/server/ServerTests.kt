@@ -9,13 +9,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextClient
 import toolkit.monkeyTest.nextColor
+import toolkit.monkeyTest.nextConfig
 import toolkit.monkeyTest.nextString
 
 class ServerTests {
 
     private val client1 = nextClient()
     private val client2 = nextClient()
-    private val clients = listOf(client1, client2)
+    private val config = nextConfig(clients = setOf(client1, client2))
     private val socket: UdpSocket = mockk()
     private val colorMessageFactory: ColorMessageFactory = mockk()
 
@@ -34,7 +35,7 @@ class ServerTests {
 
     private fun createSUT(): Server {
         return Server(
-            clients = clients,
+            config = config,
             socket = socket,
             colorMessageFactory = colorMessageFactory
         )

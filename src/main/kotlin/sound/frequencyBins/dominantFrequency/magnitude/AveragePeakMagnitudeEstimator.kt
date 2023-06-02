@@ -1,16 +1,14 @@
 package sound.frequencyBins.dominantFrequency.magnitude
 
+import ConfigSingleton
 import config.Config
-import config.ConfigSingleton
 import sound.frequencyBins.FrequencyBinList
 
 class AveragePeakMagnitudeEstimator(
     private val config: Config = ConfigSingleton
 ) : MagnitudeEstimator {
 
-    private val numberOfPeaksToUse: Int = config.magnitudeEstimationStrategy.numberOfPeaksToUse
-
-    override fun estimate(frequency: Float, frequencyBins: FrequencyBinList): Float? {
+    override fun estimate(frequency: Float, frequencyBins: FrequencyBinList): Float {
         val peakMagnitudes = getPeakMagnitudes(frequencyBins)
         val averagePeakMagnitude = peakMagnitudes.average()
         return averagePeakMagnitude.toFloat()
@@ -29,5 +27,8 @@ class AveragePeakMagnitudeEstimator(
     private fun getMagnitudes(frequencyBins: FrequencyBinList): List<Float> {
         return frequencyBins.map { it.magnitude }
     }
+
+    private val numberOfPeaksToUse: Int
+        get() = config.magnitudeEstimationStrategy.numberOfPeaksToUse
 
 }

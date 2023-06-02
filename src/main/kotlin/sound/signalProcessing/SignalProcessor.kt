@@ -1,7 +1,7 @@
 package sound.signalProcessing
 
+import ConfigSingleton
 import config.Config
-import config.ConfigSingleton
 import input.audioFrame.AudioFrame
 import sound.signalProcessing.hannFilter.HannFilter
 import sound.signalProcessing.hannFilter.NormalizedHannFilter
@@ -15,13 +15,16 @@ class SignalProcessor(
     private val interpolator: ZeroPaddingInterpolator = NormalizedZeroPaddingInterpolator()
 ) {
 
-    private val sampleSize = config.sampleSize
-    private val interpolatedSampleSize: Int = config.interpolatedSampleSize
-
     fun process(audioFrame: AudioFrame): DoubleArray {
         val extractedSamples = sampleExtractor.extract(audioFrame, sampleSize)
         val filteredSamples = hannFilter.filter(extractedSamples)
         return interpolator.interpolate(filteredSamples, interpolatedSampleSize)
     }
+
+    private val sampleSize: Int
+        get() = config.sampleSize
+
+    private val interpolatedSampleSize: Int
+        get() = config.interpolatedSampleSize
 
 }

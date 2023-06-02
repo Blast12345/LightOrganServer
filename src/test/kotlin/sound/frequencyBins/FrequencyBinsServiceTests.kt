@@ -1,12 +1,9 @@
 package sound.frequencyBins
 
-import config.ConfigSingleton
-import config.TestConfig
+import ConfigSingleton
+import config.ConfigFactory
 import input.audioFrame.AudioFrame
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -16,6 +13,7 @@ import sound.frequencyBins.filters.FrequencyBinListDenoiser
 import sound.signalProcessing.SignalProcessor
 import toolkit.generators.SineWaveGenerator
 import toolkit.monkeyTest.nextAudioFrame
+import toolkit.monkeyTest.nextConfig
 import toolkit.monkeyTest.nextDoubleArray
 import toolkit.monkeyTest.nextFrequencyBins
 import wrappers.audioFormat.AudioFormatWrapper
@@ -23,10 +21,10 @@ import kotlin.random.Random
 
 class FrequencyBinsServiceTests {
 
-    private var signalProcessor: SignalProcessor = mockk()
-    private var relativeMagnitudesCalculator: RelativeMagnitudesCalculator = mockk()
-    private var granularityCalculator: GranularityCalculator = mockk()
-    private var frequencyBinListFactory: FrequencyBinListFactory = mockk()
+    private val signalProcessor: SignalProcessor = mockk()
+    private val relativeMagnitudesCalculator: RelativeMagnitudesCalculator = mockk()
+    private val granularityCalculator: GranularityCalculator = mockk()
+    private val frequencyBinListFactory: FrequencyBinListFactory = mockk()
     private val frequencyBinListDenoiser: FrequencyBinListDenoiser = mockk()
 
     private val audioFrame = nextAudioFrame()
@@ -107,9 +105,15 @@ class FrequencyBinsServiceTests {
     // NOTE: This is an integration test
     fun `a 50hz signal produces an amplitude of 1 in a 50hz bin`() {
         // The singleton feels a smelly, but passing the config through every class is burdensome.
-        // TODO: Maybe use dependency injection?
-        ConfigSingleton = TestConfig()
+        val config = nextConfig(
+            sampleSize = 48000,
+            interpolatedSampleSize = 48000,
+            magnitudeMultiplier = 1F
+        )
 
+        mockkConstructor(ConfigFactory::class)
+        every { anyConstructed<ConfigFactory>().create() } returns config
+        
         val sut = FrequencyBinsService()
 
         val fiftyHertzSignal = createAudioFrame(50F)

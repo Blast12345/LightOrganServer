@@ -1,20 +1,14 @@
 package lightOrgan
 
 import color.ColorFactory
-import input.Input
 import input.InputSubscriber
 import input.audioFrame.AudioFrame
 import java.awt.Color
 
 class LightOrgan(
-    input: Input,
-    private val colorFactory: ColorFactory = ColorFactory(),
-    private val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf()
+    private val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),
+    private val colorFactory: ColorFactory = ColorFactory()
 ) : InputSubscriber {
-
-    init {
-        input.addSubscriber(this)
-    }
 
     override fun received(audioFrame: AudioFrame) {
         broadcast(

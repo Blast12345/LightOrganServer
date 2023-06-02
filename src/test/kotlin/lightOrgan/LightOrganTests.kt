@@ -1,7 +1,6 @@
 package lightOrgan
 
 import color.ColorFactory
-import input.Input
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -9,24 +8,17 @@ import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextColor
 
 class LightOrganTests {
 
-    private var input: Input = mockk()
     private var colorFactory: ColorFactory = mockk()
     private val subscriber1: LightOrganSubscriber = mockk(relaxed = true)
     private val subscriber2: LightOrganSubscriber = mockk(relaxed = true)
 
     private val nextColor = nextColor()
-
-    @BeforeEach
-    fun setup() {
-        every { input.addSubscriber(any()) } returns Unit
-    }
 
     @AfterEach
     fun teardown() {
@@ -35,16 +27,9 @@ class LightOrganTests {
 
     private fun createSUT(): LightOrgan {
         return LightOrgan(
-            input = input,
             colorFactory = colorFactory,
             subscribers = mutableSetOf(subscriber1, subscriber2)
         )
-    }
-
-    @Test
-    fun `the light organ begins listening to the input upon initialization`() {
-        val sut = createSUT()
-        verify { input.addSubscriber(sut) }
     }
 
     @Test

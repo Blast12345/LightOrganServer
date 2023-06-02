@@ -1,7 +1,7 @@
 package sound.frequencyBins.dominantFrequency.magnitude
 
 import config.Config
-import config.MagnitudeEstimationStrategy
+import config.children.MagnitudeEstimationStrategy
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

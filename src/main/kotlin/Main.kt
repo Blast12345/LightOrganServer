@@ -1,29 +1,57 @@
-import config.ConfigSingleton
+import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
+import config.ConfigFactory
+import config.ConfigPersistenceHelper
+import gui.dashboard.Dashboard
+import gui.dashboard.DashboardViewModel
+import gui.dashboard.DashboardViewModelFactory
 import input.DefaultInputFactory
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import input.Input
 import lightOrgan.LightOrgan
 import server.Server
 
-fun main(): Unit = runBlocking {
-    launch {
-        val lightOrgan = createLightOrgan()
+val ConfigSingleton = ConfigFactory().create()
 
-        val server = Server(ConfigSingleton.clients)
-        lightOrgan.addSubscriber(server)
+fun main() = application {
+    persistConfigChanges()
 
-        keepAlive()
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "Synesthetic",
+        state = rememberWindowState(width = 900.dp, height = 300.dp),
+    ) {
+        val viewModel = remember { getDashboardViewModel() }
+        Dashboard(viewModel)
     }
 }
 
-private fun createLightOrgan(): LightOrgan {
-    val input = DefaultInputFactory().create()
-    return LightOrgan(input)
+private fun persistConfigChanges() {
+    val persistenceHelper = ConfigPersistenceHelper()
+    persistenceHelper.persistStateChanges(ConfigSingleton)
 }
 
-private suspend fun keepAlive() {
-    while (true) {
-        delay(100)
-    }
+private fun getDashboardViewModel(): DashboardViewModel {
+    return DashboardViewModelFactory().create(
+        lightOrganStateMachine = getLightOrganStateMachine()
+    )
+}
+
+private fun getLightOrganStateMachine(): LightOrganStateMachine {
+    return LightOrganStateMachine(
+        input = getDefaultInput(),
+        lightOrgan = getLightOrgan()
+    )
+}
+
+private fun getDefaultInput(): Input {
+    return DefaultInputFactory().create()
+}
+
+private fun getLightOrgan(): LightOrgan {
+    return LightOrgan(
+        subscribers = mutableSetOf(Server())
+    )
 }

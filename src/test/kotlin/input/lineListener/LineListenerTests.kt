@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextByteArray
-import toolkit.monkeyTest.nextPositiveLong
+import toolkit.monkeyTest.nextConfig
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 import kotlin.random.Random
@@ -25,7 +25,7 @@ class LineListenerTests {
     private val targetDataLineReader: TargetDataLineReader = mockk()
     private val subscriber1: LineListenerSubscriber = mockk(relaxed = true)
     private val subscriber2: LineListenerSubscriber = mockk(relaxed = true)
-    private val checkInterval = nextPositiveLong()
+    private val config = nextConfig()
 
     private val newSamples = nextByteArray()
     private val format: AudioFormat = mockk()
@@ -42,7 +42,7 @@ class LineListenerTests {
             scope = scope,
             targetDataLineReader = targetDataLineReader,
             subscribers = mutableSetOf(subscriber1, subscriber2),
-            checkInterval = checkInterval
+            config = config
         )
     }
 
@@ -63,7 +63,7 @@ class LineListenerTests {
         every { targetDataLineReader.getAvailableData(dataLine) } returns newSamples
 
         val iterations = Random.nextInt(1, 8)
-        val durationOfTwoLoops = iterations * checkInterval
+        val durationOfTwoLoops = iterations * config.millisecondsToWaitBetweenCheckingForNewAudio
         advanceTimeBy(durationOfTwoLoops)
 
         coVerify(exactly = iterations) { targetDataLineReader.getAvailableData(dataLine) }

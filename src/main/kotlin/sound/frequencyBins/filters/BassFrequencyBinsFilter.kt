@@ -1,18 +1,14 @@
 package sound.frequencyBins.filters
 
+import ConfigSingleton
 import config.Config
-import config.ConfigSingleton
+import config.children.HighPassFilter
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 
 class BassFrequencyBinsFilter(
     private val config: Config = ConfigSingleton
 ) {
-
-    private val highPassFilter = config.highPassFilter
-    private val highPassFrequency = highPassFilter.frequency
-    private val rollOffRange = highPassFilter.rollOffRange
-    private val highestFrequency = highPassFrequency + rollOffRange
 
     fun filter(frequencyBins: FrequencyBinList): FrequencyBinList {
         val binsInRange = getFrequencyBinsInRange(frequencyBins)
@@ -22,6 +18,18 @@ class BassFrequencyBinsFilter(
     private fun getFrequencyBinsInRange(frequencyBins: FrequencyBinList): FrequencyBinList {
         return frequencyBins.filter { it.frequency <= highestFrequency }
     }
+
+    private val highestFrequency: Float
+        get() = highPassFrequency + rollOffRange
+
+    private val highPassFrequency: Float
+        get() = highPassFilter.frequency
+
+    private val rollOffRange: Float
+        get() = highPassFilter.rollOffRange
+
+    private val highPassFilter: HighPassFilter
+        get() = config.highPassFilter
 
     private fun applyRollOff(frequencyBins: FrequencyBinList): FrequencyBinList {
         return frequencyBins.map { frequencyBin ->

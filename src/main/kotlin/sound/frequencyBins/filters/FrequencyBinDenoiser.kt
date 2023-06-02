@@ -1,8 +1,12 @@
 package sound.frequencyBins.filters
 
+import ConfigSingleton
+import config.Config
 import sound.frequencyBins.FrequencyBin
 
-class FrequencyBinDenoiser {
+class FrequencyBinDenoiser(
+    private val config: Config = ConfigSingleton
+) {
 
     fun denoise(frequencyBin: FrequencyBin): FrequencyBin {
         return FrequencyBin(
@@ -11,14 +15,15 @@ class FrequencyBinDenoiser {
         )
     }
 
-    // ENHANCEMENT: There may be a more elegant method; perhaps subtracting the average of the 10 lowest bins?
-    // TODO: Make denoising threshold configurable
     private fun getMagnitude(magnitude: Float): Float {
-        return if (magnitude < 0.01) {
+        return if (magnitude < noiseFloor) {
             0F
         } else {
             magnitude
         }
     }
+
+    private val noiseFloor: Float
+        get() = config.noiseFloor
 
 }
