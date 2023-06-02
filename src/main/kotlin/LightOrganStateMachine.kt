@@ -8,7 +8,10 @@ class LightOrganStateMachine(
     private val lightOrgan: LightOrgan
 ) {
 
-    val isRunning: MutableStateFlow<Boolean> = MutableStateFlow(input.checkIfSubscribed(lightOrgan))
+    val isRunning: MutableStateFlow<Boolean> = MutableStateFlow(lightOrganIsSubscribedToInput)
+
+    private val lightOrganIsSubscribedToInput: Boolean
+        get() = input.checkIfSubscribed(lightOrgan)
 
     fun start() {
         input.addSubscriber(lightOrgan)

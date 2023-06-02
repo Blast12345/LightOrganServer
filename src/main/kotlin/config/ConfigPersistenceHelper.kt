@@ -1,14 +1,12 @@
 package config
 
+import Scopes.IoScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class ConfigPersistenceHelper(
     private val persistedConfig: PersistedConfig = PersistedConfig(),
-    // Enhancement: Create more granular dispatchers and/or scopes
-    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val scope: CoroutineScope = IoScope
 ) {
 
     fun persistStateChanges(config: Config) {
