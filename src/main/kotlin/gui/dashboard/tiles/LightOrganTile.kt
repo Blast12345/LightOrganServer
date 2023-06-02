@@ -19,16 +19,17 @@ fun LightOrganTile(
 
         SimpleSpacer(16)
 
-        val foo by viewModel.startAutomatically.collectAsState()
+        val startAutomatically by viewModel.startAutomatically.collectAsState()
         startAutomaticallyToggle(
-            startAutomatically = foo,
+            startAutomatically = startAutomatically,
             didChange = { viewModel.startAutomatically.value = it }
         )
 
         SimpleSpacer(16)
 
+        val isRunning by viewModel.isRunning.collectAsState()
         startOrStopButton(
-            isRunning = viewModel.isRunning.value,
+            isRunning = isRunning,
             startAction = { viewModel.start() },
             stopAction = { viewModel.stop() }
         )
