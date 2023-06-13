@@ -1,8 +1,8 @@
 package gui.dashboard
 
 import LightOrganStateMachine
-import gui.dashboard.tiles.LightOrganViewModel
-import gui.dashboard.tiles.LightOrganViewModelFactory
+import gui.dashboard.tiles.lightOrgan.LightOrganViewModel
+import gui.dashboard.tiles.lightOrgan.LightOrganViewModelFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -17,7 +17,7 @@ class DashboardViewModelFactoryTests {
 
     private val lightOrganStateMachine: LightOrganStateMachine = mockk()
 
-    private val lightOrganViewModel: LightOrganViewModel = mockk()
+    private val lightOrganViewModel: LightOrganViewModel = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {

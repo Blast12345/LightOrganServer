@@ -8,7 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gui.Theme
-import gui.dashboard.tiles.LightOrganTile
+import gui.dashboard.tiles.color.ColorTile
+import gui.dashboard.tiles.lightOrgan.LightOrganTile
 
 @Preview
 @Composable
@@ -42,6 +43,11 @@ private fun MainRow(viewModel: DashboardViewModel) {
 
         LightOrganTile(
             viewModel = viewModel.lightOrganViewModel,
+            modifier = Modifier.weight(1f).fillMaxHeight()
+        )
+
+        ColorTile(
+            viewModel = viewModel.colorViewModel,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
 

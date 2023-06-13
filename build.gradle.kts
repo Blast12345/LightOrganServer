@@ -6,18 +6,20 @@ plugins {
 repositories {
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    google()
 }
 
 dependencies {
     implementation("com.github.wendykierp:JTransforms:3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.1")
     implementation(compose.desktop.currentOs)
 
     // Unit Testing
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
-    testImplementation("io.mockk:mockk:1.13.3")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    testImplementation("io.mockk:mockk:1.13.4")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
 
 compose.desktop {

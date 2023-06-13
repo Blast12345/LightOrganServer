@@ -1,4 +1,4 @@
-package gui.dashboard.tiles
+package gui.dashboard.tiles.lightOrgan
 
 import LightOrganStateMachine
 import io.mockk.clearAllMocks
