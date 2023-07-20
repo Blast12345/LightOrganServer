@@ -1,7 +1,7 @@
 package sound.frequencyBins.filters
 
-import ConfigSingleton
 import config.Config
+import config.ConfigSingleton
 import config.children.HighPassFilter
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList

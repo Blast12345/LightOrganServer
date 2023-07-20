@@ -1,8 +1,8 @@
 package input.lineListener
 
-import ConfigSingleton
 import Scopes.IoScope
 import config.Config
+import config.ConfigSingleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive

@@ -1,7 +1,7 @@
 package sound.signalProcessing
 
-import ConfigSingleton
 import config.Config
+import config.ConfigSingleton
 import input.audioFrame.AudioFrame
 import sound.signalProcessing.hannFilter.HannFilter
 import sound.signalProcessing.hannFilter.NormalizedHannFilter

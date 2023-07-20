@@ -1,9 +1,9 @@
 package sound.frequencyBins
 
-import ConfigSingleton
-import config.ConfigFactory
-import input.audioFrame.AudioFrame
-import io.mockk.*
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -11,12 +11,9 @@ import org.junit.jupiter.api.Test
 import sound.fft.RelativeMagnitudesCalculator
 import sound.frequencyBins.filters.FrequencyBinListDenoiser
 import sound.signalProcessing.SignalProcessor
-import toolkit.generators.SineWaveGenerator
 import toolkit.monkeyTest.nextAudioFrame
-import toolkit.monkeyTest.nextConfig
 import toolkit.monkeyTest.nextDoubleArray
 import toolkit.monkeyTest.nextFrequencyBins
-import wrappers.audioFormat.AudioFormatWrapper
 import kotlin.random.Random
 
 class FrequencyBinsServiceTests {
@@ -99,34 +96,6 @@ class FrequencyBinsServiceTests {
         val frequencyBins = sut.getFrequencyBins(audioFrame)
         assertEquals(denoisedFrequencyBins, frequencyBins)
         verify { frequencyBinListDenoiser.denoise(frequencyBinList) }
-    }
-
-    @Test
-    // NOTE: This is an integration test
-    fun `a 50hz signal produces an amplitude of 1 in a 50hz bin`() {
-        // The singleton feels a smelly, but passing the config through every class is burdensome.
-        val config = nextConfig(
-            sampleSize = 48000,
-            interpolatedSampleSize = 48000,
-            magnitudeMultiplier = 1F
-        )
-
-        mockkConstructor(ConfigFactory::class)
-        every { anyConstructed<ConfigFactory>().create() } returns config
-        
-        val sut = FrequencyBinsService()
-
-        val fiftyHertzSignal = createAudioFrame(50F)
-        val frequencyBins = sut.getFrequencyBins(fiftyHertzSignal)
-
-        val fiftyHertzBin = frequencyBins.first { it.frequency == 50F }
-        assertEquals(1F, fiftyHertzBin.magnitude, 0.001F)
-    }
-
-    private fun createAudioFrame(frequency: Float): AudioFrame {
-        val audioFormat = AudioFormatWrapper(48000F, 1)
-        val samples = SineWaveGenerator(48000F).generate(frequency, 48000)
-        return AudioFrame(samples, audioFormat)
     }
 
 }

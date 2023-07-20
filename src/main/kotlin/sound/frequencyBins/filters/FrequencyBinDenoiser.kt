@@ -1,7 +1,7 @@
 package sound.frequencyBins.filters
 
-import ConfigSingleton
 import config.Config
+import config.ConfigSingleton
 import sound.frequencyBins.FrequencyBin
 
 class FrequencyBinDenoiser(

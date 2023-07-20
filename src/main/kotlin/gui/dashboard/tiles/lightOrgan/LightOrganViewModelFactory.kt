@@ -1,7 +1,7 @@
 package gui.dashboard.tiles.lightOrgan
 
-import ConfigSingleton
 import config.Config
+import config.ConfigSingleton
 import lightOrgan.LightOrganStateMachine
 
 class LightOrganViewModelFactory(
