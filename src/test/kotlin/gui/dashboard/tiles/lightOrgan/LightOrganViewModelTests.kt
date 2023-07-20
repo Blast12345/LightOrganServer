@@ -1,11 +1,12 @@
 package gui.dashboard.tiles.lightOrgan
 
-import LightOrganStateMachine
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
+import lightOrgan.LightOrganStateMachine
+import lightOrgan.LightOrganSubscriber
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -15,7 +16,9 @@ class LightOrganViewModelTests {
 
     private val startAutomatically: MutableStateFlow<Boolean> = mockk()
     private val isRunning: MutableStateFlow<Boolean> = mockk(relaxed = true)
-    private val lightOrganStateMachine: LightOrganStateMachine = mockk()
+    private val lightOrganStateMachine: LightOrganStateMachine = mockk(relaxed = true)
+
+    private val newSubscriber: LightOrganSubscriber = mockk()
 
     @BeforeEach
     fun setup() {
@@ -63,6 +66,13 @@ class LightOrganViewModelTests {
         val sut = createSUT()
         sut.stop()
         verify { lightOrganStateMachine.stop() }
+    }
+
+    @Test
+    fun `add a subscriber`() {
+        val sut = createSUT()
+        sut.addSubscriber(newSubscriber)
+        verify { lightOrganStateMachine.addSubscriber(newSubscriber) }
     }
 
 }

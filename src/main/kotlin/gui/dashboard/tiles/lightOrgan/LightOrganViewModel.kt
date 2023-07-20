@@ -1,7 +1,7 @@
 package gui.dashboard.tiles.lightOrgan
 
-import LightOrganStateMachine
 import kotlinx.coroutines.flow.MutableStateFlow
+import lightOrgan.LightOrganStateMachine
 import lightOrgan.LightOrganSubscriber
 
 class LightOrganViewModel(
@@ -28,7 +28,6 @@ class LightOrganViewModel(
         lightOrganStateMachine.stop()
     }
 
-    // TODO: Test me
     fun addSubscriber(subscriber: LightOrganSubscriber) {
         lightOrganStateMachine.addSubscriber(subscriber)
     }

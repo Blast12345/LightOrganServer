@@ -1,9 +1,9 @@
 package gui.dashboard.tiles.lightOrgan
 
-import LightOrganStateMachine
 import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.mockk
+import lightOrgan.LightOrganStateMachine
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

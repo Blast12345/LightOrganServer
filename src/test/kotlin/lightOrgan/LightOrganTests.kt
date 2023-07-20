@@ -19,6 +19,7 @@ class LightOrganTests {
     private val subscriber2: LightOrganSubscriber = mockk(relaxed = true)
 
     private val nextColor = nextColor()
+    private val newSubscriber: LightOrganSubscriber = mockk()
 
     @AfterEach
     fun teardown() {
@@ -48,29 +49,21 @@ class LightOrganTests {
     @Test
     fun `check if a potential subscriber is subscribed when it is`() {
         val sut = createSUT()
-
         val actual = sut.checkIfSubscribed(subscriber1)
-
         assertTrue(actual)
     }
 
     @Test
     fun `check if a potential subscriber is subscribed when it is not`() {
         val sut = createSUT()
-
-        val newSubscriber: LightOrganSubscriber = mockk()
         val actual = sut.checkIfSubscribed(newSubscriber)
-
         assertFalse(actual)
     }
 
     @Test
     fun `add a subscriber`() {
         val sut = createSUT()
-
-        val newSubscriber: LightOrganSubscriber = mockk()
         sut.addSubscriber(newSubscriber)
-
         assertTrue(sut.checkIfSubscribed(newSubscriber))
     }
 

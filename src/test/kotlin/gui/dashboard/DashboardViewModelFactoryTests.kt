@@ -1,11 +1,11 @@
 package gui.dashboard
 
-import LightOrganStateMachine
 import gui.dashboard.tiles.lightOrgan.LightOrganViewModel
 import gui.dashboard.tiles.lightOrgan.LightOrganViewModelFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import lightOrgan.LightOrganStateMachine
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach

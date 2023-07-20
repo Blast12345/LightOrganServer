@@ -1,8 +1,8 @@
 package gui.dashboard
 
-import LightOrganStateMachine
 import gui.dashboard.tiles.color.ColorViewModelFactory
 import gui.dashboard.tiles.lightOrgan.LightOrganViewModelFactory
+import lightOrgan.LightOrganStateMachine
 
 class DashboardViewModelFactory(
     private val lightOrganViewModelFactory: LightOrganViewModelFactory = LightOrganViewModelFactory(),
