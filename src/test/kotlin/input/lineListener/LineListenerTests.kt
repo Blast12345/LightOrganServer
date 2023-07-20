@@ -9,6 +9,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextByteArray
 import toolkit.monkeyTest.nextConfig
@@ -120,7 +121,7 @@ class LineListenerTests {
         val newSubscriber: LineListenerSubscriber = mockk()
         val actual = sut.checkIfSubscribed(newSubscriber)
 
-        Assertions.assertFalse(actual)
+        assertFalse(actual)
     }
 
     @Test

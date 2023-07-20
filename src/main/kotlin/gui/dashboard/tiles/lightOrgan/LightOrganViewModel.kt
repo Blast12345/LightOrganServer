@@ -1,12 +1,13 @@
-package gui.dashboard.tiles
+package gui.dashboard.tiles.lightOrgan
 
-import LightOrganStateMachine
 import kotlinx.coroutines.flow.MutableStateFlow
+import lightOrgan.LightOrganStateMachine
+import lightOrgan.LightOrganSubscriber
 
 class LightOrganViewModel(
     val startAutomatically: MutableStateFlow<Boolean>,
     val isRunning: MutableStateFlow<Boolean>,
-    val lightOrganStateMachine: LightOrganStateMachine
+    private val lightOrganStateMachine: LightOrganStateMachine
 ) {
 
     init {
@@ -25,6 +26,10 @@ class LightOrganViewModel(
 
     fun stop() {
         lightOrganStateMachine.stop()
+    }
+
+    fun addSubscriber(subscriber: LightOrganSubscriber) {
+        lightOrganStateMachine.addSubscriber(subscriber)
     }
 
 }

@@ -1,9 +1,9 @@
-package gui.dashboard.tiles
+package gui.dashboard.tiles.lightOrgan
 
-import LightOrganStateMachine
 import config.Config
 import io.mockk.clearAllMocks
 import io.mockk.mockk
+import lightOrgan.LightOrganStateMachine
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -37,13 +37,6 @@ class LightOrganViewModelFactoryTests {
         val sut = createSUT()
         val viewModel = sut.create(lightOrganStateMachine)
         assertEquals(lightOrganStateMachine.isRunning, viewModel.isRunning)
-    }
-
-    @Test
-    fun `the light organ state machine is passed through`() {
-        val sut = createSUT()
-        val viewModel = sut.create(lightOrganStateMachine)
-        assertEquals(lightOrganStateMachine, viewModel.lightOrganStateMachine)
     }
 
 }

@@ -1,9 +1,9 @@
+package lightOrgan
+
 import input.Input
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import lightOrgan.LightOrgan
-import lightOrgan.LightOrganSubscriber
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -12,6 +12,8 @@ class LightOrganStateMachineTests {
 
     private val input: Input = mockk(relaxed = true)
     private val lightOrgan: LightOrgan = mockk(relaxed = true)
+
+    private val newSubscriber: LightOrganSubscriber = mockk()
 
     private fun createSUT(): LightOrganStateMachine {
         return LightOrganStateMachine(
@@ -65,11 +67,8 @@ class LightOrganStateMachineTests {
     @Test
     fun `add a subscriber to the light organ`() {
         val sut = createSUT()
-
-        val subscriber: LightOrganSubscriber = mockk()
-        sut.addSubscriber(subscriber)
-
-        verify { lightOrgan.addSubscriber(subscriber) }
+        sut.addSubscriber(newSubscriber)
+        verify { lightOrgan.addSubscriber(newSubscriber) }
     }
 
 }

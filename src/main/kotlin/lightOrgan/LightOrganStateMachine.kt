@@ -1,7 +1,7 @@
+package lightOrgan
+
 import input.Input
 import kotlinx.coroutines.flow.MutableStateFlow
-import lightOrgan.LightOrgan
-import lightOrgan.LightOrganSubscriber
 
 class LightOrganStateMachine(
     private val input: Input,

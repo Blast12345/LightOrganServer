@@ -11,6 +11,7 @@ import gui.dashboard.DashboardViewModelFactory
 import input.DefaultInputFactory
 import input.Input
 import lightOrgan.LightOrgan
+import lightOrgan.LightOrganStateMachine
 import server.Server
 
 val ConfigSingleton = ConfigFactory().create()

@@ -1,8 +1,8 @@
-package gui.dashboard.tiles
+package gui.dashboard.tiles.lightOrgan
 
 import ConfigSingleton
-import LightOrganStateMachine
 import config.Config
+import lightOrgan.LightOrganStateMachine
 
 class LightOrganViewModelFactory(
     private val config: Config = ConfigSingleton
