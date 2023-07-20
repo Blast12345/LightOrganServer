@@ -10,9 +10,8 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextConfig
 
-class ConfigPersistenceHelperTests {
+class ConfigPersisterTests {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val scope = TestScope()
 
     private val config: Config = nextConfig()
@@ -23,9 +22,8 @@ class ConfigPersistenceHelperTests {
         clearAllMocks()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private fun createSUT(): ConfigPersistenceHelper {
-        return ConfigPersistenceHelper(
+    private fun createSUT(): ConfigPersister {
+        return ConfigPersister(
             persistedConfig = persistedConfig,
             scope = scope
         )
@@ -35,7 +33,7 @@ class ConfigPersistenceHelperTests {
     @Test
     fun `the start automatically is persisted when it changes`() {
         val sut = createSUT()
-        sut.persistStateChanges(config)
+        sut.persist(config)
 
         val newValue = nextConfig().startAutomatically.value.not()
         config.startAutomatically.value = newValue

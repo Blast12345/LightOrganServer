@@ -1,6 +1,6 @@
 package color
 
-import ConfigSingleton
+import config.ConfigSingleton
 import config.children.ColorWheel
 import sound.frequencyBins.FrequencyBin
 

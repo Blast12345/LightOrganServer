@@ -1,7 +1,7 @@
 package sound.frequencyBins.dominantFrequency.magnitude
 
-import ConfigSingleton
 import config.Config
+import config.ConfigSingleton
 import sound.frequencyBins.FrequencyBinList
 
 class AveragePeakMagnitudeEstimator(

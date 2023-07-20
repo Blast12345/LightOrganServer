@@ -4,12 +4,12 @@ import Scopes.IoScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class ConfigPersistenceHelper(
+class ConfigPersister(
     private val persistedConfig: PersistedConfig = PersistedConfig(),
     private val scope: CoroutineScope = IoScope
 ) {
 
-    fun persistStateChanges(config: Config) {
+    fun persist(config: Config) {
         scope.launch {
             addObserverForStartAutomaticallyState(config)
         }

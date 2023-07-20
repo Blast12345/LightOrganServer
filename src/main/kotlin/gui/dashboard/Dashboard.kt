@@ -7,7 +7,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import gui.Theme
 import gui.dashboard.tiles.color.ColorTile
 import gui.dashboard.tiles.lightOrgan.LightOrganTile
 
@@ -16,10 +15,8 @@ import gui.dashboard.tiles.lightOrgan.LightOrganTile
 fun Dashboard(
     viewModel: DashboardViewModel
 ) {
-    Theme {
-        Background()
-        MainRow(viewModel)
-    }
+    Background()
+    MainRow(viewModel)
 }
 
 @Composable

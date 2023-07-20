@@ -1,7 +1,7 @@
 package server
 
-import ConfigSingleton
 import config.Config
+import config.ConfigSingleton
 import config.children.Client
 import lightOrgan.LightOrganSubscriber
 import java.awt.Color

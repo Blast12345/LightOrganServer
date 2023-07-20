@@ -1,6 +1,5 @@
 package sound.frequencyBins
 
-import ConfigSingleton
 import config.ConfigFactory
 import input.audioFrame.AudioFrame
 import io.mockk.*
@@ -113,7 +112,7 @@ class FrequencyBinsServiceTests {
 
         mockkConstructor(ConfigFactory::class)
         every { anyConstructed<ConfigFactory>().create() } returns config
-        
+
         val sut = FrequencyBinsService()
 
         val fiftyHertzSignal = createAudioFrame(50F)

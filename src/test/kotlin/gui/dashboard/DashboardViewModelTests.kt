@@ -1,5 +1,7 @@
 package gui.dashboard
 
+import config.Config
+import config.ConfigPersister
 import gui.dashboard.tiles.color.ColorViewModel
 import gui.dashboard.tiles.lightOrgan.LightOrganViewModel
 import io.mockk.clearAllMocks
@@ -12,6 +14,8 @@ class DashboardViewModelTests {
 
     private val lightOrganViewModel: LightOrganViewModel = mockk(relaxed = true)
     private val colorViewModel: ColorViewModel = mockk(relaxed = true)
+    private val configPersister: ConfigPersister = mockk(relaxed = true)
+    private val config: Config = mockk(relaxed = true)
 
     @AfterEach
     fun teardown() {
@@ -21,7 +25,9 @@ class DashboardViewModelTests {
     private fun createSUT(): DashboardViewModel {
         return DashboardViewModel(
             lightOrganViewModel = lightOrganViewModel,
-            colorViewModel = colorViewModel
+            colorViewModel = colorViewModel,
+            configPersister = configPersister,
+            config = config
         )
     }
 
@@ -29,6 +35,12 @@ class DashboardViewModelTests {
     fun `the color tile is subscribed to the light organ`() {
         val sut = createSUT()
         verify { lightOrganViewModel.addSubscriber(colorViewModel) }
+    }
+
+    @Test
+    fun `changes to the config are persisted`() {
+        val sut = createSUT()
+        verify { configPersister.persist(config) }
     }
 
 }
