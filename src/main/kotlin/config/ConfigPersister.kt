@@ -1,8 +1,8 @@
 package config
 
-import Scopes.IoScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import scopes.IoScope
 
 class ConfigPersister(
     private val persistedConfig: PersistedConfig = PersistedConfig(),

@@ -1,12 +1,12 @@
 package input.lineListener
 
-import Scopes.IoScope
 import config.Config
 import config.ConfigSingleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import scopes.IoScope
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.TargetDataLine
 
