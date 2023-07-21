@@ -39,12 +39,12 @@ private fun MainRow(viewModel: DashboardViewModel) {
     ) {
 
         LightOrganTile(
-            viewModel = viewModel.lightOrganViewModel,
+            viewModel = viewModel.lightOrganTileViewModel,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
 
         ColorTile(
-            viewModel = viewModel.colorViewModel,
+            viewModel = viewModel.colorTileViewModel,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
 

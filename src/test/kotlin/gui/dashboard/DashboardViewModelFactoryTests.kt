@@ -1,7 +1,7 @@
 package gui.dashboard
 
-import gui.dashboard.tiles.lightOrgan.LightOrganViewModel
-import gui.dashboard.tiles.lightOrgan.LightOrganViewModelFactory
+import gui.dashboard.tiles.lightOrgan.LightOrganTileViewModel
+import gui.dashboard.tiles.lightOrgan.LightOrganTileViewModelFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -13,15 +13,15 @@ import org.junit.jupiter.api.Test
 
 class DashboardViewModelFactoryTests {
 
-    private val lightOrganViewModelFactory: LightOrganViewModelFactory = mockk()
+    private val lightOrganTileViewModelFactory: LightOrganTileViewModelFactory = mockk()
 
     private val lightOrganStateMachine: LightOrganStateMachine = mockk()
 
-    private val lightOrganViewModel: LightOrganViewModel = mockk(relaxed = true)
+    private val lightOrganTileViewModel: LightOrganTileViewModel = mockk(relaxed = true)
 
     @BeforeEach
     fun setup() {
-        every { lightOrganViewModelFactory.create(lightOrganStateMachine) } returns lightOrganViewModel
+        every { lightOrganTileViewModelFactory.create(lightOrganStateMachine) } returns lightOrganTileViewModel
     }
 
     @AfterEach
@@ -31,7 +31,7 @@ class DashboardViewModelFactoryTests {
 
     private fun createSUT(): DashboardViewModelFactory {
         return DashboardViewModelFactory(
-            lightOrganViewModelFactory = lightOrganViewModelFactory
+            lightOrganTileViewModelFactory = lightOrganTileViewModelFactory
         )
     }
 
@@ -39,7 +39,7 @@ class DashboardViewModelFactoryTests {
     fun `contains an element that controls the light organ`() {
         val sut = createSUT()
         val viewModel = sut.create(lightOrganStateMachine)
-        assertEquals(lightOrganViewModel, viewModel.lightOrganViewModel)
+        assertEquals(lightOrganTileViewModel, viewModel.lightOrganTileViewModel)
     }
 
 }

@@ -11,7 +11,7 @@ import gui.basicComponents.*
 
 @Composable
 fun LightOrganTile(
-    viewModel: LightOrganViewModel,
+    viewModel: LightOrganTileViewModel,
     modifier: Modifier = Modifier
 ) {
     Tile(modifier) {

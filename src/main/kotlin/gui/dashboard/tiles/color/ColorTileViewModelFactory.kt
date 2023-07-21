@@ -4,10 +4,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.MainScope
 
-class ColorViewModelFactory {
+class ColorTileViewModelFactory {
 
-    fun create(): ColorViewModel {
-        return ColorViewModel(
+    fun create(): ColorTileViewModel {
+        return ColorTileViewModel(
             color = mutableStateOf(Color.Black),
             scope = MainScope()
         )

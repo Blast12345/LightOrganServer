@@ -9,7 +9,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
 
-class ColorViewModelTests {
+class ColorTileViewModelTests {
 
     private val colorState: MutableState<androidx.compose.ui.graphics.Color> = mockk()
     private val scope = TestScope()
@@ -20,8 +20,8 @@ class ColorViewModelTests {
     private val awtColor = java.awt.Color(red, green, blue)
     private val composeColor = androidx.compose.ui.graphics.Color(red, green, blue)
 
-    private fun createSUT(): ColorViewModel {
-        return ColorViewModel(
+    private fun createSUT(): ColorTileViewModel {
+        return ColorTileViewModel(
             color = colorState,
             scope = scope
         )

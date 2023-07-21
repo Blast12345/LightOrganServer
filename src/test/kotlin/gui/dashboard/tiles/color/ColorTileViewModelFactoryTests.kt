@@ -4,10 +4,10 @@ import androidx.compose.ui.graphics.Color
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class ColorViewModelFactoryTests {
+class ColorTileViewModelFactoryTests {
 
-    private fun createSUT(): ColorViewModelFactory {
-        return ColorViewModelFactory()
+    private fun createSUT(): ColorTileViewModelFactory {
+        return ColorTileViewModelFactory()
     }
 
     @Test
