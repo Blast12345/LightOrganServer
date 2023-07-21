@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.LightOrganStateMachine
 import lightOrgan.LightOrganSubscriber
 
-class LightOrganViewModel(
+class LightOrganTileViewModel(
     val startAutomatically: MutableStateFlow<Boolean>,
     val isRunning: MutableStateFlow<Boolean>,
     private val lightOrganStateMachine: LightOrganStateMachine

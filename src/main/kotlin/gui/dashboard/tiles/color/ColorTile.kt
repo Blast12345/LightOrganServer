@@ -16,7 +16,7 @@ import gui.basicComponents.Tile
 @Preview
 @Composable
 fun ColorTile(
-    viewModel: ColorViewModel,
+    viewModel: ColorTileViewModel,
     modifier: Modifier = Modifier
 ) {
     Tile(modifier) {

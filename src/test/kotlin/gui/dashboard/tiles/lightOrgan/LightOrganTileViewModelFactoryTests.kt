@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextConfig
 
-class LightOrganViewModelFactoryTests {
+class LightOrganTileViewModelFactoryTests {
 
     private val config: Config = nextConfig()
     private val lightOrganStateMachine: LightOrganStateMachine = mockk(relaxed = true)
@@ -19,8 +19,8 @@ class LightOrganViewModelFactoryTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): LightOrganViewModelFactory {
-        return LightOrganViewModelFactory(
+    private fun createSUT(): LightOrganTileViewModelFactory {
+        return LightOrganTileViewModelFactory(
             config = config
         )
     }

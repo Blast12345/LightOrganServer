@@ -1,18 +1,18 @@
 package gui.dashboard
 
-import gui.dashboard.tiles.color.ColorViewModelFactory
-import gui.dashboard.tiles.lightOrgan.LightOrganViewModelFactory
+import gui.dashboard.tiles.color.ColorTileViewModelFactory
+import gui.dashboard.tiles.lightOrgan.LightOrganTileViewModelFactory
 import lightOrgan.LightOrganStateMachine
 
 class DashboardViewModelFactory(
-    private val lightOrganViewModelFactory: LightOrganViewModelFactory = LightOrganViewModelFactory(),
-    private val colorViewModelFactory: ColorViewModelFactory = ColorViewModelFactory()
+    private val lightOrganTileViewModelFactory: LightOrganTileViewModelFactory = LightOrganTileViewModelFactory(),
+    private val colorTileViewModelFactory: ColorTileViewModelFactory = ColorTileViewModelFactory()
 ) {
 
     fun create(lightOrganStateMachine: LightOrganStateMachine): DashboardViewModel {
         return DashboardViewModel(
-            lightOrganViewModel = lightOrganViewModelFactory.create(lightOrganStateMachine),
-            colorViewModel = colorViewModelFactory.create()
+            lightOrganTileViewModel = lightOrganTileViewModelFactory.create(lightOrganStateMachine),
+            colorTileViewModel = colorTileViewModelFactory.create()
         )
     }
 

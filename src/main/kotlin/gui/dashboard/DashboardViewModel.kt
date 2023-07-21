@@ -3,12 +3,12 @@ package gui.dashboard
 import config.Config
 import config.ConfigPersister
 import config.ConfigSingleton
-import gui.dashboard.tiles.color.ColorViewModel
-import gui.dashboard.tiles.lightOrgan.LightOrganViewModel
+import gui.dashboard.tiles.color.ColorTileViewModel
+import gui.dashboard.tiles.lightOrgan.LightOrganTileViewModel
 
 class DashboardViewModel(
-    val lightOrganViewModel: LightOrganViewModel,
-    val colorViewModel: ColorViewModel,
+    val lightOrganTileViewModel: LightOrganTileViewModel,
+    val colorTileViewModel: ColorTileViewModel,
     private val configPersister: ConfigPersister = ConfigPersister(),
     private val config: Config = ConfigSingleton
 ) {
@@ -19,7 +19,7 @@ class DashboardViewModel(
     }
 
     private fun subscribeColorTileToTheLightOrgan() {
-        lightOrganViewModel.addSubscriber(colorViewModel)
+        lightOrganTileViewModel.addSubscriber(colorTileViewModel)
     }
 
     private fun startPersistingConfigChanges() {
