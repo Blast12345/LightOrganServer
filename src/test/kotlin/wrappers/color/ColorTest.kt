@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 
 class ColorTest {
 
-    // NOTE: This we derived from an online HSV to RGB tool
+    // NOTE: I derived from an online HSV to RGB tool
     private val hue = 30F / 360F
     private val saturation = 0.5F
     private val brightness = 0.75F
