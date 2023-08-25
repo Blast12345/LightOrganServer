@@ -5,8 +5,8 @@ import kotlin.random.Random
 
 fun nextColor(): Color {
     return Color(
-        red = Random.nextInt(0, 256),
-        green = Random.nextInt(0, 256),
-        blue = Random.nextInt(0, 256)
+        hue = Random.nextFloat(),
+        saturation = Random.nextFloat(),
+        brightness = Random.nextFloat()
     )
 }
