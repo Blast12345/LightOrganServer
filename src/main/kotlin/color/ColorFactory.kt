@@ -6,7 +6,7 @@ import sound.frequencyBins.FrequencyBinList
 import sound.frequencyBins.FrequencyBinsService
 import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactory
 import sound.frequencyBins.filters.BassFrequencyBinsFilter
-import java.awt.Color
+import wrappers.color.Color
 
 class ColorFactory(
     // TODO: Maybe there should be a BassBinsService? Creating AND filtering the bins here feels smelly.
@@ -17,7 +17,7 @@ class ColorFactory(
     private val brightnessFactory: BrightnessFactory = BrightnessFactory()
 ) {
 
-    private val defaultColor = Color.black
+    private val defaultColor = Color(0, 0, 0)
 
     fun create(audioFrame: AudioFrame): Color {
         val bins = getFrequencyBins(audioFrame)
@@ -42,10 +42,10 @@ class ColorFactory(
     private fun getColor(frequencyBin: FrequencyBin): Color {
         // TODO: Create a normalized color? 0,255,255 is roughly two times brighter than 0,255,255
         // This may solve some of the "flickeriness"
-        return Color.getHSBColor(
-            getHue(frequencyBin),
-            getSaturation(),
-            getBrightness(frequencyBin)
+        return Color(
+            hue = getHue(frequencyBin),
+            saturation = getSaturation(),
+            brightness = getBrightness(frequencyBin)
         )
     }
 

@@ -2,7 +2,7 @@ package server
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.awt.Color
+import wrappers.color.Color
 
 class ColorMessageFactoryTests {
 
@@ -13,7 +13,7 @@ class ColorMessageFactoryTests {
     @Test
     fun `get the server message for a color`() {
         val sut = createSUT()
-        val color = Color.blue
+        val color = Color(0, 0, 255)
 
         val actual = sut.create(color)
 
