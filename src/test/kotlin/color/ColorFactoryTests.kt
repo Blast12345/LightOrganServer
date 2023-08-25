@@ -10,13 +10,10 @@ import org.junit.jupiter.api.Test
 import sound.frequencyBins.FrequencyBinsService
 import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactory
 import sound.frequencyBins.filters.BassFrequencyBinsFilter
-import toolkit.color.getBrightness
-import toolkit.color.getHue
-import toolkit.color.getSaturation
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextFrequencyBin
 import toolkit.monkeyTest.nextFrequencyBins
-import java.awt.Color
+import wrappers.color.Color
 import kotlin.random.Random
 
 class ColorFactoryTests {
@@ -63,29 +60,32 @@ class ColorFactoryTests {
     fun `the colors hue is determined by the dominant frequency`() {
         val sut = createSUT()
         val color = sut.create(audioFrame)
-        assertEquals(hue, color.getHue(), 0.01F)
+        assertEquals(hue, color.hue, 0.01F)
     }
 
     @Test
     fun `the color is fully saturated`() {
         val sut = createSUT()
         val color = sut.create(audioFrame)
-        assertEquals(1F, color.getSaturation(), 0.01F)
+        assertEquals(1F, color.saturation, 0.01F)
     }
 
     @Test
     fun `the colors brightness is determined by the dominant frequency`() {
         val sut = createSUT()
         val color = sut.create(audioFrame)
-        assertEquals(brightness, color.getBrightness(), 0.01F)
+        assertEquals(brightness, color.brightness, 0.01F)
     }
 
     @Test
     fun `return black when a dominant frequency cannot be determined`() {
         val sut = createSUT()
         every { dominantFrequencyBinFactory.create(any()) } returns null
+
         val color = sut.create(audioFrame)
-        assertEquals(Color.black, color)
+
+        val black = Color(0, 0, 0)
+        assertEquals(black, color)
     }
 
 

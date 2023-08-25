@@ -3,7 +3,7 @@ package lightOrgan
 import color.ColorFactory
 import input.InputSubscriber
 import input.audioFrame.AudioFrame
-import java.awt.Color
+import wrappers.color.Color
 
 class LightOrgan(
     private val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),

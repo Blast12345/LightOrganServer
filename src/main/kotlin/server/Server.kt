@@ -4,7 +4,7 @@ import config.Config
 import config.ConfigSingleton
 import config.children.Client
 import lightOrgan.LightOrganSubscriber
-import java.awt.Color
+import wrappers.color.Color
 
 // TODO: I should double check that UDP is significantly faster than TCP for my use case.
 class Server(

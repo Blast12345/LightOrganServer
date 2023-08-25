@@ -1,6 +1,6 @@
 package server
 
-import java.awt.Color
+import wrappers.color.Color
 
 class ColorMessageFactory {
 

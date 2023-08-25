@@ -1,11 +1,12 @@
 package toolkit.monkeyTest
 
-import java.awt.Color
+import wrappers.color.Color
 import kotlin.random.Random
 
 fun nextColor(): Color {
-    val red = Random.nextFloat()
-    val green = Random.nextFloat()
-    val blue = Random.nextFloat()
-    return Color(red, green, blue)
+    return Color(
+        red = Random.nextInt(0, 256),
+        green = Random.nextInt(0, 256),
+        blue = Random.nextInt(0, 256)
+    )
 }
