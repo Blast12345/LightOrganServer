@@ -9,12 +9,12 @@ import sound.frequencyBins.filters.BassFrequencyBinsFilter
 import wrappers.color.Color
 
 class ColorFactory(
-        // TODO: Maybe there should be a BassBinsService? Creating AND filtering the bins here feels smelly.
-        private val frequencyBinsService: FrequencyBinsService = FrequencyBinsService(),
-        private val bassFrequencyBinsFilter: BassFrequencyBinsFilter = BassFrequencyBinsFilter(),
-        private val dominantFrequencyBinFactory: DominantFrequencyBinFactory = DominantFrequencyBinFactory(),
-        private val hueFactory: HueFactory = HueFactory(),
-        private val brightnessFactory: BrightnessFactory = BrightnessFactory()
+    // TODO: Maybe there should be a BassBinsService? Creating AND filtering the bins here feels smelly.
+    private val frequencyBinsService: FrequencyBinsService = FrequencyBinsService(),
+    private val bassFrequencyBinsFilter: BassFrequencyBinsFilter = BassFrequencyBinsFilter(),
+    private val dominantFrequencyBinFactory: DominantFrequencyBinFactory = DominantFrequencyBinFactory(),
+    private val hueFactory: HueFactory = HueFactory(),
+    private val brightnessFactory: BrightnessFactory = BrightnessFactory()
 ) {
 
     private val defaultColor = Color(0, 0, 0)
@@ -43,9 +43,9 @@ class ColorFactory(
         // TODO: Create a normalized color? 0,255,255 is roughly two times brighter than 0,255,255
         // This may solve some of the "flickeriness"
         return Color(
-                hue = getHue(frequencyBin),
-                saturation = getSaturation(),
-                brightness = getBrightness(frequencyBin)
+            hue = getHue(frequencyBin),
+            saturation = getSaturation(),
+            brightness = getBrightness(frequencyBin)
         )
     }
 
