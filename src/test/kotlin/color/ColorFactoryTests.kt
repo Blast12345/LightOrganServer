@@ -39,7 +39,7 @@ class ColorFactoryTests {
     fun `the hue is corresponds to the frequency`() {
         val sut = createSUT()
         val hue = Random.nextFloat()
-        every { hueFactory.create(frequencyBin.frequency) } returns hue
+        every { hueFactory.create(frequencyBin) } returns hue
 
         val color = sut.create(frequencyBin)
 

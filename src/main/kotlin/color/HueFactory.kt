@@ -2,18 +2,19 @@ package color
 
 import config.ConfigSingleton
 import config.children.ColorWheel
+import sound.frequencyBins.FrequencyBin
 
 class HueFactory(
     private val colorWheel: ColorWheel = ConfigSingleton.colorWheel
 ) {
 
-    fun create(frequency: Float): Float {
-        return getBaseHue(frequency) + getHueOffset()
+    fun create(frequencyBin: FrequencyBin): Float {
+        return getBaseHue(frequencyBin) + getHueOffset()
     }
 
-    private fun getBaseHue(frequency: Float): Float {
+    private fun getBaseHue(frequencyBin: FrequencyBin): Float {
         val frequencyRange = getFrequencyRange()
-        val positionInRange = getPositionInRange(frequency)
+        val positionInRange = getPositionInRange(frequencyBin)
         return positionInRange / frequencyRange
     }
 
@@ -21,8 +22,8 @@ class HueFactory(
         return colorWheel.endingFrequency - colorWheel.startingFrequency
     }
 
-    private fun getPositionInRange(frequency: Float): Float {
-        return frequency - colorWheel.startingFrequency
+    private fun getPositionInRange(frequencyBin: FrequencyBin): Float {
+        return frequencyBin.frequency - colorWheel.startingFrequency
     }
 
     private fun getHueOffset(): Float {
