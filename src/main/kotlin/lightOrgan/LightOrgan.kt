@@ -5,17 +5,15 @@ import input.InputSubscriber
 import input.audioFrame.AudioFrame
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
-import sound.frequencyBins.FrequencyBinsService
-import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactory
-import sound.frequencyBins.filters.BassFrequencyBinsFilter
+import sound.frequencyBins.bass.BassFrequencyBinListCalculator
+import sound.frequencyBins.dominant.DominantFrequencyBinCalculator
 import wrappers.color.Color
 
 class LightOrgan(
     private val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),
     private val colorFactory: ColorFactory = ColorFactory(),
-    private val frequencyBinsService: FrequencyBinsService = FrequencyBinsService(),
-    private val bassFrequencyBinsFilter: BassFrequencyBinsFilter = BassFrequencyBinsFilter(),
-    private val dominantFrequencyBinFactory: DominantFrequencyBinFactory = DominantFrequencyBinFactory(),
+    private val dominantFrequencyBinCalculator: DominantFrequencyBinCalculator = DominantFrequencyBinCalculator(),
+    private val bassFrequencyBinListCalculator: BassFrequencyBinListCalculator = BassFrequencyBinListCalculator()
 ) : InputSubscriber {
 
     override fun received(audioFrame: AudioFrame) {
@@ -37,21 +35,13 @@ class LightOrgan(
     }
 
     private fun getDominantFrequency(audioFrame: AudioFrame): FrequencyBin? {
-        val bins = getFrequencyBins(audioFrame)
-        val bassBins = getBassFrequencyBins(bins)
-        return getDominantFrequencyBin(bassBins)
+        return dominantFrequencyBinCalculator.calculate(
+            frequencyBinList = getBassFrequencyBins(audioFrame)
+        )
     }
 
-    private fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBinList {
-        return frequencyBinsService.getFrequencyBins(audioFrame)
-    }
-
-    private fun getBassFrequencyBins(frequencyBins: FrequencyBinList): FrequencyBinList {
-        return bassFrequencyBinsFilter.filter(frequencyBins)
-    }
-
-    private fun getDominantFrequencyBin(frequencyBins: FrequencyBinList): FrequencyBin? {
-        return dominantFrequencyBinFactory.create(frequencyBins)
+    private fun getBassFrequencyBins(audioFrame: AudioFrame): FrequencyBinList {
+        return bassFrequencyBinListCalculator.calculate(audioFrame)
     }
 
     fun checkIfSubscribed(subscriber: LightOrganSubscriber): Boolean {
@@ -63,4 +53,3 @@ class LightOrgan(
     }
 
 }
-

@@ -1,60 +1,38 @@
 package sound.frequencyBins
 
-import config.Config
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import kotlin.random.Random
 
 class FrequencyBinFactoryTests {
 
-    private val config: Config = mockk()
+    // TODO: Perhaps the magnitude list should be floats?
+    private val index = Random.nextInt()
+    private val granularity = Random.nextFloat()
+    private val magnitude = Random.nextDouble()
 
-    private val index = 2
-    private val granularity = 5F
-    private val magnitude = 7.0
-
-    private val magnitudeMultiplier = 2F
-
-    @BeforeEach
-    fun setup() {
-        every { config.magnitudeMultiplier } returns magnitudeMultiplier
-    }
-
-    @AfterEach
-    fun teardown() {
-        clearAllMocks()
-    }
-
-    private fun createSUT(): FrequencyBinFactory {
+    private fun createSUT(magnitudeMultiplier: Float = Random.nextFloat()): FrequencyBinFactory {
         return FrequencyBinFactory(
-            config = config
+            magnitudeMultiplier = magnitudeMultiplier
         )
     }
 
     @Test
-    fun `create a frequency bin`() {
+    fun `the frequency is calculated`() {
         val sut = createSUT()
-        val frequencyBin = sut.create(index, granularity, magnitude)
-        val expected = FrequencyBin(10F, 14F)
-        assertEquals(expected, frequencyBin)
-    }
 
-    @Test
-    fun `the frequency is the index times granularity`() {
-        val sut = createSUT()
-        val actual = sut.create(index, granularity, magnitude)
+        val actual = sut.create(2, 5F, magnitude)
+
         assertEquals(10F, actual.frequency)
     }
 
     @Test
-    fun `the magnitude is the original magnitude times the multiplier`() {
-        val sut = createSUT()
-        val actual = sut.create(index, granularity, magnitude)
-        assertEquals(14F, actual.magnitude)
+    fun `the magnitude is calculated`() {
+        val sut = createSUT(3F)
+
+        val actual = sut.create(index, granularity, 1.0)
+
+        assertEquals(3F, actual.magnitude)
     }
 
 }
