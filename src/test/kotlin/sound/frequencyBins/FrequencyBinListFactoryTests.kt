@@ -40,4 +40,5 @@ class FrequencyBinListFactoryTests {
         val expected = listOf(frequencyBin1, frequencyBin2)
         assertEquals(expected, actual)
     }
+
 }
