@@ -5,7 +5,6 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextFrequencyBin
 import wrappers.color.Color
@@ -13,15 +12,11 @@ import kotlin.random.Random
 
 class ColorFactoryTests {
 
-    private val hueFactory: HueFactory = mockk()
-    private val brightnessFactory: BrightnessFactory = mockk()
     private val frequencyBin = nextFrequencyBin()
-
-    @BeforeEach
-    fun setup() {
-        every { hueFactory.create(any()) } returns Random.nextFloat()
-        every { brightnessFactory.create(any()) } returns Random.nextFloat()
-    }
+    private val hueFactory: HueFactory = mockk()
+    private val hue = Random.nextFloat()
+    private val brightnessFactory: BrightnessFactory = mockk(relaxed = true)
+    private val brightness = Random.nextFloat()
 
     @AfterEach
     fun teardown() {
@@ -36,33 +31,15 @@ class ColorFactoryTests {
     }
 
     @Test
-    fun `the hue is corresponds to the frequency`() {
+    fun `the color is created from the frequency bin`() {
         val sut = createSUT()
-        val hue = Random.nextFloat()
         every { hueFactory.create(frequencyBin) } returns hue
-
-        val color = sut.create(frequencyBin)
-
-        assertEquals(hue, color.hue, 0.01F)
-    }
-
-    @Test
-    fun `the color is fully saturated`() {
-        val sut = createSUT()
-
-        val color = sut.create(frequencyBin)
-
-        assertEquals(1F, color.saturation, 0.01F)
-    }
-
-    @Test
-    fun `the brightness is corresponds to the frequency's magnitude`() {
-        val sut = createSUT()
-        val brightness = Random.nextFloat()
         every { brightnessFactory.create(frequencyBin) } returns brightness
 
         val color = sut.create(frequencyBin)
 
+        assertEquals(hue, color.hue, 0.01F)
+        assertEquals(1F, color.saturation, 0.01F)
         assertEquals(brightness, color.brightness, 0.01F)
     }
 
