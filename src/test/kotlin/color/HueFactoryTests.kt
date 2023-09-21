@@ -3,7 +3,6 @@ package color
 import config.children.ColorWheel
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import sound.frequencyBins.FrequencyBin
 
 class HueFactoryTests {
 
@@ -22,9 +21,9 @@ class HueFactoryTests {
     @Test
     fun `calculate the hue using the frequency's relative position in the color wheel`() {
         val sut = createSUT()
-        val frequencyBin = FrequencyBin(60F, 0F)
+        val frequency = 60F
 
-        val hue = sut.create(frequencyBin)
+        val hue = sut.create(frequency)
 
         assertEquals(0.5F, hue)
     }
