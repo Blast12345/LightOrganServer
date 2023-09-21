@@ -1,4 +1,4 @@
-package lightOrgan.notes
+package sound.notes
 
 import kotlin.math.pow
 

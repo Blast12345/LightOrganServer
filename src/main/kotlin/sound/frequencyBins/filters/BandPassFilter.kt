@@ -1,9 +1,9 @@
 package sound.frequencyBins.filters
 
 import extensions.between
-import lightOrgan.notes.Notes
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
+import sound.notes.Notes
 import kotlin.math.min
 
 // TODO: Find a more natural filter
