@@ -9,16 +9,28 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import sound.frequencyBins.FrequencyBinsService
+import sound.frequencyBins.dominantFrequency.DominantFrequencyBinFactory
+import sound.frequencyBins.filters.BassFrequencyBinsFilter
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextColor
+import toolkit.monkeyTest.nextFrequencyBin
+import toolkit.monkeyTest.nextFrequencyBins
 
 class LightOrganTests {
 
-    private var colorFactory: ColorFactory = mockk()
     private val subscriber1: LightOrganSubscriber = mockk(relaxed = true)
     private val subscriber2: LightOrganSubscriber = mockk(relaxed = true)
-
+    private var colorFactory: ColorFactory = mockk()
     private val nextColor = nextColor()
+    private var frequencyBinsService: FrequencyBinsService = mockk()
+    private val frequencyBins = nextFrequencyBins()
+    private val bassFrequencyBinsFilter: BassFrequencyBinsFilter = mockk()
+    private val bassFrequencyBins = nextFrequencyBins()
+    private var dominantFrequencyBinFactory: DominantFrequencyBinFactory = mockk()
+    private val dominantFrequencyBin = nextFrequencyBin()
+
+    private val audioFrame = nextAudioFrame()
     private val newSubscriber: LightOrganSubscriber = mockk()
 
     @AfterEach
@@ -28,20 +40,24 @@ class LightOrganTests {
 
     private fun createSUT(): LightOrgan {
         return LightOrgan(
+            subscribers = mutableSetOf(subscriber1, subscriber2),
             colorFactory = colorFactory,
-            subscribers = mutableSetOf(subscriber1, subscriber2)
+            frequencyBinsService = frequencyBinsService,
+            bassFrequencyBinsFilter = bassFrequencyBinsFilter,
+            dominantFrequencyBinFactory = dominantFrequencyBinFactory
         )
     }
 
     @Test
     fun `send the next color to the subscribers when new audio is received`() {
         val sut = createSUT()
-        every { colorFactory.create(any()) } returns nextColor
+        every { frequencyBinsService.getFrequencyBins(audioFrame) } returns frequencyBins
+        every { bassFrequencyBinsFilter.filter(frequencyBins) } returns bassFrequencyBins
+        every { dominantFrequencyBinFactory.create(bassFrequencyBins) } returns dominantFrequencyBin
+        every { colorFactory.create(dominantFrequencyBin) } returns nextColor
 
-        val receivedAudio = nextAudioFrame()
-        sut.received(receivedAudio)
+        sut.received(audioFrame)
 
-        verify { colorFactory.create(receivedAudio) }
         verify(exactly = 1) { subscriber1.new(nextColor) }
         verify(exactly = 1) { subscriber2.new(nextColor) }
     }

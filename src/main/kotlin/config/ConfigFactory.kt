@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class ConfigFactory(
     private val persistedConfig: PersistedConfig = PersistedConfig()
 ) {
-    
+
     fun create(): Config {
         return Config(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
@@ -19,7 +19,7 @@ class ConfigFactory(
             sampleSize = 4100,
             interpolatedSampleSize = 65536,
             magnitudeEstimationStrategy = MagnitudeEstimationStrategy(5),
-            magnitudeMultiplier = 1.25F,
+            magnitudeMultiplier = 2F,
             millisecondsToWaitBetweenCheckingForNewAudio = 1,
             noiseFloor = 0.1F
         )
