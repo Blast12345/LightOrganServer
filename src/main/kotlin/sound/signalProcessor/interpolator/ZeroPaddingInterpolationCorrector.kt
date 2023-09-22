@@ -2,7 +2,6 @@ package sound.signalProcessor.interpolator
 
 class ZeroPaddingInterpolationCorrector {
 
-    // TODO:
     fun correct(samples: DoubleArray, originalSize: Int): DoubleArray {
         val percentOfOriginalSamples = calculatePercentOfOriginalSamples(samples, originalSize)
 

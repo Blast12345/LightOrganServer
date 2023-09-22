@@ -7,8 +7,9 @@ class LatestSamplesFilter(
 ) {
 
     fun filter(samples: DoubleArray): DoubleArray {
-        val latestSamples = samples.takeLast(sampleSize)
-        return latestSamples.toDoubleArray()
+        return samples
+            .takeLast(sampleSize)
+            .toDoubleArray()
     }
 
 }

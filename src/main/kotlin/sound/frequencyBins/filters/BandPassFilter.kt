@@ -14,9 +14,18 @@ class BandPassFilter {
         highCrossover: Crossover
     ): FrequencyBinList {
         return frequencyBinList
+            .removeBinsLessThan(lowCrossover.stopFrequency)
+            .removeBinsGreaterThan(highCrossover.stopFrequency)
             .applyFilter(lowCrossover)
             .applyFilter(highCrossover)
-        // TODO: Trim bins
+    }
+
+    private fun FrequencyBinList.removeBinsLessThan(frequency: Float): FrequencyBinList {
+        return this.filter { it.frequency < frequency }
+    }
+
+    private fun FrequencyBinList.removeBinsGreaterThan(frequency: Float): FrequencyBinList {
+        return this.filter { it.frequency > frequency }
     }
 
     private fun FrequencyBinList.applyFilter(filter: Crossover): FrequencyBinList {
