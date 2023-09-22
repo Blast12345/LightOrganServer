@@ -16,8 +16,8 @@ class BassFrequencyBinListCalculator(
     fun calculate(audioFrame: AudioFrame): FrequencyBinList {
         return bandPassFilter.filter(
             frequencyBinList = getFrequencyBinList(audioFrame),
-            highPassFilter = config.highPassFilter,
-            lowPassFilter = config.lowPassFilter
+            lowFilterCrossover = config.lowFilterCrossover,
+            highFilterCrossover = config.highFilterCrossover
         )
     }
 

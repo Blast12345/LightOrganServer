@@ -38,7 +38,7 @@ class BassFrequencyBinListCalculatorTests {
     fun `get the bass frequency bins for an audio frame`() {
         val sut = createSUT()
         every { frequencyBinListCalculator.calculate(audioFrame) } returns frequencyBinList
-        every { bandPassFilter.filter(frequencyBinList, config.highPassFilter, config.lowPassFilter) } returns filteredFrequencyBinList
+        every { bandPassFilter.filter(frequencyBinList, config.lowFilterCrossover, config.highFilterCrossover) } returns filteredFrequencyBinList
 
         val actual = sut.calculate(audioFrame)
 

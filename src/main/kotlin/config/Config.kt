@@ -4,14 +4,14 @@ import config.children.Client
 import config.children.ColorWheel
 import config.children.MagnitudeEstimationStrategy
 import kotlinx.coroutines.flow.MutableStateFlow
-import sound.frequencyBins.filters.PassFilter
+import sound.frequencyBins.filters.FilterCrossover
 
 class Config(
     val startAutomatically: MutableStateFlow<Boolean>,
     val clients: Set<Client>,
     val colorWheel: ColorWheel,
-    val lowPassFilter: PassFilter,
-    val highPassFilter: PassFilter,
+    val lowFilterCrossover: FilterCrossover,
+    val highFilterCrossover: FilterCrossover,
     val sampleSize: Int,
     val interpolatedSampleSize: Int,
     val magnitudeEstimationStrategy: MagnitudeEstimationStrategy,

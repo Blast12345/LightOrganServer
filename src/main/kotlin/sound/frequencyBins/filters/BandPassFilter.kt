@@ -10,15 +10,16 @@ class BandPassFilter {
 
     fun filter(
         frequencyBinList: FrequencyBinList,
-        highPassFilter: PassFilter,
-        lowPassFilter: PassFilter
+        lowFilterCrossover: FilterCrossover,
+        highFilterCrossover: FilterCrossover
     ): FrequencyBinList {
         return frequencyBinList
-            .applyFilter(highPassFilter)
-            .applyFilter(lowPassFilter)
+            .applyFilter(lowFilterCrossover)
+            .applyFilter(highFilterCrossover)
+        // TODO: Trim bins
     }
 
-    private fun FrequencyBinList.applyFilter(filter: PassFilter): FrequencyBinList {
+    private fun FrequencyBinList.applyFilter(filter: FilterCrossover): FrequencyBinList {
         val filteredBins = mutableListOf<FrequencyBin>()
 
         for (bin in this) {
