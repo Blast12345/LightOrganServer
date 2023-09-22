@@ -5,7 +5,6 @@ import sound.frequencyBins.FrequencyBinList
 import sound.frequencyBins.dominant.frequency.DominantFrequencyCalculator
 import sound.frequencyBins.dominant.magnitude.DominantMagnitudeCalculator
 
-// TODO: Do we really need the dependencies?
 class DominantFrequencyBinCalculator(
     private val dominantFrequencyCalculator: DominantFrequencyCalculator = DominantFrequencyCalculator(),
     private val dominantMagnitudeCalculator: DominantMagnitudeCalculator = DominantMagnitudeCalculator()
