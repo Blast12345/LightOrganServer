@@ -6,7 +6,6 @@ import kotlin.random.Random
 
 class FrequencyBinFactoryTests {
 
-    // TODO: Perhaps the magnitude list should be floats?
     private val index = Random.nextInt()
     private val granularity = Random.nextFloat()
     private val magnitude = Random.nextDouble()

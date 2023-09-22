@@ -15,7 +15,6 @@ class ZeroPaddingInterpolatorTests {
     private val correctedSamples = doubleArrayOf()
     private val desiredSize = nextPositiveInt()
 
-
     private fun createSUT(): ZeroPaddingInterpolator {
         return ZeroPaddingInterpolator(
             algorithm = algorithm,
