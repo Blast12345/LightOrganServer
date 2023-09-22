@@ -13,7 +13,7 @@ class FrequencyBinListCalculator(
     fun calculate(audioFrame: AudioFrame): FrequencyBinList {
         val magnitudes = getMagnitudes(audioFrame)
         val granularity = getGranularity(magnitudes.size, audioFrame)
-        return frequencyBinListFactory.create(magnitudes, granularity)
+        return getFrequencyBinList(magnitudes, granularity)
     }
 
     private fun getMagnitudes(audioFrame: AudioFrame): DoubleArray {
@@ -22,6 +22,10 @@ class FrequencyBinListCalculator(
 
     private fun getGranularity(numberOfBins: Int, audioFrame: AudioFrame): Float {
         return granularityCalculator.calculate(numberOfBins, audioFrame.format)
+    }
+
+    private fun getFrequencyBinList(magnitudes: DoubleArray, granularity: Float): FrequencyBinList {
+        return frequencyBinListFactory.create(magnitudes, granularity)
     }
 
 }
