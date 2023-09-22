@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import sound.frequencyBins.filters.BandPassFilter
 import sound.frequencyBins.listCalculator.FrequencyBinListCalculator
 import toolkit.monkeyTest.nextAudioFrame
+import toolkit.monkeyTest.nextConfig
 import toolkit.monkeyTest.nextFrequencyBinList
 
 class BassFrequencyBinListCalculatorTests {
@@ -18,6 +19,7 @@ class BassFrequencyBinListCalculatorTests {
     private val frequencyBinList = nextFrequencyBinList()
     private val bandPassFilter: BandPassFilter = mockk()
     private val filteredFrequencyBinList = nextFrequencyBinList()
+    private val config = nextConfig()
 
     @AfterEach
     fun teardown() {
@@ -27,7 +29,8 @@ class BassFrequencyBinListCalculatorTests {
     private fun createSUT(): BassFrequencyBinListCalculator {
         return BassFrequencyBinListCalculator(
             frequencyBinListCalculator = frequencyBinListCalculator,
-            bandPassFilter = bandPassFilter
+            bandPassFilter = bandPassFilter,
+            config = config
         )
     }
 
@@ -35,7 +38,7 @@ class BassFrequencyBinListCalculatorTests {
     fun `get the bass frequency bins for an audio frame`() {
         val sut = createSUT()
         every { frequencyBinListCalculator.calculate(audioFrame) } returns frequencyBinList
-        every { bandPassFilter.filter(frequencyBinList) } returns filteredFrequencyBinList
+        every { bandPassFilter.filter(frequencyBinList, config.highPassFilter, config.lowPassFilter) } returns filteredFrequencyBinList
 
         val actual = sut.calculate(audioFrame)
 
