@@ -4,15 +4,16 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test
+import toolkit.monkeyTest.nextDoubleArray
 import toolkit.monkeyTest.nextPositiveInt
 
 class ZeroPaddingInterpolatorTests {
 
-    private val samples = doubleArrayOf()
+    private val samples = nextDoubleArray()
     private val algorithm: ZeroPaddingInterpolationAlgorithm = mockk()
-    private val algorithmSamples = doubleArrayOf()
+    private val algorithmSamples = nextDoubleArray()
     private val corrector: ZeroPaddingInterpolationCorrector = mockk()
-    private val correctedSamples = doubleArrayOf()
+    private val correctedSamples = nextDoubleArray()
     private val desiredSize = nextPositiveInt()
 
     private fun createSUT(): ZeroPaddingInterpolator {
