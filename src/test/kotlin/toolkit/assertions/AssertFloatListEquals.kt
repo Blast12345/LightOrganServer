@@ -1,17 +1,15 @@
 package toolkit.assertions
 
-import org.junit.jupiter.api.Assertions
-import kotlin.math.abs
+import org.junit.jupiter.api.Assertions.assertEquals
 
 fun assertFloatListEquals(expected: List<Float>, actual: List<Float>, precision: Float) {
-    Assertions.assertEquals(expected.size, actual.size, "Lists have different sizes")
+    assertListLengthsAreEqual(expected, actual)
+    assertEachFloatIsEqual(expected, actual, precision)
+}
 
-    for (i in expected.indices) {
-        val expectedValue = expected[i]
-        val actualValue = actual[i]
-        Assertions.assertTrue(
-            abs(expectedValue - actualValue) <= precision,
-            "Values at index $i differ more than $precision: expected $expectedValue but was $actualValue"
-        )
+private fun assertEachFloatIsEqual(expected: List<Float>, actual: List<Float>, precision: Float) {
+    expected.forEachIndexed { index, expectedValue ->
+        val actualValue = actual[index]
+        assertEquals(expectedValue, actualValue, precision)
     }
 }
