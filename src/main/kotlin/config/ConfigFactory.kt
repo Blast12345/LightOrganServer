@@ -15,9 +15,19 @@ class ConfigFactory(
         return Config(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
             clients = setOf(Client("192.168.1.55")),
-            colorWheel = ColorWheel(40F, 120F, 0.25F),
-            bassLowCrossover = Crossover(Notes.C.getFrequency(0), Notes.C.getFrequency(1)),
-            bassHighCrossover = Crossover(Notes.C.getFrequency(2), Notes.C.getFrequency(3)),
+            colorWheel = ColorWheel(
+                startingFrequency = 40F,
+                endingFrequency = 120F,
+                offset = 0.25F
+            ),
+            bassLowCrossover = Crossover(
+                stopFrequency = Notes.C.getFrequency(0),
+                cornerFrequency = Notes.C.getFrequency(1)
+            ),
+            bassHighCrossover = Crossover(
+                cornerFrequency = Notes.C.getFrequency(2),
+                stopFrequency = Notes.C.getFrequency(3)
+            ),
             sampleSize = 4100,
             interpolatedSampleSize = 65536,
             magnitudeEstimationStrategy = MagnitudeEstimationStrategy(5),
