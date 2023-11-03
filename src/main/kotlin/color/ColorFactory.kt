@@ -27,7 +27,7 @@ class ColorFactory(
     }
 
     private fun getBrightness(frequencyBin: FrequencyBin): Float {
-        return brightnessFactory.create(frequencyBin)
+        return brightnessFactory.create(frequencyBin.magnitude)
     }
 
 }
