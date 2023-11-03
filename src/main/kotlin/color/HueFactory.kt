@@ -1,33 +1,19 @@
 package color
 
-import config.ConfigSingleton
-import config.children.ColorWheel
-import sound.frequencyBins.FrequencyBin
+import color.stevensPowerLaw.HueScale
+import color.stevensPowerLaw.LogarithmicRescaler
+import color.stevensPowerLaw.MusicScale
 
 class HueFactory(
-    private val colorWheel: ColorWheel = ConfigSingleton.colorWheel
+    private val rescaler: LogarithmicRescaler = LogarithmicRescaler()
 ) {
 
-    fun create(frequencyBin: FrequencyBin): Float {
-        return getBaseHue(frequencyBin) + getHueOffset()
-    }
-
-    private fun getBaseHue(frequencyBin: FrequencyBin): Float {
-        val frequencyRange = getFrequencyRange()
-        val positionInRange = getPositionInRange(frequencyBin)
-        return positionInRange / frequencyRange
-    }
-
-    private fun getFrequencyRange(): Float {
-        return colorWheel.endingFrequency - colorWheel.startingFrequency
-    }
-
-    private fun getPositionInRange(frequencyBin: FrequencyBin): Float {
-        return frequencyBin.frequency - colorWheel.startingFrequency
-    }
-
-    private fun getHueOffset(): Float {
-        return colorWheel.offset
+    fun create(frequency: Float): Float {
+        return rescaler.rescale(
+            value = frequency,
+            fromScale = MusicScale,
+            toScale = HueScale,
+        )
     }
 
 }

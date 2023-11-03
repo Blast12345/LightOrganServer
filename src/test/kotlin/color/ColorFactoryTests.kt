@@ -33,8 +33,8 @@ class ColorFactoryTests {
     @Test
     fun `the color is created from the frequency bin`() {
         val sut = createSUT()
-        every { hueFactory.create(frequencyBin) } returns hue
-        every { brightnessFactory.create(frequencyBin) } returns brightness
+        every { hueFactory.create(frequencyBin.frequency) } returns hue
+        every { brightnessFactory.create(frequencyBin.magnitude) } returns brightness
 
         val color = sut.create(frequencyBin)
 

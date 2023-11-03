@@ -1,32 +1,34 @@
 package color
 
-import config.children.ColorWheel
+import color.stevensPowerLaw.HueScale
+import color.stevensPowerLaw.LogarithmicRescaler
+import color.stevensPowerLaw.MusicScale
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import sound.frequencyBins.FrequencyBin
+import kotlin.random.Random
 
 class HueFactoryTests {
 
-    private val colorWheel = ColorWheel(
-        startingFrequency = 40F,
-        endingFrequency = 120F,
-        offset = 0.25F
-    )
+    private val frequency = Random.nextFloat()
+    private val rescaler: LogarithmicRescaler = mockk()
+    private val hue = Random.nextFloat()
 
     private fun createSUT(): HueFactory {
         return HueFactory(
-            colorWheel = colorWheel
+            rescaler = rescaler
         )
     }
 
     @Test
-    fun `calculate the hue using the frequency's relative position in the color wheel`() {
+    fun `calculate the hue with respect to Stevens Power Law`() {
         val sut = createSUT()
-        val frequencyBin = FrequencyBin(60F, 0F)
+        every { rescaler.rescale(frequency, MusicScale, HueScale) } returns hue
 
-        val hue = sut.create(frequencyBin)
+        val actual = sut.create(frequency)
 
-        assertEquals(0.5F, hue)
+        assertEquals(hue, actual)
     }
 
 }
