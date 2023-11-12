@@ -1,6 +1,7 @@
 package color.stevensPowerLaw
 
-// TODO: Test me
+import math.LogarithmicScale
+
 val HueScale = LogarithmicScale(
     minimum = 0F,
     maximum = 1F,

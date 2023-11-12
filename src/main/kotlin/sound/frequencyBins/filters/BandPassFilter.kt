@@ -12,11 +12,11 @@ class BandPassFilter(
         highCrossover: Crossover
     ): FrequencyBinList {
         return frequencyBinList
-            .applyFilter(lowCrossover)
-            .applyFilter(highCrossover)
+            .filter(lowCrossover)
+            .filter(highCrossover)
     }
 
-    private fun FrequencyBinList.applyFilter(filter: Crossover): FrequencyBinList {
+    private fun FrequencyBinList.filter(filter: Crossover): FrequencyBinList {
         return crossoverFilter.filter(this, filter)
     }
 

@@ -13,10 +13,13 @@ class FrequencyBinListCalculator(
     fun calculate(audioFrame: AudioFrame): FrequencyBinList {
         val magnitudes = getMagnitudes(audioFrame)
         val granularity = getGranularity(magnitudes.size, audioFrame)
+        // TODO: Prevent bins beyond the nyquist frequency from being included (how are they existing in the first place?)
+        //allBins.filter { it.frequency < audioFrame.format.nyquistFrequency }
         return getFrequencyBinList(magnitudes, granularity)
     }
 
     private fun getMagnitudes(audioFrame: AudioFrame): DoubleArray {
+        // TODO: De-noise
         return magnitudeListCalculator.calculate(audioFrame.samples)
     }
 

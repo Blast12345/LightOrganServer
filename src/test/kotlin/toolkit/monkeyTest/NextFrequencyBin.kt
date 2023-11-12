@@ -3,9 +3,9 @@ package toolkit.monkeyTest
 import sound.frequencyBins.FrequencyBin
 import kotlin.random.Random
 
-fun nextFrequencyBin(): FrequencyBin {
+fun nextFrequencyBin(frequency: Float = Random.nextFloat()): FrequencyBin {
     return FrequencyBin(
-        frequency = Random.nextFloat(),
+        frequency = frequency,
         magnitude = Random.nextFloat()
     )
 }

@@ -1,10 +1,10 @@
 package color
 
 import color.stevensPowerLaw.HueScale
-import color.stevensPowerLaw.LogarithmicRescaler
-import color.stevensPowerLaw.MusicScale
+import color.stevensPowerLaw.NoteScale
 import io.mockk.every
 import io.mockk.mockk
+import math.LogarithmicRescaler
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
@@ -24,7 +24,7 @@ class HueFactoryTests {
     @Test
     fun `calculate the hue with respect to Stevens Power Law`() {
         val sut = createSUT()
-        every { rescaler.rescale(frequency, MusicScale, HueScale) } returns hue
+        every { rescaler.rescale(frequency, NoteScale, HueScale) } returns hue
 
         val actual = sut.create(frequency)
 

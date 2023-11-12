@@ -14,14 +14,12 @@ fun nextConfig(
     return Config(
         startAutomatically = MutableStateFlow(Random.nextBoolean()),
         clients = clients,
-        colorWheel = nextColorWheel(),
         bassLowCrossover = nextCrossover(),
         bassHighCrossover = nextCrossover(),
+        rootNote = nextNote(),
         sampleSize = sampleSize,
         interpolatedSampleSize = interpolatedSampleSize,
-        magnitudeEstimationStrategy = nextMagnitudeEstimationStrategy(),
         magnitudeMultiplier = magnitudeMultiplier,
         millisecondsToWaitBetweenCheckingForNewAudio = nextPositiveLong(),
-        noiseFloor = Random.nextFloat()
     )
 }
