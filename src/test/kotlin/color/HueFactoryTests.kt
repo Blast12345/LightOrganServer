@@ -1,34 +1,35 @@
 package color
 
-import color.stevensPowerLaw.HueScale
-import color.stevensPowerLaw.NoteScale
-import io.mockk.every
-import io.mockk.mockk
-import math.LogarithmicRescaler
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import kotlin.random.Random
+import sound.notes.Notes
 
 class HueFactoryTests {
 
-    private val frequency = Random.nextFloat()
-    private val rescaler: LogarithmicRescaler = mockk()
-    private val hue = Random.nextFloat()
-
     private fun createSUT(): HueFactory {
-        return HueFactory(
-            rescaler = rescaler
-        )
+        return HueFactory()
     }
 
     @Test
-    fun `calculate the hue with respect to Stevens Power Law`() {
+    fun `C notes are red`() {
         val sut = createSUT()
-        every { rescaler.rescale(frequency, NoteScale, HueScale) } returns hue
 
-        val actual = sut.create(frequency)
+        for (octave in 0 until 8) {
+            val frequency = Notes.C.getFrequency(octave)
+            val actual = sut.create(frequency)
+            assertEquals(0F, actual, 0.01F)
+        }
+    }
 
-        assertEquals(hue, actual)
+    @Test
+    fun `F# notes are teal`() {
+        val sut = createSUT()
+
+        for (octave in 0 until 8) {
+            val frequency = Notes.F_SHARP.getFrequency(octave)
+            val actual = sut.create(frequency)
+            assertEquals(0.5F, actual, 0.01F)
+        }
     }
 
 }

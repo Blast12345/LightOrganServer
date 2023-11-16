@@ -1,19 +1,17 @@
 package color
 
-import color.stevensPowerLaw.HueScale
-import color.stevensPowerLaw.NoteScale
-import math.LogarithmicRescaler
+import color.scales.HueScale
+import color.scales.NoteScale
 
 class HueFactory(
-    private val rescaler: LogarithmicRescaler = LogarithmicRescaler()
+    private val noteScale: NoteScale = NoteScale(),
+    private val hueScale: HueScale = HueScale()
 ) {
 
     fun create(frequency: Float): Float {
-        return rescaler.rescale(
-            value = frequency,
-            fromScale = NoteScale,
-            toScale = HueScale,
-        )
+        val normalizedValue = noteScale.normalize(frequency)
+        val scaledHue = hueScale.scale(normalizedValue)
+        return scaledHue % 1
     }
 
 }
