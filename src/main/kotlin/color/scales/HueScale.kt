@@ -1,8 +1,24 @@
 package color.scales
 
-import math.featureScaling.LinearScale
+import extensions.denormalize
 
-class HueScale : LinearScale(
-    minimum = 0F,
-    maximum = 1F
-)
+class HueScale {
+
+    private val minimum = 0F
+    private val maximum = 1F
+
+    fun scale(normalizedValue: Float): Float {
+        return normalizedValue
+            .denormalize(minimum, maximum)
+            .loopIntoRange()
+    }
+
+    private fun Float.loopIntoRange(): Float {
+        return if (this < minimum) {
+            (this % 1) + (maximum - minimum)
+        } else {
+            this % 1
+        }
+    }
+
+}
