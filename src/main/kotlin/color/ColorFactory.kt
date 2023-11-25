@@ -4,7 +4,7 @@ import sound.frequencyBins.FrequencyBin
 import wrappers.color.Color
 
 class ColorFactory(
-    private val hueFactory: HueFactory = HueFactory(),
+    private val hueCalculator: HueCalculator = HueCalculator(),
     private val brightnessFactory: BrightnessFactory = BrightnessFactory()
 ) {
 
@@ -23,7 +23,7 @@ class ColorFactory(
     }
 
     private fun getHue(frequencyBin: FrequencyBin): Float {
-        return hueFactory.create(frequencyBin.frequency)
+        return hueCalculator.calculate(frequencyBin.frequency)
     }
 
     private fun getBrightness(frequencyBin: FrequencyBin): Float {
