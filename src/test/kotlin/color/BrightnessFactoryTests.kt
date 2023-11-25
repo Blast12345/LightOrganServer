@@ -13,8 +13,7 @@ class BrightnessFactoryTests {
     fun `return the magnitude of the frequency bin`() {
         val sut = createSUT()
 
-        val magnitude = 0.5F
-        val brightness = sut.create(magnitude)
+        val brightness = sut.create(0.5F)
 
         assertEquals(0.5F, brightness)
     }
@@ -23,8 +22,7 @@ class BrightnessFactoryTests {
     fun `return 1 when the magnitude is greater than 1`() {
         val sut = createSUT()
 
-        val magnitude = 1.5F
-        val brightness = sut.create(magnitude)
+        val brightness = sut.create(1.5F)
 
         assertEquals(1F, brightness)
     }
