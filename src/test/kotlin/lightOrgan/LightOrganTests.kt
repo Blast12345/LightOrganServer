@@ -45,7 +45,7 @@ class LightOrganTests {
     fun `send the next color to the subscribers when new audio is received`() {
         val sut = createSUT()
         val receivedAudio = nextAudioFrame()
-        every { frequencyBinListCalculator.calculate(receivedAudio) } returns frequencyBinList
+        every { frequencyBinListCalculator.calculate(receivedAudio.samples, receivedAudio.format) } returns frequencyBinList
         every { dominantBassFrequencyBinCalculator.calculate(frequencyBinList) } returns dominantBassFrequencyBin
         every { colorFactory.create(dominantBassFrequencyBin) } returns nextColor
 

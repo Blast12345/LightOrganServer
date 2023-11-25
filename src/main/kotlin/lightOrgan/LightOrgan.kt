@@ -41,7 +41,10 @@ class LightOrgan(
     }
 
     private fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBinList {
-        return frequencyBinListCalculator.calculate(audioFrame)
+        return frequencyBinListCalculator.calculate(
+            samples = audioFrame.samples,
+            audioFormat = audioFrame.format
+        )
     }
 
     fun checkIfSubscribed(subscriber: LightOrganSubscriber): Boolean {

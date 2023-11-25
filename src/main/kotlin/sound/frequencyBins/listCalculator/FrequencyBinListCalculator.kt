@@ -1,8 +1,8 @@
 package sound.frequencyBins.listCalculator
 
-import input.audioFrame.AudioFrame
 import sound.frequencyBins.FrequencyBinList
 import sound.frequencyBins.FrequencyBinListFactory
+import wrappers.audioFormat.AudioFormatWrapper
 
 class FrequencyBinListCalculator(
     private val magnitudeListCalculator: MagnitudeListCalculator = MagnitudeListCalculator(),
@@ -10,25 +10,33 @@ class FrequencyBinListCalculator(
     private val frequencyBinListFactory: FrequencyBinListFactory = FrequencyBinListFactory()
 ) {
 
-    fun calculate(audioFrame: AudioFrame): FrequencyBinList {
-        val magnitudes = getMagnitudes(audioFrame)
-        val granularity = getGranularity(magnitudes.size, audioFrame)
-        // TODO: Prevent bins beyond the nyquist frequency from being included (how are they existing in the first place?)
-        //allBins.filter { it.frequency < audioFrame.format.nyquistFrequency }
-        return getFrequencyBinList(magnitudes, granularity)
+    fun calculate(samples: DoubleArray, audioFormat: AudioFormatWrapper): FrequencyBinList {
+        val magnitudes = getMagnitudes(samples)
+        val granularity = getGranularity(magnitudes, audioFormat)
+
+        return frequencyBinListFactory
+            .create(magnitudes, granularity)
+            .removeBinsBeyondNyquistFrequency(audioFormat)
     }
 
-    private fun getMagnitudes(audioFrame: AudioFrame): DoubleArray {
+    private fun getMagnitudes(samples: DoubleArray): DoubleArray {
         // TODO: De-noise
-        return magnitudeListCalculator.calculate(audioFrame.samples)
+        return magnitudeListCalculator.calculate(samples)
     }
 
-    private fun getGranularity(numberOfBins: Int, audioFrame: AudioFrame): Float {
-        return granularityCalculator.calculate(numberOfBins, audioFrame.format)
+    private fun getGranularity(magnitudes: DoubleArray, audioFormat: AudioFormatWrapper): Float {
+        return granularityCalculator.calculate(
+            numberOfBins = magnitudes.size,
+            audioFormat = audioFormat
+        )
     }
 
-    private fun getFrequencyBinList(magnitudes: DoubleArray, granularity: Float): FrequencyBinList {
-        return frequencyBinListFactory.create(magnitudes, granularity)
+    private fun FrequencyBinList.removeBinsBeyondNyquistFrequency(audioFormat: AudioFormatWrapper): FrequencyBinList {
+        return this.removeBinsBeyondNyquistFrequency(audioFormat.nyquistFrequency)
+    }
+
+    private fun FrequencyBinList.removeBinsBeyondNyquistFrequency(nyquistFrequency: Float): FrequencyBinList {
+        return this.filter { it.frequency <= nyquistFrequency }
     }
 
 }
