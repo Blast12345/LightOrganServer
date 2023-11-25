@@ -2,6 +2,7 @@ package sound.frequencyBins.filters
 
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextCrossover
@@ -13,8 +14,8 @@ class BandPassFilterTests {
     private val lowCrossover = nextCrossover()
     private val highCrossover = nextCrossover()
     private val crossoverFilter: CrossoverFilter = mockk()
-    private val lowCrossoverFrequencyBinList = nextFrequencyBinList()
-    private val highCrossoverFrequencyBinList = nextFrequencyBinList()
+    private val singleCrossoverFrequencyBinList = nextFrequencyBinList()
+    private val combinedCrossoverFrequencyBinList = nextFrequencyBinList()
 
     private fun createSUT(): BandPassFilter {
         return BandPassFilter(
@@ -23,16 +24,16 @@ class BandPassFilterTests {
     }
 
     @Test
-    fun `upper and lower crossover filters are applied to produce the pass-band`() {
+    fun `filtered bins have an upper and lower crossover applied`() {
         val sut = createSUT()
-        every { crossoverFilter.filter(frequencyBinList, lowCrossover) } returns lowCrossoverFrequencyBinList
-        every { crossoverFilter.filter(lowCrossoverFrequencyBinList, highCrossover) } returns highCrossoverFrequencyBinList
+        every { crossoverFilter.filter(frequencyBinList, any()) } returns singleCrossoverFrequencyBinList
+        every { crossoverFilter.filter(singleCrossoverFrequencyBinList, any()) } returns combinedCrossoverFrequencyBinList
 
         val actual = sut.filter(frequencyBinList, lowCrossover, highCrossover)
 
-        // TODO: This test seems to lock in a specific order when one doesn't matter
-        // At the very least, the idea that a "combined" bin list is returned is lost
-        assertEquals(highCrossoverFrequencyBinList, actual)
+        verify(exactly = 1) { crossoverFilter.filter(any(), lowCrossover) }
+        verify(exactly = 1) { crossoverFilter.filter(any(), highCrossover) }
+        assertEquals(combinedCrossoverFrequencyBinList, actual)
     }
 
 }

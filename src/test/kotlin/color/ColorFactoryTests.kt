@@ -13,7 +13,7 @@ import kotlin.random.Random
 class ColorFactoryTests {
 
     private val frequencyBin = nextFrequencyBin()
-    private val hueFactory: HueFactory = mockk()
+    private val hueCalculator: HueCalculator = mockk()
     private val hue = Random.nextFloat()
     private val brightnessFactory: BrightnessFactory = mockk(relaxed = true)
     private val brightness = Random.nextFloat()
@@ -25,7 +25,7 @@ class ColorFactoryTests {
 
     private fun createSUT(): ColorFactory {
         return ColorFactory(
-            hueFactory = hueFactory,
+            hueCalculator = hueCalculator,
             brightnessFactory = brightnessFactory
         )
     }
@@ -33,8 +33,8 @@ class ColorFactoryTests {
     @Test
     fun `the color is created from the frequency bin`() {
         val sut = createSUT()
-        every { hueFactory.create(frequencyBin) } returns hue
-        every { brightnessFactory.create(frequencyBin) } returns brightness
+        every { hueCalculator.calculate(frequencyBin.frequency) } returns hue
+        every { brightnessFactory.create(frequencyBin.magnitude) } returns brightness
 
         val color = sut.create(frequencyBin)
 

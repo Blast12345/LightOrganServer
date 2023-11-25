@@ -1,36 +1,16 @@
 package sound.frequencyBins.filters
 
+import extensions.between
+import math.featureScaling.normalize
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
-import kotlin.math.ln
-import kotlin.math.max
+import kotlin.math.abs
 
+// TODO: Normalize with a curve instead of linear?
 class CrossoverFilter {
 
     fun filter(frequencyBinList: FrequencyBinList, crossover: Crossover): FrequencyBinList {
-        return frequencyBinList
-            .removeOutOfBandBins(crossover)
-            .applyRollOff(crossover)
-    }
-
-    private fun FrequencyBinList.removeOutOfBandBins(crossover: Crossover): FrequencyBinList {
-        return this.filter {
-            checkIfBinIsInBand(it, crossover)
-        }
-    }
-
-    private fun checkIfBinIsInBand(frequencyBin: FrequencyBin, crossover: Crossover): Boolean {
-        return getMultiplier(frequencyBin, crossover) <= 1F
-    }
-
-    private fun getMultiplier(frequencyBin: FrequencyBin, crossover: Crossover): Float {
-        val logPosition = ln(frequencyBin.frequency) - ln(crossover.cornerFrequency)
-        val logWidth = ln(crossover.stopFrequency) - ln(crossover.cornerFrequency)
-        return max(logPosition / logWidth, 0F)
-    }
-
-    private fun FrequencyBinList.applyRollOff(crossover: Crossover): FrequencyBinList {
-        return this.map {
+        return frequencyBinList.map {
             getFilteredBin(it, crossover)
         }
     }
@@ -43,9 +23,25 @@ class CrossoverFilter {
     }
 
     private fun getFilteredMagnitude(frequencyBin: FrequencyBin, crossover: Crossover): Float {
-        val multiplier = getMultiplier(frequencyBin, crossover)
-        val magnitudeDecrease = frequencyBin.magnitude * multiplier
-        return frequencyBin.magnitude - magnitudeDecrease
+        val crossoverValue = getCrossoverValue(frequencyBin, crossover)
+        return frequencyBin.magnitude * crossoverValue
+    }
+
+    private fun getCrossoverValue(frequencyBin: FrequencyBin, crossover: Crossover): Float {
+        val normalizedFrequency = getNormalizedFrequency(frequencyBin, crossover)
+        val attenuation = normalizedFrequency.between(0F, 1F)
+        return abs(attenuation - 1)
+    }
+
+    private fun getNormalizedFrequency(frequencyBin: FrequencyBin, crossover: Crossover): Float {
+        return getNormalizedFrequency(frequencyBin.frequency, crossover)
+    }
+
+    private fun getNormalizedFrequency(frequency: Float, crossover: Crossover): Float {
+        return frequency.normalize(
+            minimum = crossover.cornerFrequency,
+            maximum = crossover.stopFrequency
+        )
     }
 
 }

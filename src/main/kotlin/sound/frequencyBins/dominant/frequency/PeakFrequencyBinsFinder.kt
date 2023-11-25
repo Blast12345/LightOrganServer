@@ -13,18 +13,16 @@ class PeakFrequencyBinsFinder {
             val currentBin = frequencyBins.elementAtOrNull(i)
             val nextBin = frequencyBins.elementAtOrNull(i + 1)
 
-            val previousMagnitude = previousBin?.magnitude
-            val currentBinMagnitude = currentBin?.magnitude
-            val nextBinMagnitude = nextBin?.magnitude
+            val previousMagnitude = previousBin?.magnitude ?: 0F
+            val currentBinMagnitude = currentBin?.magnitude ?: 0F
+            val nextBinMagnitude = nextBin?.magnitude ?: 0F
 
-            if (previousMagnitude != null && currentBinMagnitude != null && nextBinMagnitude != null) {
-                val isGreaterThanPrevious = currentBinMagnitude > previousMagnitude
-                val isGreaterThanNext = currentBinMagnitude > nextBinMagnitude
-                val isPeak = isGreaterThanPrevious && isGreaterThanNext
+            val isGreaterThanPrevious = currentBinMagnitude > previousMagnitude
+            val isGreaterThanNext = currentBinMagnitude > nextBinMagnitude
+            val isPeak = isGreaterThanPrevious && isGreaterThanNext
 
-                if (isPeak) {
-                    peaks.add(currentBin)
-                }
+            if (isPeak && currentBin != null) {
+                peaks.add(currentBin)
             }
         }
 
