@@ -13,15 +13,14 @@ class ConfigFactory(
         return Config(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
             clients = setOf(Client("192.168.1.55")),
-            bassLowCrossover = Crossover(
+            lowCrossover = Crossover(
                 stopFrequency = Notes.C.getFrequency(1),
                 cornerFrequency = Notes.C.getFrequency(2)
             ),
-            bassHighCrossover = Crossover(
+            highCrossover = Crossover(
                 cornerFrequency = Notes.C.getFrequency(2),
                 stopFrequency = Notes.C.getFrequency(3)
             ),
-            rootNote = Notes.C,
             sampleSize = 4410,
             interpolatedSampleSize = 65536,
             magnitudeMultiplier = 2F,

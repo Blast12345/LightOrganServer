@@ -14,8 +14,8 @@ class DominantBassFrequencyBinCalculator(
     private val bandPassFilter: BandPassFilter = BandPassFilter(),
     private val dominantFrequencyCalculator: DominantFrequencyCalculator = DominantFrequencyCalculator(),
     private val dominantMagnitudeCalculator: DominantMagnitudeCalculator = DominantMagnitudeCalculator(),
-    private val lowCrossover: Crossover = ConfigSingleton.bassLowCrossover,
-    private val highCrossover: Crossover = ConfigSingleton.bassHighCrossover
+    private val lowCrossover: Crossover = ConfigSingleton.lowCrossover,
+    private val highCrossover: Crossover = ConfigSingleton.highCrossover
 ) {
 
     fun calculate(frequencyBinList: FrequencyBinList): FrequencyBin? {
