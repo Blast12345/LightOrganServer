@@ -1,13 +1,13 @@
 package sound.frequencyBins.filters
 
 import extensions.between
+import math.featureScaling.normalize
 import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
 import kotlin.math.abs
 
-class CrossoverFilter(
-//    private val logarithmicMinMaxNormalizer: LogarithmicMinMaxNormalizer = LogarithmicMinMaxNormalizer()
-) {
+// TODO: Normalize with a curve instead of linear?
+class CrossoverFilter {
 
     fun filter(frequencyBinList: FrequencyBinList, crossover: Crossover): FrequencyBinList {
         return frequencyBinList.map {
@@ -34,13 +34,14 @@ class CrossoverFilter(
     }
 
     private fun getNormalizedFrequency(frequencyBin: FrequencyBin, crossover: Crossover): Float {
-        return 0F
-//        return logarithmicMinMaxNormalizer.normalize(
-//            value = frequencyBin.frequency,
-//            minimum = crossover.cornerFrequency,
-//            maximum = crossover.stopFrequency,
-//            base = 2F
-//        )
+        return getNormalizedFrequency(frequencyBin.frequency, crossover)
+    }
+
+    private fun getNormalizedFrequency(frequency: Float, crossover: Crossover): Float {
+        return frequency.normalize(
+            minimum = crossover.cornerFrequency,
+            maximum = crossover.stopFrequency
+        )
     }
 
 }
