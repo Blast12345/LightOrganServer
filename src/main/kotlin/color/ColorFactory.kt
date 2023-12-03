@@ -1,34 +1,36 @@
 package color
 
-import sound.frequencyBins.FrequencyBin
+import input.audioFrame.AudioFrame
+import sound.frequencyBins.BassBinsFactory
+import sound.frequencyBins.FrequencyBinList
 import wrappers.color.Color
 
 class ColorFactory(
+    private val bassBinsFactory: BassBinsFactory = BassBinsFactory(),
     private val hueCalculator: HueCalculator = HueCalculator(),
-    private val brightnessFactory: BrightnessFactory = BrightnessFactory()
+    private val brightnessCalculator: BrightnessCalculator = BrightnessCalculator()
 ) {
 
-    private val black = Color(0F, 0F, 0F)
-
-    fun create(frequencyBin: FrequencyBin?): Color {
-        if (frequencyBin == null) {
-            return black
-        }
-
-        return Color(
-            hue = getHue(frequencyBin),
-            saturation = 1F,
-            brightness = getBrightness(frequencyBin)
+    fun create(audioFrame: AudioFrame): Color {
+        return create(
+            bassBins = bassBinsFactory.create(audioFrame)
         )
     }
 
-    private fun getHue(frequencyBin: FrequencyBin): Float {
-        return hueCalculator.calculate(frequencyBin.frequency)
+    private fun create(bassBins: FrequencyBinList): Color {
+        return Color(
+            hue = getHue(bassBins) ?: return Color.black,
+            saturation = 1F,
+            brightness = getBrightness(bassBins) ?: return Color.black
+        )
     }
 
-    private fun getBrightness(frequencyBin: FrequencyBin): Float {
-        return brightnessFactory.create(frequencyBin.magnitude)
+    private fun getHue(bassBins: FrequencyBinList): Float? {
+        return hueCalculator.calculate(bassBins)
+    }
+
+    private fun getBrightness(bassBins: FrequencyBinList): Float? {
+        return brightnessCalculator.calculate(bassBins)
     }
 
 }
-

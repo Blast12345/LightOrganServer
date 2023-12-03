@@ -4,16 +4,11 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sound.notes.Notes
 
-class HueCalculatorTests {
-
-    // NOTE: These tests assume a root note of C
-    private fun createSUT(): HueCalculator {
-        return HueCalculator()
-    }
+class HueCalculatorIntegrationTests {
 
     @Test
     fun `C notes are red`() {
-        val sut = createSUT()
+        val sut = HueCalculator()
 
         for (octave in 0 until 8) {
             val frequency = Notes.C.getFrequency(octave)
@@ -24,7 +19,7 @@ class HueCalculatorTests {
 
     @Test
     fun `F# notes are teal`() {
-        val sut = createSUT()
+        val sut = HueCalculator()
 
         for (octave in 0 until 8) {
             val frequency = Notes.F_SHARP.getFrequency(octave)
@@ -35,7 +30,7 @@ class HueCalculatorTests {
 
     @Test
     fun `A notes are purple`() {
-        val sut = createSUT()
+        val sut = HueCalculator()
 
         for (octave in 0 until 8) {
             val frequency = Notes.A.getFrequency(octave)

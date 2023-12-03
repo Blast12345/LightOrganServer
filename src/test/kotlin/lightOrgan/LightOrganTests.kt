@@ -9,12 +9,8 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import sound.frequencyBins.dominant.DominantBassFrequencyBinCalculator
-import sound.frequencyBins.listCalculator.FrequencyBinListCalculator
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextColor
-import toolkit.monkeyTest.nextFrequencyBin
-import toolkit.monkeyTest.nextFrequencyBinList
 
 class LightOrganTests {
 
@@ -22,10 +18,14 @@ class LightOrganTests {
     private val subscriber2: LightOrganSubscriber = mockk(relaxed = true)
     private var colorFactory: ColorFactory = mockk()
     private val nextColor = nextColor()
-    private val frequencyBinListCalculator: FrequencyBinListCalculator = mockk()
-    private val frequencyBinList = nextFrequencyBinList()
-    private var dominantBassFrequencyBinCalculator: DominantBassFrequencyBinCalculator = mockk()
-    private val dominantBassFrequencyBin = nextFrequencyBin()
+//    private val frequencyBinListCalculator: FrequencyBinListCalculator = mockk()
+//    private val frequencyBinList = nextFrequencyBinList()
+//    private var dominantBassFrequencyBinCalculator: DominantBassFrequencyBinCalculator = mockk()
+//    private val dominantBassFrequencyBin = nextFrequencyBin()
+//    frequencyBinListCalculator = frequencyBinListCalculator,
+//    dominantBassFrequencyBinCalculator = dominantBassFrequencyBinCalculator
+//    every { frequencyBinListCalculator.calculate(receivedAudio.samples, receivedAudio.format) } returns frequencyBinList
+//    every { dominantBassFrequencyBinCalculator.calculate(frequencyBinList) } returns dominantBassFrequencyBin
 
     @AfterEach
     fun teardown() {
@@ -36,20 +36,16 @@ class LightOrganTests {
         return LightOrgan(
             subscribers = mutableSetOf(subscriber1, subscriber2),
             colorFactory = colorFactory,
-            frequencyBinListCalculator = frequencyBinListCalculator,
-            dominantBassFrequencyBinCalculator = dominantBassFrequencyBinCalculator
         )
     }
 
     @Test
     fun `send the next color to the subscribers when new audio is received`() {
+        val newAudio = nextAudioFrame()
         val sut = createSUT()
-        val receivedAudio = nextAudioFrame()
-        every { frequencyBinListCalculator.calculate(receivedAudio.samples, receivedAudio.format) } returns frequencyBinList
-        every { dominantBassFrequencyBinCalculator.calculate(frequencyBinList) } returns dominantBassFrequencyBin
-        every { colorFactory.create(dominantBassFrequencyBin) } returns nextColor
+        every { colorFactory.create(newAudio) } returns nextColor
 
-        sut.received(receivedAudio)
+        sut.received(newAudio)
 
         verify(exactly = 1) { subscriber1.new(nextColor) }
         verify(exactly = 1) { subscriber2.new(nextColor) }

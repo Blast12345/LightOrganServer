@@ -2,6 +2,7 @@ package color
 
 import math.featureScaling.denormalize
 import math.featureScaling.normalizeLogarithmically
+import sound.frequencyBins.FrequencyBinList
 import sound.notes.Notes
 
 class HueCalculator {
@@ -9,6 +10,17 @@ class HueCalculator {
     private val rootNote = Notes.C
     private val minimum = 0F
     private val maximum = 1F
+
+//    private fun getOctavePosition(bassRegionBins: FrequencyBinList): Float? {
+//        return octavePositionCalculator.calculate(bassRegionBins)
+//    }
+
+    fun calculate(frequencyBins: FrequencyBinList): Float? {
+        return 0F
+//        return dominantMagnitudeCalculator.calculate(
+//            frequencyBins = getFilteredBins(bassRegionBins)
+//        )
+    }
 
     fun calculate(frequency: Float): Float {
         return frequency
