@@ -2,30 +2,42 @@ package color
 
 import math.featureScaling.denormalize
 import math.featureScaling.normalizeLogarithmically
+import sound.frequencyBins.FrequencyBin
 import sound.frequencyBins.FrequencyBinList
+import sound.frequencyBins.dominant.frequency.PeakFrequencyBinsFinder
+import sound.frequencyBins.dominant.frequency.TotalMagnitudeCalculator
+import sound.frequencyBins.dominant.frequency.WeightedMagnitudeCalculator
 import sound.notes.Notes
+import kotlin.math.log
+import kotlin.math.pow
 
-class HueCalculator {
+class HueCalculator(
+    private val peakFrequencyBinsFinder: PeakFrequencyBinsFinder = PeakFrequencyBinsFinder(),
+    private val weightedMagnitudeCalculator: WeightedMagnitudeCalculator = WeightedMagnitudeCalculator(),
+    private val totalMagnitudeCalculator: TotalMagnitudeCalculator = TotalMagnitudeCalculator()
+) {
 
     private val rootNote = Notes.C
-    private val minimum = 0F
-    private val maximum = 1F
-
-//    private fun getOctavePosition(bassRegionBins: FrequencyBinList): Float? {
-//        return octavePositionCalculator.calculate(bassRegionBins)
-//    }
 
     fun calculate(frequencyBins: FrequencyBinList): Float? {
-        return 0F
-//        return dominantMagnitudeCalculator.calculate(
-//            frequencyBins = getFilteredBins(bassRegionBins)
-//        )
-    }
+        val bin1 = FrequencyBin(20F, 1F)
+        val bin2 = FrequencyBin(30F, 1F)
 
-    fun calculate(frequency: Float): Float {
-        return frequency
-            .normalizeToOctave()
-            .scaleToHue()
+        val peakBins = getPeakFrequencyBins(frequencyBins)
+
+        val peakOctaveBins = peakBins.map {
+            OctaveBin(
+                position = it.frequency.normalizeToOctave() % 1,
+                magnitude = it.magnitude
+            )
+        }
+
+
+        val weightedMagnitude = weightedMagnitude(peakOctaveBins)
+        val totalMagnitude = totalMagnitude(peakOctaveBins)
+        val averageOctavePosition = averageOctavePosition(weightedMagnitude, totalMagnitude) ?: return null
+
+        return averageOctavePosition
     }
 
     // Reference: https://en.wikipedia.org/wiki/Octave
@@ -37,18 +49,46 @@ class HueCalculator {
         )
     }
 
-    private fun Float.scaleToHue(): Float {
-        return this
-            .denormalize(minimum, maximum)
-            .loopIntoRange()
+    fun Float.denormalizeLogarithmically(minimum: Float, maximum: Float, base: Float): Float {
+        val power = this.denormalize(
+            minimum = log(minimum, base),
+            maximum = log(maximum, base)
+        )
+
+        return base.pow(power)
     }
 
-    private fun Float.loopIntoRange(): Float {
-        return if (this < minimum) {
-            (this % 1) + (maximum - minimum)
+    private fun getPeakFrequencyBins(frequencyBins: FrequencyBinList): FrequencyBinList {
+        return peakFrequencyBinsFinder.find(frequencyBins)
+    }
+
+    private fun weightedMagnitude(octaveBins: OctaveBinList): Float {
+        var weightedMagnitude = 0F
+
+        for (octaveBin in octaveBins) {
+            weightedMagnitude += octaveBin.position * octaveBin.magnitude
+        }
+
+        return weightedMagnitude
+    }
+
+    private fun totalMagnitude(octaveBins: OctaveBinList): Float {
+        return octaveBins.map { it.magnitude }.sum()
+    }
+
+    private fun averageOctavePosition(weightedMagnitude: Float, totalMagnitude: Float): Float? {
+        return if (totalMagnitude == 0F) {
+            null
         } else {
-            this % 1
+            weightedMagnitude / totalMagnitude
         }
     }
 
 }
+
+data class OctaveBin(
+    val position: Float,
+    val magnitude: Float
+)
+
+typealias OctaveBinList = List<OctaveBin>

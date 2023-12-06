@@ -1,20 +1,25 @@
 package sound.frequencyBins
 
+import config.ConfigSingleton
 import input.audioFrame.AudioFrame
+import sound.frequencyBins.filters.PassBandRegionFilter
+import sound.frequencyBins.listCalculator.FrequencyBinListCalculator
 
-class BassBinsFactory {
+// TODO:
+class BassBinsFactory(
+    private val passBandRegionFilter: PassBandRegionFilter = PassBandRegionFilter()
+) {
 
     fun create(audioFrame: AudioFrame): FrequencyBinList {
-        return listOf()
+        val frequencyBins = FrequencyBinListCalculator().calculate(audioFrame.samples, audioFrame.format)
+        val lowCrossover = ConfigSingleton.lowCrossover
+        val highCrossover = ConfigSingleton.highCrossover
+
+        return passBandRegionFilter.filter(
+            frequencyBinList = frequencyBins,
+            lowStopFrequency = lowCrossover.stopFrequency,
+            highStopFrequency = highCrossover.stopFrequency
+        )
     }
-
-
-//    private fun getBassRegionBins(frequencyBins: FrequencyBinList): FrequencyBinList {
-//        return passBandRegionFilter.filter(
-//            frequencyBinList = frequencyBins,
-//            lowStopFrequency = lowCrossover.stopFrequency,
-//            highStopFrequency = highCrossover.stopFrequency
-//        )
-//    }
 
 }

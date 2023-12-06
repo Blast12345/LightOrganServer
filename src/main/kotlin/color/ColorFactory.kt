@@ -12,17 +12,11 @@ class ColorFactory(
 ) {
 
     fun create(audioFrame: AudioFrame): Color {
-        return create(
-            bassBins = bassBinsFactory.create(audioFrame)
-        )
-    }
+        val bassBins = bassBinsFactory.create(audioFrame)
+        val hue = getHue(bassBins) ?: return Color.black
+        val brightness = getBrightness(bassBins) ?: return Color.black
 
-    private fun create(bassBins: FrequencyBinList): Color {
-        return Color(
-            hue = getHue(bassBins) ?: return Color.black,
-            saturation = 1F,
-            brightness = getBrightness(bassBins) ?: return Color.black
-        )
+        return Color(hue, 1F, brightness)
     }
 
     private fun getHue(bassBins: FrequencyBinList): Float? {

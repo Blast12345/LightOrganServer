@@ -17,9 +17,9 @@ class PeakFrequencyBinsFinder {
             val currentBinMagnitude = currentBin?.magnitude ?: 0F
             val nextBinMagnitude = nextBin?.magnitude ?: 0F
 
-            val isGreaterThanPrevious = currentBinMagnitude > previousMagnitude
-            val isGreaterThanNext = currentBinMagnitude > nextBinMagnitude
-            val isPeak = isGreaterThanPrevious && isGreaterThanNext
+            val isGreaterThanOrEqualToPrevious = currentBinMagnitude >= previousMagnitude
+            val isGreaterThanOrEqualToNext = currentBinMagnitude >= nextBinMagnitude
+            val isPeak = isGreaterThanOrEqualToPrevious && isGreaterThanOrEqualToNext
 
             if (isPeak && currentBin != null) {
                 peaks.add(currentBin)
