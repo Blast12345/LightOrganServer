@@ -17,10 +17,11 @@ import kotlin.random.Random
 class BrightnessCalculatorTests {
 
     private val frequencyBins = nextFrequencyBinList()
+
     private val bandPassFilter: BandPassFilter = mockk()
+    private val filteredFrequencyBins = nextFrequencyBinList()
     private val lowCrossover: Crossover = nextCrossover()
     private val highCrossover: Crossover = nextCrossover()
-    private val filteredFrequencyBins = nextFrequencyBinList()
     private val greatestMagnitudeCalculator: GreatestMagnitudeCalculator = mockk()
     private val greatestMagnitude = Random.nextFloat()
 

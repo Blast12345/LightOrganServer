@@ -45,7 +45,7 @@ class ColorFactoryTests {
     }
 
     @Test
-    fun `create a color for an audio frame`() {
+    fun `get the color for an audio frame`() {
         val sut = createSUT()
 
         val color = sut.create(audioFrame)
@@ -74,4 +74,5 @@ class ColorFactoryTests {
 
         assertEquals(Color.black, actual)
     }
+    
 }
