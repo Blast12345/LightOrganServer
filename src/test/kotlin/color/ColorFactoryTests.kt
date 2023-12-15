@@ -1,5 +1,7 @@
 package color
 
+import color.brightness.BrightnessCalculator
+import color.hue.HueCalculator
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

@@ -1,5 +1,7 @@
 package color
 
+import color.brightness.BrightnessCalculator
+import color.hue.HueCalculator
 import input.audioFrame.AudioFrame
 import sound.frequencyBins.BassBinsFactory
 import sound.frequencyBins.FrequencyBinList
@@ -13,6 +15,7 @@ class ColorFactory(
 
     fun create(audioFrame: AudioFrame): Color {
         val bassBins = bassBinsFactory.create(audioFrame)
+
         val hue = getHue(bassBins) ?: return Color.black
         val brightness = getBrightness(bassBins) ?: return Color.black
 

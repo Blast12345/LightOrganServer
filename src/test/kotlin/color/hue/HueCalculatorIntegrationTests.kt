@@ -1,4 +1,4 @@
-package color
+package color.hue
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
