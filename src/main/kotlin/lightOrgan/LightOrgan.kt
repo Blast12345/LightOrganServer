@@ -28,10 +28,6 @@ class LightOrgan(
         )
     }
 
-    fun checkIfSubscribed(subscriber: LightOrganSubscriber): Boolean {
-        return subscribers.contains(subscriber)
-    }
-
     fun addSubscriber(subscriber: LightOrganSubscriber) {
         subscribers.add(subscriber)
     }
