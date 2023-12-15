@@ -1,7 +1,5 @@
 package color
 
-import color.brightness.BrightnessCalculator
-import color.hue.HueCalculator
 import input.audioFrame.AudioFrame
 import sound.frequencyBins.BassBinsFactory
 import sound.frequencyBins.FrequencyBinList

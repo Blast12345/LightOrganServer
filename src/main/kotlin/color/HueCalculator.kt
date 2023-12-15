@@ -1,4 +1,4 @@
-package color.hue
+package color
 
 import math.featureScaling.normalizeLogarithmically
 import sound.frequencyBins.FrequencyBinList
