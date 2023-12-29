@@ -1,10 +1,10 @@
 package color
 
 import config.ConfigSingleton
-import sound.frequencyBins.FrequencyBinList
-import sound.frequencyBins.GreatestMagnitudeCalculator
-import sound.frequencyBins.filters.BandPassFilter
-import sound.frequencyBins.filters.Crossover
+import sound.bins.frequency.FrequencyBinList
+import sound.bins.frequency.GreatestMagnitudeCalculator
+import sound.bins.frequency.filters.BandPassFilter
+import sound.bins.frequency.filters.Crossover
 
 class BrightnessCalculator(
     private val bandPassFilter: BandPassFilter = BandPassFilter(),

@@ -6,8 +6,8 @@ import io.mockk.mockk
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import sound.octave.OctaveWeightedAverageCalculator
-import sound.octave.PeakOctaveBinsFinder
+import sound.bins.octave.OctaveWeightedAverageCalculator
+import sound.bins.octave.PeakOctaveBinsFinder
 import toolkit.monkeyTest.nextFrequencyBinList
 import toolkit.monkeyTest.nextOctaveBinList
 import kotlin.random.Random

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.frequencyBins.BassBinsFactory
+import sound.bins.frequency.BassBinsFactory
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextFrequencyBinList
 import wrappers.color.Color
@@ -74,5 +74,5 @@ class ColorFactoryTests {
 
         assertEquals(Color.black, actual)
     }
-    
+
 }

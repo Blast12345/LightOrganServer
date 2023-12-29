@@ -1,8 +1,8 @@
 package color
 
 import input.audioFrame.AudioFrame
-import sound.frequencyBins.BassBinsFactory
-import sound.frequencyBins.FrequencyBinList
+import sound.bins.frequency.BassBinsFactory
+import sound.bins.frequency.FrequencyBinList
 import wrappers.color.Color
 
 class ColorFactory(

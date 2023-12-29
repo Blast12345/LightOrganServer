@@ -2,8 +2,8 @@ package color
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import sound.frequencyBins.FrequencyBin
-import sound.frequencyBins.FrequencyBinList
+import sound.bins.frequency.FrequencyBin
+import sound.bins.frequency.FrequencyBinList
 import sound.notes.Note
 import sound.notes.Notes
 

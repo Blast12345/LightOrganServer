@@ -7,9 +7,9 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.frequencyBins.GreatestMagnitudeCalculator
-import sound.frequencyBins.filters.BandPassFilter
-import sound.frequencyBins.filters.Crossover
+import sound.bins.frequency.GreatestMagnitudeCalculator
+import sound.bins.frequency.filters.BandPassFilter
+import sound.bins.frequency.filters.Crossover
 import toolkit.monkeyTest.nextCrossover
 import toolkit.monkeyTest.nextFrequencyBinList
 import kotlin.random.Random
