@@ -29,10 +29,3 @@ class OctaveWeightedAverageCalculator {
 
 }
 
-
-//    private val octaveBins = listOf(
-//        OctaveBin(0.0F, 98F),
-//        OctaveBin(0.5F, 1F),
-//        OctaveBin(1.0F, 1F)
-//
-//    assertEquals(0.015F, actual)
