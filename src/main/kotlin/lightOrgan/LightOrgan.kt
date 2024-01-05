@@ -3,10 +3,10 @@ package lightOrgan
 import color.ColorFactory
 import input.InputSubscriber
 import input.audioFrame.AudioFrame
-import sound.frequencyBins.FrequencyBin
-import sound.frequencyBins.FrequencyBinList
-import sound.frequencyBins.dominant.DominantBassFrequencyBinCalculator
-import sound.frequencyBins.listCalculator.FrequencyBinListCalculator
+import sound.bins.frequencyBins.FrequencyBin
+import sound.bins.frequencyBins.FrequencyBinList
+import sound.bins.frequencyBins.dominant.DominantBassFrequencyBinCalculator
+import sound.bins.frequencyBins.listCalculator.FrequencyBinListCalculator
 import wrappers.color.Color
 
 class LightOrgan(

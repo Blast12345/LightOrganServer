@@ -1,6 +1,6 @@
 package color
 
-import sound.frequencyBins.FrequencyBin
+import sound.bins.frequencyBins.FrequencyBin
 import wrappers.color.Color
 
 class ColorFactory(

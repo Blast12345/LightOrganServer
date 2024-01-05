@@ -1,6 +1,6 @@
 package toolkit.monkeyTest
 
-import sound.frequencyBins.FrequencyBin
+import sound.bins.frequencyBins.FrequencyBin
 import kotlin.random.Random
 
 fun nextFrequencyBin(frequency: Float = Random.nextFloat()): FrequencyBin {
