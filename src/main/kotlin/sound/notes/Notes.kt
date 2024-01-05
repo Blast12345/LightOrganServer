@@ -10,7 +10,7 @@ object Notes {
     private const val tuningOctave = 4
     private const val tuning = 440F
     private val tuningFundamental = tuning * 2F.pow(-tuningOctave)
-    
+
     val C = createNote(-9)
     val C_SHARP = createNote(-8)
     val D = createNote(-7)
