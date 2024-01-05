@@ -1,6 +1,6 @@
 package toolkit.monkeyTest
 
-import sound.frequencyBins.filters.Crossover
+import sound.bins.frequencyBins.filters.Crossover
 import kotlin.random.Random
 
 fun nextCrossover(): Crossover {
