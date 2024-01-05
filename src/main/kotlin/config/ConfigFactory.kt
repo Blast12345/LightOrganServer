@@ -2,7 +2,7 @@ package config
 
 import config.children.Client
 import kotlinx.coroutines.flow.MutableStateFlow
-import sound.bins.frequencyBins.filters.Crossover
+import sound.bins.frequency.filters.Crossover
 import sound.notes.Notes
 
 class ConfigFactory(
