@@ -9,8 +9,8 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import sound.bins.frequencyBins.dominant.DominantBassFrequencyBinCalculator
-import sound.bins.frequencyBins.listCalculator.FrequencyBinListCalculator
+import sound.bins.frequency.dominant.DominantBassFrequencyBinCalculator
+import sound.bins.frequency.listCalculator.FrequencyBinListCalculator
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextColor
 import toolkit.monkeyTest.nextFrequencyBin
