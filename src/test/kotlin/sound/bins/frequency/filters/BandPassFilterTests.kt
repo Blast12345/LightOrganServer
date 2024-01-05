@@ -4,6 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import sound.bins.frequency.filters.BandPassFilter
+import sound.bins.frequency.filters.CrossoverFilter
 import toolkit.monkeyTest.nextCrossover
 import toolkit.monkeyTest.nextFrequencyBinList
 
