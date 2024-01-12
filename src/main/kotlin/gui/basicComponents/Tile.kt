@@ -12,14 +12,6 @@ import androidx.compose.ui.unit.dp
 
 @Preview
 @Composable
-private fun ColorTilePreview() {
-    Tile {
-        SimpleText("Hello World!")
-    }
-}
-
-@Preview
-@Composable
 fun Tile(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit

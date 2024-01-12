@@ -28,5 +28,5 @@ class `Float+NormalizeLogarithmicallyTests` {
         val actual = 5F.normalizeLogarithmically(1F, 10F, 4F)
         assertEquals(0.69F, actual, 0.01F)
     }
-    
+
 }

@@ -1,5 +1,5 @@
 package sound.signalProcessor.filters.window
 
 interface WindowFilter {
-    fun applyTo(signal: DoubleArray): DoubleArray
+    fun applyTo(samples: DoubleArray): DoubleArray
 }

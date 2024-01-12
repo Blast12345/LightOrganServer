@@ -1,6 +1,5 @@
 package gui.basicComponents
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
@@ -14,16 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.sp
-
-@Preview
-@Composable
-private fun LabelledCheckboxPreview() {
-    LabelledCheckbox(
-        label = "My Labeled Checkbox",
-        isChecked = true,
-        didChange = { println("Tapped") }
-    )
-}
 
 @Composable
 fun LabelledCheckbox(
@@ -41,7 +30,7 @@ fun LabelledCheckbox(
                 onClick = { didChange(!isChecked) }
             )) {
         checkbox(isChecked)
-        SimpleSpacer(8)
+        SimpleSpacer(dpSize = 8)
         text(label)
     }
 }

@@ -17,7 +17,7 @@ fun LightOrganTile(
     Tile(modifier) {
         title()
 
-        SimpleSpacer(16)
+        SimpleSpacer(dpSize = 16)
 
         val startAutomatically by viewModel.startAutomatically.collectAsState()
         startAutomaticallyToggle(
@@ -25,7 +25,7 @@ fun LightOrganTile(
             didChange = { viewModel.startAutomatically.value = it }
         )
 
-        SimpleSpacer(16)
+        SimpleSpacer(dpSize = 16)
 
         val isRunning by viewModel.isRunning.collectAsState()
         startOrStopButton(

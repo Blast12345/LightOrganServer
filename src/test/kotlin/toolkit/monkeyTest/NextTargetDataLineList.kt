@@ -3,7 +3,7 @@ package toolkit.monkeyTest
 import javax.sound.sampled.TargetDataLine
 
 fun nextTargetDataLineList(length: Int): List<TargetDataLine> {
-    var list: MutableList<TargetDataLine> = mutableListOf()
+    val list: MutableList<TargetDataLine> = mutableListOf()
 
     for (i in 0 until length) {
         list.add(nextTargetDataLine())
