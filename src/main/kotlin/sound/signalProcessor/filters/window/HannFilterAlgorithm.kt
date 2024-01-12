@@ -6,6 +6,7 @@ import kotlin.math.cos
 // Reference: https://dsp.stackexchange.com/questions/19776/is-it-necessary-to-apply-some-window-method-to-obtain-the-fft-java
 class HannFilterAlgorithm : WindowFilter {
 
+    @Suppress("MagicNumber")
     override fun applyTo(samples: DoubleArray): DoubleArray {
         val output = DoubleArray(samples.size)
 

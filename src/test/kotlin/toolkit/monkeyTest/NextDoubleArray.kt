@@ -5,7 +5,7 @@ import kotlin.random.Random
 fun nextDoubleArray(length: Int = Random.nextInt() % 10): DoubleArray {
     val list: MutableList<Double> = mutableListOf()
 
-    for (i in 0 until length) {
+    repeat(length) {
         list.add(Random.nextDouble())
     }
 

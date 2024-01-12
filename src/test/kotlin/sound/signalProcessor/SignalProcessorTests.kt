@@ -37,7 +37,6 @@ class SignalProcessorTests {
     @Test
     fun `create usable samples from an audio frame`() {
         val sut = createSUT()
-        // TODO: Does it mater if I interpolate before or after the window filter? Maybe before would increase the amount of useful data?
         every { latestSamplesFilter.filter(samples) } returns latestSamples
         every { windowFilter.applyTo(latestSamples) } returns windowedSamples
         every { sampleInterpolator.interpolate(windowedSamples) } returns interpolatedSamples

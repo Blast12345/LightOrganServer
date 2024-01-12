@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.awt.Color
 
-class `AwtColor+GetHueTests` {
+class AwtColorGetHueTests {
 
     @Test
     fun `get the hue for a color`() {

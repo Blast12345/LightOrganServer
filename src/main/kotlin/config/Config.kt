@@ -4,6 +4,7 @@ import config.children.Client
 import kotlinx.coroutines.flow.MutableStateFlow
 import sound.bins.frequency.filters.Crossover
 
+@Suppress("LongParameterList")
 class Config(
     val startAutomatically: MutableStateFlow<Boolean>,
     val clients: Set<Client>,

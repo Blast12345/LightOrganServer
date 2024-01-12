@@ -9,7 +9,7 @@ fun nextFrequencyBinList(
 ): FrequencyBinList {
     val list: MutableList<FrequencyBin> = mutableListOf()
 
-    for (i in 0 until length) {
+    repeat(length) {
         list.add(nextFrequencyBin())
     }
 

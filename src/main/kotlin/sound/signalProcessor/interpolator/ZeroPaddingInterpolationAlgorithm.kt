@@ -11,7 +11,7 @@ class ZeroPaddingInterpolationAlgorithm {
         if (sizeDifference >= 0) {
             return samples + DoubleArray(sizeDifference)
         } else {
-            throw Exception("You cannot interpolate to a smaller size.")
+            throw InterpolationSizeTooSmallException()
         }
     }
 
