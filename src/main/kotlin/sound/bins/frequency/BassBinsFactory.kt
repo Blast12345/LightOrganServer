@@ -24,7 +24,10 @@ class BassBinsFactory(
     }
 
     private fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBinList {
-        return frequencyBinListCalculator.calculate(audioFrame.samples, audioFrame.format)
+        return frequencyBinListCalculator.calculate(
+            samples = audioFrame.samples,
+            audioFormat = audioFrame.format
+        )
     }
 
 }
