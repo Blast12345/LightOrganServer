@@ -1,8 +1,8 @@
 package sound.bins.frequency
 
-class GreatestMagnitudeCalculator {
+class GreatestMagnitudeFinder {
 
-    fun calculate(frequencyBins: FrequencyBinList): Float? {
+    fun find(frequencyBins: FrequencyBinList): Float? {
         return frequencyBins.maxOfOrNull { it.magnitude }
     }
 

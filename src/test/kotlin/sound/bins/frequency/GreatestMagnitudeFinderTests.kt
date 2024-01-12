@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextFrequencyBinList
 
-class GreatestMagnitudeCalculatorTests {
+class GreatestMagnitudeFinderTests {
 
     private val frequencyBins = nextFrequencyBinList()
 
-    private fun createSUT(): GreatestMagnitudeCalculator {
-        return GreatestMagnitudeCalculator()
+    private fun createSUT(): GreatestMagnitudeFinder {
+        return GreatestMagnitudeFinder()
     }
 
     @AfterEach
@@ -23,7 +23,7 @@ class GreatestMagnitudeCalculatorTests {
     fun `get the greatest magnitude from a list of frequency bins`() {
         val sut = createSUT()
 
-        val actual = sut.calculate(frequencyBins)
+        val actual = sut.find(frequencyBins)
 
         val expected = frequencyBins.maxOfOrNull { it.magnitude }
         assertEquals(expected, actual)
