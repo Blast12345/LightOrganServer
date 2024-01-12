@@ -4,11 +4,14 @@ import io.mockk.clearAllMocks
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import toolkit.monkeyTest.nextFrequencyBinList
+import toolkit.monkeyTest.nextFrequencyBin
 
 class GreatestMagnitudeFinderTests {
 
-    private val frequencyBins = nextFrequencyBinList()
+    private val lowestMagnitudeBin = nextFrequencyBin(magnitude = 0.1F)
+    private val middleMagnitudeBin = nextFrequencyBin(magnitude = 0.3F)
+    private val highestMagnitudeBin = nextFrequencyBin(magnitude = 0.5F)
+    private val frequencyBins = listOf(lowestMagnitudeBin, middleMagnitudeBin, highestMagnitudeBin)
 
     private fun createSUT(): GreatestMagnitudeFinder {
         return GreatestMagnitudeFinder()
@@ -25,8 +28,7 @@ class GreatestMagnitudeFinderTests {
 
         val actual = sut.find(frequencyBins)
 
-        val expected = frequencyBins.maxOfOrNull { it.magnitude }
-        assertEquals(expected, actual)
+        assertEquals(highestMagnitudeBin.magnitude, actual)
     }
 
 
