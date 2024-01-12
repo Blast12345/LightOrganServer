@@ -13,6 +13,10 @@ class Color {
     val green: Int
     val blue: Int
 
+    companion object {
+        val black = Color(0F, 0F, 0F)
+    }
+
     constructor(
         hue: Float,
         saturation: Float,

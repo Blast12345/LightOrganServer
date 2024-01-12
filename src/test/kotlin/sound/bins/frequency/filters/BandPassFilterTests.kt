@@ -1,8 +1,7 @@
-package sound.frequencyBins.filters
+package sound.bins.frequency.filters
 
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sound.bins.frequency.filters.BandPassFilter
@@ -28,13 +27,11 @@ class BandPassFilterTests {
     @Test
     fun `filtered bins have an upper and lower crossover applied`() {
         val sut = createSUT()
-        every { crossoverFilter.filter(frequencyBinList, any()) } returns singleCrossoverFrequencyBinList
-        every { crossoverFilter.filter(singleCrossoverFrequencyBinList, any()) } returns combinedCrossoverFrequencyBinList
+        every { crossoverFilter.filter(frequencyBinList, lowCrossover) } returns singleCrossoverFrequencyBinList
+        every { crossoverFilter.filter(singleCrossoverFrequencyBinList, highCrossover) } returns combinedCrossoverFrequencyBinList
 
         val actual = sut.filter(frequencyBinList, lowCrossover, highCrossover)
 
-        verify(exactly = 1) { crossoverFilter.filter(any(), lowCrossover) }
-        verify(exactly = 1) { crossoverFilter.filter(any(), highCrossover) }
         assertEquals(combinedCrossoverFrequencyBinList, actual)
     }
 
