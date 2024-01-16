@@ -18,7 +18,7 @@ class TargetDataLineReaderTests {
     private val newSamples = Random.nextBytes(bytesAvailable)
 
     @BeforeEach
-    fun setup() {
+    fun setupHappyPath() {
         every { dataLine.available() } returns bytesAvailable
 
         // Target Data Lines return data through the first parameter, so I must do this nasty mocking.

@@ -11,7 +11,6 @@ import sound.bins.frequency.FrequencyBinsFactory
 import toolkit.monkeyTest.nextAudioFormatWrapper
 import toolkit.monkeyTest.nextDoubleArray
 import toolkit.monkeyTest.nextFrequencyBin
-import toolkit.monkeyTest.nextFrequencyBins
 import kotlin.random.Random
 
 class FrequencyBinsCalculatorTests {
@@ -31,10 +30,10 @@ class FrequencyBinsCalculatorTests {
     private val frequencyBins = listOf(bin90, bin100, bin101)
 
     @BeforeEach
-    fun setup() {
-        every { magnitudeListCalculator.calculate(any()) } returns nextDoubleArray()
-        every { granularityCalculator.calculate(any(), any()) } returns Random.nextFloat()
-        every { frequencyBinsFactory.create(any(), any()) } returns nextFrequencyBins()
+    fun setupHappyPath() {
+        every { magnitudeListCalculator.calculate(samples) } returns magnitudeList
+        every { granularityCalculator.calculate(magnitudeList.size, audioFormat) } returns granularity
+        every { frequencyBinsFactory.create(magnitudeList, granularity) } returns frequencyBins
     }
 
     @AfterEach
@@ -53,9 +52,6 @@ class FrequencyBinsCalculatorTests {
     @Test
     fun `calculate the frequency bins for a given audio frame`() {
         val sut = createSUT()
-        every { magnitudeListCalculator.calculate(samples) } returns magnitudeList
-        every { granularityCalculator.calculate(magnitudeList.size, audioFormat) } returns granularity
-        every { frequencyBinsFactory.create(magnitudeList, granularity) } returns frequencyBins
 
         val actual = sut.calculate(samples, audioFormat)
 

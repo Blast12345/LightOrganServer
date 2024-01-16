@@ -15,16 +15,17 @@ import kotlin.random.Random
 class LightOrganTileViewModelTests {
 
     private val startAutomatically: MutableStateFlow<Boolean> = mockk()
-    private val isRunning: MutableStateFlow<Boolean> = mockk(relaxed = true)
-    private val lightOrganStateMachine: LightOrganStateMachine = mockk(relaxed = true)
+    private val isRunning: MutableStateFlow<Boolean> = mockk()
+    private val lightOrganStateMachine: LightOrganStateMachine = mockk()
 
     private val newSubscriber: LightOrganSubscriber = mockk()
 
     @BeforeEach
-    fun setup() {
+    fun setupHappyPath() {
         every { startAutomatically.value } returns Random.nextBoolean()
         every { lightOrganStateMachine.start() } returns Unit
         every { lightOrganStateMachine.stop() } returns Unit
+        every { lightOrganStateMachine.addSubscriber(any()) } returns Unit
     }
 
     @AfterEach

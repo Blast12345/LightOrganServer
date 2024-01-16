@@ -32,11 +32,11 @@ class DominantBassFrequencyBinCalculatorTests {
     private val highCrossover = nextCrossover()
 
     @BeforeEach
-    fun setup() {
-        every { passBandRegionFilter.filter(any(), any(), any()) } returns nextFrequencyBins()
-        every { bandPassFilter.filter(any(), any(), any()) } returns nextFrequencyBins()
-        every { dominantFrequencyCalculator.calculate(any()) } returns Random.nextFloat()
-        every { dominantMagnitudeCalculator.calculate(any()) } returns Random.nextFloat()
+    fun setupHappyPath() {
+        every { passBandRegionFilter.filter(frequencyBins, lowCrossover.stopFrequency, highCrossover.stopFrequency) } returns passBandRegionBins
+        every { bandPassFilter.filter(passBandRegionBins, lowCrossover, highCrossover) } returns bandPassedBins
+        every { dominantFrequencyCalculator.calculate(passBandRegionBins) } returns dominantFrequency
+        every { dominantMagnitudeCalculator.calculate(bandPassedBins) } returns estimatedMagnitude
     }
 
     @AfterEach
@@ -58,10 +58,6 @@ class DominantBassFrequencyBinCalculatorTests {
     @Test
     fun `calculate the dominant frequency bin`() {
         val sut = createSUT()
-        every { passBandRegionFilter.filter(frequencyBins, lowCrossover.stopFrequency, highCrossover.stopFrequency) } returns passBandRegionBins
-        every { bandPassFilter.filter(passBandRegionBins, lowCrossover, highCrossover) } returns bandPassedBins
-        every { dominantFrequencyCalculator.calculate(passBandRegionBins) } returns dominantFrequency
-        every { dominantMagnitudeCalculator.calculate(bandPassedBins) } returns estimatedMagnitude
 
         val frequencyBin = sut.calculate(frequencyBins)
 

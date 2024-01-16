@@ -22,7 +22,7 @@ class TargetDataLinesFinderTests {
     private val audioDevices = listOf(mixer1, mixer2)
 
     @BeforeEach
-    fun setup() {
+    fun setupHappyPath() {
         every { mixer1.targetLineInfo } returns arrayOf(targetLineInfo)
         every { mixer1.getLine(targetLineInfo) } returns input1
         every { mixer2.targetLineInfo } returns arrayOf()

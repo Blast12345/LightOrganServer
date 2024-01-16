@@ -18,7 +18,7 @@ class AudioDevicesFinderTests {
     private val mixers = listOf(mixer)
 
     @BeforeEach
-    fun setup() {
+    fun setupHappyPath() {
         mockkStatic(AudioSystem::class)
         every { AudioSystem.getMixerInfo() } returns arrayOf(mixerInfo)
         every { AudioSystem.getMixer(mixerInfo) } returns mixer
