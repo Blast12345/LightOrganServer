@@ -11,15 +11,15 @@ import sound.bins.frequency.GreatestMagnitudeFinder
 import sound.bins.frequency.filters.BandPassFilter
 import sound.bins.frequency.filters.Crossover
 import toolkit.monkeyTest.nextCrossover
-import toolkit.monkeyTest.nextFrequencyBinList
+import toolkit.monkeyTest.nextFrequencyBins
 import kotlin.random.Random
 
 class BrightnessCalculatorTests {
 
-    private val frequencyBins = nextFrequencyBinList()
+    private val frequencyBins = nextFrequencyBins()
 
     private val bandPassFilter: BandPassFilter = mockk()
-    private val filteredFrequencyBins = nextFrequencyBinList()
+    private val filteredFrequencyBins = nextFrequencyBins()
     private val lowCrossover: Crossover = nextCrossover()
     private val highCrossover: Crossover = nextCrossover()
     private val greatestMagnitudeFinder: GreatestMagnitudeFinder = mockk()

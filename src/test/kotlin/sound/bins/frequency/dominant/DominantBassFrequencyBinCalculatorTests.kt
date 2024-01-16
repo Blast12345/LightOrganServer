@@ -14,16 +14,16 @@ import sound.bins.frequency.dominant.magnitude.DominantMagnitudeCalculator
 import sound.bins.frequency.filters.BandPassFilter
 import sound.bins.frequency.filters.PassBandRegionFilter
 import toolkit.monkeyTest.nextCrossover
-import toolkit.monkeyTest.nextFrequencyBinList
+import toolkit.monkeyTest.nextFrequencyBins
 import kotlin.random.Random
 
 class DominantBassFrequencyBinCalculatorTests {
 
-    private val frequencyBins = nextFrequencyBinList()
+    private val frequencyBins = nextFrequencyBins()
     private val passBandRegionFilter: PassBandRegionFilter = mockk()
-    private val passBandRegionBins = nextFrequencyBinList()
+    private val passBandRegionBins = nextFrequencyBins()
     private val bandPassFilter: BandPassFilter = mockk()
-    private val bandPassedBins = nextFrequencyBinList()
+    private val bandPassedBins = nextFrequencyBins()
     private val dominantFrequencyCalculator: DominantFrequencyCalculator = mockk()
     private val dominantFrequency = Random.nextFloat()
     private val dominantMagnitudeCalculator: DominantMagnitudeCalculator = mockk()
@@ -33,8 +33,8 @@ class DominantBassFrequencyBinCalculatorTests {
 
     @BeforeEach
     fun setup() {
-        every { passBandRegionFilter.filter(any(), any(), any()) } returns nextFrequencyBinList()
-        every { bandPassFilter.filter(any(), any(), any()) } returns nextFrequencyBinList()
+        every { passBandRegionFilter.filter(any(), any(), any()) } returns nextFrequencyBins()
+        every { bandPassFilter.filter(any(), any(), any()) } returns nextFrequencyBins()
         every { dominantFrequencyCalculator.calculate(any()) } returns Random.nextFloat()
         every { dominantMagnitudeCalculator.calculate(any()) } returns Random.nextFloat()
     }

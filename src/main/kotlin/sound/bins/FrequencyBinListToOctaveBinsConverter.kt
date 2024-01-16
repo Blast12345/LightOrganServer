@@ -1,13 +1,13 @@
 package sound.bins
 
-import sound.bins.frequency.FrequencyBinList
-import sound.bins.octave.OctaveBinList
+import sound.bins.frequency.FrequencyBins
+import sound.bins.octave.OctaveBins
 
-class FrequencyBinListToOctaveBinListConverter(
+class FrequencyBinsToOctaveBinsConverter(
     private val frequencyBinToOctaveBinConverter: FrequencyBinToOctaveBinConverter = FrequencyBinToOctaveBinConverter()
 ) {
 
-    fun convert(frequencyBins: FrequencyBinList): OctaveBinList {
+    fun convert(frequencyBins: FrequencyBins): OctaveBins {
         return frequencyBins.map {
             frequencyBinToOctaveBinConverter.convert(it)
         }

@@ -7,14 +7,14 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.bins.frequency.FrequencyBinListFactory
+import sound.bins.frequency.FrequencyBinsFactory
 import toolkit.monkeyTest.nextAudioFormatWrapper
 import toolkit.monkeyTest.nextDoubleArray
 import toolkit.monkeyTest.nextFrequencyBin
-import toolkit.monkeyTest.nextFrequencyBinList
+import toolkit.monkeyTest.nextFrequencyBins
 import kotlin.random.Random
 
-class FrequencyBinListCalculatorTests {
+class FrequencyBinsCalculatorTests {
 
     private val samples = nextDoubleArray()
     private val nyquistFrequency = 100F
@@ -24,17 +24,17 @@ class FrequencyBinListCalculatorTests {
     private val magnitudeList = nextDoubleArray()
     private val granularityCalculator: GranularityCalculator = mockk()
     private val granularity = Random.nextFloat()
-    private val frequencyBinListFactory: FrequencyBinListFactory = mockk()
+    private val frequencyBinsFactory: FrequencyBinsFactory = mockk()
     private val bin90 = nextFrequencyBin(90F)
     private val bin100 = nextFrequencyBin(100F)
     private val bin101 = nextFrequencyBin(101F)
-    private val frequencyBinList = listOf(bin90, bin100, bin101)
+    private val frequencyBins = listOf(bin90, bin100, bin101)
 
     @BeforeEach
     fun setup() {
         every { magnitudeListCalculator.calculate(any()) } returns nextDoubleArray()
         every { granularityCalculator.calculate(any(), any()) } returns Random.nextFloat()
-        every { frequencyBinListFactory.create(any(), any()) } returns nextFrequencyBinList()
+        every { frequencyBinsFactory.create(any(), any()) } returns nextFrequencyBins()
     }
 
     @AfterEach
@@ -42,11 +42,11 @@ class FrequencyBinListCalculatorTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): FrequencyBinListCalculator {
-        return FrequencyBinListCalculator(
+    private fun createSUT(): FrequencyBinsCalculator {
+        return FrequencyBinsCalculator(
             magnitudeListCalculator = magnitudeListCalculator,
             granularityCalculator = granularityCalculator,
-            frequencyBinListFactory = frequencyBinListFactory
+            frequencyBinsFactory = frequencyBinsFactory
         )
     }
 
@@ -55,7 +55,7 @@ class FrequencyBinListCalculatorTests {
         val sut = createSUT()
         every { magnitudeListCalculator.calculate(samples) } returns magnitudeList
         every { granularityCalculator.calculate(magnitudeList.size, audioFormat) } returns granularity
-        every { frequencyBinListFactory.create(magnitudeList, granularity) } returns frequencyBinList
+        every { frequencyBinsFactory.create(magnitudeList, granularity) } returns frequencyBins
 
         val actual = sut.calculate(samples, audioFormat)
 

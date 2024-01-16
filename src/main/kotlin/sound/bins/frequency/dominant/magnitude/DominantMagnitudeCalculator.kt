@@ -1,10 +1,10 @@
 package sound.bins.frequency.dominant.magnitude
 
-import sound.bins.frequency.FrequencyBinList
+import sound.bins.frequency.FrequencyBins
 
 class DominantMagnitudeCalculator {
 
-    fun calculate(frequencyBins: FrequencyBinList): Float? {
+    fun calculate(frequencyBins: FrequencyBins): Float? {
         return frequencyBins.maxOfOrNull { it.magnitude }
     }
 

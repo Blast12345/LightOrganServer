@@ -3,7 +3,7 @@ package color
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sound.bins.frequency.FrequencyBin
-import sound.bins.frequency.FrequencyBinList
+import sound.bins.frequency.FrequencyBins
 import sound.notes.Note
 import sound.notes.Notes
 
@@ -123,7 +123,7 @@ class HueCalculatorIntegrationTests {
         }
     }
 
-    private fun createFrequencyBinsFor(note: Note): FrequencyBinList {
+    private fun createFrequencyBinsFor(note: Note): FrequencyBins {
         val bins = mutableListOf<FrequencyBin>()
 
         for (octave in 0 until 8) {

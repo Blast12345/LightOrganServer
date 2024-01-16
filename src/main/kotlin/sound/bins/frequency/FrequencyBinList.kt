@@ -1,3 +1,3 @@
 package sound.bins.frequency
 
-typealias FrequencyBinList = List<FrequencyBin>
+typealias FrequencyBins = List<FrequencyBin>

@@ -1,12 +1,12 @@
 package toolkit.monkeyTest
 
 import sound.bins.frequency.FrequencyBin
-import sound.bins.frequency.FrequencyBinList
+import sound.bins.frequency.FrequencyBins
 import kotlin.random.Random
 
-fun nextFrequencyBinList(
+fun nextFrequencyBins(
     length: Int = Random.nextInt(1, 10)
-): FrequencyBinList {
+): FrequencyBins {
     val list: MutableList<FrequencyBin> = mutableListOf()
 
     repeat(length) {

@@ -8,16 +8,16 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sound.bins.octave.OctaveWeightedAverageCalculator
 import sound.bins.octave.PeakOctaveBinsFinder
-import toolkit.monkeyTest.nextFrequencyBinList
-import toolkit.monkeyTest.nextOctaveBinList
+import toolkit.monkeyTest.nextFrequencyBins
+import toolkit.monkeyTest.nextOctaveBins
 import kotlin.random.Random
 
 class HueCalculatorTests {
 
-    private val frequencyBins = nextFrequencyBinList()
+    private val frequencyBins = nextFrequencyBins()
 
     private val peakOctaveBinsFinder: PeakOctaveBinsFinder = mockk()
-    private val peakOctaveBins = nextOctaveBinList()
+    private val peakOctaveBins = nextOctaveBins()
     private val octaveWeightedAverageCalculator: OctaveWeightedAverageCalculator = mockk()
     private val octaveWeightedAverage = Random.nextFloat()
 

@@ -8,26 +8,26 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.bins.frequency.filters.PassBandRegionFilter
-import sound.bins.frequency.listCalculator.FrequencyBinListCalculator
+import sound.bins.frequency.listCalculator.FrequencyBinsCalculator
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextCrossover
-import toolkit.monkeyTest.nextFrequencyBinList
+import toolkit.monkeyTest.nextFrequencyBins
 
 class BassBinsFactoryTests {
 
     private val audioFrame = nextAudioFrame()
 
-    private val frequencyBinListCalculator: FrequencyBinListCalculator = mockk()
-    private val frequencyBins = nextFrequencyBinList()
+    private val frequencyBinsCalculator: FrequencyBinsCalculator = mockk()
+    private val frequencyBins = nextFrequencyBins()
     private val passBandRegionFilter: PassBandRegionFilter = mockk()
-    private val bassBins = nextFrequencyBinList()
+    private val bassBins = nextFrequencyBins()
     private val lowCrossover = nextCrossover()
     private val highCrossover = nextCrossover()
 
 
     @BeforeEach
     fun setupHappyPath() {
-        every { frequencyBinListCalculator.calculate(audioFrame.samples, audioFrame.format) } returns frequencyBins
+        every { frequencyBinsCalculator.calculate(audioFrame.samples, audioFrame.format) } returns frequencyBins
         every { passBandRegionFilter.filter(frequencyBins, lowCrossover.stopFrequency, highCrossover.stopFrequency) } returns bassBins
     }
 
@@ -38,7 +38,7 @@ class BassBinsFactoryTests {
 
     private fun createSUT(): BassBinsFactory {
         return BassBinsFactory(
-            frequencyBinListCalculator = frequencyBinListCalculator,
+            frequencyBinsCalculator = frequencyBinsCalculator,
             passBandRegionFilter = passBandRegionFilter,
             lowCrossover = lowCrossover,
             highCrossover = highCrossover

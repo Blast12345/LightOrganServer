@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.bins.frequency.BassBinsFactory
 import toolkit.monkeyTest.nextAudioFrame
-import toolkit.monkeyTest.nextFrequencyBinList
+import toolkit.monkeyTest.nextFrequencyBins
 import wrappers.color.Color
 import kotlin.random.Random
 
@@ -18,7 +18,7 @@ class ColorFactoryTests {
     private val audioFrame = nextAudioFrame()
 
     private val bassBinsFactory: BassBinsFactory = mockk()
-    private val bassBins = nextFrequencyBinList()
+    private val bassBins = nextFrequencyBins()
     private val hueCalculator: HueCalculator = mockk()
     private val hue = Random.nextFloat()
     private val brightnessCalculator: BrightnessCalculator = mockk()

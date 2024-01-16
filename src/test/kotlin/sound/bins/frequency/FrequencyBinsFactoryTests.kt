@@ -10,7 +10,7 @@ import toolkit.monkeyTest.nextDoubleArray
 import toolkit.monkeyTest.nextFrequencyBin
 import kotlin.random.Random
 
-class FrequencyBinListFactoryTests {
+class FrequencyBinsFactoryTests {
 
     private val magnitudes = nextDoubleArray(length = 2)
     private val granularity = Random.nextFloat()
@@ -23,8 +23,8 @@ class FrequencyBinListFactoryTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): FrequencyBinListFactory {
-        return FrequencyBinListFactory(
+    private fun createSUT(): FrequencyBinsFactory {
+        return FrequencyBinsFactory(
             frequencyBinFactory = frequencyBinFactory
         )
     }

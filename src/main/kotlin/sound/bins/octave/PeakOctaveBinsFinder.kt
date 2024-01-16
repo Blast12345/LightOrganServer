@@ -1,17 +1,17 @@
 package sound.bins.octave
 
-import sound.bins.FrequencyBinListToOctaveBinListConverter
-import sound.bins.frequency.FrequencyBinList
+import sound.bins.FrequencyBinsToOctaveBinsConverter
+import sound.bins.frequency.FrequencyBins
 import sound.bins.frequency.dominant.frequency.PeakFrequencyBinsFinder
 
 class PeakOctaveBinsFinder(
     private val peakFrequencyBinsFinder: PeakFrequencyBinsFinder = PeakFrequencyBinsFinder(),
-    private val frequencyBinListToOctaveBinListConverter: FrequencyBinListToOctaveBinListConverter = FrequencyBinListToOctaveBinListConverter()
+    private val frequencyBinsToOctaveBinsConverter: FrequencyBinsToOctaveBinsConverter = FrequencyBinsToOctaveBinsConverter()
 ) {
 
-    fun find(frequencyBins: FrequencyBinList): OctaveBinList {
+    fun find(frequencyBins: FrequencyBins): OctaveBins {
         val peakBins = peakFrequencyBinsFinder.find(frequencyBins)
-        return frequencyBinListToOctaveBinListConverter.convert(peakBins)
+        return frequencyBinsToOctaveBinsConverter.convert(peakBins)
     }
 
 }

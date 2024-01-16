@@ -1,7 +1,7 @@
 package color
 
 import config.ConfigSingleton
-import sound.bins.frequency.FrequencyBinList
+import sound.bins.frequency.FrequencyBins
 import sound.bins.frequency.GreatestMagnitudeFinder
 import sound.bins.frequency.filters.BandPassFilter
 import sound.bins.frequency.filters.Crossover
@@ -13,7 +13,7 @@ class BrightnessCalculator(
     private val greatestMagnitudeFinder: GreatestMagnitudeFinder = GreatestMagnitudeFinder(),
 ) {
 
-    fun calculate(frequencyBins: FrequencyBinList): Float? {
+    fun calculate(frequencyBins: FrequencyBins): Float? {
         val magnitude = calculateMagnitude(frequencyBins) ?: return null
 
         return if (magnitude < 1F) {
@@ -23,14 +23,14 @@ class BrightnessCalculator(
         }
     }
 
-    private fun calculateMagnitude(frequencyBins: FrequencyBinList): Float? {
+    private fun calculateMagnitude(frequencyBins: FrequencyBins): Float? {
         val filteredBins = getFilteredBins(frequencyBins)
         return greatestMagnitudeFinder.find(filteredBins)
     }
 
-    private fun getFilteredBins(frequencyBins: FrequencyBinList): FrequencyBinList {
+    private fun getFilteredBins(frequencyBins: FrequencyBins): FrequencyBins {
         return bandPassFilter.filter(
-            frequencyBinList = frequencyBins,
+            frequencyBins = frequencyBins,
             lowCrossover = lowCrossover,
             highCrossover = highCrossover
         )

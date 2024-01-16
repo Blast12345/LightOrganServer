@@ -1,10 +1,10 @@
 package sound.bins.frequency
 
-class FrequencyBinListFactory(
+class FrequencyBinsFactory(
     private val frequencyBinFactory: FrequencyBinFactory = FrequencyBinFactory()
 ) {
 
-    fun create(magnitudes: DoubleArray, granularity: Float): FrequencyBinList {
+    fun create(magnitudes: DoubleArray, granularity: Float): FrequencyBins {
         val frequencyBins: MutableList<FrequencyBin> = mutableListOf()
 
         magnitudes.forEachIndexed { index, magnitude ->

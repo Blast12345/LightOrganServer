@@ -2,7 +2,7 @@ package sound.bins.octave
 
 class OctaveWeightedAverageCalculator {
 
-    fun calculate(octaveBins: OctaveBinList): Float? {
+    fun calculate(octaveBins: OctaveBins): Float? {
         val weightedMagnitude = weightedMagnitude(octaveBins)
         val totalMagnitude = totalMagnitude(octaveBins)
 
@@ -13,7 +13,7 @@ class OctaveWeightedAverageCalculator {
         }
     }
 
-    private fun weightedMagnitude(octaveBins: OctaveBinList): Float {
+    private fun weightedMagnitude(octaveBins: OctaveBins): Float {
         var weightedMagnitude = 0F
 
         for (octaveBin in octaveBins) {
@@ -23,7 +23,7 @@ class OctaveWeightedAverageCalculator {
         return weightedMagnitude
     }
 
-    private fun totalMagnitude(octaveBins: OctaveBinList): Float {
+    private fun totalMagnitude(octaveBins: OctaveBins): Float {
         return octaveBins.map { it.magnitude }.sum()
     }
 

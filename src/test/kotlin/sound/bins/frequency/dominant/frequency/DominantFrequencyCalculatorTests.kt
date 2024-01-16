@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import toolkit.monkeyTest.nextFrequencyBinList
+import toolkit.monkeyTest.nextFrequencyBins
 import kotlin.random.Random
 
 class DominantFrequencyCalculatorTests {
@@ -17,9 +17,9 @@ class DominantFrequencyCalculatorTests {
     private val weightedMagnitudeCalculator: WeightedMagnitudeCalculator = mockk()
     private val totalMagnitudeCalculator: TotalMagnitudeCalculator = mockk()
 
-    private val frequencyBins = nextFrequencyBinList()
+    private val frequencyBins = nextFrequencyBins()
 
-    private val peakFrequencyBins = nextFrequencyBinList()
+    private val peakFrequencyBins = nextFrequencyBins()
     private val weightedMagnitude = Random.nextFloat()
     private val totalMagnitude = Random.nextFloat()
 
