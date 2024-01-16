@@ -40,7 +40,7 @@ class DominantBassFrequencyBinCalculatorTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

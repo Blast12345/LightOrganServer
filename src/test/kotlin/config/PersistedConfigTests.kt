@@ -15,7 +15,7 @@ class PersistedConfigTests {
     private val startAutomaticallyKey = "startAutomaticallyKey"
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

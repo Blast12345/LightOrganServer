@@ -9,7 +9,7 @@ import org.junit.jupiter.api.assertThrows
 class ZeroPaddingInterpolationAlgorithmTests {
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

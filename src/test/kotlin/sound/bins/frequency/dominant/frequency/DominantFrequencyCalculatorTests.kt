@@ -31,7 +31,7 @@ class DominantFrequencyCalculatorTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

@@ -22,7 +22,7 @@ class SignalProcessorTests {
     private val interpolatedSamples = nextDoubleArray()
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

@@ -31,7 +31,7 @@ class LineListenerTests {
     private val format: AudioFormat = mockk()
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

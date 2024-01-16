@@ -31,7 +31,7 @@ class TargetDataLinesFinderTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

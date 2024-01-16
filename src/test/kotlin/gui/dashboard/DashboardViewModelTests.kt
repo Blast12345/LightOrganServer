@@ -18,7 +18,7 @@ class DashboardViewModelTests {
     private val config: Config = mockk(relaxed = true)
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

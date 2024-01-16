@@ -18,7 +18,7 @@ class GreatestMagnitudeFinderTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

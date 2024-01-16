@@ -15,7 +15,7 @@ class PassBandRegionFilterTests {
     private val frequencyBin101 = nextFrequencyBin(frequency = 101F)
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

@@ -20,7 +20,7 @@ class DefaultTargetDataLineFinderTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

@@ -19,7 +19,7 @@ class ConfigFactoryTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 
