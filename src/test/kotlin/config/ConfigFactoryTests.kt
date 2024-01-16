@@ -14,7 +14,7 @@ class ConfigFactoryTests {
     private val persistedConfig: PersistedConfig = mockk()
 
     @BeforeEach
-    fun setup() {
+    fun setupHappyPath() {
         every { persistedConfig.startAutomatically } returns Random.nextBoolean()
     }
 

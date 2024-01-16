@@ -24,7 +24,7 @@ class DominantFrequencyCalculatorTests {
     private val totalMagnitude = Random.nextFloat()
 
     @BeforeEach
-    fun setup() {
+    fun setupHappyPath() {
         every { peakFrequencyBinsFinder.find(any()) } returns peakFrequencyBins
         every { weightedMagnitudeCalculator.calculate(any()) } returns weightedMagnitude
         every { totalMagnitudeCalculator.calculate(any()) } returns totalMagnitude

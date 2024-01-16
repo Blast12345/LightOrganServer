@@ -17,11 +17,12 @@ class DashboardViewModelFactoryTests {
 
     private val lightOrganStateMachine: LightOrganStateMachine = mockk()
 
-    private val lightOrganTileViewModel: LightOrganTileViewModel = mockk(relaxed = true)
+    private val lightOrganTileViewModel: LightOrganTileViewModel = mockk()
 
     @BeforeEach
-    fun setup() {
+    fun setupHappyPath() {
         every { lightOrganTileViewModelFactory.create(lightOrganStateMachine) } returns lightOrganTileViewModel
+        every { lightOrganTileViewModel.addSubscriber(any()) } returns Unit
     }
 
     @AfterEach

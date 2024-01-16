@@ -23,7 +23,7 @@ class ServerTests {
     private val nextColorMessage = nextString()
 
     @BeforeEach
-    fun setup() {
+    fun setupHappyPath() {
         every { socket.send(any(), any()) } returns Unit
         every { colorMessageFactory.create(any()) } returns nextColorMessage
     }

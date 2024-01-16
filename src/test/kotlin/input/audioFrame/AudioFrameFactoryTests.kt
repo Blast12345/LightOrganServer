@@ -25,7 +25,7 @@ class AudioFrameFactoryTests {
     private val wrappedFormat = nextAudioFormatWrapper()
 
     @BeforeEach
-    fun setup() {
+    fun setupHappyPath() {
         every { sampleNormalizer.normalize(any(), any()) } returns normalizedSamples
         every { audioFormatWrapperFactory.create(any()) } returns wrappedFormat
     }

@@ -30,8 +30,11 @@ class InputTests {
     private val audioFrame = nextAudioFrame()
 
     @BeforeEach
-    fun setup() {
+    fun setupHappyPath() {
         every { lineListener.addSubscriber(any()) } returns Unit
+        every { buffer.updatedWith(newSamples) } returns updatedBuffer
+        every { lineListener.audioFormat } returns audioFormat
+        every { audioFrameFactory.create(updatedBuffer, audioFormat) } returns audioFrame
     }
 
     @AfterEach
@@ -57,9 +60,6 @@ class InputTests {
     @Test
     fun `send the audio frame to the subscribers when new samples are received`() {
         val sut = createSUT()
-        every { buffer.updatedWith(newSamples) } returns updatedBuffer
-        every { lineListener.audioFormat } returns audioFormat
-        every { audioFrameFactory.create(updatedBuffer, audioFormat) } returns audioFrame
 
         sut.received(newSamples)
 
@@ -70,7 +70,6 @@ class InputTests {
     @Test
     fun `get the audio format`() {
         val sut = createSUT()
-        every { lineListener.audioFormat } returns audioFormat
         assertEquals(lineListener.audioFormat, sut.audioFormat)
     }
 

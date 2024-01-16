@@ -15,7 +15,7 @@ class DefaultTargetDataLineFinderTests {
     private val targetDataLines = nextTargetDataLineList(2)
 
     @BeforeEach
-    fun setup() {
+    fun setupHappyPath() {
         every { targetDataLinesFinder.find() } returns targetDataLines
     }
 
