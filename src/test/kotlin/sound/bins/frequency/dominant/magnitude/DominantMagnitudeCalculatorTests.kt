@@ -6,7 +6,7 @@ import sound.bins.frequency.FrequencyBin
 
 class DominantMagnitudeCalculatorTests {
 
-    private val frequencyBinList = listOf(
+    private val frequencyBins = listOf(
         FrequencyBin(10F, 0.5F),
         FrequencyBin(100F, 1.2F),
         FrequencyBin(1000F, 0.75F)
@@ -21,7 +21,7 @@ class DominantMagnitudeCalculatorTests {
     fun `calculate the dominant magnitude`() {
         val sut = createSUT()
 
-        val actual = sut.calculate(frequencyBinList)
+        val actual = sut.calculate(frequencyBins)
 
         assertEquals(1.2F, actual)
     }

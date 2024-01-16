@@ -28,7 +28,7 @@ class PassBandRegionFilterTests {
         val sut = createSUT()
 
         val actual = sut.filter(
-            frequencyBinList = listOf(frequencyBin49, frequencyBin50, frequencyBin75, frequencyBin100, frequencyBin101),
+            frequencyBins = listOf(frequencyBin49, frequencyBin50, frequencyBin75, frequencyBin100, frequencyBin101),
             lowStopFrequency = 50F,
             highStopFrequency = 100F
         )

@@ -1,20 +1,20 @@
 package sound.bins.frequency.listCalculator
 
-import sound.bins.frequency.FrequencyBinList
-import sound.bins.frequency.FrequencyBinListFactory
+import sound.bins.frequency.FrequencyBins
+import sound.bins.frequency.FrequencyBinsFactory
 import wrappers.audioFormat.AudioFormatWrapper
 
-class FrequencyBinListCalculator(
+class FrequencyBinsCalculator(
     private val magnitudeListCalculator: MagnitudeListCalculator = MagnitudeListCalculator(),
     private val granularityCalculator: GranularityCalculator = GranularityCalculator(),
-    private val frequencyBinListFactory: FrequencyBinListFactory = FrequencyBinListFactory()
+    private val frequencyBinsFactory: FrequencyBinsFactory = FrequencyBinsFactory()
 ) {
 
-    fun calculate(samples: DoubleArray, audioFormat: AudioFormatWrapper): FrequencyBinList {
+    fun calculate(samples: DoubleArray, audioFormat: AudioFormatWrapper): FrequencyBins {
         val magnitudes = getMagnitudes(samples)
         val granularity = getGranularity(magnitudes, audioFormat)
 
-        return frequencyBinListFactory
+        return frequencyBinsFactory
             .create(magnitudes, granularity)
             .removeBinsBeyondNyquistFrequency(audioFormat)
     }
@@ -30,11 +30,11 @@ class FrequencyBinListCalculator(
         )
     }
 
-    private fun FrequencyBinList.removeBinsBeyondNyquistFrequency(audioFormat: AudioFormatWrapper): FrequencyBinList {
+    private fun FrequencyBins.removeBinsBeyondNyquistFrequency(audioFormat: AudioFormatWrapper): FrequencyBins {
         return this.removeBinsBeyondNyquistFrequency(audioFormat.nyquistFrequency)
     }
 
-    private fun FrequencyBinList.removeBinsBeyondNyquistFrequency(nyquistFrequency: Float): FrequencyBinList {
+    private fun FrequencyBins.removeBinsBeyondNyquistFrequency(nyquistFrequency: Float): FrequencyBins {
         return this.filter { it.frequency <= nyquistFrequency }
     }
 

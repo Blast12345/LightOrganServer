@@ -1,15 +1,15 @@
 package sound.bins.frequency.filters
 
-import sound.bins.frequency.FrequencyBinList
+import sound.bins.frequency.FrequencyBins
 
 class PassBandRegionFilter {
 
     fun filter(
-        frequencyBinList: FrequencyBinList,
+        frequencyBins: FrequencyBins,
         lowStopFrequency: Float,
         highStopFrequency: Float
-    ): FrequencyBinList {
-        return frequencyBinList.filter {
+    ): FrequencyBins {
+        return frequencyBins.filter {
             it.frequency in lowStopFrequency..highStopFrequency
         }
     }

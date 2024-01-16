@@ -2,7 +2,7 @@ package sound.bins.frequency.dominant
 
 import config.ConfigSingleton
 import sound.bins.frequency.FrequencyBin
-import sound.bins.frequency.FrequencyBinList
+import sound.bins.frequency.FrequencyBins
 import sound.bins.frequency.dominant.frequency.DominantFrequencyCalculator
 import sound.bins.frequency.dominant.magnitude.DominantMagnitudeCalculator
 import sound.bins.frequency.filters.BandPassFilter
@@ -19,8 +19,8 @@ class DominantBassFrequencyBinCalculator(
 ) {
 
     @Suppress("ReturnCount")
-    fun calculate(frequencyBinList: FrequencyBinList): FrequencyBin? {
-        val bassBins = getBassBins(frequencyBinList)
+    fun calculate(frequencyBins: FrequencyBins): FrequencyBin? {
+        val bassBins = getBassBins(frequencyBins)
 
         val frequency = getDominantFrequency(bassBins) ?: return null
         val magnitude = getDominantMagnitude(bassBins) ?: return null
@@ -28,26 +28,26 @@ class DominantBassFrequencyBinCalculator(
         return FrequencyBin(frequency, magnitude)
     }
 
-    private fun getBassBins(frequencyBins: FrequencyBinList): FrequencyBinList {
+    private fun getBassBins(frequencyBins: FrequencyBins): FrequencyBins {
         return passBandRegionFilter.filter(
-            frequencyBinList = frequencyBins,
+            frequencyBins = frequencyBins,
             lowStopFrequency = lowCrossover.stopFrequency,
             highStopFrequency = highCrossover.stopFrequency
         )
     }
 
-    private fun getDominantFrequency(frequencyBins: FrequencyBinList): Float? {
+    private fun getDominantFrequency(frequencyBins: FrequencyBins): Float? {
         return dominantFrequencyCalculator.calculate(frequencyBins)
     }
 
-    private fun getDominantMagnitude(frequencyBins: FrequencyBinList): Float? {
+    private fun getDominantMagnitude(frequencyBins: FrequencyBins): Float? {
         val filteredBins = getFilteredBins(frequencyBins)
         return dominantMagnitudeCalculator.calculate(filteredBins)
     }
 
-    private fun getFilteredBins(frequencyBins: FrequencyBinList): FrequencyBinList {
+    private fun getFilteredBins(frequencyBins: FrequencyBins): FrequencyBins {
         return bandPassFilter.filter(
-            frequencyBinList = frequencyBins,
+            frequencyBins = frequencyBins,
             lowCrossover = lowCrossover,
             highCrossover = highCrossover
         )

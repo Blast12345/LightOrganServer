@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextFrequencyBin
 import toolkit.monkeyTest.nextOctaveBin
 
-class FrequencyBinListToOctaveBinListConverterTests {
+class FrequencyBinsToOctaveBinsConverterTests {
 
     private val frequencyBin1 = nextFrequencyBin()
     private val frequencyBin2 = nextFrequencyBin()
@@ -19,8 +19,8 @@ class FrequencyBinListToOctaveBinListConverterTests {
     private val octaveBin2 = nextOctaveBin()
     private val octaveBin3 = nextOctaveBin()
 
-    private fun createSUT(): FrequencyBinListToOctaveBinListConverter {
-        return FrequencyBinListToOctaveBinListConverter(
+    private fun createSUT(): FrequencyBinsToOctaveBinsConverter {
+        return FrequencyBinsToOctaveBinsConverter(
             frequencyBinToOctaveBinConverter = frequencyBinToOctaveBinConverter
         )
     }

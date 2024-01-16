@@ -4,24 +4,24 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import sound.bins.FrequencyBinListToOctaveBinListConverter
+import sound.bins.FrequencyBinsToOctaveBinsConverter
 import sound.bins.frequency.dominant.frequency.PeakFrequencyBinsFinder
-import toolkit.monkeyTest.nextFrequencyBinList
-import toolkit.monkeyTest.nextOctaveBinList
+import toolkit.monkeyTest.nextFrequencyBins
+import toolkit.monkeyTest.nextOctaveBins
 
 class PeakOctaveBinsFinderTests {
 
-    private val frequencyBins = nextFrequencyBinList()
+    private val frequencyBins = nextFrequencyBins()
 
     private val peakFrequencyBinsFinder: PeakFrequencyBinsFinder = mockk()
-    private val peakFrequencyBins = nextFrequencyBinList()
-    private val frequencyBinListToOctaveBinListConverter: FrequencyBinListToOctaveBinListConverter = mockk()
-    private val convertedOctaveBins = nextOctaveBinList()
+    private val peakFrequencyBins = nextFrequencyBins()
+    private val frequencyBinsToOctaveBinsConverter: FrequencyBinsToOctaveBinsConverter = mockk()
+    private val convertedOctaveBins = nextOctaveBins()
 
     private fun createSUT(): PeakOctaveBinsFinder {
         return PeakOctaveBinsFinder(
             peakFrequencyBinsFinder = peakFrequencyBinsFinder,
-            frequencyBinListToOctaveBinListConverter = frequencyBinListToOctaveBinListConverter
+            frequencyBinsToOctaveBinsConverter = frequencyBinsToOctaveBinsConverter
         )
     }
 
@@ -29,7 +29,7 @@ class PeakOctaveBinsFinderTests {
     fun `given some frequency bins, find the peak octave positions`() {
         val sut = createSUT()
         every { peakFrequencyBinsFinder.find(frequencyBins) } returns peakFrequencyBins
-        every { frequencyBinListToOctaveBinListConverter.convert(peakFrequencyBins) } returns convertedOctaveBins
+        every { frequencyBinsToOctaveBinsConverter.convert(peakFrequencyBins) } returns convertedOctaveBins
 
         val actual = sut.find(frequencyBins)
 

@@ -3,13 +3,13 @@ package sound.bins.frequency.filters
 import extensions.between
 import math.featureScaling.normalize
 import sound.bins.frequency.FrequencyBin
-import sound.bins.frequency.FrequencyBinList
+import sound.bins.frequency.FrequencyBins
 import kotlin.math.abs
 
 class CrossoverFilter {
 
-    fun filter(frequencyBinList: FrequencyBinList, crossover: Crossover): FrequencyBinList {
-        return frequencyBinList.map {
+    fun filter(frequencyBins: FrequencyBins, crossover: Crossover): FrequencyBins {
+        return frequencyBins.map {
             getFilteredBin(it, crossover)
         }
     }

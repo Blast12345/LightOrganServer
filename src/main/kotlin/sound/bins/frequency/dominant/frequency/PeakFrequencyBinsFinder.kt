@@ -1,11 +1,11 @@
 package sound.bins.frequency.dominant.frequency
 
 import sound.bins.frequency.FrequencyBin
-import sound.bins.frequency.FrequencyBinList
+import sound.bins.frequency.FrequencyBins
 
 class PeakFrequencyBinsFinder {
 
-    fun find(frequencyBins: FrequencyBinList): FrequencyBinList {
+    fun find(frequencyBins: FrequencyBins): FrequencyBins {
         val peaks: MutableList<FrequencyBin> = mutableListOf()
 
         for (i in frequencyBins.indices) {

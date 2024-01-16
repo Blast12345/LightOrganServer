@@ -2,7 +2,7 @@ package color
 
 import input.audioFrame.AudioFrame
 import sound.bins.frequency.BassBinsFactory
-import sound.bins.frequency.FrequencyBinList
+import sound.bins.frequency.FrequencyBins
 import wrappers.color.Color
 
 class ColorFactory(
@@ -21,11 +21,11 @@ class ColorFactory(
         return Color(hue, 1F, brightness)
     }
 
-    private fun getHue(bassBins: FrequencyBinList): Float? {
+    private fun getHue(bassBins: FrequencyBins): Float? {
         return hueCalculator.calculate(bassBins)
     }
 
-    private fun getBrightness(bassBins: FrequencyBinList): Float? {
+    private fun getBrightness(bassBins: FrequencyBins): Float? {
         return brightnessCalculator.calculate(bassBins)
     }
 

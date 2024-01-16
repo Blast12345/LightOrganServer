@@ -21,7 +21,7 @@ class CrossoverFilterTests {
         val sut = createSUT()
 
         val actual = sut.filter(
-            frequencyBinList = listOf(bin10hz, bin15hz, bin20hz, bin25hz, bin30hz),
+            frequencyBins = listOf(bin10hz, bin15hz, bin20hz, bin25hz, bin30hz),
             crossover = Crossover(15F, 25F)
         )
 
