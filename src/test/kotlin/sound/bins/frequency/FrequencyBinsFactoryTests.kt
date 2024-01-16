@@ -19,7 +19,7 @@ class FrequencyBinsFactoryTests {
     private val frequencyBin2 = nextFrequencyBin()
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

@@ -31,7 +31,7 @@ class AudioFrameFactoryTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

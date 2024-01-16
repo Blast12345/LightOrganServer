@@ -26,7 +26,7 @@ class DashboardViewModelFactoryTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

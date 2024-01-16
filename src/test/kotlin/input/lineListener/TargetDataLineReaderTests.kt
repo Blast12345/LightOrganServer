@@ -30,7 +30,7 @@ class TargetDataLineReaderTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

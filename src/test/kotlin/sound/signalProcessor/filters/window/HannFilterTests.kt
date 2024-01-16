@@ -17,7 +17,7 @@ class HannFilterTests {
     private val correctedSamples = nextDoubleArray()
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

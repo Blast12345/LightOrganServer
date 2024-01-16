@@ -41,7 +41,7 @@ class BrightnessCalculatorTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

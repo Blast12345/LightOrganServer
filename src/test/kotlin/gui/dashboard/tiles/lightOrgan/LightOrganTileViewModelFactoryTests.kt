@@ -15,7 +15,7 @@ class LightOrganTileViewModelFactoryTests {
     private val lightOrganStateMachine: LightOrganStateMachine = mockk(relaxed = true)
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

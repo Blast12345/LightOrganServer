@@ -38,7 +38,7 @@ class InputTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

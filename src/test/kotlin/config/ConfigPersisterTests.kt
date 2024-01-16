@@ -18,7 +18,7 @@ class ConfigPersisterTests {
     private val persistedConfig: PersistedConfig = mockk(relaxed = true)
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

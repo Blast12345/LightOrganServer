@@ -32,7 +32,7 @@ class ColorFactoryTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 

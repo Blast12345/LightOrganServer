@@ -37,7 +37,7 @@ class FrequencyBinsCalculatorTests {
     }
 
     @AfterEach
-    fun teardown() {
+    fun tearDown() {
         clearAllMocks()
     }
 
