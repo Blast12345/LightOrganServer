@@ -11,6 +11,7 @@ class ColorFactory(
     private val brightnessCalculator: BrightnessCalculator = BrightnessCalculator()
 ) {
 
+    @Suppress("ReturnCount")
     fun create(audioFrame: AudioFrame): Color {
         val bassBins = bassBinsFactory.create(audioFrame)
 

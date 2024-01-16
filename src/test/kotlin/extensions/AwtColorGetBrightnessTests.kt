@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.awt.Color
 
-class `AwtColor+GetBrightnessTests` {
+class AwtColorGetBrightnessTests {
 
     @Test
     fun `get the brightness for a color`() {

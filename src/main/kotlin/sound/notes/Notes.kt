@@ -11,18 +11,18 @@ object Notes {
     private const val tuning = 440F
     private val tuningFundamental = tuning * 2F.pow(-tuningOctave)
 
-    val C = createNote(-9)
-    val C_SHARP = createNote(-8)
-    val D = createNote(-7)
-    val D_SHARP = createNote(-6)
-    val E = createNote(-5)
-    val F = createNote(-4)
-    val F_SHARP = createNote(-3)
-    val G = createNote(-2)
-    val G_SHARP = createNote(-1)
-    val A = createNote(0)
-    val A_SHARP = createNote(1)
-    val B = createNote(2)
+    val C = createNote(positionRelativeToA = -9)
+    val C_SHARP = createNote(positionRelativeToA = -8)
+    val D = createNote(positionRelativeToA = -7)
+    val D_SHARP = createNote(positionRelativeToA = -6)
+    val E = createNote(positionRelativeToA = -5)
+    val F = createNote(positionRelativeToA = -4)
+    val F_SHARP = createNote(positionRelativeToA = -3)
+    val G = createNote(positionRelativeToA = -2)
+    val G_SHARP = createNote(positionRelativeToA = -1)
+    val A = createNote(positionRelativeToA = 0)
+    val A_SHARP = createNote(positionRelativeToA = 1)
+    val B = createNote(positionRelativeToA = 2)
 
     private fun createNote(positionRelativeToA: Int): Note {
         return Note(

@@ -1,11 +1,12 @@
 package server
 
 import config.children.Client
+import logging.Logger
+import java.io.IOException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 
-// TODO: Test me?
 class UdpSocket {
 
     private val socket = DatagramSocket()
@@ -19,11 +20,10 @@ class UdpSocket {
 
         try {
             socket.send(packet)
-        } catch (e: Exception) {
-            // Don't do anything
+            Logger.success("UDP Socket send success: $message")
+        } catch (e: IOException) {
+            Logger.error("UDP Socket send failed: ${e.message}")
         }
-
-        println("Sent Message: $message")
     }
 
     private fun createPacket(message: String, address: String, port: Int): DatagramPacket {
@@ -44,4 +44,3 @@ class UdpSocket {
     }
 
 }
-

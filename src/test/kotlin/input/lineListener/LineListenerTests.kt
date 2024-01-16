@@ -19,7 +19,6 @@ import kotlin.random.Random
 
 class LineListenerTests {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val scope = TestScope()
 
     private val dataLine: TargetDataLine = mockk(relaxed = true)
@@ -36,7 +35,6 @@ class LineListenerTests {
         clearAllMocks()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun createSUT(): LineListener {
         return LineListener(
             dataLine = dataLine,

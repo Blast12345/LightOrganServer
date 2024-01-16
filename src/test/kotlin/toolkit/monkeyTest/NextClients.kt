@@ -5,7 +5,7 @@ import config.children.Client
 fun nextClients(length: Int = nextPositiveInt(3)): Set<Client> {
     val list = mutableSetOf<Client>()
 
-    for (i in 0 until length) {
+    repeat(length) {
         list.add(nextClient())
     }
 

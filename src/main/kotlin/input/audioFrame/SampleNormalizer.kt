@@ -4,6 +4,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import javax.sound.sampled.AudioFormat
 
+
 // Reference: https://stackoverflow.com/questions/29560491/fourier-transforming-a-byte-array
 class SampleNormalizer {
 
@@ -44,16 +45,19 @@ class SampleNormalizer {
     }
 
     private fun getNumberOfSamplesAfterNormalizing(bitDepth: Int, buffer: ByteBuffer): Int {
-        return buffer.capacity() * 8 / bitDepth
+        val bufferSize = buffer.capacity()
+
+        return bufferSize * Byte.SIZE_BITS / bitDepth
     }
 
     private fun getSample(bitDepth: Int, buffer: ByteBuffer): Double {
+        @Suppress("MagicNumber")
         return when (bitDepth) {
             8 -> buffer.get() / Byte.MAX_VALUE.toDouble()
             16 -> buffer.short / Short.MAX_VALUE.toDouble()
             32 -> buffer.int / Int.MAX_VALUE.toDouble()
             64 -> buffer.long / Long.MAX_VALUE.toDouble()
-            else -> throw Exception("$bitDepth-bit audio is unsupported.")
+            else -> throw UnsupportedBitDepthException(bitDepth)
         }
     }
 

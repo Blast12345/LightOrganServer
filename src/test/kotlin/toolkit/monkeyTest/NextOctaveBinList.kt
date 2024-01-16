@@ -9,7 +9,7 @@ fun nextOctaveBinList(
 ): OctaveBinList {
     val list: MutableList<OctaveBin> = mutableListOf()
 
-    for (i in 0 until length) {
+    repeat(length) {
         list.add(nextOctaveBin())
     }
 

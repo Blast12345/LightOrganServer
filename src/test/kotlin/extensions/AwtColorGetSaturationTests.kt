@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.awt.Color
 
-class `AwtColor+GetSaturationTests` {
+class AwtColorGetSaturationTests {
 
     @Test
     fun `get the saturation for a color`() {

@@ -6,7 +6,6 @@ import sound.bins.frequency.FrequencyBin
 import sound.bins.frequency.FrequencyBinList
 import kotlin.math.abs
 
-// TODO: Normalize with a curve instead of linear?
 class CrossoverFilter {
 
     fun filter(frequencyBinList: FrequencyBinList, crossover: Crossover): FrequencyBinList {

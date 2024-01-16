@@ -18,6 +18,7 @@ class DominantBassFrequencyBinCalculator(
     private val highCrossover: Crossover = ConfigSingleton.highCrossover
 ) {
 
+    @Suppress("ReturnCount")
     fun calculate(frequencyBinList: FrequencyBinList): FrequencyBin? {
         val bassBins = getBassBins(frequencyBinList)
 
@@ -53,4 +54,3 @@ class DominantBassFrequencyBinCalculator(
     }
 
 }
-

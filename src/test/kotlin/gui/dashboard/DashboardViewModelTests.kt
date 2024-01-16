@@ -33,13 +33,13 @@ class DashboardViewModelTests {
 
     @Test
     fun `the color tile is subscribed to the light organ`() {
-        val sut = createSUT()
+        createSUT()
         verify { lightOrganTileViewModel.addSubscriber(colorTileViewModel) }
     }
 
     @Test
     fun `changes to the config are persisted`() {
-        val sut = createSUT()
+        createSUT()
         verify { configPersister.persist(config) }
     }
 

@@ -6,7 +6,6 @@ import config.children.Client
 import lightOrgan.LightOrganSubscriber
 import wrappers.color.Color
 
-// TODO: I should double check that UDP is significantly faster than TCP for my use case.
 class Server(
     private val config: Config = ConfigSingleton,
     private val socket: UdpSocket = UdpSocket(),

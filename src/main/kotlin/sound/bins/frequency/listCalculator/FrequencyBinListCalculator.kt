@@ -20,7 +20,6 @@ class FrequencyBinListCalculator(
     }
 
     private fun getMagnitudes(samples: DoubleArray): DoubleArray {
-        // TODO: De-noise
         return magnitudeListCalculator.calculate(samples)
     }
 

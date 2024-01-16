@@ -3,7 +3,7 @@ package extensions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class `Float+BetweenTests` {
+class FloatBetweenTests {
 
     @Test
     fun `return the minimum when the number is less than the minimum`() {

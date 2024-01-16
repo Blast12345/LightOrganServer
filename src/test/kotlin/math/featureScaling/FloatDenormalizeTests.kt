@@ -3,7 +3,7 @@ package math.featureScaling
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class `Float+DenormalizeTests` {
+class FloatDenormalizeTests {
 
     @Test
     fun `given a range of 10 to 20, -1_5 denormalizes to -5`() {

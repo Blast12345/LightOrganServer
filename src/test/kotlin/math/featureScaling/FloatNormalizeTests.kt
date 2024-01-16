@@ -3,7 +3,7 @@ package math.featureScaling
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class `Float+NormalizeTests` {
+class FloatNormalizeTests {
 
     @Test
     fun `1 in a range of 1 to 2 normalizes to 0`() {
