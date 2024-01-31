@@ -1,5 +1,6 @@
 package gui.dashboard
 
+import SpectrumTile
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -39,12 +40,16 @@ private fun MainRow(viewModel: DashboardViewModel) {
     ) {
 
         LightOrganTile(
-            viewModel = viewModel.lightOrganTileViewModel,
-            modifier = Modifier.weight(1f).fillMaxHeight()
+            viewModel = viewModel.lightOrganTileViewModel
         )
 
         ColorTile(
             viewModel = viewModel.colorTileViewModel,
+            modifier = Modifier.weight(1f).fillMaxHeight()
+        )
+
+        SpectrumTile(
+            viewModel = viewModel.spectrumTileViewModel,
             modifier = Modifier.weight(1f).fillMaxHeight()
         )
 

@@ -1,8 +1,11 @@
 package gui.dashboard
 
+import SpectrumTileViewModel
 import gui.dashboard.tiles.color.ColorTileViewModelFactory
 import gui.dashboard.tiles.lightOrgan.LightOrganTileViewModelFactory
 import lightOrgan.LightOrganStateMachine
+
+val spectrumTileViewModel = SpectrumTileViewModel()
 
 class DashboardViewModelFactory(
     private val lightOrganTileViewModelFactory: LightOrganTileViewModelFactory = LightOrganTileViewModelFactory(),
@@ -12,7 +15,8 @@ class DashboardViewModelFactory(
     fun create(lightOrganStateMachine: LightOrganStateMachine): DashboardViewModel {
         return DashboardViewModel(
             lightOrganTileViewModel = lightOrganTileViewModelFactory.create(lightOrganStateMachine),
-            colorTileViewModel = colorTileViewModelFactory.create()
+            colorTileViewModel = colorTileViewModelFactory.create(),
+            spectrumTileViewModel = spectrumTileViewModel
         )
     }
 

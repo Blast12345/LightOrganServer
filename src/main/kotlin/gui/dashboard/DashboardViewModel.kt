@@ -1,5 +1,6 @@
 package gui.dashboard
 
+import SpectrumTileViewModel
 import config.Config
 import config.ConfigPersister
 import config.ConfigSingleton
@@ -9,6 +10,7 @@ import gui.dashboard.tiles.lightOrgan.LightOrganTileViewModel
 class DashboardViewModel(
     val lightOrganTileViewModel: LightOrganTileViewModel,
     val colorTileViewModel: ColorTileViewModel,
+    val spectrumTileViewModel: SpectrumTileViewModel,
     private val configPersister: ConfigPersister = ConfigPersister(),
     private val config: Config = ConfigSingleton
 ) {
