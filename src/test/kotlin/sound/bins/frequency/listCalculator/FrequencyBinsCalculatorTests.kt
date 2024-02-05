@@ -31,7 +31,8 @@ class FrequencyBinsCalculatorTests {
 
     @BeforeEach
     fun setupHappyPath() {
-        every { magnitudeListCalculator.calculate(samples) } returns magnitudeList
+        // TODO:
+//        every { magnitudeListCalculator.calculate(samples) } returns magnitudeList
         every { granularityCalculator.calculate(magnitudeList.size, audioFormat) } returns granularity
         every { frequencyBinsFactory.create(magnitudeList, granularity) } returns frequencyBins
     }

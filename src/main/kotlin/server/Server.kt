@@ -20,11 +20,11 @@ class Server(
     }
 
     private fun sendMessage(message: String) {
-        for (client in clients) {
-            socket.send(message, client)
-        }
-
-        printServerLatency()
+//        for (client in clients) {
+//            socket.send(message, client)
+//        }
+//
+//        printServerLatency()
     }
 
     private val clients: Set<Client>

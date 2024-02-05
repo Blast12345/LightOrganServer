@@ -22,8 +22,11 @@ class ConfigFactory(
                 stopFrequency = Notes.C.getFrequency(octave = 3)
             ),
             sampleSize = 4410,
+            decimationFactor = 128,
+            overlaps = 8,
+            overlapPercent = 0.5F,
             interpolatedSampleSize = 65536,
-            magnitudeMultiplier = 2F,
+            magnitudeMultiplier = 1F,
             millisecondsToWaitBetweenCheckingForNewAudio = 1,
         )
     }

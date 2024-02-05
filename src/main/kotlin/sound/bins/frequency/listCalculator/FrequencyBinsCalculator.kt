@@ -1,5 +1,6 @@
 package sound.bins.frequency.listCalculator
 
+import config.ConfigSingleton
 import sound.bins.frequency.FrequencyBins
 import sound.bins.frequency.FrequencyBinsFactory
 import wrappers.audioFormat.AudioFormatWrapper
@@ -11,16 +12,16 @@ class FrequencyBinsCalculator(
 ) {
 
     fun calculate(samples: DoubleArray, audioFormat: AudioFormatWrapper): FrequencyBins {
-        val magnitudes = getMagnitudes(samples)
-        val granularity = getGranularity(magnitudes, audioFormat)
+        val magnitudes = getMagnitudes(samples, audioFormat)
+        val granularity = getGranularity(magnitudes, audioFormat) / ConfigSingleton.decimationFactor
 
         return frequencyBinsFactory
             .create(magnitudes, granularity)
             .removeBinsBeyondNyquistFrequency(audioFormat)
     }
 
-    private fun getMagnitudes(samples: DoubleArray): DoubleArray {
-        return magnitudeListCalculator.calculate(samples)
+    private fun getMagnitudes(samples: DoubleArray, format: AudioFormatWrapper): DoubleArray {
+        return magnitudeListCalculator.calculateNew(samples, format)
     }
 
     private fun getGranularity(magnitudes: DoubleArray, audioFormat: AudioFormatWrapper): Float {

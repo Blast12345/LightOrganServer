@@ -1,31 +1,32 @@
 package sound.bins.frequency.listCalculator
 
-import sound.signalProcessor.SignalProcessor
-import sound.signalProcessor.fft.RelativeMagnitudeListCalculator
-import sound.signalProcessor.fft.RelativeMagnitudeListNormalizer
+import LowPassFilter
+import config.Config
+import config.ConfigSingleton
+import sound.signalProcessor.*
+import wrappers.audioFormat.AudioFormatWrapper
 
 class MagnitudeListCalculator(
-    private val signalProcessor: SignalProcessor = SignalProcessor(),
-    private val relativeMagnitudeListCalculator: RelativeMagnitudeListCalculator = RelativeMagnitudeListCalculator(),
-    private val relativeMagnitudeListNormalizer: RelativeMagnitudeListNormalizer = RelativeMagnitudeListNormalizer()
+    private val config: Config = ConfigSingleton,
+    private val audioTrimmer: AudioTrimmer = AudioTrimmer(),
+    private val lowPassFilter: LowPassFilter = LowPassFilter(),
+    private val downsampler: Downsampler = Downsampler(),
+    private val overlapAdd: OverlapAdd = OverlapAdd(),
+    private val windowsPreparer: WindowsPreparer = WindowsPreparer(),
+    private val windowsProcessor: WindowsProcessor = WindowsProcessor()
 ) {
+    // val decimatedNyquistFrequency = format.sampleRate / config.decimationFactor
 
-    fun calculate(samples: DoubleArray): DoubleArray {
-        val processedSamples = getProcessedSamples(samples)
-        val relativeMagnitudeList = getRelativeMagnitudeList(processedSamples)
-        return getNormalizedMagnitudes(relativeMagnitudeList, processedSamples.size)
-    }
+    // NOTE: Omitting the downsampling and overlap-add works.
+    // I think the overlap-add is the problem.
+    fun calculateNew(samples: DoubleArray, format: AudioFormatWrapper): DoubleArray {
+        val trimmedSamples = audioTrimmer.trim(samples, config.sampleSize)
+        val downsampledSamples = downsampler.decimate(trimmedSamples, config.decimationFactor)
+        val overlappedWindows = overlapAdd.process(downsampledSamples, config.overlaps, config.overlapPercent)
+        val preparedWindows = windowsPreparer.prepare(overlappedWindows)
+        val magnitudes = windowsProcessor.process(preparedWindows)
 
-    private fun getProcessedSamples(samples: DoubleArray): DoubleArray {
-        return signalProcessor.process(samples)
-    }
-
-    private fun getRelativeMagnitudeList(processedSamples: DoubleArray): DoubleArray {
-        return relativeMagnitudeListCalculator.calculate(processedSamples)
-    }
-
-    private fun getNormalizedMagnitudes(relativeMagnitudeList: DoubleArray, processedSampleSize: Int): DoubleArray {
-        return relativeMagnitudeListNormalizer.normalize(relativeMagnitudeList, processedSampleSize)
+        return magnitudes
     }
 
 }
