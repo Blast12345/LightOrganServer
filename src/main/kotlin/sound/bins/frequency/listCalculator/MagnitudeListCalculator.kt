@@ -21,8 +21,9 @@ class MagnitudeListCalculator(
     // I think the overlap-add is the problem.
     fun calculateNew(samples: DoubleArray, format: AudioFormatWrapper): DoubleArray {
         val trimmedSamples = audioTrimmer.trim(samples, config.sampleSize)
-        val downsampledSamples = downsampler.decimate(trimmedSamples, config.decimationFactor)
-        val overlappedWindows = overlapAdd.process(downsampledSamples, config.overlaps, config.overlapPercent)
+//        val downsampledSamples = downsampler.decimate(trimmedSamples, config.decimationFactor)
+//        val overlappedWindows = overlapAdd.process(trimmedSamples, config.overlaps, config.overlapPercent)
+        val overlappedWindows = overlapAdd.overlapAdd2(trimmedSamples, config.overlaps, config.overlapPercent)
         val preparedWindows = windowsPreparer.prepare(overlappedWindows)
         val magnitudes = windowsProcessor.process(preparedWindows)
 

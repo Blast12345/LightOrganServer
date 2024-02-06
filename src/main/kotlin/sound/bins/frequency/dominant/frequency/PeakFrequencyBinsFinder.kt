@@ -1,5 +1,6 @@
 package sound.bins.frequency.dominant.frequency
 
+import config.ConfigSingleton
 import sound.bins.frequency.FrequencyBin
 import sound.bins.frequency.FrequencyBins
 
@@ -21,8 +22,13 @@ class PeakFrequencyBinsFinder {
             val isGreaterThanOrEqualToNext = currentBinMagnitude >= nextBinMagnitude
             val isPeak = isGreaterThanOrEqualToPrevious && isGreaterThanOrEqualToNext
 
-            if (isPeak && currentBin != null) {
-                peaks.add(currentBin)
+            if (isPeak && currentBin != null && currentBin.frequency > 40F && currentBin.frequency < 60F) {
+                val interpolatedIndex = i + 0.5 * (previousMagnitude - nextBinMagnitude) / (previousMagnitude - 2 * currentBinMagnitude + nextBinMagnitude)
+                val binSize = nextBin!!.frequency - currentBin.frequency
+
+                val peak = (interpolatedIndex * binSize) + ConfigSingleton.lowCrossover.stopFrequency
+                val moddedBin = FrequencyBin(peak.toFloat(), currentBin.magnitude)
+                peaks.add(moddedBin)
             }
         }
 

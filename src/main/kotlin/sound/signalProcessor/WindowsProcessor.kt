@@ -21,6 +21,10 @@ class WindowsProcessor(
             }
         }
 
+        for (i in compositeMagnitudes.indices) {
+            compositeMagnitudes[i] = compositeMagnitudes[i] / windows.size
+        }
+
         return relativeMagnitudeListNormalizer.normalize(compositeMagnitudes, compositeMagnitudes.size)
     }
 }

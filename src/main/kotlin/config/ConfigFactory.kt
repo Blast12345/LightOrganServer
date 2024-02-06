@@ -22,8 +22,8 @@ class ConfigFactory(
                 stopFrequency = Notes.C.getFrequency(octave = 3)
             ),
             sampleSize = 4410,
-            decimationFactor = 128,
-            overlaps = 8,
+            decimationFactor = 1,
+            overlaps = 4,
             overlapPercent = 0.5F,
             interpolatedSampleSize = 65536,
             magnitudeMultiplier = 1F,
