@@ -1,5 +1,6 @@
 package color
 
+import gui.dashboard.spectrumTileViewModel
 import input.audioFrame.AudioFrame
 import sound.bins.frequency.BassBinsFactory
 import sound.bins.frequency.FrequencyBins
@@ -13,8 +14,8 @@ class ColorFactory(
 
     @Suppress("ReturnCount")
     fun create(audioFrame: AudioFrame): Color {
-        val bassBins = bassBinsFactory.create(audioFrame)//.filter { it.frequency < ConfigSingleton.highCrossover.stopFrequency }
-//        spectrumTileViewModel.updateFrequencyBins(bassBins)
+        val bassBins = bassBinsFactory.create(audioFrame)
+        spectrumTileViewModel.updateFrequencyBins(bassBins.filter { it.frequency < 300F })
 
         val hue = getHue(bassBins) ?: return Color.black
         val brightness = getBrightness(bassBins) ?: return Color.black
@@ -27,7 +28,6 @@ class ColorFactory(
     }
 
     private fun getBrightness(bassBins: FrequencyBins): Float? {
-//        return 1F
         return brightnessCalculator.calculate(bassBins)
     }
 

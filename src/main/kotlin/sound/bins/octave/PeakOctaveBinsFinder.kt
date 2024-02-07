@@ -11,7 +11,14 @@ class PeakOctaveBinsFinder(
 
     fun find(frequencyBins: FrequencyBins): OctaveBins {
         val peakBins = peakFrequencyBinsFinder.find(frequencyBins)
-        return frequencyBinsToOctaveBinsConverter.convert(peakBins)
+        val peakBin = peakBins.maxByOrNull { it.magnitude }
+
+        if (peakBin != null) {
+            return frequencyBinsToOctaveBinsConverter.convert(listOf(peakBin))
+        } else {
+            return listOf()
+        }
+
     }
 
 }

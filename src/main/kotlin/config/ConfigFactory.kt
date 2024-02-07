@@ -21,7 +21,7 @@ class ConfigFactory(
                 cornerFrequency = Notes.C.getFrequency(octave = 2),
                 stopFrequency = Notes.C.getFrequency(octave = 3)
             ),
-            sampleSize = 4410,
+            sampleSize = 6144,
             decimationFactor = 1,
             overlaps = 4,
             overlapPercent = 0.5F,

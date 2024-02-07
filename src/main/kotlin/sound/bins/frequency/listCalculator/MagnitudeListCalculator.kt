@@ -27,8 +27,10 @@ class MagnitudeListCalculator(
     fun calculateNew(samples: DoubleArray, format: AudioFormatWrapper): DoubleArray {
         val trimmedSamples = audioTrimmer.trim(samples, config.sampleSize)
         val hannSamples = hannFilter.applyTo(trimmedSamples)
-        val interpolatedSamples = zeroPaddingInterpolator.interpolate(hannSamples)
-//        val bandpassedSamples = applyBandPassFilter(interpolatedSamples, format.sampleRate)
+//        val bandpassedSamples = applyBandPassFilter(hannSamples, format.sampleRate)
+//        val interpolatedSamples = zeroPaddingInterpolator.interpolate(bandpassedSamples)
+        val downsampledSamples = downsampler.decimate(hannSamples, config.decimationFactor)
+        val interpolatedSamples = zeroPaddingInterpolator.interpolate(downsampledSamples)
         val magnitudesForWindow = relativeMagnitudeListCalculator.calculate(interpolatedSamples)
         val magnitudes = relativeMagnitudeListNormalizer.normalize(magnitudesForWindow, magnitudesForWindow.size)
 
@@ -37,11 +39,11 @@ class MagnitudeListCalculator(
 
     fun applyBandPassFilter(samples: DoubleArray, sampleRate: Float): DoubleArray {
         val order = 4 // Order of the filter
-        val lowCutOff = 20.0 // Lower Cut-off Frequency
-        val highCutOff = 120.0 // Higher Cut-off Frequency
+        val lowCutOff = ConfigSingleton.lowCrossover.stopFrequency.toDouble()
+        val highCutOff = ConfigSingleton.highCrossover.stopFrequency.toDouble()
 
         // Create the Butterworth filter
-        val flt = Butterworth(sampleRate.toDouble())
+        val flt = Butterworth(sampleRate.toDouble() * 2)
 
         // Apply the bandpass filter
         return flt.bandPassFilter(samples, order, lowCutOff, highCutOff)
