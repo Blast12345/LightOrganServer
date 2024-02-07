@@ -22,10 +22,10 @@ class PeakFrequencyBinsFinder {
             val isPeak = isGreaterThanOrEqualToPrevious && isGreaterThanOrEqualToNext
 
             if (isPeak && currentBinMagnitude > 0F) {
-                val interpolatedIndex = i + (previousMagnitude - nextBinMagnitude) / (2 * (previousMagnitude - 2 * currentBinMagnitude + nextBinMagnitude))
-                val interpolatedFrequency = interpolatedIndex * (88200 / 4096) / 128
-                val interpolatedBin = FrequencyBin(interpolatedFrequency, currentBinMagnitude)
-                peaks.add(interpolatedBin)
+//                val interpolatedIndex = i + (previousMagnitude - nextBinMagnitude) / (2 * (previousMagnitude - 2 * currentBinMagnitude + nextBinMagnitude))
+//                val interpolatedFrequency = interpolatedIndex * (88200 / 4096) / 128
+//                val interpolatedBin = FrequencyBin(interpolatedFrequency, currentBinMagnitude)
+                peaks.add(currentBin)
             }
         }
 

@@ -21,11 +21,11 @@ class ConfigFactory(
                 cornerFrequency = Notes.C.getFrequency(octave = 2),
                 stopFrequency = Notes.C.getFrequency(octave = 3)
             ),
-            sampleSize = 5120,
-            decimationFactor = 128,
+            sampleSize = 4410,
+            decimationFactor = 1,
             overlaps = 4,
             overlapPercent = 0.5F,
-            interpolatedSampleSize = 4096,
+            interpolatedSampleSize = 65536,
             magnitudeMultiplier = 1F,
             millisecondsToWaitBetweenCheckingForNewAudio = 1,
         )

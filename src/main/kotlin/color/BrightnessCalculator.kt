@@ -14,27 +14,13 @@ class BrightnessCalculator(
 ) {
 
     fun calculate(frequencyBins: FrequencyBins): Float? {
-//        return 1F
-        val magnitude = calculateMagnitude(frequencyBins) ?: return null
+        val magnitude = frequencyBins.maxOf { it.magnitude }
 
         return if (magnitude < 1F) {
             magnitude
         } else {
             1F
         }
-    }
-
-    private fun calculateMagnitude(frequencyBins: FrequencyBins): Float? {
-        val filteredBins = getFilteredBins(frequencyBins)
-        return greatestMagnitudeFinder.find(filteredBins)
-    }
-
-    private fun getFilteredBins(frequencyBins: FrequencyBins): FrequencyBins {
-        return bandPassFilter.filter(
-            frequencyBins = frequencyBins,
-            lowCrossover = lowCrossover,
-            highCrossover = highCrossover
-        )
     }
 
 }
