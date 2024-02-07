@@ -24,7 +24,7 @@ class Server(
 //            socket.send(message, client)
 //        }
 //
-//        printServerLatency()
+        printServerLatency()
     }
 
     private val clients: Set<Client>

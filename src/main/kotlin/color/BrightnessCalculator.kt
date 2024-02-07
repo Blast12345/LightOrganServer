@@ -14,6 +14,7 @@ class BrightnessCalculator(
 ) {
 
     fun calculate(frequencyBins: FrequencyBins): Float? {
+//        return 1F
         val magnitude = calculateMagnitude(frequencyBins) ?: return null
 
         return if (magnitude < 1F) {

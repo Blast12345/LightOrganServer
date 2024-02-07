@@ -14,13 +14,14 @@ class BassBinsFactory(
 ) {
 
     fun create(audioFrame: AudioFrame): FrequencyBins {
-        val frequencyBins = getFrequencyBins(audioFrame)
-
-        return passBandRegionFilter.filter(
-            frequencyBins = frequencyBins,
-            lowStopFrequency = lowCrossover.stopFrequency,
-            highStopFrequency = highCrossover.stopFrequency
-        )
+        return getFrequencyBins(audioFrame)
+//        val frequencyBins = getFrequencyBins(audioFrame)
+//
+//        return passBandRegionFilter.filter(
+//            frequencyBins = frequencyBins,
+//            lowStopFrequency = lowCrossover.stopFrequency,
+//            highStopFrequency = highCrossover.stopFrequency
+//        )
     }
 
     private fun getFrequencyBins(audioFrame: AudioFrame): FrequencyBins {
