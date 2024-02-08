@@ -1,6 +1,5 @@
 package sound.bins.frequency.listCalculator
 
-import com.github.psambit9791.jdsp.filter.Butterworth
 import config.Config
 import config.ConfigSingleton
 import sound.signalProcessor.AudioTrimmer
@@ -27,26 +26,29 @@ class MagnitudeListCalculator(
     fun calculateNew(samples: DoubleArray, format: AudioFormatWrapper): DoubleArray {
         val trimmedSamples = audioTrimmer.trim(samples, config.sampleSize)
         val hannSamples = hannFilter.applyTo(trimmedSamples)
-//        val bandpassedSamples = applyBandPassFilter(hannSamples, format.sampleRate)
-//        val interpolatedSamples = zeroPaddingInterpolator.interpolate(bandpassedSamples)
-        val downsampledSamples = downsampler.decimate(hannSamples, config.decimationFactor)
-        val interpolatedSamples = zeroPaddingInterpolator.interpolate(downsampledSamples)
-        val magnitudesForWindow = relativeMagnitudeListCalculator.calculate(interpolatedSamples)
-        val magnitudes = relativeMagnitudeListNormalizer.normalize(magnitudesForWindow, magnitudesForWindow.size)
+        val magnitudes = calculateMagnitudes(hannSamples, format.sampleRate.toDouble() * format.numberOfChannels, 0.0, 150.0, 1.0)
 
         return magnitudes
     }
 
-    fun applyBandPassFilter(samples: DoubleArray, sampleRate: Float): DoubleArray {
-        val order = 4 // Order of the filter
-        val lowCutOff = ConfigSingleton.lowCrossover.stopFrequency.toDouble()
-        val highCutOff = ConfigSingleton.highCrossover.stopFrequency.toDouble()
+    fun calculateMagnitudes(samples: DoubleArray, sampleRate: Double, minFrequency: Double, maxFrequency: Double, stepSize: Double): DoubleArray {
+        val frequencies = generateSequence(minFrequency) { it + stepSize }.takeWhile { it <= maxFrequency }
+        return frequencies.map { goertzel(samples, sampleRate, it) / 2205 }.toList().toDoubleArray()
+    }
 
-        // Create the Butterworth filter
-        val flt = Butterworth(sampleRate.toDouble() * 2)
+    fun goertzel(samples: DoubleArray, sampleRate: Double, targetFrequency: Double): Double {
+        val coeff = 2.0 * kotlin.math.cos(2.0 * kotlin.math.PI * targetFrequency / sampleRate)
+        var sPrev = 0.0
+        var sPrev2 = 0.0
 
-        // Apply the bandpass filter
-        return flt.bandPassFilter(samples, order, lowCutOff, highCutOff)
+        for (sample in samples) {
+            val s = sample + coeff * sPrev - sPrev2
+            sPrev2 = sPrev
+            sPrev = s
+        }
+
+        val power = sPrev2 * sPrev2 + sPrev * sPrev - coeff * sPrev * sPrev2
+        return kotlin.math.sqrt(power)
     }
 
 }

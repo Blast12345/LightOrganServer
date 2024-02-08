@@ -1,6 +1,5 @@
 package sound.bins.frequency.listCalculator
 
-import config.ConfigSingleton
 import sound.bins.frequency.FrequencyBins
 import sound.bins.frequency.FrequencyBinsFactory
 import wrappers.audioFormat.AudioFormatWrapper
@@ -13,7 +12,7 @@ class FrequencyBinsCalculator(
 
     fun calculate(samples: DoubleArray, audioFormat: AudioFormatWrapper): FrequencyBins {
         val magnitudes = getMagnitudes(samples, audioFormat)
-        val granularity = getGranularity(magnitudes, audioFormat) / ConfigSingleton.decimationFactor
+        val granularity = 1F//getGranularity(magnitudes, audioFormat) / ConfigSingleton.decimationFactor
 
         return frequencyBinsFactory
             .create(magnitudes, granularity)

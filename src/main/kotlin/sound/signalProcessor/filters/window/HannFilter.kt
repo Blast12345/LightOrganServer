@@ -8,7 +8,7 @@ class HannFilter(
     override fun applyTo(samples: DoubleArray): DoubleArray {
         return samples
             .applyAlgorithm()
-//            .applyCorrection()
+            .applyCorrection()
     }
 
     private fun DoubleArray.applyAlgorithm(): DoubleArray {
