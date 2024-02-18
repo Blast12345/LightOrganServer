@@ -2,7 +2,6 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -60,8 +59,7 @@ private fun Spectrum(viewModel: SpectrumTileViewModel) {
             {
                 BinColumn(
                     bin = bin,
-                    viewModel = viewModel,
-                    modifier = Modifier.fillMaxWidth()
+                    viewModel = viewModel
                 )
             }
         }
@@ -71,10 +69,9 @@ private fun Spectrum(viewModel: SpectrumTileViewModel) {
 @Composable
 private fun BinColumn(
     bin: SpectrumBin,
-    viewModel: SpectrumTileViewModel,
-    modifier: Modifier
+    viewModel: SpectrumTileViewModel
 ) {
-    Box(modifier = modifier.onHoverChanged(viewModel, bin)) {
+    Box(modifier = Modifier.onHoverChanged(viewModel, bin)) {
         Bar(value = bin.magnitude)
 
         if (bin.hovered) {
