@@ -1,8 +1,8 @@
 package gui.dashboard
 
-import SpectrumTileViewModel
 import gui.dashboard.tiles.color.ColorTileViewModelFactory
 import gui.dashboard.tiles.lightOrgan.LightOrganTileViewModelFactory
+import gui.dashboard.tiles.spectrum.SpectrumTileViewModel
 import lightOrgan.LightOrganStateMachine
 
 val spectrumTileViewModel = SpectrumTileViewModel()

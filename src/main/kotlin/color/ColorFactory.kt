@@ -2,6 +2,8 @@ package color
 
 import gui.dashboard.spectrumTileViewModel
 import input.audioFrame.AudioFrame
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import sound.bins.frequency.BassBinsFactory
 import sound.bins.frequency.FrequencyBins
 import wrappers.color.Color
@@ -15,7 +17,7 @@ class ColorFactory(
     @Suppress("ReturnCount")
     fun create(audioFrame: AudioFrame): Color {
         val bassBins = bassBinsFactory.create(audioFrame)
-        spectrumTileViewModel.updateFrequencyBins(bassBins)
+        MainScope().launch { spectrumTileViewModel.setFrequencyBins(bassBins) }
 
         val hue = getHue(bassBins) ?: return Color.black
         val brightness = getBrightness(bassBins) ?: return Color.black

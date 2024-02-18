@@ -4,6 +4,7 @@ import config.Config
 import config.ConfigPersister
 import gui.dashboard.tiles.color.ColorTileViewModel
 import gui.dashboard.tiles.lightOrgan.LightOrganTileViewModel
+import gui.dashboard.tiles.spectrum.SpectrumTileViewModel
 import io.mockk.clearAllMocks
 import io.mockk.mockk
 import io.mockk.verify
@@ -14,6 +15,7 @@ class DashboardViewModelTests {
 
     private val lightOrganTileViewModel: LightOrganTileViewModel = mockk(relaxed = true)
     private val colorTileViewModel: ColorTileViewModel = mockk(relaxed = true)
+    private val spectrumTileViewModel: SpectrumTileViewModel = mockk(relaxed = true)
     private val configPersister: ConfigPersister = mockk(relaxed = true)
     private val config: Config = mockk(relaxed = true)
 
@@ -27,6 +29,7 @@ class DashboardViewModelTests {
             lightOrganTileViewModel = lightOrganTileViewModel,
             colorTileViewModel = colorTileViewModel,
             configPersister = configPersister,
+            spectrumTileViewModel = spectrumTileViewModel,
             config = config
         )
     }
