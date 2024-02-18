@@ -25,7 +25,7 @@ fun Grid(content: @Composable () -> Unit) {
     }
 }
 
-fun drawGrid(
+private fun drawGrid(
     scope: DrawScope,
     lineColor: Color,
     horizontalLineCount: Int = 10,
@@ -35,7 +35,7 @@ fun drawGrid(
     drawVerticalLines(scope, lineColor, verticalLineCount)
 }
 
-fun drawHorizontalLines(
+private fun drawHorizontalLines(
     scope: DrawScope,
     lineColor: Color,
     lineCount: Int
@@ -53,7 +53,7 @@ fun drawHorizontalLines(
     }
 }
 
-fun drawVerticalLines(
+private fun drawVerticalLines(
     scope: DrawScope,
     lineColor: Color,
     lineCount: Int
