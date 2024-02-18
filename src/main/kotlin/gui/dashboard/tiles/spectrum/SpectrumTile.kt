@@ -1,6 +1,9 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -9,11 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
-import gui.basicComponents.Grid
-import gui.basicComponents.SimpleSpacer
-import gui.basicComponents.SimpleText
-import gui.basicComponents.Tile
+import gui.basicComponents.*
 import gui.dashboard.tiles.spectrum.SpectrumBin
 import gui.dashboard.tiles.spectrum.SpectrumTileViewModel
 
@@ -58,31 +57,17 @@ private fun GridSpectrum(viewModel: SpectrumTileViewModel) {
 
 @Composable
 private fun Spectrum(viewModel: SpectrumTileViewModel) {
-    val bins = viewModel.spectrum
-
-    // NOTE: The spectrum will distort if we are not explicit about widths because not all columns will scale at the same time.
-    // We set most of the widths explicitly, but leave the final column to fill the remaining space.
-    BoxWithConstraints {
-        val columnWidth = maxWidth / bins.size
-
-        Row {
-            bins.forEach { bin ->
+    RowWithEqualColumnWidths(
+        children = viewModel.spectrum.map { bin ->
+            {
                 BinColumn(
                     bin = bin,
                     viewModel = viewModel,
-                    modifier = getBinColumnModifier(bin, bins, columnWidth)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
-    }
-}
-
-private fun getBinColumnModifier(bin: SpectrumBin, bins: List<SpectrumBin>, columnWidth: Dp): Modifier {
-    return if (bin != bins.last()) {
-        Modifier.width(columnWidth)
-    } else {
-        Modifier.fillMaxWidth()
-    }
+    )
 }
 
 @Composable
