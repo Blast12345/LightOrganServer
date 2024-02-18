@@ -1,10 +1,8 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -77,18 +75,7 @@ private fun BinColumn(
     modifier: Modifier
 ) {
     Box(modifier = modifier.onHoverChanged(viewModel, bin)) {
-        Column {
-            val clearWeight = 1F - bin.magnitude
-            val coloredWeight = bin.magnitude
-
-            if (clearWeight > 0F) {
-                ClearBox(modifier = Modifier.weight(clearWeight))
-            }
-
-            if (coloredWeight > 0F) {
-                ColoredBox(modifier = Modifier.weight(coloredWeight))
-            }
-        }
+        Bar(value = bin.magnitude)
 
         if (bin.hovered) {
             HighlightBox()
@@ -103,24 +90,6 @@ private fun Modifier.onHoverChanged(viewModel: SpectrumTileViewModel, bin: Spect
     }.onPointerEvent(PointerEventType.Exit) {
         viewModel.setHoveredBin(null)
     }
-}
-
-@Composable
-private fun ClearBox(modifier: Modifier) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.Transparent)
-    )
-}
-
-@Composable
-private fun ColoredBox(modifier: Modifier) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.secondary)
-    )
 }
 
 @Composable
