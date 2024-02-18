@@ -32,8 +32,8 @@ class SpectrumTileViewModel(
 
     fun setHoveredBin(hoveredBin: SpectrumBin?) {
         this.hoveredBin = hoveredBin
-        updateHoveredFrequency()
         updateSpectrum()
+        updateHoveredFrequency()
     }
 
     private fun updateHoveredFrequency() {
