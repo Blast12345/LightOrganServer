@@ -105,7 +105,9 @@ private fun BinColumn(
             }
         }
 
-        HighlightBox(isHighlighted = bin.hovered)
+        if (bin.hovered) {
+            HighlightBox()
+        }
     }
 }
 
@@ -137,12 +139,10 @@ private fun ColoredBox(modifier: Modifier) {
 }
 
 @Composable
-private fun HighlightBox(isHighlighted: Boolean) {
-    if (isHighlighted) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White.copy(alpha = 0.5f))
-        )
-    }
+private fun HighlightBox() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White.copy(alpha = 0.5f))
+    )
 }
