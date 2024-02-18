@@ -3,13 +3,10 @@ package toolkit.monkeyTest
 import gui.dashboard.tiles.spectrum.SpectrumBin
 import kotlin.random.Random
 
-fun nextSpectrumBin(
-    frequency: Float = Random.nextFloat(),
-    magnitude: Float = Random.nextFloat()
-): SpectrumBin {
+fun nextSpectrumBin(): SpectrumBin {
     return SpectrumBin(
-        frequency = frequency,
-        magnitude = magnitude,
+        frequency = Random.nextFloat(),
+        magnitude = Random.nextFloat(),
         hovered = Random.nextBoolean()
     )
 }
