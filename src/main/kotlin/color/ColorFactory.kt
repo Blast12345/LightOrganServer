@@ -1,9 +1,7 @@
 package color
 
-import gui.dashboard.spectrumTileViewModel
 import input.audioFrame.AudioFrame
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import sound.bins.frequency.BassBinsFactory
 import sound.bins.frequency.FrequencyBins
 import wrappers.color.Color
@@ -17,7 +15,7 @@ class ColorFactory(
     @Suppress("ReturnCount")
     fun create(audioFrame: AudioFrame): Color {
         val bassBins = bassBinsFactory.create(audioFrame)
-        MainScope().launch { spectrumTileViewModel.setFrequencyBins(bassBins) }
+        EventBus.getDefault().post(bassBins)
 
         val hue = getHue(bassBins) ?: return Color.black
         val brightness = getBrightness(bassBins) ?: return Color.black

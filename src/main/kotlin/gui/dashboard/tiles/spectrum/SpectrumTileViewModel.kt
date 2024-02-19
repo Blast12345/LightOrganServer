@@ -3,8 +3,11 @@ package gui.dashboard.tiles.spectrum
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import sound.bins.frequency.FrequencyBins
 import java.util.*
+
 
 class SpectrumTileViewModel(
     private val spectrumCreator: SpectrumCreator = SpectrumCreator()
@@ -18,6 +21,12 @@ class SpectrumTileViewModel(
     var hoveredFrequency by mutableStateOf("")
         private set
 
+
+    init {
+        EventBus.getDefault().register(this)
+    }
+
+    @Subscribe
     fun setFrequencyBins(frequencyBins: FrequencyBins) {
         this.frequencyBins = frequencyBins
         updateSpectrum()
