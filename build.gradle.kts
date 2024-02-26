@@ -14,7 +14,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.1")
     implementation(compose.desktop.currentOs)
-    implementation("com.github.psambit9791:jdsp:3.0.0")
+    implementation("org.greenrobot:eventbus-java:3.3.1")
 
     // Unit Testing
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")

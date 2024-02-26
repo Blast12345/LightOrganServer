@@ -6,7 +6,7 @@ class InputBufferFactory {
 
     fun create(targetDataLine: TargetDataLine): InputBuffer {
         return InputBuffer(
-            bufferSize = targetDataLine.bufferSize
+            bufferSize = targetDataLine.bufferSize * targetDataLine.format.channels
         )
     }
 

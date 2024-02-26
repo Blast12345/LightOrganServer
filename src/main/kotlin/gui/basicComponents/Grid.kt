@@ -4,8 +4,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,19 +13,11 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 
-// TODO: X and Y axis labels
-// TODO: Scale subdivisions based on size
 @Composable
-fun Grid(
-    lineColor: Color = MaterialTheme.colors.primary,
-    content: @Composable () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(1000.dp)
-            .border(1.dp, lineColor)
-    ) {
+fun Grid(content: @Composable () -> Unit) {
+    val lineColor = MaterialTheme.colors.primary
+
+    Box(modifier = Modifier.border(1.dp, lineColor)) {
         content()
         Canvas(modifier = Modifier.fillMaxSize().zIndex(1f)) {
             drawGrid(this, lineColor)
@@ -35,16 +25,48 @@ fun Grid(
     }
 }
 
-fun drawGrid(scope: DrawScope, lineColor: Color) {
-    val strokeWidth = 1f
-    val horizontalLineInterval = scope.size.height / 10
-    val verticalLineInterval = scope.size.width / 10
-    for (i in 1 until 10) {
-        val y = i * horizontalLineInterval
-        scope.drawLine(lineColor, start = Offset(0f, y), end = Offset(scope.size.width, y), strokeWidth = strokeWidth)
+private fun drawGrid(
+    scope: DrawScope,
+    lineColor: Color,
+    horizontalLineCount: Int = 10,
+    verticalLineCount: Int = 10,
+) {
+    drawHorizontalLines(scope, lineColor, horizontalLineCount)
+    drawVerticalLines(scope, lineColor, verticalLineCount)
+}
+
+private fun drawHorizontalLines(
+    scope: DrawScope,
+    lineColor: Color,
+    lineCount: Int
+) {
+    val lineInterval = scope.size.height / lineCount
+
+    repeat(lineCount) { index ->
+        val y = index * lineInterval
+
+        scope.drawLine(
+            color = lineColor,
+            start = Offset(0f, y),
+            end = Offset(scope.size.width, y)
+        )
     }
-    for (i in 1 until 10) {
-        val x = i * verticalLineInterval
-        scope.drawLine(lineColor, start = Offset(x, 0f), end = Offset(x, scope.size.height), strokeWidth = strokeWidth)
+}
+
+private fun drawVerticalLines(
+    scope: DrawScope,
+    lineColor: Color,
+    lineCount: Int
+) {
+    val lineInterval = scope.size.width / lineCount
+
+    repeat(lineCount) { index ->
+        val x = index * lineInterval
+
+        scope.drawLine(
+            color = lineColor,
+            start = Offset(x, 0f),
+            end = Offset(x, scope.size.height)
+        )
     }
 }

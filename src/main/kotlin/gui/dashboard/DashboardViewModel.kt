@@ -1,11 +1,11 @@
 package gui.dashboard
 
-import SpectrumTileViewModel
 import config.Config
 import config.ConfigPersister
 import config.ConfigSingleton
 import gui.dashboard.tiles.color.ColorTileViewModel
 import gui.dashboard.tiles.lightOrgan.LightOrganTileViewModel
+import gui.dashboard.tiles.spectrum.SpectrumTileViewModel
 
 class DashboardViewModel(
     val lightOrganTileViewModel: LightOrganTileViewModel,

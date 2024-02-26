@@ -16,7 +16,8 @@ class Config(
     val overlapPercent: Float,
     val interpolatedSampleSize: Int,
     val magnitudeMultiplier: Float,
-    val millisecondsToWaitBetweenCheckingForNewAudio: Long
+    val millisecondsToWaitBetweenCheckingForNewAudio: Long,
+    val step: Double
 ) {
 
     fun getDecimatedSampleSize(): Int {

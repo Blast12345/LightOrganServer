@@ -18,8 +18,7 @@ class LineListener(
     private val config: Config = ConfigSingleton
 ) {
 
-    private val checkInterval: Long
-        get() = config.millisecondsToWaitBetweenCheckingForNewAudio
+    private val checkInterval = 1L
 
     val audioFormat: AudioFormat
         get() = dataLine.format
@@ -43,12 +42,22 @@ class LineListener(
         }
     }
 
+    private var lastTimestamp = System.currentTimeMillis()
+
     private fun giveSubscribersNewSamplesIfNeeded() {
         val newSamples = getNewSamples()
 
         if (newSamples.isNotEmpty()) {
             giveSubscribersNewSamples(newSamples)
+//            println("Sample size: ${newSamples.size}")
+//            printLatency()
         }
+    }
+
+    private fun printLatency() {
+        val delay = System.currentTimeMillis() - lastTimestamp
+        println("Latency: $delay")
+        lastTimestamp = System.currentTimeMillis()
     }
 
     private fun getNewSamples(): ByteArray {
