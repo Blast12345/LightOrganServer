@@ -23,14 +23,38 @@ class MagnitudeListCalculator(
     private val zeroPaddingInterpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator()
 ) {
 
+    private val history = mutableListOf<Long>()
+
     fun calculateNew(samples: DoubleArray, format: AudioFormatWrapper): DoubleArray {
-        var startTime = System.currentTimeMillis()
+        val startTime = System.nanoTime()
 
         val effectiveSampleRate = format.sampleRate.toDouble() * format.numberOfChannels
         // Option 1
-        val trimmedSamples = audioTrimmer.trim(samples, config.sampleSize)
-        val hannSamples = hannFilter.applyTo(trimmedSamples)
-        var magnitudes = calculateMagnitudes(hannSamples, effectiveSampleRate, 0.0, 150.0, ConfigSingleton.step)
+        val trimmedSamples1 = audioTrimmer.trim(samples, 4410)
+        val hannSamples1 = hannFilter.applyTo(trimmedSamples1)
+        val magnitudes1 = calculateMagnitudes(hannSamples1, effectiveSampleRate, 0.0, 262.0, ConfigSingleton.step)
+
+
+        val trimmedSamples2 = audioTrimmer.trim(samples, 8820)
+        val hannSamples2 = hannFilter.applyTo(trimmedSamples2)
+        val magnitudes2 = calculateMagnitudes(hannSamples2, effectiveSampleRate, 0.0, 262.0, ConfigSingleton.step)
+
+        val magnitudes = magnitudes2.clone()
+
+        for (j in magnitudes.indices) {
+            if (j < 30) {
+                continue
+            }
+
+            val progress = (j - 30).toDouble() / (magnitudes.size - 30)
+            val magnitude1 = magnitudes1[j]
+            val magnitude2 = magnitudes2[j]
+            val weight1 = progress * magnitude1
+            val weight2 = (1 - progress) * magnitude2
+
+            magnitudes[j] = (weight1 + weight2)
+        }
+
 
         // Option 2
 //        val octaves = arrayOf(0, 1, 2)
@@ -92,8 +116,17 @@ class MagnitudeListCalculator(
 //            jobs.forEach { it.join() }
 //        }
 
-        var endTime = System.currentTimeMillis()
-        println("Time to calculate magnitudes: ${endTime - startTime}ms")
+        val endTime = System.nanoTime()
+        val latency = endTime - startTime
+
+        if (history.size > 100) {
+            history.removeAt(0)
+        }
+
+        history.add(latency)
+        val average = history.average()
+
+        println("Time to calculate magnitudes: $average ms")
         return magnitudes//.toDoubleArray()
     }
 
