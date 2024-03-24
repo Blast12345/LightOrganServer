@@ -1,7 +1,6 @@
 package color
 
 import input.audioFrame.AudioFrame
-import org.greenrobot.eventbus.EventBus
 import sound.bins.frequency.BassBinsFactory
 import wrappers.color.Color
 
@@ -13,11 +12,10 @@ class ColorFactory(
 
     @Suppress("ReturnCount")
     fun create(audioFrame: AudioFrame): Color {
-        val bassBins = bassBinsFactory.create(audioFrame)
-        EventBus.getDefault().post(bassBins)
+//        val bassBins = bassBinsFactory.create(audioFrame)
 
         val hue = hueCalculator.calculate(audioFrame) ?: return Color.black
-        val brightness = brightnessCalculator.calculate(bassBins) ?: return Color.black
+        val brightness = brightnessCalculator.calculate(audioFrame) ?: return Color.black
 
         return Color(hue, 1F, brightness)
     }

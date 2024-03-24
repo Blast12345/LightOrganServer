@@ -1,6 +1,7 @@
 package color
 
 import input.audioFrame.AudioFrame
+import org.greenrobot.eventbus.EventBus
 import organize.HardBandpassFilter
 import organize.SampleTrimmer
 import sound.bins.FrequencyBinsToOctaveBinsConverter
@@ -35,6 +36,7 @@ class HueCalculator(
         val trimmedSamples = sampleTrimmer.trim(audioFrame.samples, sampleSize)
         val frequencyBins = frequencyBinsCalculator.calculate(trimmedSamples, audioFrame.format)
         val filteredFrequencyBins = hardBandpassFilter.filter(frequencyBins, lowCrossover, highCrossover)
+        EventBus.getDefault().post(filteredFrequencyBins)
         val peakFrequencyBins = peakFrequencyBinsFinder.find(filteredFrequencyBins)
         val peakOctaveBins = frequencyBinsToOctaveBinsConverter.convert(peakFrequencyBins)
         val octaveWeightedAverage = octaveWeightedAverageCalculator.calculate(peakOctaveBins)
@@ -42,3 +44,4 @@ class HueCalculator(
     }
 
 }
+
