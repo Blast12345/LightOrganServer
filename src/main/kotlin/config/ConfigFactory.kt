@@ -23,7 +23,7 @@ class ConfigFactory(
             ),
             sampleSize = 4410,
             interpolatedSampleSize = 65536,
-            magnitudeMultiplier = 4F,
+            magnitudeMultiplier = 1F,
             millisecondsToWaitBetweenCheckingForNewAudio = 1,
         )
     }

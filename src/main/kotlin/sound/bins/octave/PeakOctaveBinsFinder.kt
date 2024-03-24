@@ -14,4 +14,9 @@ class PeakOctaveBinsFinder(
         return frequencyBinsToOctaveBinsConverter.convert(peakBins)
     }
 
+    fun findNew(octaveBins: OctaveBins): OctaveBins {
+        // TODO:
+        return octaveBins
+    }
+
 }

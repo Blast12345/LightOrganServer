@@ -10,6 +10,7 @@ class MagnitudeListCalculator(
     private val relativeMagnitudeListNormalizer: RelativeMagnitudeListNormalizer = RelativeMagnitudeListNormalizer()
 ) {
 
+    // TODO: Refactor
     fun calculate(samples: DoubleArray): DoubleArray {
         val processedSamples = getProcessedSamples(samples)
         val relativeMagnitudeList = getRelativeMagnitudeList(processedSamples)

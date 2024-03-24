@@ -27,7 +27,7 @@ class ColorFactoryTests {
     @BeforeEach
     fun setupHappyPath() {
         every { bassBinsFactory.create(audioFrame) } returns bassBins
-        every { hueCalculator.calculate(bassBins) } returns hue
+        every { hueCalculator.calculate(audioFrame) } returns hue
         every { brightnessCalculator.calculate(bassBins) } returns brightness
     }
 
@@ -58,7 +58,7 @@ class ColorFactoryTests {
     @Test
     fun `the color is black when the hue cannot be determined`() {
         val sut = createSUT()
-        every { hueCalculator.calculate(bassBins) } returns null
+        every { hueCalculator.calculate(audioFrame) } returns null
 
         val actual = sut.create(audioFrame)
 

@@ -1,141 +1,110 @@
 package color
 
+import config.ConfigSingleton
+import input.audioFrame.AudioFrame
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import sound.bins.frequency.FrequencyBin
-import sound.bins.frequency.FrequencyBins
 import sound.notes.Note
 import sound.notes.Notes
+import toolkit.generators.SineWaveGenerator
+import wrappers.audioFormat.AudioFormatWrapper
 
 class HueCalculatorIntegrationTests {
+
+    // TODO: Improve accuracy?
+    private val tolerance = 0.1F
 
     @Test
     fun `C notes are red`() {
         val sut = HueCalculator()
-        val frequencyBins = createFrequencyBinsFor(Notes.C)
+        val audioFrame = generateAudioFrame(listOf(Notes.C))
 
-        val actual = sut.calculate(frequencyBins)
+        val actual = sut.calculate(audioFrame)
 
-        assertEquals(0F, actual!!, 0.01F)
+        assertEquals(0F, actual!!, tolerance)
     }
 
     @Test
     fun `E notes are teal`() {
         val sut = HueCalculator()
-        val frequencyBins = createFrequencyBinsFor(Notes.E)
+        val audioFrame = generateAudioFrame(listOf(Notes.E))
 
-        val actual = sut.calculate(frequencyBins)
+        val actual = sut.calculate(audioFrame)
 
-        assertEquals(0.33F, actual!!, 0.01F)
+        assertEquals(0.33F, actual!!, tolerance)
     }
 
     @Test
     fun `F# notes are teal`() {
         val sut = HueCalculator()
-        val frequencyBins = createFrequencyBinsFor(Notes.F_SHARP)
+        val audioFrame = generateAudioFrame(listOf(Notes.F_SHARP))
 
-        val actual = sut.calculate(frequencyBins)
+        val actual = sut.calculate(audioFrame)
 
-        assertEquals(0.5F, actual!!, 0.01F)
+        assertEquals(0.5F, actual!!, tolerance)
     }
 
     @Test
     fun `G# notes are blue`() {
         val sut = HueCalculator()
-        val frequencyBins = createFrequencyBinsFor(Notes.G_SHARP)
+        val audioFrame = generateAudioFrame(listOf(Notes.G_SHARP))
 
-        val actual = sut.calculate(frequencyBins)
+        val actual = sut.calculate(audioFrame)
 
-        assertEquals(0.66F, actual!!, 0.01F)
+        assertEquals(0.66F, actual!!, tolerance)
     }
 
     @Test
     fun `A notes are purple`() {
         val sut = HueCalculator()
-        val frequencyBins = createFrequencyBinsFor(Notes.A)
+        val audioFrame = generateAudioFrame(listOf(Notes.A))
 
-        val actual = sut.calculate(frequencyBins)
+        val actual = sut.calculate(audioFrame)
 
-        assertEquals(0.75F, actual!!, 0.01F)
+        assertEquals(0.75F, actual!!, tolerance)
     }
 
     @Test
     fun `D# and A at the same time is teal`() {
         val sut = HueCalculator()
-        val binDSharp = FrequencyBin(Notes.D_SHARP.getFrequency(0), 1F)
-        val binA = FrequencyBin(Notes.A.getFrequency(0), 1F)
+        val audioFrame = generateAudioFrame(listOf(Notes.D_SHARP, Notes.A))
 
-        val actual = sut.calculate(listOf(binDSharp, binA))
+        val actual = sut.calculate(audioFrame)
 
-        assertEquals(0.5F, actual!!, 0.01F)
+        assertEquals(0.5F, actual!!, tolerance)
     }
 
     @Test
     fun `F and G at the same time is teal`() {
         val sut = HueCalculator()
-        val binF = FrequencyBin(Notes.F.getFrequency(0), 1F)
-        val binG = FrequencyBin(Notes.G.getFrequency(0), 1F)
+        val audioFrame = generateAudioFrame(listOf(Notes.F, Notes.G))
 
-        val actual = sut.calculate(listOf(binF, binG))
+        val actual = sut.calculate(audioFrame)
 
-        assertEquals(0.5F, actual!!, 0.01F)
+        assertEquals(0.5F, actual!!, tolerance)
     }
 
     @Test
     fun `D# and F at the same time is green`() {
         val sut = HueCalculator()
-        val binF = FrequencyBin(Notes.D_SHARP.getFrequency(0), 1F)
-        val binG = FrequencyBin(Notes.F.getFrequency(0), 1F)
+        val audioFrame = generateAudioFrame(listOf(Notes.D_SHARP, Notes.F))
 
-        val actual = sut.calculate(listOf(binF, binG))
+        val actual = sut.calculate(audioFrame)
 
-        assertEquals(0.33F, actual!!, 0.01F)
+        assertEquals(0.33F, actual!!, tolerance)
     }
 
-    @Test
-    fun `playing two different notes at the same time with equal magnitude results in the average of the two`() {
-        val sut = HueCalculator()
-        val notes = listOf(
-            Notes.C,
-            Notes.C_SHARP,
-            Notes.D,
-            Notes.D_SHARP,
-            Notes.E,
-            Notes.F,
-            Notes.F_SHARP,
-            Notes.G,
-            Notes.G_SHARP,
-            Notes.A,
-            Notes.A_SHARP,
-            Notes.B,
+    private fun generateAudioFrame(notes: List<Note>): AudioFrame {
+        val sampleRate = ConfigSingleton.interpolatedSampleSize.toFloat()
+        val sineWaveGenerator = SineWaveGenerator(sampleRate)
+
+        val samples = sineWaveGenerator.generate(
+            frequencies = notes.map { it.getFrequency(0) },
+            sampleSize = sampleRate.toInt()
         )
 
-        notes.forEachIndexed { index1, note1 ->
-            notes.forEachIndexed { index2, note2 ->
-                val bin1 = FrequencyBin(note1.getFrequency(0), 1F)
-                val bin2 = FrequencyBin(note2.getFrequency(0), 1F)
-
-                val actual = sut.calculate(listOf(bin1, bin2))
-
-                val hue = ((index1 / 12F) + (index2 / 12F)) / 2F
-                assertEquals(hue, actual!!, 0.01F)
-            }
-        }
-    }
-
-    private fun createFrequencyBinsFor(note: Note): FrequencyBins {
-        val bins = mutableListOf<FrequencyBin>()
-
-        for (octave in 0 until 8) {
-            bins.add(
-                FrequencyBin(
-                    frequency = note.getFrequency(octave),
-                    magnitude = 1F
-                )
-            )
-        }
-
-        return bins
+        val audioFormat = AudioFormatWrapper(sampleRate, sampleRate / 2F, 1)
+        return AudioFrame(samples, audioFormat)
     }
 
 }

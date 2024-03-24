@@ -9,7 +9,7 @@ class RelativeMagnitudeListCalculatorTests {
     private val sampleRate = 48000F
     private val signalFrequency = 12000F
     private val sampleSize = 4
-    private val signal = SineWaveGenerator(sampleRate).generate(signalFrequency, sampleSize)
+    private val signal = SineWaveGenerator(sampleRate).generate(listOf(signalFrequency), sampleSize)
 
     private fun createSUT(): RelativeMagnitudeListCalculator {
         return RelativeMagnitudeListCalculator()
