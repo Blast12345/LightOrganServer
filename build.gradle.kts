@@ -1,3 +1,5 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
     kotlin("jvm") version "1.8.0"
     id("org.jetbrains.compose") version "1.3.0"
@@ -26,8 +28,24 @@ dependencies {
 compose.desktop {
     application {
         mainClass = "MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg)
+
+            macOS {
+                infoPlist {
+                    extraKeysRawXml = macExtraPlistKeys
+                }
+            }
+        }
     }
 }
+
+val macExtraPlistKeys: String
+    get() = """
+      <key>NSMicrophoneUsageDescription</key>
+      <string>This application must listen to your input device to generate colors.</string>
+    """.trimIndent()
 
 tasks.test {
     useJUnitPlatform()
