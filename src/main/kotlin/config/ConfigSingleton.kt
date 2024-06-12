@@ -1,3 +1,3 @@
 package config
 
-val ConfigSingleton = ConfigFactory().create()
+var ConfigSingleton = ConfigFactory().create()

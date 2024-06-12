@@ -13,17 +13,26 @@ class ConfigFactory(
         return Config(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
             clients = setOf(Client("192.168.1.55")),
-            lowCrossover = Crossover(
-                stopFrequency = Notes.C.getFrequency(octave = 1),
-                cornerFrequency = Notes.C.getFrequency(octave = 2)
+            hueSampleSize = 8820,
+            hueLowCrossover = Crossover(
+                stopFrequency = Notes.C.getFrequency(octave = 0),
+                cornerFrequency = Notes.C.getFrequency(octave = 1)
             ),
-            highCrossover = Crossover(
+            hueHighCrossover = Crossover(
                 cornerFrequency = Notes.C.getFrequency(octave = 2),
                 stopFrequency = Notes.C.getFrequency(octave = 3)
             ),
-            sampleSize = 4410,
+            brightnessSampleSize = 4410,
+            brightnessLowCrossover = Crossover(
+                stopFrequency = Notes.C.getFrequency(octave = 1),
+                cornerFrequency = Notes.C.getFrequency(octave = 1)
+            ),
+            brightnessHighCrossover = Crossover(
+                cornerFrequency = Notes.C.getFrequency(octave = 2),
+                stopFrequency = Notes.C.getFrequency(octave = 3)
+            ),
             interpolatedSampleSize = 65536,
-            magnitudeMultiplier = 4F,
+            brightnessMultiplier = 4F,
             millisecondsToWaitBetweenCheckingForNewAudio = 1,
         )
     }

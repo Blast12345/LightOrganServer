@@ -1,43 +1,37 @@
 package color
 
+import config.ConfigSingleton
 import input.audioFrame.AudioFrame
 import org.greenrobot.eventbus.EventBus
-import organize.HardBandpassFilter
-import organize.SampleTrimmer
 import sound.bins.FrequencyBinsToOctaveBinsConverter
 import sound.bins.frequency.dominant.frequency.PeakFrequencyBinsFinder
+import sound.bins.frequency.filters.BandPassFilter
 import sound.bins.frequency.filters.Crossover
 import sound.bins.frequency.listCalculator.FrequencyBinsCalculator
 import sound.bins.octave.OctaveWeightedAverageCalculator
-import sound.notes.Notes
+import sound.signalProcessor.FrequencyBinsRangeFilter
+import sound.signalProcessor.SampleTrimmer
 
 class HueCalculator(
+    private val sampleSize: Int = ConfigSingleton.hueSampleSize,
+    private val lowCrossover: Crossover = ConfigSingleton.hueLowCrossover,
+    private val highCrossover: Crossover = ConfigSingleton.hueHighCrossover,
     private val sampleTrimmer: SampleTrimmer = SampleTrimmer(),
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),
-    private val hardBandpassFilter: HardBandpassFilter = HardBandpassFilter(),
+    private val bandpassFilter: BandPassFilter = BandPassFilter(),
+    private val frequencyBinsRangeFilter: FrequencyBinsRangeFilter = FrequencyBinsRangeFilter(),
     private val peakFrequencyBinsFinder: PeakFrequencyBinsFinder = PeakFrequencyBinsFinder(),
     private val frequencyBinsToOctaveBinsConverter: FrequencyBinsToOctaveBinsConverter = FrequencyBinsToOctaveBinsConverter(),
     private val octaveWeightedAverageCalculator: OctaveWeightedAverageCalculator = OctaveWeightedAverageCalculator(),
 ) {
 
-    private val sampleSize = 8820
-    private val lowCrossover = Crossover(
-        stopFrequency = Notes.C.getFrequency(0),
-        cornerFrequency = Notes.C.getFrequency(1)
-    )
-
-    private val highCrossover = Crossover(
-        cornerFrequency = Notes.C.getFrequency(2),
-        stopFrequency = Notes.C.getFrequency(3)
-    )
-
-
     fun calculate(audioFrame: AudioFrame): Float? {
         val trimmedSamples = sampleTrimmer.trim(audioFrame.samples, sampleSize)
         val frequencyBins = frequencyBinsCalculator.calculate(trimmedSamples, audioFrame.format)
-        val filteredFrequencyBins = hardBandpassFilter.filter(frequencyBins, lowCrossover, highCrossover)
-        EventBus.getDefault().post(filteredFrequencyBins)
-        val peakFrequencyBins = peakFrequencyBinsFinder.find(filteredFrequencyBins)
+        val filteredFrequencyBins = bandpassFilter.filter(frequencyBins, lowCrossover, highCrossover)
+        val relevantFrequencyBins = frequencyBinsRangeFilter.filter(filteredFrequencyBins, lowCrossover.stopFrequency, highCrossover.stopFrequency)
+        EventBus.getDefault().post(relevantFrequencyBins)
+        val peakFrequencyBins = peakFrequencyBinsFinder.find(relevantFrequencyBins)
         val peakOctaveBins = frequencyBinsToOctaveBinsConverter.convert(peakFrequencyBins)
         val octaveWeightedAverage = octaveWeightedAverageCalculator.calculate(peakOctaveBins)
         return octaveWeightedAverage

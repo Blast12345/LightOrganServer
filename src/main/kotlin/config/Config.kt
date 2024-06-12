@@ -8,11 +8,14 @@ import sound.bins.frequency.filters.Crossover
 class Config(
     val startAutomatically: MutableStateFlow<Boolean>,
     val clients: Set<Client>,
-    val lowCrossover: Crossover,
-    val highCrossover: Crossover,
-    val sampleSize: Int,
+    val hueSampleSize: Int,
+    val hueLowCrossover: Crossover,
+    val hueHighCrossover: Crossover,
+    val brightnessSampleSize: Int,
+    val brightnessLowCrossover: Crossover,
+    val brightnessHighCrossover: Crossover,
     val interpolatedSampleSize: Int,
-    val magnitudeMultiplier: Float,
+    val brightnessMultiplier: Float,
     val millisecondsToWaitBetweenCheckingForNewAudio: Long
 )
 

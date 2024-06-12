@@ -1,6 +1,5 @@
-package organize
+package sound.signalProcessor
 
-// TODO:
 class SampleTrimmer {
 
     fun trim(samples: DoubleArray, length: Int): DoubleArray {

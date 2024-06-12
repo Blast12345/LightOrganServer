@@ -3,16 +3,37 @@ package color
 import config.ConfigSingleton
 import input.audioFrame.AudioFrame
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import sound.bins.frequency.filters.Crossover
 import sound.notes.Note
 import sound.notes.Notes
+import toolkit.generators.SineWave
 import toolkit.generators.SineWaveGenerator
+import toolkit.monkeyTest.nextConfig
 import wrappers.audioFormat.AudioFormatWrapper
 
 class HueCalculatorIntegrationTests {
 
     // TODO: Improve accuracy?
     private val tolerance = 0.1F
+    private val config = nextConfig(
+        hueSampleSize = 65536,
+        hueLowCrossover = Crossover(
+            stopFrequency = Notes.C.getFrequency(octave = 0),
+            cornerFrequency = Notes.C.getFrequency(octave = 1)
+        ),
+        hueHighCrossover = Crossover(
+            cornerFrequency = Notes.C.getFrequency(octave = 2),
+            stopFrequency = Notes.C.getFrequency(octave = 3)
+        ),
+        interpolatedSampleSize = 65536
+    )
+
+    @BeforeEach
+    fun setup() {
+        ConfigSingleton = config
+    }
 
     @Test
     fun `C notes are red`() {
@@ -25,7 +46,7 @@ class HueCalculatorIntegrationTests {
     }
 
     @Test
-    fun `E notes are teal`() {
+    fun `E notes are green`() {
         val sut = HueCalculator()
         val audioFrame = generateAudioFrame(listOf(Notes.E))
 
@@ -94,12 +115,14 @@ class HueCalculatorIntegrationTests {
         assertEquals(0.33F, actual!!, tolerance)
     }
 
+    // TODO: Weighting
     private fun generateAudioFrame(notes: List<Note>): AudioFrame {
-        val sampleRate = ConfigSingleton.interpolatedSampleSize.toFloat()
+        val sampleRate = config.interpolatedSampleSize.toFloat()
         val sineWaveGenerator = SineWaveGenerator(sampleRate)
+        val sineWaves = notes.map { SineWave(it.getFrequency(1), 1F) }
 
         val samples = sineWaveGenerator.generate(
-            frequencies = notes.map { it.getFrequency(0) },
+            sineWaves = sineWaves,
             sampleSize = sampleRate.toInt()
         )
 

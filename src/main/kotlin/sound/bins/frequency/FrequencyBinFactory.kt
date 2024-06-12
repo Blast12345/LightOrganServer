@@ -1,15 +1,11 @@
 package sound.bins.frequency
 
-import config.ConfigSingleton
-
-class FrequencyBinFactory(
-    private val magnitudeMultiplier: Float = ConfigSingleton.magnitudeMultiplier
-) {
+class FrequencyBinFactory {
 
     fun create(index: Int, granularity: Float, magnitude: Double): FrequencyBin {
         return FrequencyBin(
             frequency = index * granularity,
-            magnitude = magnitude.toFloat() * magnitudeMultiplier
+            magnitude = magnitude.toFloat()
         )
     }
 

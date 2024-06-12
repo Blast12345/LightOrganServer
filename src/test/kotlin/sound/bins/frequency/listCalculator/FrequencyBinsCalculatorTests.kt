@@ -5,7 +5,6 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import sound.bins.frequency.FrequencyBinsFactory
 import toolkit.monkeyTest.nextAudioFormatWrapper
@@ -29,13 +28,6 @@ class FrequencyBinsCalculatorTests {
     private val bin101 = nextFrequencyBin(101F)
     private val frequencyBins = listOf(bin90, bin100, bin101)
 
-    @BeforeEach
-    fun setupHappyPath() {
-        every { magnitudeListCalculator.calculate(samples) } returns magnitudeList
-        every { granularityCalculator.calculate(magnitudeList.size, audioFormat) } returns granularity
-        every { frequencyBinsFactory.create(magnitudeList, granularity) } returns frequencyBins
-    }
-
     @AfterEach
     fun tearDown() {
         clearAllMocks()
@@ -52,6 +44,9 @@ class FrequencyBinsCalculatorTests {
     @Test
     fun `calculate the frequency bins for a given audio frame`() {
         val sut = createSUT()
+        every { magnitudeListCalculator.calculate(samples) } returns magnitudeList
+        every { granularityCalculator.calculate(magnitudeList.size, audioFormat) } returns granularity
+        every { frequencyBinsFactory.create(magnitudeList, granularity) } returns frequencyBins
 
         val actual = sut.calculate(samples, audioFormat)
 
