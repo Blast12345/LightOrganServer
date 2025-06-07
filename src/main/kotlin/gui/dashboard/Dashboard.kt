@@ -50,5 +50,7 @@ private fun MainRow(viewModel: DashboardViewModel) {
             modifier = Modifier.weight(1f).fillMaxSize()
         )
 
+        // TODO: Display IP address and LO port
+
     }
 }

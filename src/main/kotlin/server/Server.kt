@@ -9,7 +9,9 @@ import wrappers.color.Color
 class Server(
     private val config: Config = ConfigSingleton,
     private val socket: UdpSocket = UdpSocket(),
-    private val colorMessageFactory: ColorMessageFactory = ColorMessageFactory()
+    private val colorMessageFactory: ColorMessageFactory = ColorMessageFactory(),
+    private val gateway: Gateway = Gateway()
+
 ) : LightOrganSubscriber {
 
     private var timestampOfLastSentColor = System.currentTimeMillis()
@@ -20,9 +22,11 @@ class Server(
     }
 
     private fun sendMessage(message: String) {
-        for (client in clients) {
-            socket.send(message, client)
-        }
+//        for (client in clients) {
+//            socket.send(message, client)
+//        }
+
+        gateway.send(message);
 
         printServerLatency()
     }

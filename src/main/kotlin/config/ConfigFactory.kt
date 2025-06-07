@@ -12,7 +12,7 @@ class ConfigFactory(
     fun create(): Config {
         return Config(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
-            clients = setOf(Client("192.168.1.55")),
+            clients = setOf(Client("192.168.1.118")),
             lowCrossover = Crossover(
                 stopFrequency = Notes.C.getFrequency(octave = 1),
                 cornerFrequency = Notes.C.getFrequency(octave = 2)
@@ -21,7 +21,7 @@ class ConfigFactory(
                 cornerFrequency = Notes.C.getFrequency(octave = 2),
                 stopFrequency = Notes.C.getFrequency(octave = 3)
             ),
-            sampleSize = 4410,
+            sampleSize = 8820,
             interpolatedSampleSize = 65536,
             magnitudeMultiplier = 4F,
             millisecondsToWaitBetweenCheckingForNewAudio = 1,
