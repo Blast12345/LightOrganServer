@@ -14,6 +14,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.1")
     implementation("org.greenrobot:eventbus-java:3.3.1")
+    implementation("com.fazecast:jSerialComm:2.11.0")
     implementation(compose.desktop.currentOs)
 
     // Unit Testing

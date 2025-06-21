@@ -24,7 +24,8 @@ class Gateway {
     }
 
     fun send(message: String) {
-        val bytes = message.toByteArray()
+        println("Sending message: $message")
+        val bytes = (message + "\n").toByteArray()
         port.writeBytes(bytes, bytes.size)
         port.flushIOBuffers()
     }
