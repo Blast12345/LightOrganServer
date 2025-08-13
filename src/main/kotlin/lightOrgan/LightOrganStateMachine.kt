@@ -3,6 +3,7 @@ package lightOrgan
 import input.Input
 import kotlinx.coroutines.flow.MutableStateFlow
 
+// TODO: I think this is the real light organ?
 class LightOrganStateMachine(
     private val input: Input,
     private val lightOrgan: LightOrgan

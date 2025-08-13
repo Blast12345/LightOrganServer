@@ -3,6 +3,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import gateway.Gateway
 import gui.Theme
 import gui.dashboard.Dashboard
 import gui.dashboard.DashboardViewModel
@@ -11,9 +12,25 @@ import input.DefaultInputFactory
 import input.Input
 import lightOrgan.LightOrgan
 import lightOrgan.LightOrganStateMachine
-import server.Server
 
-fun main() = application {
+fun main(args: Array<String>) {
+    if (args.contains("--headless")) {
+        runHeadless()
+    } else {
+        runGui()
+    }
+}
+
+private fun runHeadless() {
+    val lightOrganStateMachine = getLightOrganStateMachine()
+    val gateway = Gateway()
+
+    lightOrganStateMachine.addSubscriber(gateway)
+
+    lightOrganStateMachine.start()
+}
+
+private fun runGUI() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "Synesthetic",
@@ -45,6 +62,6 @@ private fun getDefaultInput(): Input {
 
 private fun getLightOrgan(): LightOrgan {
     return LightOrgan(
-        subscribers = mutableSetOf(Server())
+        subscribers = mutableSetOf(Gateway())
     )
 }

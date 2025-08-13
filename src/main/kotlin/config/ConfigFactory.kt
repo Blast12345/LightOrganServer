@@ -12,7 +12,6 @@ class ConfigFactory(
     fun create(): Config {
         return Config(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
-            clients = setOf(Client("192.168.1.118")),
             lowCrossover = Crossover(
                 stopFrequency = Notes.C.getFrequency(octave = 1),
                 cornerFrequency = Notes.C.getFrequency(octave = 2)
