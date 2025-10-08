@@ -1,24 +1,45 @@
 package gateway
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import lightOrgan.LightOrganSubscriber
 import wrappers.color.Color
 
 class Gateway(
-    private val device: UsbDevice = UsbDeviceFinder.find(),
-    private val colorMessageFactory: ColorMessageFactory = ColorMessageFactory()
-): LightOrganSubscriber {
+    private val keyword: String = "Gateway",
+    private val healthCheckMS: Long = 1000
+) : LightOrganSubscriber {
+
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private var device: UsbDevice? = null
 
     init {
-        if (port.openPort()) {
-            println("Port opened successfully")
-        } else {
-            println("Failed to open port")
+        startMonitoringConnection()
+    }
+
+    private fun startMonitoringConnection() {
+        scope.launch {
+            while (isActive) {
+                if (device == null) {
+                    device = UsbDeviceFinder.find(keyword)
+                }
+
+                if (device?.isConnected() == false) {
+                    device?.connect()
+                }
+
+                delay(healthCheckMS)
+            }
         }
     }
 
     override fun new(color: Color) {
-        val colorMessage = colorMessageFactory.create(color)
-        device.send(colorMessage)
+        val colorMessage = "${color.red},${color.green},${color.blue}"
+        device?.send(colorMessage)
     }
 
 }

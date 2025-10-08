@@ -1,12 +1,13 @@
 package lightOrgan
 
+import input.DefaultInputFactory
 import input.Input
 import kotlinx.coroutines.flow.MutableStateFlow
 
 // TODO: I think this is the real light organ?
 class LightOrganStateMachine(
-    private val input: Input,
-    private val lightOrgan: LightOrgan
+    private val input: Input = DefaultInputFactory().create(),
+    private val lightOrgan: LightOrgan = LightOrgan(),
 ) {
 
     val isRunning: MutableStateFlow<Boolean> = MutableStateFlow(lightOrganIsSubscribedToInput)

@@ -6,62 +6,33 @@ import androidx.compose.ui.window.rememberWindowState
 import gateway.Gateway
 import gui.Theme
 import gui.dashboard.Dashboard
-import gui.dashboard.DashboardViewModel
 import gui.dashboard.DashboardViewModelFactory
-import input.DefaultInputFactory
-import input.Input
-import lightOrgan.LightOrgan
 import lightOrgan.LightOrganStateMachine
 
-fun main(args: Array<String>) {
-    if (args.contains("--headless")) {
-        runHeadless()
-    } else {
-        runGui()
-    }
-}
-
-private fun runHeadless() {
-    val lightOrganStateMachine = getLightOrganStateMachine()
+fun main(/*args: Array<String>*/) {
+    val stateMachine = LightOrganStateMachine()
     val gateway = Gateway()
 
-    lightOrganStateMachine.addSubscriber(gateway)
+    stateMachine.addSubscriber(gateway)
 
-    lightOrganStateMachine.start()
+
+    launchGUI(stateMachine)
+//    if (args.contains("--headless")) {
+//        stateMachine.start()
+//    } else {
+//        launchGUI(stateMachine)
+//    }
 }
 
-private fun runGUI() = application {
+private fun launchGUI(stateMachine: LightOrganStateMachine) = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "Synesthetic",
         state = rememberWindowState(width = 900.dp, height = 300.dp),
     ) {
         Theme {
-            val viewModel = remember { getDashboardViewModel() }
+            val viewModel = remember { DashboardViewModelFactory().create(stateMachine) }
             Dashboard(viewModel)
         }
     }
-}
-
-private fun getDashboardViewModel(): DashboardViewModel {
-    return DashboardViewModelFactory().create(
-        lightOrganStateMachine = getLightOrganStateMachine()
-    )
-}
-
-private fun getLightOrganStateMachine(): LightOrganStateMachine {
-    return LightOrganStateMachine(
-        input = getDefaultInput(),
-        lightOrgan = getLightOrgan()
-    )
-}
-
-private fun getDefaultInput(): Input {
-    return DefaultInputFactory().create()
-}
-
-private fun getLightOrgan(): LightOrgan {
-    return LightOrgan(
-        subscribers = mutableSetOf(Gateway())
-    )
 }

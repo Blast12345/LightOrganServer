@@ -6,6 +6,14 @@ class UsbDevice(
     private val port: SerialPort
 ) {
 
+    fun connect() {
+        port.openPort()
+    }
+
+    fun isConnected(): Boolean {
+        return port.isOpen
+    }
+
     fun send(message: String) {
         println("Sending message: $message")
         val bytes = (message + "\n").toByteArray()

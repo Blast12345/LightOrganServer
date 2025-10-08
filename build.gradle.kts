@@ -1,11 +1,13 @@
 plugins {
-    kotlin("jvm") version "1.8.0"
-    id("org.jetbrains.compose") version "1.3.0"
+    val kotlinVersion = "2.2.0"
+
+    id("org.jetbrains.kotlin.jvm") version kotlinVersion
+    id("org.jetbrains.kotlin.plugin.compose") version kotlinVersion
+    id("org.jetbrains.compose") version "1.8.2"
 }
 
 repositories {
     mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     google()
 }
 
@@ -17,7 +19,6 @@ dependencies {
     implementation("com.fazecast:jSerialComm:2.11.0")
     implementation(compose.desktop.currentOs)
 
-    // Unit Testing
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     testImplementation("io.mockk:mockk:1.13.4")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
@@ -27,9 +28,8 @@ dependencies {
 compose.desktop {
     application {
         mainClass = "MainKt"
+        args += listOf()
     }
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
+tasks.test { useJUnitPlatform() }
