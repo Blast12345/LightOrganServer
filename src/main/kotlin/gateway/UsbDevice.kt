@@ -10,6 +10,10 @@ class UsbDevice(
         port.openPort()
     }
 
+    fun disconnect() {
+        port.closePort()
+    }
+
     fun isConnected(): Boolean {
         return port.isOpen
     }
