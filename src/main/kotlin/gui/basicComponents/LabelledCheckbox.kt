@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,7 +25,7 @@ fun LabelledCheckbox(
         modifier = modifier
             .clip(MaterialTheme.shapes.small)
             .clickable(
-                indication = rememberRipple(color = MaterialTheme.colors.primary),
+                indication = ripple(color = MaterialTheme.colors.primary),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = { didChange(!isChecked) }
             )) {
