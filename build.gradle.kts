@@ -1,7 +1,7 @@
 plugins {
-    val kotlinVersion = "2.2.0"
+    val kotlinVersion = "2.2.21"
 
-    id("org.jetbrains.kotlin.jvm") version kotlinVersion
+    kotlin("jvm") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.compose") version kotlinVersion
     id("org.jetbrains.compose") version "1.8.2"
 }
@@ -12,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    // Production
     implementation("com.github.wendykierp:JTransforms:3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.1")
@@ -19,6 +20,7 @@ dependencies {
     implementation("com.fazecast:jSerialComm:2.11.0")
     implementation(compose.desktop.currentOs)
 
+    // Testing
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     testImplementation("io.mockk:mockk:1.13.4")
     testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.0")
