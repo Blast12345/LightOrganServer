@@ -10,4 +10,8 @@ object Logger {
         println("${LogColor.Red.code}$message${LogColor.Default.code}")
     }
 
+    fun debug(message: String) {
+        println("${LogColor.Yellow.code}$message${LogColor.Default.code}")
+    }
+
 }

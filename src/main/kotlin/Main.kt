@@ -7,14 +7,17 @@ import gateway.GatewayFinder
 import gui.Theme
 import gui.dashboard.Dashboard
 import gui.dashboard.DashboardViewModelFactory
+import kotlinx.coroutines.runBlocking
 import lightOrgan.LightOrganStateMachine
 
 
-fun main(/*args: Array<String>*/) {
+// TODO: Remove run-blocking when gateway finder is moved
+fun main(/*args: Array<String>*/) = runBlocking {
     val stateMachine = LightOrganStateMachine()
 
     // TODO: Optimize
     val gateway = GatewayFinder().find()
+//    val gateway = gatewayPort?.let { Gateway(it) }
 
     if (gateway != null) {
         stateMachine.addSubscriber(gateway)

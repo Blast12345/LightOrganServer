@@ -1,40 +1,62 @@
 package gateway
 
-import com.fazecast.jSerialComm.SerialPort
+import gateway.messages.GatewayIdentificationResponse
+import gateway.messages.MessageFactory
+import gateway.serial.SerialRouter
+import gateway.serial.wrappers.SerialFormat
+import gateway.serial.wrappers.SerialPort
 import lightOrgan.LightOrganSubscriber
 import wrappers.color.Color
 
-class Gateway(
-    private val port: SerialPort
-//    private val device: UsbDevice,
-//    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-//    private val healthCheckMS: Long = 1000,
+class Gateway private constructor(
+    val macAddress: String,
+    val firmwareVersion: String,
+    private val serialRouter: SerialRouter,
+    private val messageFactory: MessageFactory
 ) : LightOrganSubscriber {
 
-    init {
-//        startMaintainingConnection()
+    companion object {
+
+        // Hardcoded for now; may introduce config later
+        val baudRate: Int = 115200
+        val serialFormat: SerialFormat = SerialFormat.FORMAT_8N1
+
+        suspend fun connect(
+            port: SerialPort,
+            messageFactory: MessageFactory = MessageFactory()
+        ): Gateway {
+            val serialRouter = SerialRouter.create(port, baudRate, serialFormat)
+
+            try {
+                serialRouter.connect()
+
+                val response = handshake(serialRouter, messageFactory)
+
+                return Gateway(
+                    response.macAddress,
+                    response.firmwareVersion,
+                    serialRouter,
+                    messageFactory
+                )
+            } catch (e: Exception) {
+                serialRouter.disconnect()
+                throw e
+            }
+        }
+
+        private suspend fun handshake(
+            serialRouter: SerialRouter,
+            requestFactory: MessageFactory
+        ): GatewayIdentificationResponse {
+            val request = requestFactory.createIdentificationRequest()
+            return serialRouter.send(request, GatewayIdentificationResponse::class.java)
+        }
+
     }
 
-    //    private fun startMaintainingConnection() {
-//        scope.launch {
-//            while (isActive) {
-//                if (device.isNotConnected()) {
-//                    println("USB Device is not connected. Attempting to connect...")
-//                    device.connect()
-//                }
-//
-//                delay(healthCheckMS)
-//            }
-//        }
-//    }
-//
     override fun new(color: Color) {
-//        if (device.isNotConnected()) {
-//            return
-//        }
-//
-//        val colorMessage = "${color.red},${color.green},${color.blue}"
-//        device.send(colorMessage)
+        val command = messageFactory.createColorCommand(color)
+        serialRouter.send(command)
     }
 
 }

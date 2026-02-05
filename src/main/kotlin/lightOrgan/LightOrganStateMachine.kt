@@ -1,5 +1,6 @@
 package lightOrgan
 
+import gateway.Gateway
 import input.DefaultInputFactory
 import input.Input
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class LightOrganStateMachine(
     private val input: Input = DefaultInputFactory().create(),
     private val lightOrgan: LightOrgan = LightOrgan(),
+    private val gateway: Gateway? = null
 ) {
 
     val isRunning: MutableStateFlow<Boolean> = MutableStateFlow(lightOrganIsSubscribedToInput)
