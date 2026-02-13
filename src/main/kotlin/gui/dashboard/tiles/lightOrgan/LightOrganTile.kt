@@ -1,7 +1,5 @@
 package gui.dashboard.tiles.lightOrgan
 
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -83,16 +81,18 @@ private fun startOrStopButton(
 
 @Composable
 private fun startButton(startAction: () -> Unit) {
-    Button(
-        content = { Text("Start") },
-        onClick = startAction
+    SimpleButton(
+        title = "Start",
+        isLoading = false,
+        action = startAction
     )
 }
 
 @Composable
 private fun stopButton(stopAction: () -> Unit) {
-    Button(
-        content = { Text("Stop") },
-        onClick = stopAction
+    SimpleButton(
+        title = "Stop",
+        isLoading = false,
+        action = stopAction
     )
 }

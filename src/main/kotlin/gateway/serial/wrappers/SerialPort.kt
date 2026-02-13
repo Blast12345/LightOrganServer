@@ -1,12 +1,15 @@
 package gateway.serial.wrappers
 
+import com.fazecast.jSerialComm.SerialPortDataListener
+import com.fazecast.jSerialComm.SerialPortEvent
 import wrappers.Wrapper
 import java.io.ByteArrayOutputStream
 import com.fazecast.jSerialComm.SerialPort as JSerialPort
 
 @Wrapper
 interface SerialPort {
-    val path: String
+    val systemPath: String
+    val isOpen: Boolean
     fun open(baudRate: Int, format: SerialFormat)
     fun close()
     fun writeLine(data: String)
@@ -19,9 +22,30 @@ class SerialPortWrapper(
     private val timeoutMs: Int = 250
 ) : SerialPort {
 
+    override val systemPath: String = port.systemPortPath
+    override val isOpen: Boolean
+        get() = port.isOpen
     private val newLineByte = '\n'.code.toByte()
 
-    override val path: String = port.systemPortPath
+    init {
+        handleDisconnects()
+    }
+
+    private fun handleDisconnects() {
+        // Ensures that isOpen can be trusted.
+        // Implemented as per documentation: https://fazecast.github.io/jSerialComm/javadoc/com/fazecast/jSerialComm/SerialPort.html#isOpen()
+        port.addDataListener(object : SerialPortDataListener {
+            override fun getListeningEvents(): Int {
+                return JSerialPort.LISTENING_EVENT_PORT_DISCONNECTED
+            }
+
+            override fun serialEvent(event: SerialPortEvent) {
+                if (event.eventType == JSerialPort.LISTENING_EVENT_PORT_DISCONNECTED) {
+                    port.closePort()
+                }
+            }
+        })
+    }
 
     override fun open(baudRate: Int, format: SerialFormat) {
         port.baudRate = baudRate
@@ -33,31 +57,36 @@ class SerialPortWrapper(
         port.setComPortTimeouts(JSerialPort.TIMEOUT_READ_BLOCKING, timeoutMs, timeoutMs)
 
         if (!port.openPort()) {
-            throw SerialPortException(path, "Failed to open port.")
+            throw SerialPortException(systemPath, "Failed to open port.")
         }
 
         if (!port.flushIOBuffers()) {
-            throw SerialPortException(path, "Failed to flush buffers.")
+            throw SerialPortException(systemPath, "Failed to flush buffers.")
         }
     }
 
     override fun close() {
         if (!port.closePort()) {
-            throw SerialPortException(path, "Failed to close port.")
+            throw SerialPortException(systemPath, "Failed to close port.")
         }
     }
 
+    // TODO: duplicates being received by ESP32; is it on server side or gateway side?
     override fun writeLine(data: String) {
+        if (!port.isOpen) throw SerialPortException(systemPath, "Port is not open.")
+
         val line = data + "\n"
         val bytes = line.toByteArray(Charsets.UTF_8)
         val written = port.writeBytes(bytes, bytes.size)
 
         if (written == -1) {
-            throw SerialPortException(path, "Failed to write line.")
+            throw SerialPortException(systemPath, "Failed to write line.")
         }
     }
 
     override fun readNextLine(): String? {
+        if (!port.isOpen) throw SerialPortException(systemPath, "Port is not open.")
+        
         val buffer = ByteArrayOutputStream()
 
         while (true) {

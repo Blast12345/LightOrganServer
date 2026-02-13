@@ -41,6 +41,6 @@ private fun text(text: String) {
     SimpleText(
         text = text,
         fontSize = 12,
-        padding = 8
+        modifier = Modifier.padding(8.dp)
     )
 }

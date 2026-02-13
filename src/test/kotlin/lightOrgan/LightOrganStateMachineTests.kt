@@ -1,5 +1,6 @@
 package lightOrgan
 
+import gateway.GatewayManager
 import input.Input
 import io.mockk.every
 import io.mockk.mockk
@@ -12,13 +13,15 @@ class LightOrganStateMachineTests {
 
     private val input: Input = mockk(relaxed = true)
     private val lightOrgan: LightOrgan = mockk(relaxed = true)
+    private val gatewayManager: GatewayManager = mockk(relaxed = true)
 
     private val newSubscriber: LightOrganSubscriber = mockk()
 
     private fun createSUT(): LightOrganStateMachine {
         return LightOrganStateMachine(
             input = input,
-            lightOrgan = lightOrgan
+            lightOrgan = lightOrgan,
+            gatewayManager = gatewayManager
         )
     }
 

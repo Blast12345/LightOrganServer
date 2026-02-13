@@ -52,37 +52,97 @@ class SerialRouterTests {
         )
     }
 
+    // Connection State
     @Test
-    fun `open connection to the port`() = runTest {
+    fun `given the port is open, when initialized, then is connected`() = runTest {
+        serialPort.isOpen = true
         val sut = createSUT(backgroundScope)
 
-        sut.connect()
-
-        assertTrue(serialPort.isOpen)
-        assertEquals(serialPort.baudRate, baudRate)
-        assertEquals(serialPort.format, serialFormat)
+        assertTrue(sut.isConnected.value)
     }
 
     @Test
-    fun `close connection to the port`() = runTest {
+    fun `given the port is closed, when initialized, then is disconnected`() = runTest {
+        serialPort.isOpen = false
+        val sut = createSUT(backgroundScope)
+
+        assertFalse(sut.isConnected.value)
+    }
+
+    // Connect
+    @Test
+    fun `connect to the port`() = runTest {
+        val sut = createSUT(backgroundScope)
+
+        sut.connect()
+
+        assertTrue(serialPort.isOpen)
+        assertEquals(baudRate, serialPort.baudRate)
+        assertEquals(serialFormat, serialPort.format)
+    }
+
+    @Test
+    fun `when connecting to the port succeeds, then is connected`() = runTest {
+        val sut = createSUT(backgroundScope)
+
+        sut.connect()
+
+        assertTrue(sut.isConnected.value)
+    }
+
+    @Test
+    fun `when connecting to the port fails, then is disconnected`() = runTest {
+        val sut = createSUT(backgroundScope)
+        serialPort.openException = Exception()
+
+        assertThrows<Exception> { sut.connect() }
+
+        assertFalse(sut.isConnected.value)
+    }
+
+    // Disconnect
+    @Test
+    fun `disconnect from the port`() = runTest {
         val sut = createSUT(backgroundScope)
         sut.connect()
-        assertTrue(serialPort.isOpen)
 
         sut.disconnect()
 
         assertFalse(serialPort.isOpen)
-        assertTrue(backgroundScope.coroutineContext.job.isCancelled)
+        assertTrue(backgroundScope.coroutineContext.job.isCancelled) // Cancel any jobs
     }
 
     @Test
+    fun `when disconnecting to the port succeeds, then is disconnected`() = runTest {
+        val sut = createSUT(backgroundScope)
+        sut.connect()
+
+        sut.disconnect()
+
+        assertFalse(sut.isConnected.value)
+    }
+
+    @Test
+    fun `when disconnecting to the port fails, then is connected`() = runTest {
+        val sut = createSUT(backgroundScope)
+        sut.connect()
+        serialPort.closeException = Exception()
+
+        assertThrows<Exception> { sut.disconnect() }
+
+        assertTrue(sut.isConnected.value)
+    }
+
+    // Request
+    @Test
     fun `when a request is sent and a matching response is received, then the response is returned`() = runTest {
         val sut = createSUT(backgroundScope)
-        serialPort.responseMap[requestString] = listOf(randomObjectString, responseString)
         sut.connect()
+        serialPort.responseMap[requestString] = listOf(randomObjectString, responseString)
 
         val actual = sut.send(request, FakeSerialResponse::class.java)
 
+        assertEquals(requestString, serialPort.writtenLines.firstOrNull())
         assertEquals(response, actual)
     }
 
@@ -90,8 +150,8 @@ class SerialRouterTests {
     @Test
     fun `when a request is sent and no response is received, then timeout`() = runTest {
         val sut = createSUT(backgroundScope)
-        serialPort.responseMap[requestString] = listOf(randomObjectString)
         sut.connect()
+        serialPort.responseMap[requestString] = listOf(randomObjectString)
 
         val startTime = currentTime.milliseconds
 
@@ -102,5 +162,39 @@ class SerialRouterTests {
         val elapsedTime = currentTime.milliseconds - startTime
         assertEquals(requestTimeout, elapsedTime)
     }
+
+    @Test
+    fun `given the port has become disconnected, when a request fails, then is disconnected`() = runTest {
+        val sut = createSUT(backgroundScope)
+        sut.connect()
+        serialPort.isOpen = false
+
+        assertThrows<Exception> { sut.send(request, FakeSerialResponse::class.java) }
+
+        assertFalse(sut.isConnected.value)
+    }
+
+    // Send object
+    @Test
+    fun `when an object is sent, then the JSON string is written to the port`() = runTest {
+        val sut = createSUT(backgroundScope)
+        sut.connect()
+
+        sut.send(randomObject)
+
+        assertEquals(randomObjectString, serialPort.writtenLines.firstOrNull())
+    }
+
+    @Test
+    fun `given the port has become disconnected, when sending an object fails, then is disconnected`() =
+        runTest {
+            val sut = createSUT(backgroundScope)
+            sut.connect()
+            serialPort.isOpen = false
+
+            assertThrows<Exception> { sut.send(randomObject) }
+
+            assertFalse(sut.isConnected.value)
+        }
 
 }

@@ -4,6 +4,7 @@ import config.Config
 import config.ConfigSingleton
 import lightOrgan.LightOrganStateMachine
 
+// TODO: Move all factories into companion objects?
 class LightOrganTileViewModelFactory(
     private val config: Config = ConfigSingleton
 ) {

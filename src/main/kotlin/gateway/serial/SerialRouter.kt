@@ -4,16 +4,13 @@ import JsonMapper
 import gateway.serial.wrappers.SerialFormat
 import gateway.serial.wrappers.SerialPort
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import logging.Logger
 import tools.jackson.databind.JsonNode
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-
-enum class ConnectionState {
-    CONNECTED,
-    DISCONNECTED
-}
 
 class SerialRouter(
     private val serialPort: SerialPort,
@@ -21,8 +18,6 @@ class SerialRouter(
     private val format: SerialFormat,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
-
-//    val connectionState: StateFlow<ConnectionState>
 
     companion object {
 
@@ -36,27 +31,56 @@ class SerialRouter(
 
     }
 
+    private val _isConnected: MutableStateFlow<Boolean> = MutableStateFlow(serialPort.isOpen)
+    val isConnected = _isConnected.asStateFlow()
     private val pendingRequests = ConcurrentHashMap<String, CompletableDeferred<JsonNode>>()
 
-    // TODO: Should a prevent duplicate "connect" calls?
+    init {
+        updateConnectionState()
+    }
+
+    private fun updateConnectionState() {
+        val stateChanged = _isConnected.value != serialPort.isOpen
+
+        if (stateChanged) {
+            _isConnected.value = serialPort.isOpen
+        }
+    }
+
     fun connect() {
-        serialPort.open(baudRate, format)
-        scope.launch { readLoop() }
+        try {
+            serialPort.open(baudRate, format)
+            scope.launch { readLoop() }
+        } finally {
+            updateConnectionState()
+        }
     }
 
     private suspend fun readLoop() {
-        while (currentCoroutineContext().isActive) {
-            val line = serialPort.readNextLine() ?: run { delay(1); continue }
-            val json = parse(line) ?: continue
+        try {
+            while (currentCoroutineContext().isActive) {
+                // Check port status before reading
+                if (!serialPort.isOpen) {
+                    break
+                }
 
-            val requestId = json.get("request-id")?.asString()
+                val line = serialPort.readNextLine() ?: run {
+                    delay(1)
+                    continue
+                }
 
-            if (requestId != null) {
-                // TODO: Determine if the json is a request or response
-                pendingRequests[requestId]?.complete(json)
-            } else {
-                // TODO: Received object
+                val json = parse(line) ?: continue
+
+                val requestId = json.get("request-id")?.asString()
+
+                if (requestId != null) {
+                    pendingRequests[requestId]?.complete(json)
+                } else {
+                    // TODO: Received object
+                }
             }
+        } finally {
+            updateConnectionState()
         }
     }
 
@@ -69,8 +93,12 @@ class SerialRouter(
     }
 
     fun disconnect() {
-        scope.cancel()
-        serialPort.close()
+        try {
+            scope.cancel()
+            serialPort.close()
+        } finally {
+            updateConnectionState()
+        }
     }
 
     suspend fun <Request : SerialRequest, Response : SerialResponse> send(
@@ -85,18 +113,25 @@ class SerialRouter(
             serialPort.write(request)
             val json = withTimeout(timeout) { deferred.await() }
             return JsonMapper.treeToValue(json, responseClass)
+        } catch (e: Exception) {
+            updateConnectionState()
+            throw e
         } finally {
             pendingRequests.remove(request.requestId)
         }
     }
 
     fun send(obj: SerialObject) {
-        serialPort.write(obj)
+        try {
+            serialPort.write(obj)
+        } catch (e: Exception) {
+            updateConnectionState()
+            throw e
+        }
     }
 
     private fun SerialPort.write(obj: SerialObject) {
         val string = JsonMapper.writeValueAsString(obj)
-
         writeLine(string)
     }
 

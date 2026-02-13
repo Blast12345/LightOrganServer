@@ -5,15 +5,17 @@ import gateway.messages.MessageFactory
 import gateway.serial.SerialRouter
 import gateway.serial.wrappers.SerialFormat
 import gateway.serial.wrappers.SerialPort
-import lightOrgan.LightOrganSubscriber
 import wrappers.color.Color
 
 class Gateway private constructor(
+    val systemPath: String,
     val macAddress: String,
     val firmwareVersion: String,
     private val serialRouter: SerialRouter,
     private val messageFactory: MessageFactory
-) : LightOrganSubscriber {
+) {
+
+    val isConnected = serialRouter.isConnected
 
     companion object {
 
@@ -33,6 +35,7 @@ class Gateway private constructor(
                 val response = handshake(serialRouter, messageFactory)
 
                 return Gateway(
+                    port.systemPath,
                     response.macAddress,
                     response.firmwareVersion,
                     serialRouter,
@@ -54,7 +57,15 @@ class Gateway private constructor(
 
     }
 
-    override fun new(color: Color) {
+    fun reconnect() {
+        serialRouter.connect()
+    }
+
+    fun disconnect() {
+        serialRouter.disconnect()
+    }
+
+    fun send(color: Color) {
         val command = messageFactory.createColorCommand(color)
         serialRouter.send(command)
     }
