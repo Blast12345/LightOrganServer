@@ -8,5 +8,7 @@ gradle-app.setting
 !gradle-wrapper.jar
 
 # IntelliJ
-.idea
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/shelf
 out/
