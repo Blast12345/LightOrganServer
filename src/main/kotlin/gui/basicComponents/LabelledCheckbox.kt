@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
@@ -21,7 +22,8 @@ fun LabelledCheckbox(
     didChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically,
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .clip(MaterialTheme.shapes.small)
             .clickable(
@@ -30,7 +32,7 @@ fun LabelledCheckbox(
                 onClick = { didChange(!isChecked) }
             )) {
         checkbox(isChecked)
-        SimpleSpacer(dpSize = 8)
+        SimpleSpacer(8.dp)
         text(label)
     }
 }

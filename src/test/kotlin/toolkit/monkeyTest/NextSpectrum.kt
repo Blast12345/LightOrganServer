@@ -1,7 +1,7 @@
 package toolkit.monkeyTest
 
-import gui.dashboard.tiles.spectrum.Spectrum
-import gui.dashboard.tiles.spectrum.SpectrumBin
+import gui.tiles.spectrum.Spectrum
+import gui.tiles.spectrum.SpectrumBin
 import kotlin.random.Random
 
 fun nextSpectrum(

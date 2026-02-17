@@ -1,10 +1,13 @@
 package sound.bins.frequency
 
 import config.ConfigSingleton
-import input.audioFrame.AudioFrame
 import sound.bins.frequency.filters.Crossover
 import sound.bins.frequency.filters.PassBandRegionFilter
 import sound.bins.frequency.listCalculator.FrequencyBinsCalculator
+import wrappers.audioFormat.AudioFormatWrapper
+
+// TODO: Kill me
+class AudioFrame(val samples: DoubleArray, val format: AudioFormatWrapper)
 
 class BassBinsFactory(
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),

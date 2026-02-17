@@ -1,0 +1,4 @@
+package sound
+
+class SoundProcessor {
+}

@@ -1,5 +1,5 @@
 package toolkit.monkeyTest
 
-fun nextException(prefix: String): Exception {
-    return Exception("$prefix: ${nextString()}")
+fun nextException(prefix: String = "exception"): Exception {
+    return Exception(nextString(prefix))
 }

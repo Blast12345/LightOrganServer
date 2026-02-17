@@ -1,8 +1,8 @@
 package gateway.serial.wrappers
 
+import annotations.Wrapper
 import com.fazecast.jSerialComm.SerialPortDataListener
 import com.fazecast.jSerialComm.SerialPortEvent
-import wrappers.Wrapper
 import java.io.ByteArrayOutputStream
 import com.fazecast.jSerialComm.SerialPort as JSerialPort
 
@@ -86,7 +86,7 @@ class SerialPortWrapper(
 
     override fun readNextLine(): String? {
         if (!port.isOpen) throw SerialPortException(systemPath, "Port is not open.")
-        
+
         val buffer = ByteArrayOutputStream()
 
         while (true) {

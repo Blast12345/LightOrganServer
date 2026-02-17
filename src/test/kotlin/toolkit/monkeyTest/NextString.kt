@@ -7,10 +7,10 @@ fun nextString(prefix: String? = null): String {
 
     if (prefix != null) {
         output.append(prefix)
-        output.append(": ")
+        output.append("-")
     }
 
-    val randomString = UUID.randomUUID().toString()
+    val randomString = UUID.randomUUID().toString().take(4)
     output.append(randomString)
 
     return output.toString()

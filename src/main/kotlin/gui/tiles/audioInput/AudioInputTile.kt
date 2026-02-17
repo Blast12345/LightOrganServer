@@ -1,0 +1,51 @@
+package gui.tiles.audioInput
+
+import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import gui.basicComponents.*
+
+@Preview
+@Composable
+fun AudioInputTile(
+    viewModel: AudioInputTileViewModel,
+    modifier: Modifier = Modifier
+) {
+    val inputDetails by viewModel.inputDetails.collectAsState()
+    val isListening by viewModel.isListening.collectAsState()
+
+    Tile(modifier) {
+        SimpleText(
+            text = "Audio Input",
+            fontSize = 24,
+            fontWeight = FontWeight.SemiBold
+        )
+
+        SimpleSpacer(12.dp)
+
+        DetailText("Status", if (isListening) "Listening" else "Not listening")
+        DetailText("Name", inputDetails?.name ?: "")
+        DetailText("Sample Rate", inputDetails?.sampleRate?.toString() ?: "")
+        DetailText("Bit Depth", inputDetails?.bitDepth?.toString() ?: "")
+
+        SimpleSpacer(12.dp)
+
+        if (isListening) {
+            SimpleButton(
+                title = "Disconnect",
+                isLoading = false,
+                action = { viewModel.disconnect() }
+            )
+        } else {
+            SimpleButton(
+                title = "Connect",
+                isLoading = false,
+                action = { viewModel.connect() }
+            )
+        }
+    }
+}

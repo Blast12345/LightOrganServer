@@ -1,6 +1,6 @@
 package gateway.serial.wrappers
 
-import wrappers.Wrapper
+import annotations.Wrapper
 
 @Wrapper
 class SerialPortException(

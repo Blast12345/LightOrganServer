@@ -66,6 +66,7 @@ class GatewayManager(
 //        }
 //    }
 
+    // TODO: Separate find and connect?
     suspend fun connect() {
         if (currentGateway.value != null) {
             currentGateway.value?.reconnect() // TODO: Update test

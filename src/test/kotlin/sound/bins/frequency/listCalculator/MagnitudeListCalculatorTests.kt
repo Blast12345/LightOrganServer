@@ -32,7 +32,12 @@ class MagnitudeListCalculatorTests {
         val sut = createSUT()
         every { signalProcessor.process(samples) } returns processedSamples
         every { relativeMagnitudeListCalculator.calculate(processedSamples) } returns relativeMagnitudeList
-        every { relativeMagnitudeListNormalizer.normalize(relativeMagnitudeList, processedSamples.size) } returns normalizedMagnitudes
+        every {
+            relativeMagnitudeListNormalizer.normalize(
+                relativeMagnitudeList,
+                processedSamples.size
+            )
+        } returns normalizedMagnitudes
 
         val actual = sut.calculate(samples)
 

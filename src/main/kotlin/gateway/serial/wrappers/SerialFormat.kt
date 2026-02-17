@@ -1,7 +1,7 @@
 package gateway.serial.wrappers
 
+import annotations.Wrapper
 import com.fazecast.jSerialComm.SerialPort
-import wrappers.Wrapper
 
 @Wrapper
 data class SerialFormat(

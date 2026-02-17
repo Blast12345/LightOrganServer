@@ -1,5 +1,8 @@
 package gui.dashboard.tiles.spectrum
 
+import gui.tiles.spectrum.SpectrumBin
+import gui.tiles.spectrum.SpectrumCreator
+import gui.tiles.spectrum.SpectrumTileViewModel
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -8,12 +11,14 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import sound.SoundProcessor
 import toolkit.monkeyTest.nextFrequencyBins
 import toolkit.monkeyTest.nextSpectrum
 import toolkit.monkeyTest.nextSpectrumBin
 
 class SpectrumTileViewModelTests {
 
+    private val soundProcessor: SoundProcessor = mockk()
     private val spectrumCreator: SpectrumCreator = mockk()
     private val spectrum = nextSpectrum()
 
@@ -29,6 +34,7 @@ class SpectrumTileViewModelTests {
 
     private fun createSUT(): SpectrumTileViewModel {
         return SpectrumTileViewModel(
+            soundProcessor = soundProcessor,
             spectrumCreator = spectrumCreator
         )
     }

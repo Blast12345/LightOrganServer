@@ -1,5 +1,7 @@
 package gui.dashboard.tiles.spectrum
 
+import gui.tiles.spectrum.SpectrumBin
+import gui.tiles.spectrum.SpectrumCreator
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sound.bins.frequency.FrequencyBin

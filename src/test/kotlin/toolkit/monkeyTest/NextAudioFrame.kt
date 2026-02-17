@@ -1,6 +1,6 @@
 package toolkit.monkeyTest
 
-import input.audioFrame.AudioFrame
+import sound.bins.frequency.AudioFrame
 import wrappers.audioFormat.AudioFormatWrapper
 
 fun nextAudioFrame(
