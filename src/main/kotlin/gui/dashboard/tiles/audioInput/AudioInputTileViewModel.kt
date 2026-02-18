@@ -1,0 +1,39 @@
+package gui.tiles.audioInput
+
+import input.AudioInputDetails
+import input.AudioInputManager
+import gui.dashboard.SnackbarController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+
+class AudioInputTileViewModel(
+    private val audioInputManager: AudioInputManager,
+    private val snackbarController: SnackbarController,
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+) {
+
+    val inputDetails: StateFlow<AudioInputDetails?> = audioInputManager.inputDetails
+    val isListening: StateFlow<Boolean> = audioInputManager.isListening
+
+    fun connect() {
+        scope.launch {
+            try {
+                audioInputManager.startListening()
+            } catch (e: Exception) {
+                snackbarController.show(e.message ?: "Failed to connect to input.")
+            }
+        }
+    }
+
+    fun disconnect() {
+        try {
+            audioInputManager.stopListening()
+        } catch (e: Exception) {
+            scope.launch { snackbarController.show(e.message ?: "Failed to disconnect from input.") }
+        }
+    }
+
+}

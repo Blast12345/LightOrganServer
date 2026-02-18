@@ -1,19 +1,22 @@
 package gui.dashboard
 
 import gui.dashboard.tiles.color.ColorTileViewModelFactory
-import gui.dashboard.tiles.lightOrgan.LightOrganTileViewModelFactory
 import gui.dashboard.tiles.spectrum.SpectrumTileViewModel
-import lightOrgan.LightOrganStateMachine
+import gui.tiles.audioInput.AudioInputTileViewModel
+import lightOrgan.LightOrgan
 
 class DashboardViewModelFactory(
-    private val lightOrganTileViewModelFactory: LightOrganTileViewModelFactory = LightOrganTileViewModelFactory(),
     private val colorTileViewModelFactory: ColorTileViewModelFactory = ColorTileViewModelFactory(),
     private val spectrumTileViewModel: SpectrumTileViewModel = SpectrumTileViewModel()
 ) {
 
-    fun create(lightOrganStateMachine: LightOrganStateMachine): DashboardViewModel {
+    fun create(
+        lightOrgan: LightOrgan,
+        snackbarController: SnackbarController
+    ): DashboardViewModel {
         return DashboardViewModel(
-            lightOrganTileViewModel = lightOrganTileViewModelFactory.create(lightOrganStateMachine),
+            lightOrgan = lightOrgan,
+            audioInputTileViewModel = AudioInputTileViewModel(lightOrgan.audioInputManager, snackbarController),
             colorTileViewModel = colorTileViewModelFactory.create(),
             spectrumTileViewModel = spectrumTileViewModel
         )

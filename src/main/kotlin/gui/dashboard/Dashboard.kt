@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gui.dashboard.tiles.color.ColorTile
-import gui.dashboard.tiles.lightOrgan.LightOrganTile
+import gui.tiles.audioInput.AudioInputTile
 
 @Preview
 @Composable
@@ -17,7 +17,11 @@ fun Dashboard(
     viewModel: DashboardViewModel
 ) {
     Background()
-    MainRow(viewModel)
+
+    MainRow(
+        viewModel,
+        Modifier.fillMaxSize().padding(16.dp)
+    )
 }
 
 @Composable
@@ -30,23 +34,27 @@ private fun Background() {
 }
 
 @Composable
-private fun MainRow(viewModel: DashboardViewModel) {
+private fun MainRow(
+    viewModel: DashboardViewModel,
+    modifier: Modifier = Modifier
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.padding(16.dp)
+        modifier = modifier
     ) {
 
-        LightOrganTile(
-            viewModel = viewModel.lightOrganTileViewModel
-        )
-
-        ColorTile(
-            viewModel = viewModel.colorTileViewModel,
-            modifier = Modifier.weight(1f).fillMaxSize()
+        AudioInputTile(
+            viewModel = viewModel.audioInputTileViewModel,
+            modifier = Modifier.weight(1f).fillMaxHeight()
         )
 
         SpectrumTile(
             viewModel = viewModel.spectrumTileViewModel,
+            modifier = Modifier.weight(1f).fillMaxSize()
+        )
+
+        ColorTile(
+            viewModel = viewModel.colorTileViewModel,
             modifier = Modifier.weight(1f).fillMaxSize()
         )
 

@@ -7,18 +7,13 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.bins.frequency.BassBinsFactory
-import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextFrequencyBins
 import wrappers.color.Color
 import kotlin.random.Random
 
 class ColorFactoryTests {
 
-    private val audioFrame = nextAudioFrame()
-
-    private val bassBinsFactory: BassBinsFactory = mockk()
-    private val bassBins = nextFrequencyBins()
+    private val frequencyBins = nextFrequencyBins()
     private val hueCalculator: HueCalculator = mockk()
     private val hue = Random.nextFloat()
     private val brightnessCalculator: BrightnessCalculator = mockk()
@@ -26,9 +21,8 @@ class ColorFactoryTests {
 
     @BeforeEach
     fun setupHappyPath() {
-        every { bassBinsFactory.create(audioFrame) } returns bassBins
-        every { hueCalculator.calculate(bassBins) } returns hue
-        every { brightnessCalculator.calculate(bassBins) } returns brightness
+        every { hueCalculator.calculate(frequencyBins) } returns hue
+        every { brightnessCalculator.calculate(frequencyBins) } returns brightness
     }
 
     @AfterEach
@@ -38,7 +32,6 @@ class ColorFactoryTests {
 
     private fun createSUT(): ColorFactory {
         return ColorFactory(
-            bassBinsFactory = bassBinsFactory,
             hueCalculator = hueCalculator,
             brightnessCalculator = brightnessCalculator
         )
@@ -48,7 +41,7 @@ class ColorFactoryTests {
     fun `get the color for an audio frame`() {
         val sut = createSUT()
 
-        val color = sut.create(audioFrame)
+        val color = sut.create(frequencyBins)
 
         assertEquals(hue, color.hue, 0.01F)
         assertEquals(1F, color.saturation, 0.01F)
@@ -58,9 +51,9 @@ class ColorFactoryTests {
     @Test
     fun `the color is black when the hue cannot be determined`() {
         val sut = createSUT()
-        every { hueCalculator.calculate(bassBins) } returns null
+        every { hueCalculator.calculate(frequencyBins) } returns null
 
-        val actual = sut.create(audioFrame)
+        val actual = sut.create(frequencyBins)
 
         assertEquals(Color.black, actual)
     }
@@ -68,9 +61,9 @@ class ColorFactoryTests {
     @Test
     fun `the color is black when the brightness cannot be determined`() {
         val sut = createSUT()
-        every { brightnessCalculator.calculate(bassBins) } returns null
+        every { brightnessCalculator.calculate(frequencyBins) } returns null
 
-        val actual = sut.create(audioFrame)
+        val actual = sut.create(frequencyBins)
 
         assertEquals(Color.black, actual)
     }
