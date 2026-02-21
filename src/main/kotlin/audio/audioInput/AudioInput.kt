@@ -1,9 +1,9 @@
-package input.audioInput
+package audio.audioInput
 
-import input.samples.AudioFormat
-import input.samples.AudioFrame
-import input.samples.SampleBuffer
-import input.samples.SampleNormalizer
+import audio.samples.AudioFormat
+import audio.samples.AudioFrame
+import audio.samples.SampleBuffer
+import audio.samples.SampleNormalizer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow

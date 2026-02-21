@@ -1,7 +1,8 @@
-package input.audioInput
+package audio.audioInput
 
-import input.samples.SampleBuffer
-import input.samples.SampleNormalizer
+import audio.audioInput.AudioInput
+import audio.samples.SampleBuffer
+import audio.samples.SampleNormalizer
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel

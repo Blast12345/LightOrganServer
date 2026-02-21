@@ -1,6 +1,6 @@
 package input
 
-import input.samples.AudioFormat
+import audio.samples.AudioFormat
 
 data class AudioInputDetails(
     val name: String,

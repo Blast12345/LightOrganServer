@@ -1,6 +1,6 @@
 package sound.bins.frequency.listCalculator
 
-import input.samples.AudioFormat
+import audio.samples.AudioFormat
 
 class GranularityCalculator {
 

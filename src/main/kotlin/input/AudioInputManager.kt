@@ -1,8 +1,8 @@
 package input
 
-import input.audioInput.AudioInput
-import input.audioInput.AudioInputFinder
-import input.samples.AudioFrame
+import audio.audioInput.AudioInput
+import audio.audioInput.AudioInputFinder
+import audio.samples.AudioFrame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -1,7 +1,7 @@
 package sound
 
-import input.samples.AudioFormat
-import input.samples.AudioFrame
+import audio.samples.AudioFormat
+import audio.samples.AudioFrame
 import sound.bins.frequency.FrequencyBinFactory
 import sound.bins.frequency.FrequencyBins
 import sound.bins.frequency.listCalculator.GranularityCalculator

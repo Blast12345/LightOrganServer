@@ -1,7 +1,7 @@
-package input.audioDevice
+package audio.audioDevice
 
-import input.audioInput.AudioInput
-import input.audioInput.AudioInputFactory
+import audio.audioInput.AudioInput
+import audio.audioInput.AudioInputFactory
 import javax.sound.sampled.Mixer
 import javax.sound.sampled.TargetDataLine
 

@@ -1,4 +1,4 @@
-package input.audioDevice
+package audio.audioDevice
 
 import javax.sound.sampled.AudioSystem
 

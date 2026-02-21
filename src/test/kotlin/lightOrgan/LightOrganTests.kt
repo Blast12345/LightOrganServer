@@ -1,7 +1,7 @@
 package lightOrgan
 
+import audio.samples.AudioFrame
 import color.ColorFactory
-import input.samples.AudioFrame
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

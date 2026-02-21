@@ -1,7 +1,8 @@
-package input.audioDevice
+package audio.audioDevice
 
-import input.audioInput.AudioInput
-import input.audioInput.AudioInputFactory
+import audio.audioDevice.AudioDeviceFactory
+import audio.audioInput.AudioInput
+import audio.audioInput.AudioInputFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

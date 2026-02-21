@@ -1,8 +1,8 @@
-package input.audioInput
+package audio.audioInput
 
 import annotations.SkipCoverage
-import input.samples.SampleBuffer
-import input.samples.SampleNormalizer
+import audio.samples.SampleBuffer
+import audio.samples.SampleNormalizer
 import wrappers.sound.InputLine
 import javax.sound.sampled.TargetDataLine
 

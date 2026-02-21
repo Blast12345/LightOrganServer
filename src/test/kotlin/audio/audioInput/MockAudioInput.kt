@@ -1,6 +1,7 @@
-package input.audioInput
+package audio.audioInput
 
-import input.samples.AudioFrame
+import audio.audioInput.AudioInput
+import audio.samples.AudioFrame
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow

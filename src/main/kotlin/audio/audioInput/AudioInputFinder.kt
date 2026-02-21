@@ -1,6 +1,6 @@
-package input.audioInput
+package audio.audioInput
 
-import input.audioDevice.AudioDeviceFinder
+import audio.audioDevice.AudioDeviceFinder
 
 class AudioInputFinder(
     private val audioDeviceFinder: AudioDeviceFinder = AudioDeviceFinder()

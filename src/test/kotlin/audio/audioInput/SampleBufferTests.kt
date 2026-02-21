@@ -1,6 +1,6 @@
-package input.audioInput
+package audio.audioInput
 
-import input.samples.SampleBuffer
+import audio.samples.SampleBuffer
 
 class SampleBufferTests {
 

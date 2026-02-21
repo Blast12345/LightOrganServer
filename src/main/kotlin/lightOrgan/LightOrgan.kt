@@ -1,7 +1,7 @@
 package lightOrgan
 
+import audio.samples.AudioFrame
 import color.ColorFactory
-import input.samples.AudioFrame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

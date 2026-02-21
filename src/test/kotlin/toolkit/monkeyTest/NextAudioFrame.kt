@@ -1,6 +1,6 @@
 package toolkit.monkeyTest
 
-import input.samples.AudioFrame
+import audio.samples.AudioFrame
 
 fun nextAudioFrame(): AudioFrame {
     return AudioFrame(

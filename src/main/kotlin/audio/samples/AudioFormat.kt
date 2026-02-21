@@ -1,4 +1,4 @@
-package input.samples
+package audio.samples
 
 data class AudioFormat(
     val sampleRate: Int,

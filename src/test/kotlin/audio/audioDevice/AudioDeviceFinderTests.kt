@@ -1,5 +1,8 @@
-package input.audioDevice
+package audio.audioDevice
 
+import audio.audioDevice.AudioDevice
+import audio.audioDevice.AudioDeviceFactory
+import audio.audioDevice.AudioDeviceFinder
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

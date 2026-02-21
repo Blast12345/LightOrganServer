@@ -1,6 +1,6 @@
-package input.audioInput
+package audio.audioInput
 
-import input.samples.SampleNormalizer
+import audio.samples.SampleNormalizer
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

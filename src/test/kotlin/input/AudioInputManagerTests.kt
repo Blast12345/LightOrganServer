@@ -1,8 +1,8 @@
 package input
 
-import input.audioInput.AudioInput
-import input.audioInput.AudioInputFinder
-import input.audioInput.MockAudioInput
+import audio.audioInput.AudioInput
+import audio.audioInput.AudioInputFinder
+import audio.audioInput.MockAudioInput
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
