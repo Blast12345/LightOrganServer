@@ -4,7 +4,6 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test
-import sound.signalProcessor.SignalProcessor
 import sound.signalProcessor.fft.RelativeMagnitudeListCalculator
 import sound.signalProcessor.fft.RelativeMagnitudeListNormalizer
 import toolkit.monkeyTest.nextDoubleArray
@@ -12,8 +11,6 @@ import toolkit.monkeyTest.nextDoubleArray
 class MagnitudeListCalculatorTests {
 
     private val samples = nextDoubleArray()
-    private val signalProcessor: SignalProcessor = mockk()
-    private val processedSamples = nextDoubleArray()
     private val relativeMagnitudeListCalculator: RelativeMagnitudeListCalculator = mockk()
     private val relativeMagnitudeList = nextDoubleArray()
     private val relativeMagnitudeListNormalizer: RelativeMagnitudeListNormalizer = mockk()
@@ -21,7 +18,6 @@ class MagnitudeListCalculatorTests {
 
     private fun createSUT(): MagnitudeListCalculator {
         return MagnitudeListCalculator(
-            signalProcessor = signalProcessor,
             relativeMagnitudeListCalculator = relativeMagnitudeListCalculator,
             relativeMagnitudeListNormalizer = relativeMagnitudeListNormalizer
         )
@@ -30,9 +26,13 @@ class MagnitudeListCalculatorTests {
     @Test
     fun `calculate the magnitudes for given samples`() {
         val sut = createSUT()
-        every { signalProcessor.process(samples) } returns processedSamples
-        every { relativeMagnitudeListCalculator.calculate(processedSamples) } returns relativeMagnitudeList
-        every { relativeMagnitudeListNormalizer.normalize(relativeMagnitudeList, processedSamples.size) } returns normalizedMagnitudes
+        every { relativeMagnitudeListCalculator.calculate(samples) } returns relativeMagnitudeList
+        every {
+            relativeMagnitudeListNormalizer.normalize(
+                relativeMagnitudeList,
+                samples.size
+            )
+        } returns normalizedMagnitudes
 
         val actual = sut.calculate(samples)
 

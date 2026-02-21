@@ -1,6 +1,6 @@
 package toolkit.monkeyTest
 
-import input.AudioFormat
+import input.samples.AudioFormat
 
 fun nextAudioFormat(
     sampleRate: Int = nextPositiveInt(),

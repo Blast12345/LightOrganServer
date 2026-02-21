@@ -13,7 +13,7 @@ import kotlin.random.Random
 class ColorTileViewModelTests {
 
     private val colorState: MutableState<androidx.compose.ui.graphics.Color> = mockk()
-    private val scope = TestScope()
+    private val sutScope = TestScope()
 
     private val hue = Random.nextFloat()
     private val saturation = Random.nextFloat()
@@ -24,7 +24,7 @@ class ColorTileViewModelTests {
     private fun createSUT(): ColorTileViewModel {
         return ColorTileViewModel(
             color = colorState,
-            scope = scope
+            scope = sutScope
         )
     }
 
@@ -34,7 +34,7 @@ class ColorTileViewModelTests {
         val sut = createSUT()
 
         sut.new(color)
-        scope.advanceUntilIdle()
+        sutScope.advanceUntilIdle()
 
         verify { colorState.value = composeColor }
     }

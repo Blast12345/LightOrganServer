@@ -1,5 +1,7 @@
 package input.audioInput
 
+import input.samples.SampleBuffer
+
 class SampleBufferTests {
 
     private val bufferSize = 4

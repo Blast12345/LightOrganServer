@@ -1,7 +1,8 @@
 package input.audioInput
 
 import annotations.DoNotUnitTest
-import scopes.IoScope
+import input.samples.SampleBuffer
+import input.samples.SampleNormalizer
 import wrappers.sound.InputLine
 import javax.sound.sampled.TargetDataLine
 
@@ -19,8 +20,7 @@ class AudioInputFactory {
         return AudioInput(
             inputLine = inputLine,
             sampleNormalizer = sampleNormalizer,
-            sampleBuffer = oneSecondBuffer,
-            scope = IoScope
+            sampleBuffer = oneSecondBuffer
         )
     }
 

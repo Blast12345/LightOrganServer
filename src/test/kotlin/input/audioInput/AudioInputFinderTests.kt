@@ -55,9 +55,9 @@ class AudioInputFinderTests {
 
     @Test
     fun `given there are no inputs, when finding all inputs, then return an empty list`() {
+        val sut = createSUT()
         every { audioDevice1.inputs } returns emptyList()
         every { audioDevice2.inputs } returns emptyList()
-        val sut = createSUT()
 
         val actual = sut.findAll()
 
@@ -76,9 +76,9 @@ class AudioInputFinderTests {
 
     @Test
     fun `given there are no inputs, when finding default input, then throw an exception`() {
+        val sut = createSUT()
         every { audioDevice1.inputs } returns emptyList()
         every { audioDevice2.inputs } returns emptyList()
-        val sut = createSUT()
 
         assertThrows<Exception> { sut.findDefaultInput() }
     }

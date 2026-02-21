@@ -1,6 +1,7 @@
 package sound
 
-import input.AudioFormat
+import input.samples.AudioFormat
+import input.samples.AudioFrame
 import sound.bins.frequency.FrequencyBinFactory
 import sound.bins.frequency.FrequencyBins
 import sound.bins.frequency.listCalculator.GranularityCalculator
@@ -14,15 +15,15 @@ class FrequencyBinsCalculator(
     private val frequencyBinFactory: FrequencyBinFactory = FrequencyBinFactory()
 ) {
 
-    fun calculate(samples: FloatArray, audioFormat: AudioFormat): FrequencyBins {
-        val doubleArraySamples = samples.map { it.toDouble() }.toDoubleArray()
+    fun calculate(audioFrame: AudioFrame): FrequencyBins {
+        val doubleArraySamples = audioFrame.samples.map { it.toDouble() }.toDoubleArray()
         val processedSamples = signalProcessor.process(doubleArraySamples) // TODO: Change array type
         val magnitudes = magnitudeCalculator.calculate(processedSamples)
-        val granularity = granularityCalculator.calculate(magnitudes.size, audioFormat)
+        val granularity = granularityCalculator.calculate(magnitudes.size, audioFrame.format)
 
         return magnitudes.mapIndexed { index, magnitude ->
             frequencyBinFactory.create(index, granularity, magnitude)
-        }.removeBinsBeyondNyquistFrequency(audioFormat)
+        }.removeBinsBeyondNyquistFrequency(audioFrame.format)
     }
 
     private fun FrequencyBins.removeBinsBeyondNyquistFrequency(audioFormat: AudioFormat): FrequencyBins {

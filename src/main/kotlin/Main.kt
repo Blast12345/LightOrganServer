@@ -11,20 +11,25 @@ import gui.Theme
 import gui.dashboard.Dashboard
 import gui.dashboard.DashboardViewModelFactory
 import gui.dashboard.SnackbarController
+import input.AudioInputManager
 import lightOrgan.LightOrgan
 
 // TODO: Consolidate coroutine scopes
 fun main(args: Array<String>) {
-    val lightOrgan = LightOrgan()
+    val audioInputManager = AudioInputManager()
+
+    val lightOrgan = LightOrgan(
+        capturedAudio = audioInputManager.bufferedAudio
+    )
 
     if (args.contains("--headless")) {
         launchHeadless(lightOrgan)
     } else {
-        launchGUI(lightOrgan)
+        launchGUI(audioInputManager, lightOrgan)
     }
 }
 
-private fun launchGUI(lightOrgan: LightOrgan) = application {
+private fun launchGUI(audioInputManager: AudioInputManager, lightOrgan: LightOrgan) = application {
     val minimumWidth = 1200
     val minimumHeight = 300
 
@@ -51,7 +56,8 @@ private fun launchGUI(lightOrgan: LightOrgan) = application {
             Scaffold(
                 snackbarHost = { SnackbarHost(snackbarHostState) }
             ) {
-                val viewModel = remember { DashboardViewModelFactory().create(lightOrgan, snackbarController) }
+                val viewModel =
+                    remember { DashboardViewModelFactory().create(audioInputManager, lightOrgan, snackbarController) }
                 Dashboard(viewModel)
             }
         }

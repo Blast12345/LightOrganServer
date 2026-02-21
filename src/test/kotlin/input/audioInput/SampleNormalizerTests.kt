@@ -1,5 +1,6 @@
 package input.audioInput
 
+import input.samples.SampleNormalizer
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

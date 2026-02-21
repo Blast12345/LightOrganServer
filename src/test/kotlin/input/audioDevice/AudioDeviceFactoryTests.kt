@@ -21,7 +21,6 @@ class AudioDeviceFactoryTests {
     private val audioInputFactory: AudioInputFactory = mockk()
 
     private val mixer: Mixer = mockk()
-    private val mixerName = nextString("name")
 
     // NOTE: Allegedly, audio can only be captured from TargetDataLines
     private val portInfo: Port.Info = mockk()
@@ -39,7 +38,7 @@ class AudioDeviceFactoryTests {
     fun setupHappyPath() {
         every { audioInputFactory.create(any(), any()) } returns mockk()
 
-        every { mixer.mixerInfo.name } returns mixerName
+        every { mixer.mixerInfo.name } returns nextString("name")
         every { mixer.targetLineInfo } returns arrayOf(portInfo, input1Info, input2Info)
 
         every { portInfo.lineClass } returns Port::class.java
@@ -61,18 +60,18 @@ class AudioDeviceFactoryTests {
 
     // Name
     @Test
-    fun `given the mixer has a name, then name returns the mixer name`() {
+    fun `given the mixer has a name, then name is the mixer name`() {
         val sut = createSUT()
 
         val audioDevice = sut.create(mixer)
 
-        assertEquals(mixerName, audioDevice.name)
+        assertEquals(mixer.mixerInfo.name, audioDevice.name)
     }
 
     @Test
-    fun `given the mixer has no name, then name returns unknown`() {
-        every { mixer.mixerInfo.name } returns null
+    fun `given the mixer has no name, then name is unknown`() {
         val sut = createSUT()
+        every { mixer.mixerInfo.name } returns null
 
         val audioDevice = sut.create(mixer)
 
@@ -81,32 +80,33 @@ class AudioDeviceFactoryTests {
 
     // Inputs
     @Test
-    fun `given the mixer has inputs, then creates inputs with device name`() {
+    fun `given the mixer has inputs, then the device has those inputs`() {
+        val sut = createSUT()
+        val mixerName = mixer.mixerInfo.name
         every { audioInputFactory.create(mixerName, inputLine1) } returns audioInput1
         every { audioInputFactory.create(mixerName, inputLine2) } returns audioInput2
-        val sut = createSUT()
 
         val audioDevice = sut.create(mixer)
 
-        assertTrue(audioDevice.inputs.toSet() == allAudioInputs)
+        assertEquals(allAudioInputs, audioDevice.inputs.toSet())
     }
 
     @Test
-    fun `given the mixer has no name, then creates inputs with Unknown as device name`() {
+    fun `given the mixer has no name, then the device has those inputs with a generic name`() {
+        val sut = createSUT()
         every { mixer.mixerInfo.name } returns null
         every { audioInputFactory.create("Unknown", inputLine1) } returns audioInput1
         every { audioInputFactory.create("Unknown", inputLine2) } returns audioInput2
-        val sut = createSUT()
 
         val audioDevice = sut.create(mixer)
 
-        assertTrue(audioDevice.inputs.toSet() == allAudioInputs)
+        assertEquals(allAudioInputs, audioDevice.inputs.toSet())
     }
 
     @Test
-    fun `given the device does not have inputs, then the input list is empty`() {
-        every { mixer.targetLineInfo } returns arrayOf(portInfo)
+    fun `given the mixers does not have inputs, then the device has no inputs`() {
         val sut = createSUT()
+        every { mixer.targetLineInfo } returns arrayOf(portInfo)
 
         val audioDevice = sut.create(mixer)
 

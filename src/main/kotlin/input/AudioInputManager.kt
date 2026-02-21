@@ -2,12 +2,15 @@ package input
 
 import input.audioInput.AudioInput
 import input.audioInput.AudioInputFinder
+import input.samples.AudioFrame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
 
+// ENHANCEMENT: Handle unexpected disconnects.
+// ENHANCEMENT: Configure the read size. Note that different systems may behave unusually if the value is too low/high.
 @OptIn(ExperimentalCoroutinesApi::class)
 class AudioInputManager(
     private val currentAudioInput: MutableStateFlow<AudioInput?> = MutableStateFlow(null),
@@ -18,29 +21,21 @@ class AudioInputManager(
 
     // State
     val inputDetails: StateFlow<AudioInputDetails?> = currentAudioInput
-        .map { it?.toInfo() }
+        .map { it?.let { AudioInputDetails(it.name, it.format) } }
         .stateIn(scope, sharingPolicy, null)
 
-    // TODO: Put this somewhere else?
-    private fun AudioInput.toInfo() = AudioInputDetails(
-        name = name,
-        format = AudioFormat(
-            sampleRate = sampleRate,
-            bitDepth = bitDepth,
-            channels = channels
-        ),
-    )
-
     val isListening: StateFlow<Boolean> = currentAudioInput
-        .flatMapLatest { it?.isListening ?: flowOf(false) }
+        .flatMapLatest {
+            it?.isListening ?: flowOf(false)
+        }
         .stateIn(scope, sharingPolicy, false)
 
-    val sampleUpdates: Flow<FloatArray> = currentAudioInput
-        .flatMapLatest { it?.sampleUpdates ?: emptyFlow() }
-
+    val bufferedAudio: SharedFlow<AudioFrame> = currentAudioInput
+        .flatMapLatest { it?.bufferedAudio ?: emptyFlow() }
+        .shareIn(scope, sharingPolicy)
 
     // Start-stop
-    suspend fun startListening() {
+    fun startListening() {
         if (currentAudioInput.value == null) selectDefaultInput()
 
         currentAudioInput.value?.start()
@@ -57,4 +52,3 @@ class AudioInputManager(
     }
 
 }
-

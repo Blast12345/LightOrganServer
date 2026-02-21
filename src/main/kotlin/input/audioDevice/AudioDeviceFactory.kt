@@ -26,7 +26,9 @@ class AudioDeviceFactory(
         val targetLineInfos = mixer.targetLineInfo
         val inputLineInfos = targetLineInfos.filter { it.lineClass == TargetDataLine::class.java }
         val inputLines = inputLineInfos.map { mixer.getLine(it) as TargetDataLine }
-        val inputs = inputLines.map { audioInputFactory.create(deviceName, it) }
+        val inputs = inputLines.map {
+            audioInputFactory.create(deviceName, it)
+        }
 
         return inputs
     }

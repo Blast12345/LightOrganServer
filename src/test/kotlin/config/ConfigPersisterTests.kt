@@ -12,7 +12,7 @@ import toolkit.monkeyTest.nextConfig
 
 class ConfigPersisterTests {
 
-    private val scope = TestScope()
+    private val sutScope = TestScope()
 
     private val config: Config = nextConfig()
     private val persistedConfig: PersistedConfig = mockk(relaxed = true)
@@ -25,7 +25,7 @@ class ConfigPersisterTests {
     private fun createSUT(): ConfigPersister {
         return ConfigPersister(
             persistedConfig = persistedConfig,
-            scope = scope
+            scope = sutScope
         )
     }
 
@@ -38,7 +38,7 @@ class ConfigPersisterTests {
         val newValue = nextConfig().startAutomatically.value.not()
         config.startAutomatically.value = newValue
 
-        scope.advanceUntilIdle()
+        sutScope.advanceUntilIdle()
         verify { persistedConfig.startAutomatically = newValue }
     }
 

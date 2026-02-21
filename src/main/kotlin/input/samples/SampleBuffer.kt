@@ -1,4 +1,4 @@
-package input.audioInput
+package input.samples
 
 // TODO: Test me
 class SampleBuffer(size: Int) {

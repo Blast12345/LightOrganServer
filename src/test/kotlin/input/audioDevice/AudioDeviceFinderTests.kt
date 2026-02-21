@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import javax.sound.sampled.AudioSystem
@@ -51,7 +52,7 @@ class AudioDeviceFinderTests {
         val actual = sut.findAll()
 
         val audioDevices = setOf(audioDevice1, audioDevice2)
-        assert(actual.toSet() == audioDevices)
+        assertEquals(audioDevices, actual.toSet())
     }
 
 }

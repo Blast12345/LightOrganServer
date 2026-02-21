@@ -1,48 +1,51 @@
 package input.audioInput
 
+import input.samples.AudioFormat
+import input.samples.AudioFrame
+import input.samples.SampleBuffer
+import input.samples.SampleNormalizer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import logging.Logger
+import scopes.IoScope
 import wrappers.sound.InputLine
 
-// ENHANCEMENT: Handle unexpected disconnects.
 class AudioInput(
     private val inputLine: InputLine,
     private val sampleBuffer: SampleBuffer,
     private val sampleNormalizer: SampleNormalizer,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope = IoScope
 ) {
 
-    val name: String = inputLine.name
-    val sampleRate: Int = inputLine.sampleRate
-    val bitDepth: Int = inputLine.bitDepth
-    val channels: Int = inputLine.channels
-
-    private val _isListening: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isListening = _isListening.asStateFlow()
-
-    private val _sampleUpdates = MutableSharedFlow<FloatArray>(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
-    val sampleUpdates = _sampleUpdates.asSharedFlow()
-
     private var listeningJob: Job? = null
+    private val _isListening: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _bufferedAudio = MutableSharedFlow<AudioFrame>(0, 1, BufferOverflow.DROP_OLDEST)
 
-    suspend fun start() {
+    val name: String = inputLine.name
+    val format = AudioFormat(
+        sampleRate = inputLine.sampleRate,
+        bitDepth = inputLine.bitDepth,
+        channels = inputLine.channels
+    )
+    val isListening = _isListening.asStateFlow()
+    val bufferedAudio = _bufferedAudio.asSharedFlow()
+
+    fun start() {
+        if (listeningJob?.isActive == true) return
+
         inputLine.start()
-        _isListening.value = true
+        startCapturingAudio()
+    }
 
+    private fun startCapturingAudio() {
         listeningJob = scope.launch {
-            try {
-                startReadLoop()
-            } finally {
-                _isListening.value = false
-            }
-        }
+            _isListening.value = true
+            startReadLoop()
+        }.also { it.invokeOnCompletion(::onStoppedCapturingAudio) }
     }
 
     private suspend fun startReadLoop() {
@@ -52,14 +55,22 @@ class AudioInput(
 
             sampleBuffer.append(newSamples)
 
-            _sampleUpdates.tryEmit(sampleBuffer.current)
+            val audioFrame = AudioFrame(sampleBuffer.current, format)
+            _bufferedAudio.tryEmit(audioFrame)
+        }
+    }
+
+    private fun onStoppedCapturingAudio(cause: Throwable?) {
+        _isListening.value = false
+
+        if (cause != null && cause !is CancellationException) {
+            Logger.error(cause.message ?: "$name read loop has failed unexpectedly.")
         }
     }
 
     fun stop() {
         listeningJob?.cancel()
         inputLine.stop()
-        _isListening.value = false
     }
 
 }

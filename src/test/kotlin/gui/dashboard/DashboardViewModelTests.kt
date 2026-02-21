@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 
 class DashboardViewModelTests {
 
-    private val lightOrgan: LightOrgan = mockk()
+    private val lightOrgan: LightOrgan = mockk(relaxed = true)
     private val audioInputTileViewModel: AudioInputTileViewModel = mockk()
     private val colorTileViewModel: ColorTileViewModel = mockk(relaxed = true)
     private val spectrumTileViewModel: SpectrumTileViewModel = mockk(relaxed = true)
@@ -39,13 +39,15 @@ class DashboardViewModelTests {
 
     @Test
     fun `the color tile is subscribed to the light organ`() {
-        createSUT()
+        val sut = createSUT()
+
         verify { lightOrgan.addSubscriber(colorTileViewModel) }
     }
 
     @Test
     fun `changes to the config are persisted`() {
-        createSUT()
+        val sut = createSUT()
+
         verify { configPersister.persist(config) }
     }
 
