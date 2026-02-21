@@ -1,12 +1,12 @@
 package input.audioInput
 
-import annotations.DoNotUnitTest
+import annotations.SkipCoverage
 import input.samples.SampleBuffer
 import input.samples.SampleNormalizer
 import wrappers.sound.InputLine
 import javax.sound.sampled.TargetDataLine
 
-@DoNotUnitTest
+@SkipCoverage
 class AudioInputFactory {
 
     fun create(
