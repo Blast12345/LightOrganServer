@@ -1,13 +1,13 @@
 package gui.tiles.audioInput
 
-import input.AudioInputDetails
-import input.AudioInputManager
 import gui.dashboard.SnackbarController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import lightOrgan.input.AudioInputDetails
+import lightOrgan.input.AudioInputManager
 
 class AudioInputTileViewModel(
     private val audioInputManager: AudioInputManager,

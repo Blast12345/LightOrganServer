@@ -5,8 +5,8 @@ import color.ColorFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import lightOrgan.input.AudioInputManager
 import server.Server
 import sound.FrequencyBinsCalculator
 import sound.bins.frequency.BassBinsFilter
@@ -14,7 +14,7 @@ import utilities.TimestampUtility
 import wrappers.color.Color
 
 class LightOrgan(
-    private val capturedAudio: Flow<AudioFrame>,
+    private val audioInputManager: AudioInputManager,
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),
     private val frequencyBinsFilter: BassBinsFilter = BassBinsFilter(), // TODO: Refactor
     private val colorFactory: ColorFactory = ColorFactory(), // TODO: Test?
@@ -27,7 +27,7 @@ class LightOrgan(
 
     init {
         scope.launch {
-            capturedAudio.collect { handle(it) }
+            audioInputManager.bufferedAudio.collect { handle(it) }
         }
     }
 

@@ -1,14 +1,13 @@
 package lightOrgan
 
-import audio.samples.AudioFrame
 import color.ColorFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
+import lightOrgan.input.MockAudioInputManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -22,7 +21,7 @@ import toolkit.monkeyTest.nextFrequencyBins
 
 class LightOrganTests {
 
-    private val capturedAudio = MutableSharedFlow<AudioFrame>()
+    private val audioInputManager = MockAudioInputManager.create()
     private val frequencyBinsCalculator: FrequencyBinsCalculator = mockk()
     private val frequencyBinsFilter: BassBinsFilter = mockk()
     private val colorFactory: ColorFactory = mockk()
@@ -56,7 +55,7 @@ class LightOrganTests {
 
     private fun createSUT(): LightOrgan {
         return LightOrgan(
-            capturedAudio = capturedAudio,
+            audioInputManager = audioInputManager.mock,
             frequencyBinsCalculator = frequencyBinsCalculator,
             frequencyBinsFilter = frequencyBinsFilter,
             colorFactory = colorFactory,
@@ -70,7 +69,7 @@ class LightOrganTests {
     fun `when new audio is received, broadcast the color`() = runTest {
         val sut = createSUT()
 
-        capturedAudio.emit(newAudio)
+        audioInputManager.bufferedAudio.emit(newAudio)
 
         every { subscriber1.new(newColor) } returns Unit
         every { subscriber2.new(newColor) } returns Unit

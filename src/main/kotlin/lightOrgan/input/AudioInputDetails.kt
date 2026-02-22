@@ -1,4 +1,4 @@
-package input
+package lightOrgan.input
 
 import audio.samples.AudioFormat
 
