@@ -1,15 +1,14 @@
 package toolkit.monkeyTest
 
-import wrappers.audioFormat.AudioFormatWrapper
-import kotlin.random.Random
+import audio.samples.AudioFormat
 
-fun nextAudioFormatWrapper(
-    nyquistFrequency: Float = Random.nextFloat(),
-    numberOfChannels: Int = Random.nextInt()
-): AudioFormatWrapper {
-    return AudioFormatWrapper(
-        sampleRate = Random.nextFloat(),
-        nyquistFrequency = nyquistFrequency,
-        numberOfChannels = numberOfChannels
+fun nextAudioFormat(
+    sampleRate: Int = nextPositiveInt(),
+    channels: Int = nextPositiveInt()
+): AudioFormat {
+    return AudioFormat(
+        sampleRate = sampleRate,
+        bitDepth = nextPositiveInt(),
+        channels = channels
     )
 }

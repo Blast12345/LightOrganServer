@@ -1,31 +1,48 @@
 package lightOrgan
 
+import audio.samples.AudioFrame
 import color.ColorFactory
-import input.InputSubscriber
-import input.audioFrame.AudioFrame
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import server.Server
+import sound.FrequencyBinsCalculator
+import sound.bins.frequency.BassBinsFilter
+import utilities.TimestampUtility
 import wrappers.color.Color
 
 class LightOrgan(
+    private val capturedAudio: Flow<AudioFrame>,
+    private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),
+    private val frequencyBinsFilter: BassBinsFilter = BassBinsFilter(), // TODO: Refactor
+    private val colorFactory: ColorFactory = ColorFactory(), // TODO: Test?
+    private val server: Server = Server(),
     private val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),
-    private val colorFactory: ColorFactory = ColorFactory(),
-) : InputSubscriber {
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+) {
 
-    override fun received(audioFrame: AudioFrame) {
-        broadcast(
-            color = getColor(audioFrame)
-        )
-    }
+    private val timeBetweenColors = TimestampUtility("Time between colors")
 
-    private fun broadcast(color: Color) {
-        subscribers.forEach {
-            it.new(color)
+    init {
+        scope.launch {
+            capturedAudio.collect { handle(it) }
         }
     }
 
-    private fun getColor(audioFrame: AudioFrame): Color {
-        return colorFactory.create(
-            audioFrame = audioFrame
-        )
+    private fun handle(newAudio: AudioFrame) {
+        val allBins = frequencyBinsCalculator.calculate(newAudio)
+        val filteredBins = frequencyBinsFilter.filter(allBins)
+        val color = colorFactory.create(filteredBins)
+
+        broadcast(color)
+    }
+
+    private fun broadcast(color: Color) {
+        subscribers.forEach { it.new(color) }
+        server.new(color)
+        timeBetweenColors.logTimeSinceLast()
     }
 
     fun addSubscriber(subscriber: LightOrganSubscriber) {

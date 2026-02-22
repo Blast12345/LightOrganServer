@@ -33,7 +33,13 @@ class DominantBassFrequencyBinCalculatorTests {
 
     @BeforeEach
     fun setupHappyPath() {
-        every { passBandRegionFilter.filter(frequencyBins, lowCrossover.stopFrequency, highCrossover.stopFrequency) } returns passBandRegionBins
+        every {
+            passBandRegionFilter.filter(
+                frequencyBins,
+                lowCrossover.stopFrequency,
+                highCrossover.stopFrequency
+            )
+        } returns passBandRegionBins
         every { bandPassFilter.filter(passBandRegionBins, lowCrossover, highCrossover) } returns bandPassedBins
         every { dominantFrequencyCalculator.calculate(passBandRegionBins) } returns dominantFrequency
         every { dominantMagnitudeCalculator.calculate(bandPassedBins) } returns estimatedMagnitude

@@ -26,7 +26,12 @@ class BandPassFilterTests {
     fun `filtered bins have an upper and lower crossover applied`() {
         val sut = createSUT()
         every { crossoverFilter.filter(frequencyBins, lowCrossover) } returns singleCrossoverFrequencyBins
-        every { crossoverFilter.filter(singleCrossoverFrequencyBins, highCrossover) } returns combinedCrossoverFrequencyBins
+        every {
+            crossoverFilter.filter(
+                singleCrossoverFrequencyBins,
+                highCrossover
+            )
+        } returns combinedCrossoverFrequencyBins
 
         val actual = sut.filter(frequencyBins, lowCrossover, highCrossover)
 

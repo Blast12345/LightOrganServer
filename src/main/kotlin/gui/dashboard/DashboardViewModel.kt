@@ -4,11 +4,13 @@ import config.Config
 import config.ConfigPersister
 import config.ConfigSingleton
 import gui.dashboard.tiles.color.ColorTileViewModel
-import gui.dashboard.tiles.lightOrgan.LightOrganTileViewModel
 import gui.dashboard.tiles.spectrum.SpectrumTileViewModel
+import gui.tiles.audioInput.AudioInputTileViewModel
+import lightOrgan.LightOrgan
 
 class DashboardViewModel(
-    val lightOrganTileViewModel: LightOrganTileViewModel,
+    val lightOrgan: LightOrgan,
+    val audioInputTileViewModel: AudioInputTileViewModel,
     val colorTileViewModel: ColorTileViewModel,
     val spectrumTileViewModel: SpectrumTileViewModel,
     private val configPersister: ConfigPersister = ConfigPersister(),
@@ -21,7 +23,7 @@ class DashboardViewModel(
     }
 
     private fun subscribeColorTileToTheLightOrgan() {
-        lightOrganTileViewModel.addSubscriber(colorTileViewModel)
+        lightOrgan.addSubscriber(colorTileViewModel)
     }
 
     private fun startPersistingConfigChanges() {

@@ -1,14 +1,12 @@
 package toolkit.monkeyTest
 
-import input.audioFrame.AudioFrame
-import wrappers.audioFormat.AudioFormatWrapper
+import audio.samples.AudioFrame
 
 fun nextAudioFrame(
-    samples: DoubleArray = nextDoubleArray(),
-    format: AudioFormatWrapper = nextAudioFormatWrapper()
+    sampleRate: Int = nextPositiveInt()
 ): AudioFrame {
     return AudioFrame(
-        samples = samples,
-        format = format
+        samples = nextFloatArray(),
+        format = nextAudioFormat(sampleRate)
     )
 }

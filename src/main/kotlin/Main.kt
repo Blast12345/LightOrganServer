@@ -1,3 +1,7 @@
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -5,46 +9,62 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import gui.Theme
 import gui.dashboard.Dashboard
-import gui.dashboard.DashboardViewModel
 import gui.dashboard.DashboardViewModelFactory
-import input.DefaultInputFactory
-import input.Input
+import gui.dashboard.SnackbarController
+import input.AudioInputManager
 import lightOrgan.LightOrgan
-import lightOrgan.LightOrganStateMachine
-import server.Server
 
-fun main() = application {
+// TODO: Consolidate coroutine scopes
+fun main(args: Array<String>) {
+    val audioInputManager = AudioInputManager()
+
+    val lightOrgan = LightOrgan(
+        capturedAudio = audioInputManager.bufferedAudio
+    )
+
+    if (args.contains("--headless")) {
+        launchHeadless(lightOrgan)
+    } else {
+        launchGUI(audioInputManager, lightOrgan)
+    }
+}
+
+private fun launchGUI(audioInputManager: AudioInputManager, lightOrgan: LightOrgan) = application {
+    val minimumWidth = 1200
+    val minimumHeight = 300
+
     Window(
-        onCloseRequest = ::exitApplication,
         title = "Synesthetic",
-        state = rememberWindowState(width = 900.dp, height = 300.dp),
+        state = rememberWindowState(
+            width = minimumWidth.dp,
+            height = minimumHeight.dp,
+        ),
+        onCloseRequest = ::exitApplication,
     ) {
+        window.minimumSize = java.awt.Dimension(minimumWidth, minimumHeight)
+
         Theme {
-            val viewModel = remember { getDashboardViewModel() }
-            Dashboard(viewModel)
+            val snackbarController = remember { SnackbarController() }
+            val snackbarHostState = remember { SnackbarHostState() }
+
+            LaunchedEffect(Unit) {
+                snackbarController.messages.collect { message ->
+                    snackbarHostState.showSnackbar(message)
+                }
+            }
+
+            Scaffold(
+                snackbarHost = { SnackbarHost(snackbarHostState) }
+            ) {
+                val viewModel =
+                    remember { DashboardViewModelFactory().create(audioInputManager, lightOrgan, snackbarController) }
+                Dashboard(viewModel)
+            }
         }
     }
 }
 
-private fun getDashboardViewModel(): DashboardViewModel {
-    return DashboardViewModelFactory().create(
-        lightOrganStateMachine = getLightOrganStateMachine()
-    )
-}
-
-private fun getLightOrganStateMachine(): LightOrganStateMachine {
-    return LightOrganStateMachine(
-        input = getDefaultInput(),
-        lightOrgan = getLightOrgan()
-    )
-}
-
-private fun getDefaultInput(): Input {
-    return DefaultInputFactory().create()
-}
-
-private fun getLightOrgan(): LightOrgan {
-    return LightOrgan(
-        subscribers = mutableSetOf(Server())
-    )
-}
+private fun launchHeadless(lightOrgan: LightOrgan) =
+    application {
+        TODO("Implement headless mode")
+    }

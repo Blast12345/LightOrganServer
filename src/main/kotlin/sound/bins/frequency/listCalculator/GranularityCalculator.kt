@@ -1,14 +1,14 @@
 package sound.bins.frequency.listCalculator
 
-import wrappers.audioFormat.AudioFormatWrapper
+import audio.samples.AudioFormat
 
 class GranularityCalculator {
 
-    fun calculate(numberOfBins: Int, audioFormat: AudioFormatWrapper): Float {
+    fun calculate(numberOfBins: Int, audioFormat: AudioFormat): Float {
         return calculate(
             nyquistFrequency = audioFormat.nyquistFrequency,
             numberOfBins = numberOfBins,
-            numberOfChannels = audioFormat.numberOfChannels
+            numberOfChannels = audioFormat.channels
         )
     }
 

@@ -1,5 +1,7 @@
 package toolkit.monkeyTest
 
-fun nextPositiveInt(max: Int = 1024): Int {
-    return max
+import kotlin.random.Random
+
+fun nextPositiveInt(min: Int = 1, max: Int = 1024): Int {
+    return Random.nextInt(min, max)
 }
