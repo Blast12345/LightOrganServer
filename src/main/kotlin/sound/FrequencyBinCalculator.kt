@@ -10,18 +10,20 @@ import sound.signalProcessor.SignalProcessor
 
 class FrequencyBinsCalculator(
     private val signalProcessor: SignalProcessor = SignalProcessor(),
-    private val magnitudeCalculator: MagnitudeListCalculator = MagnitudeListCalculator(), // TODO: Rename
+    private val magnitudeListCalculator: MagnitudeListCalculator = MagnitudeListCalculator(), // TODO: Rename
     private val granularityCalculator: GranularityCalculator = GranularityCalculator(),
-    private val frequencyBinFactory: FrequencyBinFactory = FrequencyBinFactory()
+    private val frequencyBinFactory: FrequencyBinFactory = FrequencyBinFactory(),
 ) {
 
     fun calculate(audioFrame: AudioFrame): FrequencyBins {
         val doubleArraySamples = audioFrame.samples.map { it.toDouble() }.toDoubleArray()
         val processedSamples = signalProcessor.process(doubleArraySamples) // TODO: Change array type
-        val magnitudes = magnitudeCalculator.calculate(processedSamples)
+        val magnitudes = magnitudeListCalculator.calculate(processedSamples)
+        // TODO: Drop the second half of magnitudes, thus skipping the need for Nyquist filtering.
         val granularity = granularityCalculator.calculate(magnitudes.size, audioFrame.format)
 
         return magnitudes.mapIndexed { index, magnitude ->
+            // TODO: Maybe move the frequency calculation into this class, eliminating the need for a factory
             frequencyBinFactory.create(index, granularity, magnitude)
         }.removeBinsBeyondNyquistFrequency(audioFrame.format)
     }

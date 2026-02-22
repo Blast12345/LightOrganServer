@@ -31,8 +31,8 @@ class LightOrgan(
         }
     }
 
-    private fun handle(audio: AudioFrame) {
-        val allBins = frequencyBinsCalculator.calculate(audio)
+    private fun handle(newAudio: AudioFrame) {
+        val allBins = frequencyBinsCalculator.calculate(newAudio)
         val filteredBins = frequencyBinsFilter.filter(allBins)
         val color = colorFactory.create(filteredBins)
 
