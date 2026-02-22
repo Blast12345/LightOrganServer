@@ -1,7 +1,6 @@
-package audio.audioInput
+package audio.samples
 
-import audio.samples.SampleNormalizer
-import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import toolkit.byteArray.byteArrayOf
@@ -19,7 +18,7 @@ class SampleNormalizerTests {
 
         val actual = sut.normalize(samples)
 
-        assertArrayEquals(normalizedSamples, actual, 0.01f)
+        Assertions.assertArrayEquals(normalizedSamples, actual, 0.01f)
     }
 
     @Test
@@ -29,7 +28,7 @@ class SampleNormalizerTests {
 
         val actual = sut.normalize(samples)
 
-        assertArrayEquals(normalizedSamples, actual, 0.01f)
+        Assertions.assertArrayEquals(normalizedSamples, actual, 0.01f)
     }
 
     @Test
@@ -39,7 +38,7 @@ class SampleNormalizerTests {
 
         val actual = sut.normalize(samples)
 
-        assertArrayEquals(normalizedSamples, actual, 0.01f)
+        Assertions.assertArrayEquals(normalizedSamples, actual, 0.01f)
     }
 
     @Test
@@ -49,7 +48,7 @@ class SampleNormalizerTests {
 
         val actual = sut.normalize(samples)
 
-        assertArrayEquals(normalizedSamples, actual, 0.01f)
+        Assertions.assertArrayEquals(normalizedSamples, actual, 0.01f)
     }
 
     @Test
@@ -71,7 +70,7 @@ class SampleNormalizerTests {
 
         val actual = sut.normalize(samples)
 
-        assertArrayEquals(normalizedSamples, actual, 0.01f)
+        Assertions.assertArrayEquals(normalizedSamples, actual, 0.01f)
     }
 
     @Test
@@ -81,7 +80,7 @@ class SampleNormalizerTests {
 
         val actual = sut.normalize(samples)
 
-        assertArrayEquals(normalizedSamples, actual, 0.01f)
+        Assertions.assertArrayEquals(normalizedSamples, actual, 0.01f)
     }
 
 }

@@ -27,7 +27,7 @@ class AudioInputManagerTests {
 
     private val currentAudioInputFlow = MutableStateFlow<AudioInput?>(null)
     private val audioInputFinder: AudioInputFinder = mockk()
-    private val sutScope = TestScope()
+    private val scope = TestScope()
 
     private lateinit var audioInput1: MockAudioInput
     private lateinit var audioInput2: MockAudioInput
@@ -45,7 +45,7 @@ class AudioInputManagerTests {
 
     @AfterEach
     fun tearDown() {
-        sutScope.cancel()
+        scope.cancel()
         clearAllMocks()
     }
 
@@ -53,7 +53,7 @@ class AudioInputManagerTests {
         return AudioInputManager(
             currentAudioInput = currentAudioInputFlow,
             audioInputFinder = audioInputFinder,
-            scope = sutScope,
+            scope = scope,
             sharingPolicy = SharingStarted.Eagerly
         )
     }
@@ -84,7 +84,7 @@ class AudioInputManagerTests {
         val sut = createSUT()
 
         currentAudioInputFlow.value = null
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         assertEquals(null, sut.inputDetails.value)
     }
@@ -94,7 +94,7 @@ class AudioInputManagerTests {
         val sut = createSUT()
 
         currentAudioInputFlow.value = audioInput1.mock
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         val expected = AudioInputDetails(audioInput1.mock.name, audioInput1.mock.format)
         assertEquals(expected, sut.inputDetails.value)
@@ -138,7 +138,7 @@ class AudioInputManagerTests {
     fun `given there is no input, then listening is false`() = runTest {
         val sut = createSUT()
 
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         assertEquals(false, sut.isListening.value)
     }
@@ -148,7 +148,7 @@ class AudioInputManagerTests {
         val sut = createSUT()
 
         currentAudioInputFlow.value = audioInput1.mock
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         assertEquals(false, sut.isListening.value)
     }
@@ -159,7 +159,7 @@ class AudioInputManagerTests {
 
         currentAudioInputFlow.value = audioInput1.mock
         audioInput1.isListeningFlow.value = true
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         assertEquals(true, sut.isListening.value)
     }
@@ -170,10 +170,10 @@ class AudioInputManagerTests {
 
         currentAudioInputFlow.value = audioInput1.mock
         audioInput1.isListeningFlow.value = true
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         currentAudioInputFlow.value = audioInput2.mock
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         assertEquals(false, sut.isListening.value)
     }
@@ -182,14 +182,14 @@ class AudioInputManagerTests {
     @Test
     fun `when an input updates its audio buffer, then the buffered audio is passed on`() = runTest {
         val sut = createSUT()
-        val received = sut.bufferedAudio.collectInto(sutScope)
+        val received = sut.bufferedAudio.collectInto(scope)
 
         currentAudioInputFlow.value = audioInput1.mock
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         val frame = nextAudioFrame()
         audioInput1.bufferedAudioFlow.emit(frame)
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         assertEquals(listOf(frame), received)
     }
@@ -199,16 +199,16 @@ class AudioInputManagerTests {
         val sut = createSUT()
         val input1Frame = nextAudioFrame()
         val input2Frame = nextAudioFrame()
-        val received = sut.bufferedAudio.collectInto(sutScope)
+        val received = sut.bufferedAudio.collectInto(scope)
 
         currentAudioInputFlow.value = audioInput1.mock
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
         audioInput1.bufferedAudioFlow.emit(input1Frame)
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
         currentAudioInputFlow.value = audioInput2.mock
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
         audioInput2.bufferedAudioFlow.emit(input2Frame)
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         assertEquals(listOf(input1Frame, input2Frame), received)
     }

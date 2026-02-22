@@ -23,7 +23,7 @@ class AudioInputTileViewModelTests {
 
     private val audioInputManager: AudioInputManager = mockk()
     private val snackbarController: SnackbarController = mockk()
-    private val sutScope = TestScope()
+    private val scope = TestScope()
 
     private val audioInputDetailsFlow = MutableStateFlow<AudioInputDetails?>(null)
     private val isListeningFlow = MutableStateFlow(false)
@@ -43,7 +43,7 @@ class AudioInputTileViewModelTests {
 
     @AfterEach
     fun tearDown() {
-        sutScope.cancel()
+        scope.cancel()
         clearAllMocks()
     }
 
@@ -51,7 +51,7 @@ class AudioInputTileViewModelTests {
         return AudioInputTileViewModel(
             audioInputManager = audioInputManager,
             snackbarController = snackbarController,
-            scope = sutScope
+            scope = scope
         )
     }
 
@@ -60,7 +60,7 @@ class AudioInputTileViewModelTests {
     fun `given there is no input, then there are no input details`() = runTest {
         val sut = createSUT()
 
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         assertEquals(null, sut.inputDetails.value)
     }
@@ -70,7 +70,7 @@ class AudioInputTileViewModelTests {
         val sut = createSUT()
 
         audioInputDetailsFlow.value = inputDetails
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         assertEquals(inputDetails, sut.inputDetails.value)
     }
@@ -80,7 +80,7 @@ class AudioInputTileViewModelTests {
     fun `given the input manager is not listening, then listening is false`() = runTest {
         val sut = createSUT()
 
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         assertEquals(false, sut.isListening.value)
     }
@@ -90,7 +90,7 @@ class AudioInputTileViewModelTests {
         val sut = createSUT()
         isListeningFlow.value = true
 
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         assertEquals(true, sut.isListening.value)
     }
@@ -101,7 +101,7 @@ class AudioInputTileViewModelTests {
         val sut = createSUT()
 
         sut.connect()
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         coVerify { audioInputManager.startListening() }
     }
@@ -112,7 +112,7 @@ class AudioInputTileViewModelTests {
         coEvery { audioInputManager.startListening() } throws exceptionWithMessage
 
         sut.connect()
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         coVerify { snackbarController.show(exceptionWithMessage.message!!) }
     }
@@ -123,7 +123,7 @@ class AudioInputTileViewModelTests {
         coEvery { audioInputManager.startListening() } throws exceptionWithoutMessage
 
         sut.connect()
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         coVerify { snackbarController.show("Failed to connect to input.") }
     }
@@ -144,7 +144,7 @@ class AudioInputTileViewModelTests {
         every { audioInputManager.stopListening() } throws exceptionWithMessage
 
         sut.disconnect()
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         coVerify { snackbarController.show(exceptionWithMessage.message!!) }
     }
@@ -155,7 +155,7 @@ class AudioInputTileViewModelTests {
         every { audioInputManager.stopListening() } throws exceptionWithoutMessage
 
         sut.disconnect()
-        sutScope.advanceUntilIdle()
+        scope.advanceUntilIdle()
 
         coVerify { snackbarController.show("Failed to disconnect from input.") }
     }

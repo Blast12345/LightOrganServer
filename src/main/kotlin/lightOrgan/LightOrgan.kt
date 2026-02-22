@@ -15,8 +15,8 @@ import wrappers.color.Color
 
 class LightOrgan(
     private val capturedAudio: Flow<AudioFrame>,
-    private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(), // TODO: Test?
-    private val frequencyBinsFilter: BassBinsFilter = BassBinsFilter(), // TODO: Test?
+    private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),
+    private val frequencyBinsFilter: BassBinsFilter = BassBinsFilter(), // TODO: Refactor
     private val colorFactory: ColorFactory = ColorFactory(), // TODO: Test?
     private val server: Server = Server(),
     private val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),

@@ -7,7 +7,7 @@ import toolkit.monkeyTest.nextPositiveInt
 class SampleBufferTests {
 
     @Test
-    fun `the buffer values are zero by default`() {
+    fun `given a size, initialize an empty buffer`() {
         val size = nextPositiveInt()
         val sut = SampleBuffer(size)
 
@@ -16,7 +16,7 @@ class SampleBufferTests {
     }
 
     @Test
-    fun `the internal buffer cannot be directly mutated`() {
+    fun `protect internal state from being directly modified`() {
         val sut = SampleBuffer(4)
         val original = floatArrayOf(1f, 2f, 3f, 4f)
         sut.append(original)

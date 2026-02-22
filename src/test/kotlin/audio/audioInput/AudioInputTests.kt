@@ -1,6 +1,5 @@
 package audio.audioInput
 
-import audio.audioInput.AudioInput
 import audio.samples.SampleBuffer
 import audio.samples.SampleNormalizer
 import io.mockk.*
@@ -25,7 +24,7 @@ class AudioInputTests {
     private val inputLine: InputLine = mockk()
     private val sampleNormalizer: SampleNormalizer = mockk()
     private val sampleBuffer: SampleBuffer = mockk()
-    private val sutScope = TestScope()
+    private val scope = TestScope()
 
     private val readTime = nextDuration()
     private val readData = nextByteArray()
@@ -51,7 +50,7 @@ class AudioInputTests {
 
     @AfterEach
     fun tearDown() {
-        sutScope.cancel()
+        scope.cancel()
         clearAllMocks()
     }
 
@@ -60,7 +59,7 @@ class AudioInputTests {
             inputLine = inputLine,
             sampleNormalizer = sampleNormalizer,
             sampleBuffer = sampleBuffer,
-            scope = sutScope
+            scope = scope
         )
     }
 
@@ -106,13 +105,13 @@ class AudioInputTests {
     fun `when started, then continuously capture audio`() = runTest {
         val sut = createSUT()
         val iterations = nextPositiveInt(max = 5)
-        val received = sut.bufferedAudio.collectInto(sutScope)
+        val received = sut.bufferedAudio.collectInto(scope)
 
         sut.start()
 
         repeat(iterations) {
-            sutScope.advanceTimeBy(readTime)
-            sutScope.runCurrent()
+            scope.advanceTimeBy(readTime)
+            scope.runCurrent()
         }
 
         // Ideally, I'd verify all received values, but the test complexity didn't seem worth it.
@@ -127,14 +126,14 @@ class AudioInputTests {
         runTest {
             val sut = createSUT()
             val iterations = nextPositiveInt(max = 5)
-            val received = sut.bufferedAudio.collectInto(sutScope)
+            val received = sut.bufferedAudio.collectInto(scope)
 
             sut.start()
             sut.start()
 
             repeat(iterations) {
-                sutScope.advanceTimeBy(readTime)
-                sutScope.runCurrent()
+                scope.advanceTimeBy(readTime)
+                scope.runCurrent()
             }
 
             assertEquals(iterations, received.size)
@@ -145,18 +144,18 @@ class AudioInputTests {
     fun `stop capturing audio`() = runTest {
         val sut = createSUT()
         val iterations = 3
-        val received = sut.bufferedAudio.collectInto(sutScope)
+        val received = sut.bufferedAudio.collectInto(scope)
 
         sut.start()
         repeat(iterations) {
-            sutScope.advanceTimeBy(readTime)
-            sutScope.runCurrent()
+            scope.advanceTimeBy(readTime)
+            scope.runCurrent()
         }
 
         sut.stop()
         repeat(iterations) {
-            sutScope.advanceTimeBy(readTime)
-            sutScope.runCurrent()
+            scope.advanceTimeBy(readTime)
+            scope.runCurrent()
         }
 
 
@@ -170,7 +169,7 @@ class AudioInputTests {
         val sut = createSUT()
 
         sut.start()
-        sutScope.runCurrent()
+        scope.runCurrent()
 
         assertEquals(true, sut.isListening.value)
     }
@@ -193,8 +192,8 @@ class AudioInputTests {
         }
 
         sut.start()
-        sutScope.advanceTimeBy(readTime)
-        sutScope.runCurrent()
+        scope.advanceTimeBy(readTime)
+        scope.runCurrent()
 
         assertEquals(false, sut.isListening.value)
     }

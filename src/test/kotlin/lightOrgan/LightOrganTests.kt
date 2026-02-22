@@ -26,7 +26,7 @@ class LightOrganTests {
     private val frequencyBinsFilter: BassBinsFilter = mockk()
     private val colorFactory: ColorFactory = mockk()
     private val server: Server = mockk()
-    private val sutScope = TestScope()
+    private val scope = TestScope()
 
     private val subscriber1: LightOrganSubscriber = mockk(relaxed = true)
     private val subscriber2: LightOrganSubscriber = mockk(relaxed = true)
@@ -60,7 +60,7 @@ class LightOrganTests {
             colorFactory = colorFactory,
             server = server,
             subscribers = subscribers,
-            scope = sutScope
+            scope = scope
         )
     }
 
