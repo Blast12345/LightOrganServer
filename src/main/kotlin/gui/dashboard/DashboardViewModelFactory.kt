@@ -3,8 +3,8 @@ package gui.dashboard
 import gui.dashboard.tiles.color.ColorTileViewModelFactory
 import gui.dashboard.tiles.spectrum.SpectrumTileViewModel
 import gui.tiles.audioInput.AudioInputTileViewModel
-import input.AudioInputManager
 import lightOrgan.LightOrgan
+import lightOrgan.input.AudioInputManager
 
 class DashboardViewModelFactory(
     private val colorTileViewModelFactory: ColorTileViewModelFactory = ColorTileViewModelFactory(),

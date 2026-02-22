@@ -2,8 +2,6 @@ package gui.dashboard.tiles.audioInput
 
 import gui.dashboard.SnackbarController
 import gui.tiles.audioInput.AudioInputTileViewModel
-import input.AudioInputDetails
-import input.AudioInputManager
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
@@ -11,6 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import lightOrgan.input.AudioInputDetails
+import lightOrgan.input.AudioInputManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach

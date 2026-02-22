@@ -11,15 +11,15 @@ import gui.Theme
 import gui.dashboard.Dashboard
 import gui.dashboard.DashboardViewModelFactory
 import gui.dashboard.SnackbarController
-import input.AudioInputManager
 import lightOrgan.LightOrgan
+import lightOrgan.input.AudioInputManager
 
 // TODO: Consolidate coroutine scopes
 fun main(args: Array<String>) {
     val audioInputManager = AudioInputManager()
 
     val lightOrgan = LightOrgan(
-        capturedAudio = audioInputManager.bufferedAudio
+        audioInputManager = audioInputManager
     )
 
     if (args.contains("--headless")) {
