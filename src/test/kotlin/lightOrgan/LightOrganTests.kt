@@ -5,6 +5,7 @@ import color.ColorFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
@@ -26,7 +27,7 @@ class LightOrganTests {
     private val frequencyBinsFilter: BassBinsFilter = mockk()
     private val colorFactory: ColorFactory = mockk()
     private val server: Server = mockk()
-    private val scope = TestScope()
+    private val sutScope = TestScope()
 
     private val subscriber1: LightOrganSubscriber = mockk(relaxed = true)
     private val subscriber2: LightOrganSubscriber = mockk(relaxed = true)
@@ -49,6 +50,7 @@ class LightOrganTests {
 
     @AfterEach
     fun tearDown() {
+        sutScope.cancel()
         clearAllMocks()
     }
 
@@ -60,7 +62,7 @@ class LightOrganTests {
             colorFactory = colorFactory,
             server = server,
             subscribers = subscribers,
-            scope = scope
+            scope = sutScope
         )
     }
 
