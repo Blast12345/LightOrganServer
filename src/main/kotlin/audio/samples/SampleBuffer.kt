@@ -1,6 +1,7 @@
 package audio.samples
 
-// TODO: Test me
+import extensions.takeLastArray
+
 class SampleBuffer(size: Int) {
 
     private val samples = FloatArray(size)
@@ -9,8 +10,14 @@ class SampleBuffer(size: Int) {
         get() = samples.copyOf()
 
     fun append(newSamples: FloatArray) {
-        samples.copyInto(samples, destinationOffset = 0, startIndex = newSamples.size)
-        newSamples.copyInto(samples, destinationOffset = samples.size - newSamples.size)
+        // Trim our new samples to prevent buffer overflow
+        val trimmed = newSamples.takeLastArray(samples.size)
+
+        // Shift existing samples over (i.e., back in time)
+        samples.copyInto(samples, destinationOffset = 0, startIndex = trimmed.size)
+
+        // Copy new samples into the end of the buffer (i.e., the most recent time)
+        trimmed.copyInto(samples, destinationOffset = samples.size - trimmed.size)
     }
 
 }
