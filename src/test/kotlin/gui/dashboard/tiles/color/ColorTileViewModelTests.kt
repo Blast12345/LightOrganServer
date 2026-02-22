@@ -4,16 +4,18 @@ import androidx.compose.runtime.MutableState
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
 
 class ColorTileViewModelTests {
 
     private val colorState: MutableState<androidx.compose.ui.graphics.Color> = mockk()
-    private val scope = TestScope()
+    private val sutScope = TestScope()
 
     private val hue = Random.nextFloat()
     private val saturation = Random.nextFloat()
@@ -21,10 +23,15 @@ class ColorTileViewModelTests {
     private val color = wrappers.color.Color(hue, saturation, brightness)
     private val composeColor = androidx.compose.ui.graphics.Color.hsv(hue * 360, saturation, brightness)
 
+    @AfterEach
+    fun teardown() {
+        sutScope.cancel()
+    }
+
     private fun createSUT(): ColorTileViewModel {
         return ColorTileViewModel(
             color = colorState,
-            scope = scope
+            scope = sutScope
         )
     }
 
@@ -34,7 +41,7 @@ class ColorTileViewModelTests {
         val sut = createSUT()
 
         sut.new(color)
-        scope.advanceUntilIdle()
+        sutScope.advanceUntilIdle()
 
         verify { colorState.value = composeColor }
     }
