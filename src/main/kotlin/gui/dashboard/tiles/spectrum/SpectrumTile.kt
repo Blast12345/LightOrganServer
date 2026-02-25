@@ -17,9 +17,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
-import config.ConfigSingleton
-import gui.basicComponents.*
 import dsp.fft.FrequencyBin
+import gui.basicComponents.*
 
 @Preview
 @Composable
@@ -111,7 +110,7 @@ private fun DrawScope.drawBar(
     renderWidth: Float,
     color: Color
 ) {
-    val barHeight = bin.magnitude * size.height * ConfigSingleton.spectrumMultiplier
+    val barHeight = bin.magnitude * size.height
 
     drawRect(
         color = color,

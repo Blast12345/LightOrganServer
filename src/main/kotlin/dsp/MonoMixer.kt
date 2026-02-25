@@ -13,10 +13,10 @@ class MonoMixer {
         return AudioFrame(monoSamples, monoFormat)
     }
 
-    // This averages all channels together
     private fun mixToMono(samples: FloatArray, channels: Int): FloatArray {
         val monoSamples = FloatArray(samples.size / channels)
 
+        // average all channels together
         for (i in monoSamples.indices) {
             var sum = 0f
             for (ch in 0 until channels) {

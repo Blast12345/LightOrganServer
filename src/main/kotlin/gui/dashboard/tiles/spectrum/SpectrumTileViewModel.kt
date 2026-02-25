@@ -3,21 +3,31 @@ package gui.dashboard.tiles.spectrum
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.flow.StateFlow
-import lightOrgan.spectrum.SpectrumManager
+import config.ConfigSingleton
 import dsp.fft.FrequencyBin
 import dsp.fft.FrequencyBins
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import lightOrgan.spectrum.SpectrumManager
 
-
+// ENHANCEMENT: Show latency
 class SpectrumTileViewModel(
-    private val spectrumManager: SpectrumManager
+    private val spectrumManager: SpectrumManager,
+    private val spectrumMultiplier: Float = ConfigSingleton.spectrumMultiplier,
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main),
+    private val sharingPolicy: SharingStarted = SharingStarted.WhileSubscribed()
 ) {
 
     val frequencyBins: StateFlow<FrequencyBins> = spectrumManager.frequencyBins
+        .map { bins -> bins.map { it.copy(magnitude = it.magnitude * spectrumMultiplier) } }
+        .stateIn(scope, sharingPolicy, emptyList())
+
     var highlightedIndex: Int? by mutableStateOf(null)
     val highlightedBin: FrequencyBin? get() = highlightedIndex?.let { frequencyBins.value.getOrNull(it) }
-
-    // TODO: Show latency?
-    // TODO: Show multiplier?
 
 }
