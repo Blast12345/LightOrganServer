@@ -22,7 +22,7 @@ class FrequencyBinsCalculatorTests {
     private val granularityCalculator: GranularityCalculator = mockk()
     private val frequencyBinFactory: FrequencyBinFactory = mockk()
 
-    private val audioFrame = nextAudioFrame(200)
+    private val audioFrame = nextAudioFrame(200f)
     private val samplesAsDoubles = audioFrame.samples.map { it.toDouble() }.toDoubleArray()
     private val processedSamples = nextDoubleArray()
     private val magnitudeList = nextDoubleArray(3)

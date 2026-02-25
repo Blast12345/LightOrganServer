@@ -3,7 +3,7 @@ package toolkit.monkeyTest
 import audio.samples.AudioFrame
 
 fun nextAudioFrame(
-    sampleRate: Int = nextPositiveInt()
+    sampleRate: Float = nextPositiveInt().toFloat()
 ): AudioFrame {
     return AudioFrame(
         samples = nextFloatArray(),
