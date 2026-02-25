@@ -35,9 +35,11 @@ class SpectrumManager(
         val interpolatedFrame = interpolator.interpolate(windowedFrame)
 
         // Bin generation
-        val allBins = frequencyBinsCalculator.calculate(interpolatedFrame, monoAudio.format)
-        val correctedBins = allBins.applyAmplitudeCorrection(windowFunction.amplitudeCorrectionFactor)
-        val filteredBins = frequencyBinsFilter.filter(correctedBins)
+        val allBins = frequencyBinsCalculator
+            .calculate(interpolatedFrame, monoAudio.format)
+            .applyAmplitudeCorrection(windowFunction.amplitudeCorrectionFactor)
+        
+        val filteredBins = frequencyBinsFilter.filter(allBins)
 
         _frequencyBins.value = filteredBins
 

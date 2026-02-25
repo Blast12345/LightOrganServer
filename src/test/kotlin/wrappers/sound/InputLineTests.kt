@@ -48,7 +48,7 @@ class InputLineTests {
         return InputLine(
             name = name,
             dataLine = dataLine,
-            readSize = readSize,
+            minimumReadSize = readSize,
             bufferSize = bufferSize
         )
     }

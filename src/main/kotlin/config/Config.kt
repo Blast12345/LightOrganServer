@@ -1,8 +1,8 @@
 package config
 
 import config.children.Client
-import kotlinx.coroutines.flow.MutableStateFlow
 import dsp.bins.frequency.filters.Crossover
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Suppress("LongParameterList")
 class Config(
@@ -13,7 +13,6 @@ class Config(
     val sampleSize: Int,
     val interpolatedSampleSize: Int,
     val spectrumMultiplier: Float,
-    val millisecondsToWaitBetweenCheckingForNewAudio: Long
 )
 
 

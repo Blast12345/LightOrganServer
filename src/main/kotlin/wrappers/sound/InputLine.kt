@@ -13,8 +13,8 @@ import javax.sound.sampled.TargetDataLine
 class InputLine(
     val name: String,
     private val dataLine: TargetDataLine,
-    private val readSize: Int = 2048,
-    private val bufferSize: Int = readSize * 4
+    private val minimumReadSize: Int = 2048,
+    private val bufferSize: Int = minimumReadSize * 4
 ) {
 
     val sampleRate = dataLine.format.sampleRate
@@ -34,12 +34,17 @@ class InputLine(
         }
     }
 
-    // TODO: Should we read all available data by default, else readSize?
-    // TODO: Alternatively, should we notify when extra data was available OR if the buffer is full?
+    // ENHANCEMENT: Notify the UI when more data than the readSize is available (yellow / caution)
+    // ENHANCEMENT: Notify the UI when the buffer is full (red / warning)
     suspend fun read(): ByteArray {
         return withContext(Dispatchers.IO) {
+            // TODO: Test this read size optimization?
+            val available = dataLine.available()
+            val readSize = if (available > minimumReadSize) available else minimumReadSize
+
             val chunk = ByteArray(readSize)
             dataLine.read(chunk, 0, readSize)
+
             return@withContext chunk
         }
     }
