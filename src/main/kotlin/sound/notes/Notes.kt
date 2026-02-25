@@ -1,4 +1,4 @@
-package sound.bins.notes
+package sound.notes
 
 import kotlin.math.pow
 

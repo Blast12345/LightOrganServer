@@ -2,9 +2,9 @@ package sound.bins
 
 import dsp.fft.FrequencyBin
 import math.featureScaling.normalizeLogarithmically
-import sound.bins.notes.Note
-import sound.bins.notes.Notes
 import sound.bins.octave.OctaveBin
+import sound.notes.Note
+import sound.notes.Notes
 
 class FrequencyBinToOctaveBinConverter(
     private val rootNote: Note = Notes.C

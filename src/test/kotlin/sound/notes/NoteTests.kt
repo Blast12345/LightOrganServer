@@ -1,6 +1,6 @@
-package sound.bins.notes
+package sound.notes
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class NoteTests {
@@ -11,7 +11,7 @@ class NoteTests {
 
         val actual = sut.getFrequency(3)
 
-        assertEquals(160F, actual)
+        Assertions.assertEquals(160F, actual)
     }
 
 }

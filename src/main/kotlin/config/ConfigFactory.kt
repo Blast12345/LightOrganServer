@@ -3,7 +3,7 @@ package config
 import config.children.Client
 import kotlinx.coroutines.flow.MutableStateFlow
 import sound.bins.frequency.filters.Crossover
-import sound.bins.notes.Notes
+import sound.notes.Notes
 
 class ConfigFactory(
     private val persistedConfig: PersistedConfig = PersistedConfig()

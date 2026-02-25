@@ -3,8 +3,8 @@ package sound.bins
 import dsp.fft.FrequencyBin
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import sound.bins.notes.Notes
 import sound.bins.octave.OctaveBin
+import sound.notes.Notes
 
 class FrequencyBinToOctaveBinConverterIntegrationTests {
 
