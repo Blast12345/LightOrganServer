@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test
 import toolkit.extensions.collectInto
 import toolkit.monkeyTest.*
 import wrappers.sound.InputLine
-import kotlin.random.Random
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AudioInputTests {
@@ -35,7 +34,7 @@ class AudioInputTests {
     @BeforeEach
     fun setupHappyPath() {
         every { inputLine.name } returns nextString("name")
-        every { inputLine.sampleRate } returns Random.nextFloat()
+        every { inputLine.sampleRate } returns nextPositiveInt().toFloat()
         every { inputLine.bitDepth } returns nextPositiveInt()
         every { inputLine.channels } returns nextPositiveInt()
 

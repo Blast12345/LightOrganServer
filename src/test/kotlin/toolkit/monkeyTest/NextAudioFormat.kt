@@ -1,10 +1,9 @@
 package toolkit.monkeyTest
 
 import audio.samples.AudioFormat
-import kotlin.random.Random
 
 fun nextAudioFormat(
-    sampleRate: Float = Random.nextFloat(),
+    sampleRate: Float = nextPositiveInt().toFloat(),
     channels: Int = nextPositiveInt()
 ): AudioFormat {
     return AudioFormat(

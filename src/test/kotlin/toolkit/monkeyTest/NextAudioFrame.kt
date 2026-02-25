@@ -1,10 +1,9 @@
 package toolkit.monkeyTest
 
 import audio.samples.AudioFrame
-import kotlin.random.Random
 
 fun nextAudioFrame(
-    sampleRate: Float = Random.nextFloat()
+    sampleRate: Float = nextPositiveInt().toFloat()
 ): AudioFrame {
     return AudioFrame(
         samples = nextFloatArray(),
