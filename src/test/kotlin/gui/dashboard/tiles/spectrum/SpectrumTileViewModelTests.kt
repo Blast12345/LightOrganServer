@@ -1,25 +1,23 @@
 package gui.dashboard.tiles.spectrum
 
 import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import lightOrgan.spectrum.SpectrumManagerFixture
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextFrequencyBins
-import toolkit.monkeyTest.nextSpectrum
-import toolkit.monkeyTest.nextSpectrumBin
+import kotlin.random.Random
 
 class SpectrumTileViewModelTests {
 
-    private val spectrumCreator: SpectrumCreator = mockk()
-    private val spectrum = nextSpectrum()
+    private lateinit var spectrumManager: SpectrumManagerFixture
+
+    private val newFrequencyBins = nextFrequencyBins()
 
     @BeforeEach
     fun setupHappyPath() {
-        every { spectrumCreator.create(any(), any()) } returns spectrum
+        spectrumManager = SpectrumManagerFixture.create()
     }
 
     @AfterEach
@@ -29,51 +27,29 @@ class SpectrumTileViewModelTests {
 
     private fun createSUT(): SpectrumTileViewModel {
         return SpectrumTileViewModel(
-            spectrumCreator = spectrumCreator
+            spectrumManager = spectrumManager.mock,
         )
     }
 
     @Test
-    fun `settings new frequency bins updates the spectrum`() {
+    fun `when new frequency bins are available, then update the displayed spectrum`() {
         val sut = createSUT()
-        val frequencyBins = nextFrequencyBins()
 
-        sut.setFrequencyBins(frequencyBins)
+        spectrumManager.frequencyBins.value = newFrequencyBins
 
-        verify { spectrumCreator.create(frequencyBins, null) }
-        assertEquals(spectrum, sut.spectrum)
+        assertEquals(newFrequencyBins, sut.frequencyBins.value)
     }
 
     @Test
-    fun `setting a hovered bin updates the spectrum`() {
+    fun `highlight a frequency bin`() {
         val sut = createSUT()
-        val hoveredBin = nextSpectrumBin()
+        spectrumManager.frequencyBins.value = newFrequencyBins
 
-        sut.setHoveredBin(hoveredBin)
+        val index = Random.nextInt(newFrequencyBins.size)
+        sut.highlightedIndex = index
 
-        verify { spectrumCreator.create(listOf(), hoveredBin.frequency) }
-        assertEquals(spectrum, sut.spectrum)
+        assertEquals(newFrequencyBins[index], sut.highlightedBin)
     }
-
-    @Test
-    fun `setting a hovered bin updates the hovered frequency`() {
-        val sut = createSUT()
-        val hoveredBin = SpectrumBin(20.123F, 1F, false)
-
-        sut.setHoveredBin(hoveredBin)
-
-        assertEquals("20.12 Hz", sut.hoveredFrequency)
-    }
-
-    @Test
-    fun `clearing the hovered bin clears the hovered frequency`() {
-        val sut = createSUT()
-        sut.setHoveredBin(nextSpectrumBin())
-
-        sut.setHoveredBin(null)
-
-        assertEquals("", sut.hoveredFrequency)
-    }
-
+    
 }
 

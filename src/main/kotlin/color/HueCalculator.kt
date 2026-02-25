@@ -1,8 +1,8 @@
 package color
 
-import sound.bins.frequency.FrequencyBins
-import sound.bins.octave.OctaveWeightedAverageCalculator
-import sound.bins.octave.PeakOctaveBinsFinder
+import dsp.bins.frequency.FrequencyBins
+import dsp.bins.octave.OctaveWeightedAverageCalculator
+import dsp.bins.octave.PeakOctaveBinsFinder
 
 class HueCalculator(
     private val peakOctaveBinsFinder: PeakOctaveBinsFinder = PeakOctaveBinsFinder(),

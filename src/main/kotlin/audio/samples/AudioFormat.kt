@@ -1,11 +1,11 @@
 package audio.samples
 
 data class AudioFormat(
-    val sampleRate: Int,
+    val sampleRate: Float,
     val bitDepth: Int,
     val channels: Int
 ) {
 
-    val nyquistFrequency: Float = sampleRate / 2f
+    val nyquistFrequency: Float = sampleRate / 2f // TODO: Is this used?
 
 }

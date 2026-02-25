@@ -1,9 +1,9 @@
 package color
 
-import org.greenrobot.eventbus.EventBus
-import sound.bins.frequency.FrequencyBins
+import dsp.bins.frequency.FrequencyBins
 import wrappers.color.Color
 
+// TODO: Rename to ColorCalculator
 class ColorFactory(
     private val hueCalculator: HueCalculator = HueCalculator(),
     private val brightnessCalculator: BrightnessCalculator = BrightnessCalculator()
@@ -11,8 +11,6 @@ class ColorFactory(
 
     @Suppress("ReturnCount")
     fun create(frequencyBins: FrequencyBins): Color {
-        EventBus.getDefault().post(frequencyBins)
-
         val hue = getHue(frequencyBins) ?: return Color.black
         val brightness = getBrightness(frequencyBins) ?: return Color.black
 

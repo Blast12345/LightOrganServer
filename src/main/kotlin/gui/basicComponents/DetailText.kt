@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun DetailText(
     label: String,
-    value: String,
+    value: String?,
     modifier: Modifier = Modifier
 ) {
     Row(modifier = modifier) {
@@ -21,7 +21,7 @@ fun DetailText(
         )
 
         Text(
-            text = value,
+            text = value ?: "",
             fontSize = 12.sp
         )
     }

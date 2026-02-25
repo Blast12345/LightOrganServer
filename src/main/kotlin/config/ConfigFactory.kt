@@ -1,9 +1,9 @@
 package config
 
 import config.children.Client
+import dsp.bins.frequency.filters.Crossover
+import dsp.bins.notes.Notes
 import kotlinx.coroutines.flow.MutableStateFlow
-import sound.bins.frequency.filters.Crossover
-import sound.notes.Notes
 
 class ConfigFactory(
     private val persistedConfig: PersistedConfig = PersistedConfig()
@@ -21,9 +21,9 @@ class ConfigFactory(
                 cornerFrequency = Notes.C.getFrequency(octave = 2),
                 stopFrequency = Notes.C.getFrequency(octave = 3)
             ),
-            sampleSize = 4410,
+            sampleSize = 4800,
             interpolatedSampleSize = 65536,
-            magnitudeMultiplier = 4F,
+            spectrumMultiplier = 4F,
             millisecondsToWaitBetweenCheckingForNewAudio = 1,
         )
     }

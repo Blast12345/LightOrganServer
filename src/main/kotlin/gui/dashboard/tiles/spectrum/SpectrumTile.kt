@@ -1,17 +1,25 @@
+package gui.dashboard.tiles.spectrum
+
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
+import config.ConfigSingleton
 import gui.basicComponents.*
-import gui.dashboard.tiles.spectrum.SpectrumBin
-import gui.dashboard.tiles.spectrum.SpectrumTileViewModel
+import dsp.bins.frequency.FrequencyBin
 
 @Preview
 @Composable
@@ -22,7 +30,7 @@ fun SpectrumTile(
     Tile(modifier) {
         Title()
         SimpleSpacer(dpSize = 12)
-        HoveredDetails(frequency = viewModel.hoveredFrequency)
+        HighlightedFrequency(bin = viewModel.highlightedBin)
         SimpleSpacer(dpSize = 12)
         GridSpectrum(viewModel)
     }
@@ -38,10 +46,10 @@ private fun Title() {
 }
 
 @Composable
-private fun HoveredDetails(frequency: String?) {
-    SimpleText(
-        text = "Frequency: $frequency",
-        fontSize = 16
+private fun HighlightedFrequency(bin: FrequencyBin?) {
+    DetailText(
+        label = "Frequency",
+        value = bin?.frequency?.let { "%.2f Hz".format(it) }
     )
 }
 
@@ -52,48 +60,74 @@ private fun GridSpectrum(viewModel: SpectrumTileViewModel) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun Spectrum(viewModel: SpectrumTileViewModel) {
-    RowWithEqualColumnWidths(
-        children = viewModel.spectrum.map { bin ->
-            {
-                BinColumn(
-                    bin = bin,
-                    viewModel = viewModel
-                )
+    val bins by viewModel.frequencyBins.collectAsState()
+    val hoveredIndex = viewModel.highlightedIndex
+    val barColor = MaterialTheme.colors.secondary
+
+    Canvas(
+        modifier = Modifier
+            .fillMaxSize()
+            .clipToBounds()
+            .onBinHover(
+                binCount = bins.size,
+                onHover = { viewModel.highlightedIndex = it },
+                onExit = { viewModel.highlightedIndex = null }
+            )
+    ) {
+        val barWidth = size.width / bins.size
+        val renderWidth = barWidth + 1f
+
+        bins.forEachIndexed { index, bin ->
+            drawBar(index, bin, barWidth, renderWidth, barColor)
+
+            if (index == hoveredIndex) {
+                drawHoverHighlight(index, barWidth, renderWidth)
             }
-        }
-    )
-}
-
-@Composable
-private fun BinColumn(
-    bin: SpectrumBin,
-    viewModel: SpectrumTileViewModel
-) {
-    Box(modifier = Modifier.onHoverChanged(viewModel, bin)) {
-        Bar(value = bin.magnitude)
-
-        if (bin.hovered) {
-            HighlightBox()
         }
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
-private fun Modifier.onHoverChanged(viewModel: SpectrumTileViewModel, bin: SpectrumBin): Modifier {
-    return this.onPointerEvent(PointerEventType.Enter) {
-        viewModel.setHoveredBin(bin)
-    }.onPointerEvent(PointerEventType.Exit) {
-        viewModel.setHoveredBin(null)
-    }
+private fun Modifier.onBinHover(
+    binCount: Int,
+    onHover: (Int) -> Unit,
+    onExit: () -> Unit
+): Modifier {
+    return this
+        .onPointerEvent(PointerEventType.Move) {
+            val index = (it.changes.first().position.x / size.width * binCount).toInt()
+            onHover(index)
+        }
+        .onPointerEvent(PointerEventType.Exit) { onExit() }
 }
 
-@Composable
-private fun HighlightBox() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White.copy(alpha = 0.5f))
+private fun DrawScope.drawBar(
+    index: Int,
+    bin: FrequencyBin,
+    barWidth: Float,
+    renderWidth: Float,
+    color: Color
+) {
+    val barHeight = bin.magnitude * size.height * ConfigSingleton.spectrumMultiplier
+
+    drawRect(
+        color = color,
+        topLeft = Offset(index * barWidth, size.height - barHeight),
+        size = Size(renderWidth, barHeight)
+    )
+}
+
+private fun DrawScope.drawHoverHighlight(
+    index: Int,
+    barWidth: Float,
+    renderWidth: Float
+) {
+    drawRect(
+        color = Color.White.copy(alpha = 0.5f),
+        topLeft = Offset(index * barWidth, 0f),
+        size = Size(renderWidth, size.height)
     )
 }

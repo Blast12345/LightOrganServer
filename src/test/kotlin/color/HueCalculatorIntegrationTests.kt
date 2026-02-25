@@ -1,11 +1,11 @@
 package color
 
+import dsp.bins.frequency.FrequencyBin
+import dsp.bins.frequency.FrequencyBins
+import dsp.bins.notes.Note
+import dsp.bins.notes.Notes
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import sound.bins.frequency.FrequencyBin
-import sound.bins.frequency.FrequencyBins
-import sound.notes.Note
-import sound.notes.Notes
 
 class HueCalculatorIntegrationTests {
 

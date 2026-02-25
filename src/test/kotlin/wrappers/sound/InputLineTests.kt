@@ -19,7 +19,8 @@ class InputLineTests {
 
     private val name = nextString("name")
     private val dataLine: TargetDataLine = mockk()
-    private val readSize = 2048
+    private val readSize = nextPositiveInt()
+    private val bufferSize = nextPositiveInt()
 
     private val format: javax.sound.sampled.AudioFormat = mockk()
     private val exception = nextException()
@@ -32,7 +33,7 @@ class InputLineTests {
         every { format.channels } returns nextPositiveInt()
         every { format.isBigEndian } returns nextBoolean()
 
-        every { dataLine.open(format, readSize) } returns Unit
+        every { dataLine.open(any(), any()) } returns Unit
         every { dataLine.start() } returns Unit
         every { dataLine.stop() } returns Unit
         every { dataLine.close() } returns Unit
@@ -47,7 +48,8 @@ class InputLineTests {
         return InputLine(
             name = name,
             dataLine = dataLine,
-            readSize = readSize
+            readSize = readSize,
+            bufferSize = bufferSize
         )
     }
 
@@ -63,7 +65,7 @@ class InputLineTests {
     fun `get the sample rate`() {
         val sut = createSUT()
 
-        assertEquals(format.sampleRate.toInt(), sut.sampleRate)
+        assertEquals(format.sampleRate, sut.sampleRate)
     }
 
     @Test
@@ -104,7 +106,7 @@ class InputLineTests {
         sut.start()
 
         verifyOrder {
-            dataLine.open(format, readSize)
+            dataLine.open(format, bufferSize)
             dataLine.start()
         }
     }
@@ -112,7 +114,7 @@ class InputLineTests {
     @Test
     fun `when open fails, then stop and rethrow`() {
         val sut = createSUT()
-        every { dataLine.open(format, readSize) } throws exception
+        every { dataLine.open(any(), any()) } throws exception
 
         val actual = assertThrows<Exception> { sut.start() }
 

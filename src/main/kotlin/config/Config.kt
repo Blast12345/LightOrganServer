@@ -2,7 +2,7 @@ package config
 
 import config.children.Client
 import kotlinx.coroutines.flow.MutableStateFlow
-import sound.bins.frequency.filters.Crossover
+import dsp.bins.frequency.filters.Crossover
 
 @Suppress("LongParameterList")
 class Config(
@@ -12,7 +12,7 @@ class Config(
     val highCrossover: Crossover,
     val sampleSize: Int,
     val interpolatedSampleSize: Int,
-    val magnitudeMultiplier: Float,
+    val spectrumMultiplier: Float,
     val millisecondsToWaitBetweenCheckingForNewAudio: Long
 )
 
