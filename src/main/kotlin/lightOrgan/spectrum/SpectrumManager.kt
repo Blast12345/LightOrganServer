@@ -4,14 +4,14 @@ import audio.samples.AudioFrame
 import dsp.MonoMixer
 import dsp.SampleFramer
 import dsp.ZeroPaddingInterpolator
-import dsp.fft.FrequencyBinsCalculator
 import dsp.fft.FrequencyBins
-import sound.bins.frequency.FrequencyBinsFilter
+import dsp.fft.FrequencyBinsCalculator
 import dsp.windowing.HannWindow
 import dsp.windowing.WindowFunction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import sound.bins.frequency.FrequencyBinsFilter
 
 // ENHANCEMENT: Allow filter to be configured; expose FrequencyBinsFilter.
 // ENHANCEMENT: If implementing other calculation strategies (e.g. DFT, CZT), then create a bin calculator interface
@@ -21,7 +21,7 @@ class SpectrumManager(
     private val windowFunction: WindowFunction = HannWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),
-    private val frequencyBinsFilter: sound.bins.frequency.FrequencyBinsFilter = _root_ide_package_.sound.bins.frequency.FrequencyBinsFilter()
+    private val frequencyBinsFilter: FrequencyBinsFilter = FrequencyBinsFilter()
 ) {
 
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())

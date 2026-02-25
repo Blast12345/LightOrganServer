@@ -4,10 +4,10 @@ import dsp.fft.FrequencyBins
 import sound.bins.octave.OctaveBins
 
 class FrequencyBinsToOctaveBinsConverter(
-    private val frequencyBinToOctaveBinConverter: sound.bins.FrequencyBinToOctaveBinConverter = _root_ide_package_.sound.bins.FrequencyBinToOctaveBinConverter()
+    private val frequencyBinToOctaveBinConverter: FrequencyBinToOctaveBinConverter = FrequencyBinToOctaveBinConverter()
 ) {
 
-    fun convert(frequencyBins: FrequencyBins): sound.bins.octave.OctaveBins {
+    fun convert(frequencyBins: FrequencyBins): OctaveBins {
         return frequencyBins.map {
             frequencyBinToOctaveBinConverter.convert(it)
         }

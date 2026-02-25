@@ -1,16 +1,16 @@
 package sound.bins
 
 import dsp.fft.FrequencyBin
+import math.featureScaling.normalizeLogarithmically
 import sound.bins.notes.Note
 import sound.bins.notes.Notes
 import sound.bins.octave.OctaveBin
-import math.featureScaling.normalizeLogarithmically
 
 class FrequencyBinToOctaveBinConverter(
-    private val rootNote: sound.bins.notes.Note = _root_ide_package_.sound.bins.notes.Notes.C
+    private val rootNote: Note = Notes.C
 ) {
 
-    fun convert(frequencyBin: FrequencyBin): sound.bins.octave.OctaveBin {
+    fun convert(frequencyBin: FrequencyBin): OctaveBin {
         return OctaveBin(
             position = frequencyBin.frequency.normalizeToOctave() % 1,
             magnitude = frequencyBin.magnitude
