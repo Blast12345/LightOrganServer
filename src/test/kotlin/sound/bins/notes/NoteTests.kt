@@ -1,4 +1,4 @@
-package dsp.bins.notes
+package sound.bins.notes
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

@@ -1,8 +1,8 @@
-package dsp.bins.frequency.dominant.magnitude
+package sound.bins.frequency.dominant.magnitude
 
+import dsp.fft.FrequencyBin
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import dsp.fft.FrequencyBin
 
 class DominantMagnitudeCalculatorTests {
 

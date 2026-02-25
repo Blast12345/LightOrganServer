@@ -1,4 +1,4 @@
-package dsp.bins.frequency.filters
+package sound.bins.frequency.filters
 
 import io.mockk.every
 import io.mockk.mockk

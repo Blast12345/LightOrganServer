@@ -1,9 +1,9 @@
 package sound.bins.frequency
 
 import config.ConfigSingleton
-import dsp.bins.frequency.filters.Crossover
-import dsp.bins.frequency.filters.PassBandRegionFilter
 import dsp.fft.FrequencyBins
+import sound.bins.frequency.filters.Crossover
+import sound.bins.frequency.filters.PassBandRegionFilter
 
 class FrequencyBinsFilter(
     private val passBandRegionFilter: PassBandRegionFilter = PassBandRegionFilter(),

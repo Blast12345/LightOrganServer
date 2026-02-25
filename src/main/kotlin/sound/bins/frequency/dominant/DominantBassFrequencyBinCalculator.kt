@@ -3,11 +3,11 @@ package sound.bins.frequency.dominant
 import config.ConfigSingleton
 import dsp.fft.FrequencyBin
 import dsp.fft.FrequencyBins
-import dsp.bins.frequency.dominant.frequency.DominantFrequencyCalculator
-import dsp.bins.frequency.dominant.magnitude.DominantMagnitudeCalculator
-import dsp.bins.frequency.filters.BandPassFilter
-import dsp.bins.frequency.filters.Crossover
-import dsp.bins.frequency.filters.PassBandRegionFilter
+import sound.bins.frequency.dominant.frequency.DominantFrequencyCalculator
+import sound.bins.frequency.dominant.magnitude.DominantMagnitudeCalculator
+import sound.bins.frequency.filters.BandPassFilter
+import sound.bins.frequency.filters.Crossover
+import sound.bins.frequency.filters.PassBandRegionFilter
 
 class DominantBassFrequencyBinCalculator(
     private val passBandRegionFilter: PassBandRegionFilter = PassBandRegionFilter(),

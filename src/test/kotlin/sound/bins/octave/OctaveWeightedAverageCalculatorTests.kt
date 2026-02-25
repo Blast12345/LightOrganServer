@@ -1,4 +1,4 @@
-package dsp.bins.octave
+package sound.bins.octave
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

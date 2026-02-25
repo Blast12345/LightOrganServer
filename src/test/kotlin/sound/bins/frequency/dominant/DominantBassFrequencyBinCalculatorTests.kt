@@ -1,5 +1,6 @@
-package dsp.bins.frequency.dominant
+package sound.bins.frequency.dominant
 
+import dsp.fft.FrequencyBin
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -8,11 +9,10 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import dsp.fft.FrequencyBin
-import dsp.bins.frequency.dominant.frequency.DominantFrequencyCalculator
-import dsp.bins.frequency.dominant.magnitude.DominantMagnitudeCalculator
-import dsp.bins.frequency.filters.BandPassFilter
-import dsp.bins.frequency.filters.PassBandRegionFilter
+import sound.bins.frequency.dominant.frequency.DominantFrequencyCalculator
+import sound.bins.frequency.dominant.magnitude.DominantMagnitudeCalculator
+import sound.bins.frequency.filters.BandPassFilter
+import sound.bins.frequency.filters.PassBandRegionFilter
 import toolkit.monkeyTest.nextCrossover
 import toolkit.monkeyTest.nextFrequencyBins
 import kotlin.random.Random

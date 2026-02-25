@@ -2,10 +2,10 @@ package color
 
 import dsp.fft.FrequencyBin
 import dsp.fft.FrequencyBins
-import dsp.bins.notes.Note
-import dsp.bins.notes.Notes
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import sound.bins.notes.Note
+import sound.bins.notes.Notes
 
 class HueCalculatorIntegrationTests {
 

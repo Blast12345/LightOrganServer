@@ -1,8 +1,8 @@
 package sound.bins.octave
 
-import dsp.bins.FrequencyBinsToOctaveBinsConverter
 import dsp.fft.FrequencyBins
-import dsp.bins.frequency.dominant.frequency.PeakFrequencyBinsFinder
+import sound.bins.FrequencyBinsToOctaveBinsConverter
+import sound.bins.frequency.dominant.frequency.PeakFrequencyBinsFinder
 
 class PeakOctaveBinsFinder(
     private val peakFrequencyBinsFinder: PeakFrequencyBinsFinder = PeakFrequencyBinsFinder(),

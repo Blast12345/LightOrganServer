@@ -1,4 +1,4 @@
-package dsp.bins.frequency.filters
+package sound.bins.frequency.filters
 
 import io.mockk.clearAllMocks
 import org.junit.jupiter.api.AfterEach

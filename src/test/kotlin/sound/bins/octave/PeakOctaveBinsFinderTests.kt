@@ -1,11 +1,11 @@
-package dsp.bins.octave
+package sound.bins.octave
 
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import dsp.bins.FrequencyBinsToOctaveBinsConverter
-import dsp.bins.frequency.dominant.frequency.PeakFrequencyBinsFinder
+import sound.bins.FrequencyBinsToOctaveBinsConverter
+import sound.bins.frequency.dominant.frequency.PeakFrequencyBinsFinder
 import toolkit.monkeyTest.nextFrequencyBins
 import toolkit.monkeyTest.nextOctaveBins
 

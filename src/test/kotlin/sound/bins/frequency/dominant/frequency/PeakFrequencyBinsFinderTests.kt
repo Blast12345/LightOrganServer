@@ -1,8 +1,8 @@
-package dsp.bins.frequency.dominant.frequency
+package sound.bins.frequency.dominant.frequency
 
+import dsp.fft.FrequencyBin
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import dsp.fft.FrequencyBin
 
 class PeakFrequencyBinsFinderTests {
 

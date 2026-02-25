@@ -1,4 +1,4 @@
-package dsp.bins.frequency.dominant.frequency
+package sound.bins.frequency.dominant.frequency
 
 import io.mockk.clearAllMocks
 import io.mockk.every

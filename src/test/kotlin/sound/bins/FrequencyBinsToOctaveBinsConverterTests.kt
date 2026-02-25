@@ -1,4 +1,4 @@
-package dsp.bins
+package sound.bins
 
 import io.mockk.every
 import io.mockk.mockk
