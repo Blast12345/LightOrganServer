@@ -1,6 +1,6 @@
 package dsp.bins
 
-import dsp.bins.frequency.FrequencyBin
+import dsp.fft.FrequencyBin
 import dsp.bins.notes.Notes
 import dsp.bins.octave.OctaveBin
 import org.junit.jupiter.api.Assertions.assertEquals

@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.flow.StateFlow
 import lightOrgan.spectrum.SpectrumManager
-import dsp.bins.frequency.FrequencyBin
-import dsp.bins.frequency.FrequencyBins
+import dsp.fft.FrequencyBin
+import dsp.fft.FrequencyBins
 
 
 class SpectrumTileViewModel(

@@ -2,7 +2,7 @@ package dsp.bins.frequency.dominant.magnitude
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import dsp.bins.frequency.FrequencyBin
+import dsp.fft.FrequencyBin
 
 class DominantMagnitudeCalculatorTests {
 

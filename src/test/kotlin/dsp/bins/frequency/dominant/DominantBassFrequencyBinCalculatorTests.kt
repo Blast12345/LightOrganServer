@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import dsp.bins.frequency.FrequencyBin
+import dsp.fft.FrequencyBin
 import dsp.bins.frequency.dominant.frequency.DominantFrequencyCalculator
 import dsp.bins.frequency.dominant.magnitude.DominantMagnitudeCalculator
 import dsp.bins.frequency.filters.BandPassFilter

@@ -4,11 +4,11 @@ import audio.samples.AudioFrame
 import dsp.MonoMixer
 import dsp.SampleFramer
 import dsp.ZeroPaddingInterpolator
-import dsp.bins.FrequencyBinsCalculator
-import dsp.bins.frequency.FrequencyBins
-import dsp.bins.frequency.FrequencyBinsFilter
-import dsp.window.HannWindow
-import dsp.window.WindowFunction
+import dsp.fft.FrequencyBinsCalculator
+import dsp.fft.FrequencyBins
+import sound.bins.frequency.FrequencyBinsFilter
+import dsp.windowing.HannWindow
+import dsp.windowing.WindowFunction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +21,7 @@ class SpectrumManager(
     private val windowFunction: WindowFunction = HannWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),
-    private val frequencyBinsFilter: FrequencyBinsFilter = FrequencyBinsFilter()
+    private val frequencyBinsFilter: sound.bins.frequency.FrequencyBinsFilter = _root_ide_package_.sound.bins.frequency.FrequencyBinsFilter()
 ) {
 
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
@@ -38,7 +38,7 @@ class SpectrumManager(
         val allBins = frequencyBinsCalculator
             .calculate(interpolatedFrame, monoAudio.format)
             .applyAmplitudeCorrection(windowFunction.amplitudeCorrectionFactor)
-        
+
         val filteredBins = frequencyBinsFilter.filter(allBins)
 
         _frequencyBins.value = filteredBins

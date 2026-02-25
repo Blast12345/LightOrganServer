@@ -1,6 +1,6 @@
 package color
 
-import dsp.bins.frequency.FrequencyBins
+import dsp.fft.FrequencyBins
 import wrappers.color.Color
 
 // TODO: Rename to ColorCalculator

@@ -2,7 +2,7 @@ package dsp.bins.frequency.filters
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import dsp.bins.frequency.FrequencyBin
+import dsp.fft.FrequencyBin
 
 class CrossoverFilterTests {
 

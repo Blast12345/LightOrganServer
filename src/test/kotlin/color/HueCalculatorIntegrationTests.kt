@@ -1,7 +1,7 @@
 package color
 
-import dsp.bins.frequency.FrequencyBin
-import dsp.bins.frequency.FrequencyBins
+import dsp.fft.FrequencyBin
+import dsp.fft.FrequencyBins
 import dsp.bins.notes.Note
 import dsp.bins.notes.Notes
 import org.junit.jupiter.api.Assertions.assertEquals

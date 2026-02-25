@@ -19,7 +19,7 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
 import config.ConfigSingleton
 import gui.basicComponents.*
-import dsp.bins.frequency.FrequencyBin
+import dsp.fft.FrequencyBin
 
 @Preview
 @Composable

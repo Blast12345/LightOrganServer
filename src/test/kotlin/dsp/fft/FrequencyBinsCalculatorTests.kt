@@ -1,7 +1,7 @@
 package dsp.fft
 
-import dsp.bins.FrequencyBinsCalculator
-import dsp.bins.frequency.FrequencyBin
+import dsp.fft.FrequencyBinsCalculator
+import dsp.fft.FrequencyBin
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

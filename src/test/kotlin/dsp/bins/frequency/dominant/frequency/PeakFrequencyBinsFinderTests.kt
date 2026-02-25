@@ -2,7 +2,7 @@ package dsp.bins.frequency.dominant.frequency
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import dsp.bins.frequency.FrequencyBin
+import dsp.fft.FrequencyBin
 
 class PeakFrequencyBinsFinderTests {
 

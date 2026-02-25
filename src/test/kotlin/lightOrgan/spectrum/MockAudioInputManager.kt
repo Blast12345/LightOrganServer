@@ -3,7 +3,7 @@ package lightOrgan.spectrum
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import dsp.bins.frequency.FrequencyBins
+import dsp.fft.FrequencyBins
 
 data class SpectrumManagerFixture(
     val mock: SpectrumManager,
