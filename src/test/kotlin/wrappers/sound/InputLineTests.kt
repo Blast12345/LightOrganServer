@@ -63,7 +63,7 @@ class InputLineTests {
     fun `get the sample rate`() {
         val sut = createSUT()
 
-        assertEquals(format.sampleRate.toInt(), sut.sampleRate)
+        assertEquals(format.sampleRate, sut.sampleRate)
     }
 
     @Test

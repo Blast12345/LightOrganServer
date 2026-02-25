@@ -11,7 +11,7 @@ class InputLine(
     private val readSize: Int = 2048
 ) {
 
-    val sampleRate = dataLine.format.sampleRate.toInt()
+    val sampleRate = dataLine.format.sampleRate
     val bitDepth = dataLine.format.sampleSizeInBits
     val channels = dataLine.format.channels
     val byteOrder: ByteOrder = if (dataLine.format.isBigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN
