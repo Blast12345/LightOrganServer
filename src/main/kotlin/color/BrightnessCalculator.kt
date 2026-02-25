@@ -7,18 +7,18 @@ import sound.bins.frequency.filters.BandPassFilter
 import sound.bins.frequency.filters.Crossover
 
 class BrightnessCalculator(
-    private val bandPassFilter: sound.bins.frequency.filters.BandPassFilter = _root_ide_package_.sound.bins.frequency.filters.BandPassFilter(),
-    private val lowCrossover: sound.bins.frequency.filters.Crossover = ConfigSingleton.lowCrossover,
-    private val highCrossover: sound.bins.frequency.filters.Crossover = ConfigSingleton.highCrossover,
-    private val greatestMagnitudeFinder: sound.bins.frequency.GreatestMagnitudeFinder = _root_ide_package_.sound.bins.frequency.GreatestMagnitudeFinder(),
+    private val bandPassFilter: BandPassFilter = BandPassFilter(),
+    private val lowCrossover: Crossover = ConfigSingleton.lowCrossover,
+    private val highCrossover: Crossover = ConfigSingleton.highCrossover,
+    private val greatestMagnitudeFinder: GreatestMagnitudeFinder = GreatestMagnitudeFinder(),
 ) {
 
     fun calculate(frequencyBins: FrequencyBins): Float? {
+        // TODO: How to scale?
         val magnitude = calculateMagnitude(frequencyBins) ?: return null
-        val adjustedMagnitude = magnitude // TODO: How to scale?
 
-        return if (adjustedMagnitude < 1F) {
-            adjustedMagnitude
+        return if (magnitude < 1F) {
+            magnitude
         } else {
             1F
         }
