@@ -6,6 +6,6 @@ data class AudioFormat(
     val channels: Int
 ) {
 
-    val nyquistFrequency: Float = sampleRate / 2f // TODO: Is this used?
+    val nyquistFrequency = sampleRate / 2f
 
 }
