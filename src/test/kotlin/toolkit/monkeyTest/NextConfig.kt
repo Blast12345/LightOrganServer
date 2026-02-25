@@ -18,7 +18,6 @@ fun nextConfig(
         highCrossover = nextCrossover(),
         sampleSize = sampleSize,
         interpolatedSampleSize = interpolatedSampleSize,
-        spectrumMultiplier = magnitudeMultiplier,
-        millisecondsToWaitBetweenCheckingForNewAudio = nextPositiveLong(),
+        spectrumMultiplier = magnitudeMultiplier
     )
 }
