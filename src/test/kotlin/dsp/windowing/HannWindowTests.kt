@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test
 
 class HannWindowTests {
 
-    // This is inherently stateless, so no need to create a new instance for each test.
-    private val sut = HannWindow()
     private val frame = FloatArray(5) { 1f }
 
     @Test
     fun `edge samples are zero`() {
+        val sut = HannWindow()
+
         val result = sut.appliedTo(frame)
 
         assertEquals(0f, result.first())
@@ -20,6 +20,8 @@ class HannWindowTests {
 
     @Test
     fun `center sample is unchanged`() {
+        val sut = HannWindow()
+
         val result = sut.appliedTo(frame)
 
         assertEquals(1f, result[2], 0.001f)
@@ -27,6 +29,7 @@ class HannWindowTests {
 
     @Test
     fun `output is symmetric`() {
+        val sut = HannWindow()
         val frame = FloatArray(5) { 1f }
 
         val result = sut.appliedTo(frame)
@@ -37,16 +40,22 @@ class HannWindowTests {
 
     @Test
     fun `get the amplitude correction factor`() {
+        val sut = HannWindow()
+
         assertEquals(2f, sut.amplitudeCorrectionFactor)
     }
 
     @Test
     fun `get the energy correction factor`() {
+        val sut = HannWindow()
+
         assertEquals(1.63f, sut.energyCorrectionFactor)
     }
 
     @Test
     fun `verify known output`() {
+        val sut = HannWindow()
+
         val result = sut.appliedTo(frame)
 
         val expected = floatArrayOf(0.0f, 0.5f, 1.0f, 0.5f, 0.0f)
