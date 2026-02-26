@@ -1,6 +1,6 @@
 package sound.bins.frequency.dominant.frequency
 
-import sound.bins.frequency.FrequencyBins
+import dsp.fft.FrequencyBins
 
 class TotalMagnitudeCalculator {
 

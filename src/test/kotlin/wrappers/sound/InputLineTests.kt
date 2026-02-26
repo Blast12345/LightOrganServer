@@ -2,11 +2,14 @@ package wrappers.sound
 
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import toolkit.monkeyTest.nextByteArray
 import toolkit.monkeyTest.nextException
 import toolkit.monkeyTest.nextPositiveInt
 import toolkit.monkeyTest.nextString
@@ -19,7 +22,8 @@ class InputLineTests {
 
     private val name = nextString("name")
     private val dataLine: TargetDataLine = mockk()
-    private val readSize = 2048
+    private val minimumReadSize = nextPositiveInt()
+    private val bufferSize = nextPositiveInt()
 
     private val format: javax.sound.sampled.AudioFormat = mockk()
     private val exception = nextException()
@@ -32,8 +36,9 @@ class InputLineTests {
         every { format.channels } returns nextPositiveInt()
         every { format.isBigEndian } returns nextBoolean()
 
-        every { dataLine.open(format, readSize) } returns Unit
+        every { dataLine.open(any(), any()) } returns Unit
         every { dataLine.start() } returns Unit
+        every { dataLine.read(any(), any(), any()) } returns nextPositiveInt()
         every { dataLine.stop() } returns Unit
         every { dataLine.close() } returns Unit
     }
@@ -47,7 +52,8 @@ class InputLineTests {
         return InputLine(
             name = name,
             dataLine = dataLine,
-            readSize = readSize
+            minimumReadSize = minimumReadSize,
+            bufferSize = bufferSize
         )
     }
 
@@ -104,7 +110,7 @@ class InputLineTests {
         sut.start()
 
         verifyOrder {
-            dataLine.open(format, readSize)
+            dataLine.open(format, bufferSize)
             dataLine.start()
         }
     }
@@ -112,7 +118,7 @@ class InputLineTests {
     @Test
     fun `when open fails, then stop and rethrow`() {
         val sut = createSUT()
-        every { dataLine.open(format, readSize) } throws exception
+        every { dataLine.open(any(), any()) } throws exception
 
         val actual = assertThrows<Exception> { sut.start() }
 
@@ -133,6 +139,45 @@ class InputLineTests {
         assertEquals(exception, actual)
     }
 
+    @Test
+    fun `read data from the data line`() = runTest {
+        val sut = createSUT()
+
+        // Suggests that data is not immediately available
+        every { dataLine.available() } returns 0
+
+        // The next read will return the minimum read size
+        val readBytes = nextByteArray(minimumReadSize)
+        every { dataLine.read(any(), 0, minimumReadSize) } answers {
+            readBytes.copyInto(firstArg<ByteArray>())
+            readBytes.size
+        }
+
+        val result = sut.read()
+
+        assertArrayEquals(readBytes, result)
+    }
+
+    @Test
+    fun `when more data is available than minimum, read all available`() = runTest {
+        val sut = createSUT()
+
+        // Suggests that excess data is waiting to be read
+        val availableBytes = minimumReadSize * 2
+        every { dataLine.available() } returns availableBytes
+
+        // The next read will return up to
+        val readBytes = nextByteArray(availableBytes)
+        every { dataLine.read(any(), 0, availableBytes) } answers {
+            readBytes.copyInto(firstArg<ByteArray>())
+            readBytes.size
+        }
+
+        val result = sut.read()
+
+        assertArrayEquals(readBytes, result)
+    }
+
     // Stop
     @Test
     fun `stop stops and closes the data line`() {
@@ -145,4 +190,5 @@ class InputLineTests {
             dataLine.close()
         }
     }
+
 }

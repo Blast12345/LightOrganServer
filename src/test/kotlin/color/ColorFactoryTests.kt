@@ -43,7 +43,7 @@ class ColorFactoryTests {
 
         val color = sut.create(frequencyBins)
 
-        assertEquals(hue, color.hue, 0.1F)
+        assertEquals(hue, color.hue, 0.01F)
         assertEquals(1F, color.saturation, 0.01F)
         assertEquals(brightness, color.brightness, 0.01F)
     }

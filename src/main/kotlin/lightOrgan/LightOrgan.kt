@@ -7,17 +7,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import lightOrgan.input.AudioInputManager
+import lightOrgan.spectrum.SpectrumManager
 import server.Server
-import sound.FrequencyBinsCalculator
-import sound.bins.frequency.BassBinsFilter
 import utilities.TimestampUtility
-import wrappers.color.Color
 
 class LightOrgan(
     private val audioInputManager: AudioInputManager,
-    private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),
-    private val frequencyBinsFilter: BassBinsFilter = BassBinsFilter(), // TODO: Refactor
-    private val colorFactory: ColorFactory = ColorFactory(), // TODO: Test?
+    private val spectrumManager: SpectrumManager,
+    private val colorFactory: ColorFactory = ColorFactory(), // TODO: Refactor
     private val server: Server = Server(),
     private val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -26,22 +23,19 @@ class LightOrgan(
     private val timeBetweenColors = TimestampUtility("Time between colors")
 
     init {
+        // TODO: How to handle exceptions?
         scope.launch {
             audioInputManager.bufferedAudio.collect { handle(it) }
         }
     }
 
     private fun handle(newAudio: AudioFrame) {
-        val allBins = frequencyBinsCalculator.calculate(newAudio)
-        val filteredBins = frequencyBinsFilter.filter(allBins)
-        val color = colorFactory.create(filteredBins)
+        val frequencyBins = spectrumManager.calculate(newAudio)
+        val color = colorFactory.create(frequencyBins)
 
-        broadcast(color)
-    }
-
-    private fun broadcast(color: Color) {
         subscribers.forEach { it.new(color) }
         server.new(color)
+
         timeBetweenColors.logTimeSinceLast()
     }
 

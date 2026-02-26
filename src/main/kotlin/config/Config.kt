@@ -13,7 +13,6 @@ class Config(
     val sampleSize: Int,
     val interpolatedSampleSize: Int,
     val magnitudeMultiplier: Float,
-    val millisecondsToWaitBetweenCheckingForNewAudio: Long
 )
 
 

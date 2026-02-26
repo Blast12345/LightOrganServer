@@ -1,8 +1,8 @@
 package sound.bins.frequency.filters
 
+import dsp.fft.FrequencyBin
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import sound.bins.frequency.FrequencyBin
 
 class CrossoverFilterTests {
 

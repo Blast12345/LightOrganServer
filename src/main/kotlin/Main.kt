@@ -13,56 +13,71 @@ import gui.dashboard.DashboardViewModelFactory
 import gui.dashboard.SnackbarController
 import lightOrgan.LightOrgan
 import lightOrgan.input.AudioInputManager
+import lightOrgan.spectrum.SpectrumManager
 
 // TODO: Consolidate coroutine scopes
 fun main(args: Array<String>) {
     val audioInputManager = AudioInputManager()
+    val spectrumManager = SpectrumManager()
 
     val lightOrgan = LightOrgan(
-        audioInputManager = audioInputManager
+        audioInputManager = audioInputManager,
+        spectrumManager = spectrumManager
     )
 
     if (args.contains("--headless")) {
         launchHeadless(lightOrgan)
     } else {
-        launchGUI(audioInputManager, lightOrgan)
+        launchGUI(audioInputManager, spectrumManager, lightOrgan)
     }
 }
 
-private fun launchGUI(audioInputManager: AudioInputManager, lightOrgan: LightOrgan) = application {
-    val minimumWidth = 1200
-    val minimumHeight = 300
+private fun launchGUI(
+    audioInputManager: AudioInputManager,
+    spectrumManager: SpectrumManager,
+    lightOrgan: LightOrgan
+) =
+    application {
+        val minimumWidth = 1200
+        val minimumHeight = 300
 
-    Window(
-        title = "Synesthetic",
-        state = rememberWindowState(
-            width = minimumWidth.dp,
-            height = minimumHeight.dp,
-        ),
-        onCloseRequest = ::exitApplication,
-    ) {
-        window.minimumSize = java.awt.Dimension(minimumWidth, minimumHeight)
+        Window(
+            title = "Synesthetic",
+            state = rememberWindowState(
+                width = minimumWidth.dp,
+                height = minimumHeight.dp,
+            ),
+            onCloseRequest = ::exitApplication,
+        ) {
+            window.minimumSize = java.awt.Dimension(minimumWidth, minimumHeight)
 
-        Theme {
-            val snackbarController = remember { SnackbarController() }
-            val snackbarHostState = remember { SnackbarHostState() }
+            Theme {
+                val snackbarController = remember { SnackbarController() }
+                val snackbarHostState = remember { SnackbarHostState() }
 
-            LaunchedEffect(Unit) {
-                snackbarController.messages.collect { message ->
-                    snackbarHostState.showSnackbar(message)
+                LaunchedEffect(Unit) {
+                    snackbarController.messages.collect { message ->
+                        snackbarHostState.showSnackbar(message)
+                    }
                 }
-            }
 
-            Scaffold(
-                snackbarHost = { SnackbarHost(snackbarHostState) }
-            ) {
-                val viewModel =
-                    remember { DashboardViewModelFactory().create(audioInputManager, lightOrgan, snackbarController) }
-                Dashboard(viewModel)
+                Scaffold(
+                    snackbarHost = { SnackbarHost(snackbarHostState) }
+                ) {
+                    val viewModel =
+                        remember {
+                            DashboardViewModelFactory().create(
+                                audioInputManager,
+                                spectrumManager,
+                                lightOrgan,
+                                snackbarController
+                            )
+                        }
+                    Dashboard(viewModel)
+                }
             }
         }
     }
-}
 
 private fun launchHeadless(lightOrgan: LightOrgan) =
     application {

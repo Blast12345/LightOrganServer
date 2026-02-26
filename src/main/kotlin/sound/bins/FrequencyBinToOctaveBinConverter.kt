@@ -1,7 +1,7 @@
 package sound.bins
 
+import dsp.fft.FrequencyBin
 import math.featureScaling.normalizeLogarithmically
-import sound.bins.frequency.FrequencyBin
 import sound.bins.octave.OctaveBin
 import sound.notes.Note
 import sound.notes.Notes

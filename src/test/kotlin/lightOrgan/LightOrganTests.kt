@@ -4,44 +4,48 @@ import color.ColorFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import lightOrgan.input.MockAudioInputManager
+import lightOrgan.input.AudioInputManagerFixture
+import lightOrgan.spectrum.SpectrumManagerFixture
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import server.Server
-import sound.FrequencyBinsCalculator
-import sound.bins.frequency.BassBinsFilter
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextColor
 import toolkit.monkeyTest.nextFrequencyBins
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class LightOrganTests {
 
-    private val audioInputManager = MockAudioInputManager.create()
-    private val frequencyBinsCalculator: FrequencyBinsCalculator = mockk()
-    private val frequencyBinsFilter: BassBinsFilter = mockk()
+    private lateinit var audioInputManager: AudioInputManagerFixture
+    private lateinit var spectrumManager: SpectrumManagerFixture
     private val colorFactory: ColorFactory = mockk()
     private val server: Server = mockk()
     private val sutScope = TestScope()
+
+    private val frequencyBins = nextFrequencyBins()
 
     private val subscriber1: LightOrganSubscriber = mockk(relaxed = true)
     private val subscriber2: LightOrganSubscriber = mockk(relaxed = true)
     private val subscribers = mutableSetOf(subscriber1, subscriber2)
 
     private val newAudio = nextAudioFrame()
-    private val allBins = nextFrequencyBins()
-    private val filteredBins = nextFrequencyBins()
     private val newColor = nextColor()
 
     @BeforeEach
     fun setupHappyPath() {
-        every { frequencyBinsCalculator.calculate(newAudio) } returns allBins
-        every { frequencyBinsFilter.filter(allBins) } returns filteredBins
-        every { colorFactory.create(filteredBins) } returns newColor
+        audioInputManager = AudioInputManagerFixture.create()
+        spectrumManager = SpectrumManagerFixture.create()
+
+        every { spectrumManager.mock.calculate(any()) } returns frequencyBins
+        every { colorFactory.create(frequencyBins) } returns newColor
         every { subscriber1.new(newColor) } returns Unit
         every { subscriber2.new(newColor) } returns Unit
         every { server.new(newColor) } returns Unit
@@ -56,8 +60,7 @@ class LightOrganTests {
     private fun createSUT(): LightOrgan {
         return LightOrgan(
             audioInputManager = audioInputManager.mock,
-            frequencyBinsCalculator = frequencyBinsCalculator,
-            frequencyBinsFilter = frequencyBinsFilter,
+            spectrumManager = spectrumManager.mock,
             colorFactory = colorFactory,
             server = server,
             subscribers = subscribers,
@@ -68,12 +71,16 @@ class LightOrganTests {
     @Test
     fun `when new audio is received, broadcast the color`() = runTest {
         val sut = createSUT()
+        sutScope.advanceUntilIdle()
 
         audioInputManager.bufferedAudio.emit(newAudio)
+        sutScope.advanceUntilIdle()
 
-        every { subscriber1.new(newColor) } returns Unit
-        every { subscriber2.new(newColor) } returns Unit
-        every { server.new(newColor) } returns Unit
+        verify { spectrumManager.mock.calculate(newAudio) }
+        verify { colorFactory.create(frequencyBins) }
+        verify { subscriber1.new(newColor) }
+        verify { subscriber2.new(newColor) }
+        verify { server.new(newColor) }
     }
 
     @Test

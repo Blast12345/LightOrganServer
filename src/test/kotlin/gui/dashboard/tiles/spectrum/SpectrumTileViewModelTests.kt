@@ -1,78 +1,74 @@
 package gui.dashboard.tiles.spectrum
 
 import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import lightOrgan.spectrum.SpectrumManagerFixture
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import toolkit.monkeyTest.nextFrequencyBins
-import toolkit.monkeyTest.nextSpectrum
-import toolkit.monkeyTest.nextSpectrumBin
+import sound.bins.frequency.filters.Crossover
+import toolkit.monkeyTest.nextFrequencyBin
+import kotlin.random.Random
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class SpectrumTileViewModelTests {
 
-    private val spectrumCreator: SpectrumCreator = mockk()
-    private val spectrum = nextSpectrum()
+    private lateinit var spectrumManager: SpectrumManagerFixture
+    private val lowCrossover = Crossover(stopFrequency = 10f, cornerFrequency = 20f)
+    private val highCrossover = Crossover(cornerFrequency = 80f, stopFrequency = 90f)
+    private val sutScope = TestScope()
+    private val sharingPolicy = SharingStarted.Eagerly
+
+    private val allBins = (1..100).map { nextFrequencyBin(frequency = it.toFloat()) }
 
     @BeforeEach
     fun setupHappyPath() {
-        every { spectrumCreator.create(any(), any()) } returns spectrum
+        spectrumManager = SpectrumManagerFixture.create()
     }
 
     @AfterEach
     fun tearDown() {
+        sutScope.cancel()
         clearAllMocks()
     }
 
     private fun createSUT(): SpectrumTileViewModel {
         return SpectrumTileViewModel(
-            spectrumCreator = spectrumCreator
+            spectrumManager = spectrumManager.mock,
+            lowCrossover = lowCrossover,
+            highCrossover = highCrossover,
+            scope = sutScope,
+            sharingPolicy = sharingPolicy
         )
     }
 
     @Test
-    fun `settings new frequency bins updates the spectrum`() {
+    fun `when new frequency bins are available, then update the displayed spectrum`() = runTest {
         val sut = createSUT()
-        val frequencyBins = nextFrequencyBins()
 
-        sut.setFrequencyBins(frequencyBins)
+        spectrumManager.frequencyBins.value = allBins
+        sutScope.advanceUntilIdle()
 
-        verify { spectrumCreator.create(frequencyBins, null) }
-        assertEquals(spectrum, sut.spectrum)
+        val binsInRange = allBins.filter { it.frequency in 10f..90f }
+        assertEquals(binsInRange, sut.displayedBins.value)
     }
 
     @Test
-    fun `setting a hovered bin updates the spectrum`() {
+    fun `highlight a frequency bin`() {
         val sut = createSUT()
-        val hoveredBin = nextSpectrumBin()
+        spectrumManager.frequencyBins.value = allBins
+        sutScope.advanceUntilIdle()
 
-        sut.setHoveredBin(hoveredBin)
+        val index = Random.nextInt(sut.displayedBins.value.size)
+        sut.highlightedIndex = index
 
-        verify { spectrumCreator.create(listOf(), hoveredBin.frequency) }
-        assertEquals(spectrum, sut.spectrum)
-    }
-
-    @Test
-    fun `setting a hovered bin updates the hovered frequency`() {
-        val sut = createSUT()
-        val hoveredBin = SpectrumBin(20.123F, 1F, false)
-
-        sut.setHoveredBin(hoveredBin)
-
-        assertEquals("20.12 Hz", sut.hoveredFrequency)
-    }
-
-    @Test
-    fun `clearing the hovered bin clears the hovered frequency`() {
-        val sut = createSUT()
-        sut.setHoveredBin(nextSpectrumBin())
-
-        sut.setHoveredBin(null)
-
-        assertEquals("", sut.hoveredFrequency)
+        assertEquals(sut.displayedBins.value[index], sut.highlightedBin)
     }
 
 }

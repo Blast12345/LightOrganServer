@@ -1,7 +1,7 @@
 package color
 
 import config.ConfigSingleton
-import sound.bins.frequency.FrequencyBins
+import dsp.fft.FrequencyBins
 import sound.bins.frequency.GreatestMagnitudeFinder
 import sound.bins.frequency.filters.BandPassFilter
 import sound.bins.frequency.filters.Crossover
@@ -14,6 +14,7 @@ class BrightnessCalculator(
 ) {
 
     fun calculate(frequencyBins: FrequencyBins): Float? {
+        // TODO: How to scale?
         val magnitude = calculateMagnitude(frequencyBins) ?: return null
 
         return if (magnitude < 1F) {

@@ -1,7 +1,7 @@
 package sound.bins.frequency.dominant.frequency
 
-import sound.bins.frequency.FrequencyBin
-import sound.bins.frequency.FrequencyBins
+import dsp.fft.FrequencyBin
+import dsp.fft.FrequencyBins
 
 class PeakFrequencyBinsFinder {
 

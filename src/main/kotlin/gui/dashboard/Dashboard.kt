@@ -1,6 +1,5 @@
 package gui.dashboard
 
-import SpectrumTile
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gui.dashboard.tiles.color.ColorTile
+import gui.dashboard.tiles.spectrum.SpectrumTile
 import gui.tiles.audioInput.AudioInputTile
 
 @Preview

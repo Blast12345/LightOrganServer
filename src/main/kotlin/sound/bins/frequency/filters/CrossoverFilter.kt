@@ -2,8 +2,8 @@ package sound.bins.frequency.filters
 
 import extensions.between
 import math.featureScaling.normalize
-import sound.bins.frequency.FrequencyBin
-import sound.bins.frequency.FrequencyBins
+import dsp.fft.FrequencyBin
+import dsp.fft.FrequencyBins
 import kotlin.math.abs
 
 class CrossoverFilter {

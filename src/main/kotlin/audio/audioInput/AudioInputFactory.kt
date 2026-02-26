@@ -15,7 +15,7 @@ class AudioInputFactory {
     ): AudioInput {
         val inputLine = InputLine(name, dataLine)
         val sampleNormalizer = SampleNormalizer(inputLine.bitDepth, inputLine.byteOrder)
-        
+
         val samplesPerSecond = (inputLine.sampleRate * inputLine.channels).toInt()
         val oneSecondBuffer = SampleBuffer(samplesPerSecond)
 
