@@ -21,9 +21,7 @@ class InputLine(
     val bitDepth = dataLine.format.sampleSizeInBits
     val channels = dataLine.format.channels
     val byteOrder: ByteOrder = if (dataLine.format.isBigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN
-
-    // If we want to modify read size, we should update the variable via a property on start
-    // Also, we may want to expose samples per read and/or read interval
+    
     fun start() {
         try {
             dataLine.open(dataLine.format, bufferSize)
@@ -38,12 +36,11 @@ class InputLine(
     // ENHANCEMENT: Notify the UI when the buffer is full (red / warning)
     suspend fun read(): ByteArray {
         return withContext(Dispatchers.IO) {
-            // TODO: Test this read size optimization?
             val available = dataLine.available()
             val readSize = if (available > minimumReadSize) available else minimumReadSize
 
             val chunk = ByteArray(readSize)
-            dataLine.read(chunk, 0, readSize)
+            dataLine.read(chunk, 0, readSize) // This will block until readSize bytes are available
 
             return@withContext chunk
         }
