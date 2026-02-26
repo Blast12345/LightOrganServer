@@ -26,9 +26,7 @@ class SpectrumTileViewModel(
 ) {
 
     val displayedBins: StateFlow<FrequencyBins> = spectrumManager.frequencyBins
-        .map { bins ->
-            bins.filter { it.frequency in lowCrossover.stopFrequency..highCrossover.stopFrequency }
-        }
+        .map { bins -> bins.filter { it.frequency in lowCrossover.stopFrequency..highCrossover.stopFrequency } }
         .stateIn(scope, sharingPolicy, emptyList())
 
     var highlightedIndex: Int? by mutableStateOf(null)
