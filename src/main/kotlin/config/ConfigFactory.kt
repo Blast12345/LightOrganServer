@@ -21,9 +21,9 @@ class ConfigFactory(
                 cornerFrequency = Notes.C.getFrequency(octave = 2),
                 stopFrequency = Notes.C.getFrequency(octave = 3)
             ),
-            sampleSize = 3600, // now relative to sample rate because of mixdown
+            sampleSize = 2400, // now relative to sample rate because of mixdown
             interpolatedSampleSize = 65536,
-            spectrumMultiplier = 4F,
+            magnitudeMultiplier = 4F,
         )
     }
 

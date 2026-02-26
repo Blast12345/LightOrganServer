@@ -1,6 +1,5 @@
 package gui.dashboard.tiles.spectrum
 
-import dsp.fft.FrequencyBin
 import io.mockk.clearAllMocks
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
@@ -13,26 +12,20 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import sound.bins.frequency.filters.Crossover
+import toolkit.monkeyTest.nextFrequencyBin
 import kotlin.random.Random
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SpectrumTileViewModelTests {
 
     private lateinit var spectrumManager: SpectrumManagerFixture
-    private val spectrumMultiplier: Float = 2f
+    private val lowCrossover = Crossover(stopFrequency = 10f, cornerFrequency = 20f)
+    private val highCrossover = Crossover(cornerFrequency = 80f, stopFrequency = 90f)
     private val sutScope = TestScope()
     private val sharingPolicy = SharingStarted.Eagerly
 
-
-    private val newBin1 = FrequencyBin(frequency = 1f, magnitude = 1f)
-    private val newBin2 = FrequencyBin(frequency = 2f, magnitude = 2f)
-    private val newBin3 = FrequencyBin(frequency = 3f, magnitude = 3f)
-    private val newFrequencyBins = listOf(newBin1, newBin2, newBin3)
-
-    private val scaledBin1 = FrequencyBin(frequency = 1f, magnitude = 2f)
-    private val scaledBin2 = FrequencyBin(frequency = 2f, magnitude = 4f)
-    private val scaledBin3 = FrequencyBin(frequency = 3f, magnitude = 6f)
-    private val scaledFrequencyBins = listOf(scaledBin1, scaledBin2, scaledBin3)
+    private val allBins = (1..100).map { nextFrequencyBin(frequency = it.toFloat()) }
 
     @BeforeEach
     fun setupHappyPath() {
@@ -48,7 +41,8 @@ class SpectrumTileViewModelTests {
     private fun createSUT(): SpectrumTileViewModel {
         return SpectrumTileViewModel(
             spectrumManager = spectrumManager.mock,
-            spectrumMultiplier = spectrumMultiplier,
+            lowCrossover = lowCrossover,
+            highCrossover = highCrossover,
             scope = sutScope,
             sharingPolicy = sharingPolicy
         )
@@ -58,22 +52,23 @@ class SpectrumTileViewModelTests {
     fun `when new frequency bins are available, then update the displayed spectrum`() = runTest {
         val sut = createSUT()
 
-        spectrumManager.frequencyBins.value = newFrequencyBins
+        spectrumManager.frequencyBins.value = allBins
         sutScope.advanceUntilIdle()
 
-        assertEquals(scaledFrequencyBins, sut.frequencyBins.value)
+        val binsInRange = allBins.filter { it.frequency in 10f..90f }
+        assertEquals(binsInRange, sut.displayedBins.value)
     }
 
     @Test
-    fun `highlight a frequency bin`() = runTest {
+    fun `highlight a frequency bin`() {
         val sut = createSUT()
-        spectrumManager.frequencyBins.value = newFrequencyBins
+        spectrumManager.frequencyBins.value = allBins
         sutScope.advanceUntilIdle()
 
-        val index = Random.nextInt(newFrequencyBins.size)
+        val index = Random.nextInt(sut.displayedBins.value.size)
         sut.highlightedIndex = index
 
-        assertEquals(scaledFrequencyBins[index], sut.highlightedBin)
+        assertEquals(sut.displayedBins.value[index], sut.highlightedBin)
     }
 
 }

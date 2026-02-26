@@ -11,7 +11,7 @@ import toolkit.generators.generateStereoAudioFrame
 // rather than checks for meaningful behavior. As such, integration tests seemed like the right tool.
 class SpectrumManagerIntegrationTests {
 
-    private val sut = SpectrumManager()
+    private val sut = SpectrumManager(magnitudeMultiplier = 1f)
 
     private val frequency = 60f
     private val sampleRate = 48000f
@@ -30,13 +30,28 @@ class SpectrumManagerIntegrationTests {
     }
 
     @Test
-    fun `amplitude correction produces expected magnitude for full volume sine wave`() {
+    fun `window correction produces expected magnitude for full volume sine wave`() {
         val audio = generateMonoAudioFrame(sixtyHzTone, sampleRate)
 
         val bins = sut.calculate(audio)
 
         val peakBin = bins.maxBy { it.magnitude }
         assertEquals(1f, peakBin.magnitude, 0.1f)
+    }
+
+    @Test
+    fun `magnitude multiplier scales bin magnitudes`() {
+        val audio = generateMonoAudioFrame(sixtyHzTone, sampleRate)
+
+        val sut = SpectrumManager(magnitudeMultiplier = 1f)
+        val baselineBins = sut.calculate(audio)
+
+        val scaledSut = SpectrumManager(magnitudeMultiplier = 2f)
+        val scaledBins = scaledSut.calculate(audio)
+
+        val baselinePeak = baselineBins.maxBy { it.magnitude }
+        val scaledPeak = scaledBins.maxBy { it.magnitude }
+        assertEquals(baselinePeak.magnitude * 2f, scaledPeak.magnitude, 0.01f)
     }
 
     @Test

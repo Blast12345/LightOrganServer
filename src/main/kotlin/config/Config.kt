@@ -12,7 +12,7 @@ class Config(
     val highCrossover: Crossover,
     val sampleSize: Int,
     val interpolatedSampleSize: Int,
-    val spectrumMultiplier: Float,
+    val magnitudeMultiplier: Float,
 )
 
 

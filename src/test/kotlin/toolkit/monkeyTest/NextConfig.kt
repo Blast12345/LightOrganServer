@@ -18,6 +18,6 @@ fun nextConfig(
         highCrossover = nextCrossover(),
         sampleSize = sampleSize,
         interpolatedSampleSize = interpolatedSampleSize,
-        spectrumMultiplier = magnitudeMultiplier
+        magnitudeMultiplier = magnitudeMultiplier
     )
 }

@@ -1,6 +1,7 @@
 package lightOrgan.spectrum
 
 import audio.samples.AudioFrame
+import config.ConfigSingleton
 import dsp.MonoMixer
 import dsp.SampleFramer
 import dsp.ZeroPaddingInterpolator
@@ -11,17 +12,16 @@ import dsp.windowing.WindowFunction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import sound.bins.frequency.FrequencyBinsFilter
 
-// ENHANCEMENT: Allow filter to be configured; expose FrequencyBinsFilter.
 // ENHANCEMENT: If implementing other calculation strategies (e.g. DFT, CZT), then create a bin calculator interface
+// ENHANCEMENT: Make scaling configurable
 class SpectrumManager(
     private val monoMixer: MonoMixer = MonoMixer(),
     private val sampleFramer: SampleFramer = SampleFramer(),
     private val windowFunction: WindowFunction = HannWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),
-    private val frequencyBinsFilter: FrequencyBinsFilter = FrequencyBinsFilter()
+    private val magnitudeMultiplier: Float = ConfigSingleton.magnitudeMultiplier
 ) {
 
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
@@ -35,19 +35,23 @@ class SpectrumManager(
         val interpolatedFrame = interpolator.interpolate(windowedFrame)
 
         // Bin generation
+
         val allBins = frequencyBinsCalculator
             .calculate(interpolatedFrame, monoAudio.format)
-            .applyAmplitudeCorrection(windowFunction.amplitudeCorrectionFactor)
+            .applyWindowCorrection()
+            .applyMagnitudeMultiplier()
 
-        val filteredBins = frequencyBinsFilter.filter(allBins)
+        _frequencyBins.value = allBins
 
-        _frequencyBins.value = filteredBins
-
-        return filteredBins
+        return allBins
     }
 
-    private fun FrequencyBins.applyAmplitudeCorrection(factor: Float): FrequencyBins {
-        return map { it.copy(magnitude = it.magnitude * factor) }
+    private fun FrequencyBins.applyWindowCorrection(): FrequencyBins {
+        return map { it.copy(magnitude = it.magnitude * windowFunction.amplitudeCorrectionFactor) }
+    }
+
+    private fun FrequencyBins.applyMagnitudeMultiplier(): FrequencyBins {
+        return map { it.copy(magnitude = it.magnitude * magnitudeMultiplier) }
     }
 
 }

@@ -62,7 +62,7 @@ private fun GridSpectrum(viewModel: SpectrumTileViewModel) {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun Spectrum(viewModel: SpectrumTileViewModel) {
-    val bins by viewModel.frequencyBins.collectAsState()
+    val bins by viewModel.displayedBins.collectAsState()
     val hoveredIndex = viewModel.highlightedIndex
     val barColor = MaterialTheme.colors.secondary
 
