@@ -9,6 +9,7 @@ class HueCalculator(
     private val octaveWeightedAverageCalculator: OctaveWeightedAverageCalculator = OctaveWeightedAverageCalculator()
 ) {
 
+    // TODO: Filter
     fun calculate(frequencyBins: FrequencyBins): Float? {
         val peakOctaveBins = peakOctaveBinsFinder.find(frequencyBins)
         return octaveWeightedAverageCalculator.calculate(peakOctaveBins)

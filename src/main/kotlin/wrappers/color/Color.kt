@@ -3,7 +3,10 @@ package wrappers.color
 import extensions.getBrightness
 import extensions.getHue
 import extensions.getSaturation
+import androidx.compose.ui.graphics.Color as ComposeColor
+import java.awt.Color as JavaColor
 
+// TODO: Refactor
 class Color {
 
     val hue: Float
@@ -22,7 +25,7 @@ class Color {
         saturation: Float,
         brightness: Float
     ) {
-        val javaColor = java.awt.Color.getHSBColor(hue, saturation, brightness)
+        val javaColor = JavaColor.getHSBColor(hue, saturation, brightness)
         this.hue = javaColor.getHue()
         this.saturation = javaColor.getSaturation()
         this.brightness = javaColor.getBrightness()
@@ -36,7 +39,7 @@ class Color {
         green: Int,
         blue: Int
     ) {
-        val javaColor = java.awt.Color(red, green, blue)
+        val javaColor = JavaColor(red, green, blue)
         this.hue = javaColor.getHue()
         this.saturation = javaColor.getSaturation()
         this.brightness = javaColor.getBrightness()
@@ -70,6 +73,14 @@ class Color {
         result = 31 * result + green
         result = 31 * result + blue
         return result
+    }
+
+    fun toComposeColor(): ComposeColor {
+        return ComposeColor.hsv(
+            hue = hue * 360,
+            saturation = saturation,
+            value = brightness
+        )
     }
 
 }

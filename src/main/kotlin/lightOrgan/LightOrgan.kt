@@ -1,22 +1,21 @@
 package lightOrgan
 
 import audio.samples.AudioFrame
-import color.ColorFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import lightOrgan.color.ColorManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 import server.Server
 import utilities.TimestampUtility
 
 class LightOrgan(
-    private val audioInputManager: AudioInputManager,
-    private val spectrumManager: SpectrumManager,
-    private val colorFactory: ColorFactory = ColorFactory(), // TODO: Refactor
+    val audioInputManager: AudioInputManager,
+    val spectrumManager: SpectrumManager,
+    val colorManager: ColorManager,
     private val server: Server = Server(),
-    private val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 ) {
 
@@ -31,16 +30,11 @@ class LightOrgan(
 
     private fun handle(newAudio: AudioFrame) {
         val frequencyBins = spectrumManager.calculate(newAudio)
-        val color = colorFactory.create(frequencyBins)
+        val color = colorManager.calculate(frequencyBins)
 
-        subscribers.forEach { it.new(color) }
         server.new(color)
 
         timeBetweenColors.logTimeSinceLast()
-    }
-
-    fun addSubscriber(subscriber: LightOrganSubscriber) {
-        subscribers.add(subscriber)
     }
 
 }

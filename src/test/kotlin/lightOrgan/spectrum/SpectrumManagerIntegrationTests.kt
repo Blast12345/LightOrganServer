@@ -1,13 +1,20 @@
 package lightOrgan.spectrum
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import toolkit.extensions.collectInto
 import toolkit.generators.generateSineWave
 import toolkit.monkeyTest.nextAudioFrame
 
 // The processing chain is so long and specific that unit tests seemed like a mirror of implementation
 // rather than checks for meaningful behavior. As such, integration tests seemed like the right tool.
+@OptIn(ExperimentalCoroutinesApi::class)
 class SpectrumManagerIntegrationTests {
 
     private val frequency = 60f
@@ -18,6 +25,13 @@ class SpectrumManagerIntegrationTests {
 
     private val sixtyHzFrame = nextAudioFrame(listOf(sixtyHzTone), sampleRate)
     private val silentFrame = nextAudioFrame(listOf(silence), sampleRate)
+
+    private val collectionScope = TestScope()
+
+    @AfterEach
+    fun tearDown() {
+        collectionScope.cancel()
+    }
 
     private fun createSUT(magnitudeMultiplier: Float = 1f): SpectrumManager {
         return SpectrumManager(
@@ -80,12 +94,14 @@ class SpectrumManagerIntegrationTests {
     }
 
     @Test
-    fun `frequency bins are emitted to state flow`() {
+    fun `the frequency bins are emitted after calculation`() {
         val sut = createSUT()
+        val received = sut.frequencyBins.collectInto(collectionScope)
 
         val bins = sut.calculate(sixtyHzFrame)
+        collectionScope.advanceUntilIdle()
 
-        assertEquals(bins, sut.frequencyBins.value)
+        assertEquals(listOf(bins), received)
     }
 
 }

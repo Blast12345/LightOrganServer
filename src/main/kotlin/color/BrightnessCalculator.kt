@@ -13,6 +13,7 @@ class BrightnessCalculator(
     private val greatestMagnitudeFinder: GreatestMagnitudeFinder = GreatestMagnitudeFinder(),
 ) {
 
+    // TODO: Filter
     fun calculate(frequencyBins: FrequencyBins): Float? {
         // TODO: How to scale?
         val magnitude = calculateMagnitude(frequencyBins) ?: return null

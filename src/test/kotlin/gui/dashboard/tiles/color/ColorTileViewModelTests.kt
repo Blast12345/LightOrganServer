@@ -1,49 +1,58 @@
 package gui.dashboard.tiles.color
 
-import androidx.compose.runtime.MutableState
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.clearAllMocks
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import lightOrgan.color.ColorManagerFixture
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import kotlin.random.Random
+import toolkit.extensions.collectInto
+import toolkit.monkeyTest.nextColor
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ColorTileViewModelTests {
 
-    private val colorState: MutableState<androidx.compose.ui.graphics.Color> = mockk()
+    private lateinit var colorManager: ColorManagerFixture
     private val sutScope = TestScope()
 
-    private val hue = Random.nextFloat()
-    private val saturation = Random.nextFloat()
-    private val brightness = Random.nextFloat()
-    private val color = wrappers.color.Color(hue, saturation, brightness)
-    private val composeColor = androidx.compose.ui.graphics.Color.hsv(hue * 360, saturation, brightness)
+    private val color1 = nextColor()
+    private val color2 = nextColor()
+
+    @BeforeEach
+    fun setupHappyPath() {
+        colorManager = ColorManagerFixture.create()
+    }
 
     @AfterEach
     fun teardown() {
         sutScope.cancel()
+        clearAllMocks()
     }
 
     private fun createSUT(): ColorTileViewModel {
         return ColorTileViewModel(
-            color = colorState,
-            scope = sutScope
+            colorManager = colorManager.mock
         )
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `the color state is set when a new color is received`() = runTest {
+    fun `when the color is available, then display the color`() = runTest {
         val sut = createSUT()
+        val received = colorManager.color.collectInto(sutScope)
 
-        sut.new(color)
+        colorManager.color.value = color1
         sutScope.advanceUntilIdle()
 
-        verify { colorState.value = composeColor }
+        colorManager.color.value = color2
+        sutScope.advanceUntilIdle()
+
+        assertEquals(color1, received[0])
+        assertEquals(color2, received[1])
     }
 
 }

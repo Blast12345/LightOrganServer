@@ -1,6 +1,5 @@
 package lightOrgan
 
-import color.ColorFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -10,10 +9,10 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import lightOrgan.color.ColorManagerFixture
 import lightOrgan.input.AudioInputManagerFixture
 import lightOrgan.spectrum.SpectrumManagerFixture
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import server.Server
@@ -26,15 +25,11 @@ class LightOrganTests {
 
     private lateinit var audioInputManager: AudioInputManagerFixture
     private lateinit var spectrumManager: SpectrumManagerFixture
-    private val colorFactory: ColorFactory = mockk()
+    private lateinit var colorManager: ColorManagerFixture
     private val server: Server = mockk()
     private val sutScope = TestScope()
 
     private val frequencyBins = nextFrequencyBins()
-
-    private val subscriber1: LightOrganSubscriber = mockk(relaxed = true)
-    private val subscriber2: LightOrganSubscriber = mockk(relaxed = true)
-    private val subscribers = mutableSetOf(subscriber1, subscriber2)
 
     private val newAudio = nextAudioFrame()
     private val newColor = nextColor()
@@ -43,11 +38,10 @@ class LightOrganTests {
     fun setupHappyPath() {
         audioInputManager = AudioInputManagerFixture.create()
         spectrumManager = SpectrumManagerFixture.create()
+        colorManager = ColorManagerFixture.create()
 
         every { spectrumManager.mock.calculate(any()) } returns frequencyBins
-        every { colorFactory.create(frequencyBins) } returns newColor
-        every { subscriber1.new(newColor) } returns Unit
-        every { subscriber2.new(newColor) } returns Unit
+        every { colorManager.mock.calculate(any()) } returns newColor
         every { server.new(newColor) } returns Unit
     }
 
@@ -61,9 +55,8 @@ class LightOrganTests {
         return LightOrgan(
             audioInputManager = audioInputManager.mock,
             spectrumManager = spectrumManager.mock,
-            colorFactory = colorFactory,
+            colorManager = colorManager.mock,
             server = server,
-            subscribers = subscribers,
             scope = sutScope
         )
     }
@@ -77,20 +70,8 @@ class LightOrganTests {
         sutScope.advanceUntilIdle()
 
         verify { spectrumManager.mock.calculate(newAudio) }
-        verify { colorFactory.create(frequencyBins) }
-        verify { subscriber1.new(newColor) }
-        verify { subscriber2.new(newColor) }
+        verify { colorManager.mock.calculate(frequencyBins) }
         verify { server.new(newColor) }
-    }
-
-    @Test
-    fun `add a subscriber`() {
-        val sut = createSUT()
-        val newSubscriber: LightOrganSubscriber = mockk()
-
-        sut.addSubscriber(newSubscriber)
-
-        assertTrue(subscribers.contains(newSubscriber))
     }
 
 }
