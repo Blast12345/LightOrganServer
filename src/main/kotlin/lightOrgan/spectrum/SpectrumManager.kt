@@ -5,6 +5,7 @@ import config.ConfigSingleton
 import dsp.MonoMixer
 import dsp.SampleFramer
 import dsp.ZeroPaddingInterpolator
+import dsp.fft.FrequencyBin
 import dsp.fft.FrequencyBins
 import dsp.fft.FrequencyBinsCalculator
 import dsp.windowing.HannWindow
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 // ENHANCEMENT: If implementing other calculation strategies (e.g. DFT, CZT), then create a bin calculator interface
 // ENHANCEMENT: Make scaling configurable
+// ENHANCEMENT: Explore sub-frame duration frequency calculation. Cool challenge, but probably not necessary for music.
 class SpectrumManager(
     private val monoMixer: MonoMixer = MonoMixer(),
     private val sampleFramer: SampleFramer = SampleFramer(),

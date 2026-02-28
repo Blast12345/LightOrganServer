@@ -10,11 +10,11 @@ class ColorManager(
     private val colorCalculator: ColorCalculator = ColorCalculator(),
 ) {
 
-    private val _color = MutableStateFlow(Color.Companion.black)
+    private val _color = MutableStateFlow(Color.black)
     val color: StateFlow<Color> = _color.asStateFlow()
 
     fun calculate(frequencyBins: FrequencyBins): Color {
-        val color = colorCalculator.calculate(frequencyBins) ?: Color.Companion.black
+        val color = colorCalculator.calculate(frequencyBins) ?: Color.black
 
         _color.value = color
 

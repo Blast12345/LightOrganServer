@@ -22,7 +22,7 @@ class ConfigFactory(
                 stopFrequency = Notes.C.getFrequency(octave = 3)
             ),
             sampleSize = 2400, // now relative to sample rate because of mixdown
-            interpolatedSampleSize = 65536,
+            interpolatedSampleSize = 32768, //32768, //65536,
             magnitudeMultiplier = 4F,
         )
     }
