@@ -3,7 +3,7 @@ package dsp
 import config.ConfigSingleton
 
 class SampleFramer(
-    private val frameSize: Int = ConfigSingleton.sampleSize
+    val frameSize: Int = ConfigSingleton.sampleSize
 ) {
 
     fun frame(samples: FloatArray, offset: Int = 0): FloatArray {

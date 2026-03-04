@@ -1,4 +1,4 @@
-package dsp.fft
+package bins.frequency
 
 data class FrequencyBin(
     val frequency: Float,

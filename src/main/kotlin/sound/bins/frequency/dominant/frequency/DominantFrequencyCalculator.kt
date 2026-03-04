@@ -1,6 +1,7 @@
 package sound.bins.frequency.dominant.frequency
 
-import dsp.fft.FrequencyBins
+import bins.frequency.FrequencyBins
+import bins.frequency.PeakFrequencyBinsFinder
 
 class DominantFrequencyCalculator(
     private val peakFrequencyBinsFinder: PeakFrequencyBinsFinder = PeakFrequencyBinsFinder(),

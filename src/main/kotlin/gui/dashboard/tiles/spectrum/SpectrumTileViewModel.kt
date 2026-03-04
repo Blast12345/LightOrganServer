@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import config.ConfigSingleton
-import dsp.fft.FrequencyBin
-import dsp.fft.FrequencyBins
+import bins.frequency.FrequencyBin
+import bins.frequency.FrequencyBins
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

@@ -1,6 +1,6 @@
 package sound.bins.frequency.filters
 
-import dsp.fft.FrequencyBins
+import bins.frequency.FrequencyBins
 
 class BandPassFilter(
     private val crossoverFilter: CrossoverFilter = CrossoverFilter()

@@ -5,11 +5,10 @@ import config.ConfigSingleton
 import dsp.MonoMixer
 import dsp.SampleFramer
 import dsp.ZeroPaddingInterpolator
-import dsp.fft.FrequencyBin
-import dsp.fft.FrequencyBins
-import dsp.fft.FrequencyBinsCalculator
+import dsp.fft.FftFrequencyBinsCalculator
 import dsp.windowing.HannWindow
 import dsp.windowing.WindowFunction
+import bins.frequency.FrequencyBins
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +21,7 @@ class SpectrumManager(
     private val sampleFramer: SampleFramer = SampleFramer(),
     private val windowFunction: WindowFunction = HannWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
-    private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),
+    private val fftFrequencyBinsCalculator: FftFrequencyBinsCalculator = FftFrequencyBinsCalculator(),
     private val magnitudeMultiplier: Float = ConfigSingleton.magnitudeMultiplier
 ) {
 
@@ -37,11 +36,16 @@ class SpectrumManager(
         val interpolatedFrame = interpolator.interpolate(windowedFrame)
 
         // Bin generation
+        val frameDuration = sampleFramer.frameSize / audio.format.sampleRate
+        val minimumCalculableFrequency = 1 / frameDuration
+        val minimumUsefulFrequency = minimumCalculableFrequency * 1.5 // TODO: Subjective
 
-        val allBins = frequencyBinsCalculator
+        val allBins = fftFrequencyBinsCalculator
             .calculate(interpolatedFrame, monoAudio.format)
             .applyWindowCorrection()
             .applyMagnitudeMultiplier()
+            // TODO: Test
+            .filter { it.frequency > minimumUsefulFrequency } // This class a has a responsibility to filter out bad data
 
         _frequencyBins.value = allBins
 

@@ -1,7 +1,7 @@
-package color
+package lightOrgan.color.calculator
 
 import config.ConfigSingleton
-import dsp.fft.FrequencyBins
+import bins.frequency.FrequencyBins
 import sound.bins.frequency.GreatestMagnitudeFinder
 import sound.bins.frequency.filters.BandPassFilter
 import sound.bins.frequency.filters.Crossover
@@ -39,4 +39,3 @@ class BrightnessCalculator(
     }
 
 }
-

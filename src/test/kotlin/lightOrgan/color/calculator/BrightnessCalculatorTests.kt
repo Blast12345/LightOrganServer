@@ -1,4 +1,4 @@
-package color
+package lightOrgan.color.calculator
 
 import io.mockk.clearAllMocks
 import io.mockk.every

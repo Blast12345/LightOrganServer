@@ -1,12 +1,12 @@
-package lightOrgan.color
+package lightOrgan.color.calculator
 
-import color.BrightnessCalculator
-import color.HueCalculator
-import dsp.fft.FrequencyBins
+import bins.frequency.FrequencyBins
+import lightOrgan.color.calculator.hue.HueCalculator
+import lightOrgan.color.calculator.hue.OctaveHueCalculator
 import wrappers.color.Color
 
 class ColorCalculator(
-    private val hueCalculator: HueCalculator = HueCalculator(),
+    private val hueCalculator: HueCalculator = OctaveHueCalculator(),
     private val brightnessCalculator: BrightnessCalculator = BrightnessCalculator()
 ) {
 

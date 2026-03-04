@@ -1,7 +1,7 @@
 package toolkit.monkeyTest
 
-import sound.bins.octave.OctaveBin
-import sound.bins.octave.OctaveBins
+import bins.octave.OctaveBin
+import bins.octave.OctaveBins
 import kotlin.random.Random
 
 fun nextOctaveBins(

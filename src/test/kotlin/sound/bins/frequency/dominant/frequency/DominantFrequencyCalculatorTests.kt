@@ -1,5 +1,6 @@
 package sound.bins.frequency.dominant.frequency
 
+import bins.frequency.PeakFrequencyBinsFinder
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

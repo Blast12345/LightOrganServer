@@ -1,9 +1,10 @@
 package lightOrgan.color
 
-import dsp.fft.FrequencyBins
+import bins.frequency.FrequencyBins
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import lightOrgan.color.calculator.ColorCalculator
 import wrappers.color.Color
 
 class ColorManager(

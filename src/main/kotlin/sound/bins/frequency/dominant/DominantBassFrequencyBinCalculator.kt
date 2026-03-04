@@ -1,8 +1,8 @@
 package sound.bins.frequency.dominant
 
 import config.ConfigSingleton
-import dsp.fft.FrequencyBin
-import dsp.fft.FrequencyBins
+import bins.frequency.FrequencyBin
+import bins.frequency.FrequencyBins
 import sound.bins.frequency.dominant.frequency.DominantFrequencyCalculator
 import sound.bins.frequency.dominant.magnitude.DominantMagnitudeCalculator
 import sound.bins.frequency.filters.BandPassFilter
