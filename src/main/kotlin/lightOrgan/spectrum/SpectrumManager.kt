@@ -1,6 +1,7 @@
 package lightOrgan.spectrum
 
 import audio.samples.AudioFrame
+import bins.FrequencyBins
 import config.ConfigSingleton
 import dsp.MonoMixer
 import dsp.SampleFramer
@@ -8,12 +9,12 @@ import dsp.ZeroPaddingInterpolator
 import dsp.fft.FftFrequencyBinsCalculator
 import dsp.windowing.HannWindow
 import dsp.windowing.WindowFunction
-import bins.frequency.FrequencyBins
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-// ENHANCEMENT: If implementing other calculation strategies (e.g. DFT, CZT), then create a bin calculator interface
+// ENHANCEMENT: Implement equal-loudness contours (ISO 226:2003). Manual SPL number with future plans of external meter?
+// ENHANCEMENT: If implementing other calculation strategies (e.g., DFT, CZT), then create a bin calculator interface
 // ENHANCEMENT: Make scaling configurable
 // ENHANCEMENT: Explore sub-frame duration frequency calculation. Cool challenge, but probably not necessary for music.
 class SpectrumManager(
@@ -38,7 +39,7 @@ class SpectrumManager(
         // Bin generation
         val frameDuration = sampleFramer.frameSize / audio.format.sampleRate
         val minimumCalculableFrequency = 1 / frameDuration
-        val minimumUsefulFrequency = minimumCalculableFrequency * 1.5 // TODO: Subjective
+        val minimumUsefulFrequency = minimumCalculableFrequency// * 1.5 // TODO: Subjective
 
         val allBins = fftFrequencyBinsCalculator
             .calculate(interpolatedFrame, monoAudio.format)

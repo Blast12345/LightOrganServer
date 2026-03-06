@@ -6,6 +6,6 @@ import kotlin.random.Random
 fun nextCrossover(): Crossover {
     return Crossover(
         stopFrequency = Random.nextFloat(),
-        cornerFrequency = Random.nextFloat()
+        frequency = Random.nextFloat()
     )
 }

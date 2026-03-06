@@ -1,8 +1,8 @@
 package dsp.fft
 
 import audio.samples.AudioFormat
-import bins.frequency.FrequencyBin
-import bins.frequency.FrequencyBins
+import bins.FrequencyBin
+import bins.FrequencyBins
 
 class FftFrequencyBinsCalculator(
     private val fftCalculator: FftCalculator = FftCalculator()

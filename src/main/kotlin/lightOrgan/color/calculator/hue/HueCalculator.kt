@@ -1,6 +1,6 @@
 package lightOrgan.color.calculator.hue
 
-import bins.frequency.FrequencyBins
+import bins.FrequencyBins
 
 // ENHANCEMENT: Add a linear frequency calculator
 // ENHANCEMENT: Add a configurable hue offset

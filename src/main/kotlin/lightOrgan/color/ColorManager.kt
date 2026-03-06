@@ -1,6 +1,6 @@
 package lightOrgan.color
 
-import bins.frequency.FrequencyBins
+import bins.FrequencyBins
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

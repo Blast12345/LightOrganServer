@@ -1,7 +1,16 @@
-package sound.notes
+package music
 
 import kotlin.math.pow
 
+data class Note(val fundamentalFrequency: Float) {
+
+    fun getFrequency(octave: Int): Float {
+        return fundamentalFrequency * 2F.pow(octave)
+    }
+
+}
+
+// TODO: Western notes? Can the object take params for tuning? Also... are these only useful for tests now?
 object Notes {
 
     // I'm just assuming A4=440 Hz tuning for simplicity's sake.

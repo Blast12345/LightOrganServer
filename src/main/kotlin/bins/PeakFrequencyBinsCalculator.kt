@@ -1,4 +1,4 @@
-package bins.frequency
+package bins
 
 import kotlin.math.log10
 import kotlin.math.pow

@@ -1,4 +1,4 @@
-package bins.frequency
+package bins
 
 // TODO: Delete me?
 class PeakFrequencyBinsFinder {

@@ -1,6 +1,6 @@
 package sound.bins.frequency.filters
 
 data class Crossover(
-    val cornerFrequency: Float,
+    val frequency: Float,
     val stopFrequency: Float
 )

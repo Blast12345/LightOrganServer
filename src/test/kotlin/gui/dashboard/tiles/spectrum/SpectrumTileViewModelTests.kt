@@ -20,8 +20,8 @@ import kotlin.random.Random
 class SpectrumTileViewModelTests {
 
     private lateinit var spectrumManager: SpectrumManagerFixture
-    private val lowCrossover = Crossover(stopFrequency = 10f, cornerFrequency = 20f)
-    private val highCrossover = Crossover(cornerFrequency = 80f, stopFrequency = 90f)
+    private val lowCrossover = Crossover(stopFrequency = 10f, frequency = 20f)
+    private val highCrossover = Crossover(frequency = 80f, stopFrequency = 90f)
     private val sutScope = TestScope()
     private val sharingPolicy = SharingStarted.Eagerly
 

@@ -5,7 +5,7 @@ import io.mockk.every
 import io.mockk.mockk
 import lightOrgan.color.calculator.hue.OctaveHueCalculator
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextFrequencyBins
@@ -17,8 +17,8 @@ class ColorCalculatorTests {
     private val brightnessCalculator: BrightnessCalculator = mockk()
 
     private val frequencyBins = nextFrequencyBins()
-    private val hue: Float = Random.Default.nextFloat()
-    private val brightness: Float = Random.Default.nextFloat()
+    private val hue: Float = Random.nextFloat()
+    private val brightness: Float = Random.nextFloat()
 
     @BeforeEach
     fun setupHappyPath() {
@@ -44,9 +44,9 @@ class ColorCalculatorTests {
 
         val actual = sut.calculate(frequencyBins)!!
 
-        Assertions.assertEquals(hue, actual.hue, 0.01f)
-        Assertions.assertEquals(brightness, actual.brightness, 0.01f)
-        Assertions.assertEquals(1F, actual.saturation, 0.01f)
+        assertEquals(hue, actual.hue, 0.01f)
+        assertEquals(brightness, actual.brightness, 0.01f)
+        assertEquals(1F, actual.saturation, 0.01f)
     }
 
     @Test
@@ -56,7 +56,7 @@ class ColorCalculatorTests {
 
         val actual = sut.calculate(frequencyBins)
 
-        Assertions.assertEquals(null, actual)
+        assertEquals(null, actual)
     }
 
     @Test
@@ -66,7 +66,7 @@ class ColorCalculatorTests {
 
         val actual = sut.calculate(frequencyBins)
 
-        Assertions.assertEquals(null, actual)
+        assertEquals(null, actual)
     }
 
 }

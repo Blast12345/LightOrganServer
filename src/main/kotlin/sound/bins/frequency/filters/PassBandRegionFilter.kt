@@ -1,6 +1,6 @@
 package sound.bins.frequency.filters
 
-import bins.frequency.FrequencyBins
+import bins.FrequencyBins
 
 class PassBandRegionFilter {
 

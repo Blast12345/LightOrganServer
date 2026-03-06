@@ -1,23 +1,25 @@
 package lightOrgan.color.calculator.hue
 
-import bins.frequency.FrequencyBin
-import bins.frequency.FrequencyBins
-import bins.octave.OctaveBinFactory
-import org.junit.jupiter.api.Assertions
+import bins.FrequencyBin
+import bins.FrequencyBins
+import music.Note
+import music.Notes
+import music.Tuning
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNull
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import sound.bins.frequency.filters.Crossover
-import sound.notes.Note
-import sound.notes.Notes
+import kotlin.math.abs
+import kotlin.math.min
 
-// NOTE: In theory, this implementation should work for any scale, hence the nested test classes.
 class OctaveHueCalculatorIntegrationTests {
 
     @Suppress("ClassName")
     @Nested
-    inner class `given C is the start of the octave` {
+    inner class `given Western tuning` {
 
         private val c3Crossover = Crossover(
             Notes.C.getFrequency(3),
@@ -26,7 +28,7 @@ class OctaveHueCalculatorIntegrationTests {
 
         private fun createSUT(highCrossover: Crossover? = null) = OctaveHueCalculator(
             highCrossover = highCrossover,
-            octaveBinFactory = OctaveBinFactory(rootFrequency = Notes.C.getFrequency(0))
+            tuning = Tuning.western()
         )
 
         // Single notes
@@ -37,7 +39,7 @@ class OctaveHueCalculatorIntegrationTests {
 
             val actual = sut.calculate(bins)
 
-            Assertions.assertEquals(0F, actual!!, 0.01F)
+            assertCircularEquals(0F, actual!!, 0.01F)
         }
 
         @Test
@@ -47,7 +49,7 @@ class OctaveHueCalculatorIntegrationTests {
 
             val actual = sut.calculate(bins)
 
-            Assertions.assertEquals(0.5F, actual!!, 0.01F)
+            assertCircularEquals(0.5F, actual!!, 0.01F)
         }
 
         @Test
@@ -57,7 +59,7 @@ class OctaveHueCalculatorIntegrationTests {
 
             val actual = sut.calculate(bins)
 
-            Assertions.assertEquals(0.75F, actual!!, 0.01F)
+            assertCircularEquals(0.75F, actual!!, 0.01F)
         }
 
         // Multiple notes
@@ -69,7 +71,7 @@ class OctaveHueCalculatorIntegrationTests {
 
             val actual = sut.calculate(dSharpBins + aBins)
 
-            Assertions.assertEquals(0.5F, actual!!, 0.01F)
+            assertCircularEquals(0.5F, actual!!, 0.01F)
         }
 
         @Test
@@ -80,7 +82,7 @@ class OctaveHueCalculatorIntegrationTests {
 
             val actual = sut.calculate(fBins + gBins)
 
-            Assertions.assertEquals(0.5F, actual!!, 0.01F)
+            assertCircularEquals(0.5F, actual!!, 0.01F)
         }
 
         @Test
@@ -91,7 +93,18 @@ class OctaveHueCalculatorIntegrationTests {
 
             val actual = sut.calculate(dSharpBins + fBins)
 
-            Assertions.assertEquals(0.33F, actual!!, 0.01F)
+            assertCircularEquals(0.33F, actual!!, 0.01F)
+        }
+
+        @Test
+        fun `C slightly sharp and C slightly flat average to red`() {
+            val sut = createSUT()
+            val cSlightlyFlat = createFrequencyBinsFor(Notes.C.getFrequency(3) - 1)
+            val cSlightlySharp = createFrequencyBinsFor(Notes.C.getFrequency(4) + 1)
+
+            val actual = sut.calculate(cSlightlyFlat + cSlightlySharp)
+
+            assertCircularEquals(0.0F, actual!!, 0.01F)
         }
 
         // Octaves
@@ -103,7 +116,7 @@ class OctaveHueCalculatorIntegrationTests {
 
             val actual = sut.calculate(bins)
 
-            Assertions.assertEquals(0.5F, actual!!, 0.01F)
+            assertCircularEquals(0.5F, actual!!, 0.01F)
         }
 
         @Test
@@ -114,7 +127,7 @@ class OctaveHueCalculatorIntegrationTests {
 
             val actual = sut.calculate(dSharpBins + aBins)
 
-            Assertions.assertEquals(0.5F, actual!!, 0.01F)
+            assertCircularEquals(0.5F, actual!!, 0.01F)
         }
 
         // High crossover
@@ -125,7 +138,7 @@ class OctaveHueCalculatorIntegrationTests {
 
             val actual = sut.calculate(bins)
 
-            Assertions.assertEquals(0.5F, actual!!, 0.01F)
+            assertCircularEquals(0.5F, actual!!, 0.01F)
         }
 
         @Test
@@ -135,7 +148,7 @@ class OctaveHueCalculatorIntegrationTests {
 
             val actual = sut.calculate(bins)
 
-            Assertions.assertNull(actual)
+            assertNull(actual)
         }
 
         @Test
@@ -146,7 +159,7 @@ class OctaveHueCalculatorIntegrationTests {
 
             val actual = sut.calculate(fSharpBins + cBins)
 
-            Assertions.assertEquals(0.5F, actual!!, 0.01F)
+            assertCircularEquals(0.5F, actual!!, 0.01F)
         }
 
         // Helpers
@@ -154,13 +167,29 @@ class OctaveHueCalculatorIntegrationTests {
             note: Note,
             octave: Int = 0
         ): FrequencyBins {
+            return createFrequencyBinsFor(note.getFrequency(octave))
+        }
+
+        private fun createFrequencyBinsFor(
+            frequency: Float
+        ): FrequencyBins {
             return listOf(
-                FrequencyBin(note.getFrequency(octave) - 1, 0F),
-                FrequencyBin(note.getFrequency(octave), 1F),
-                FrequencyBin(note.getFrequency(octave) + 1, 0F),
+                FrequencyBin(frequency - 1, 0F),
+                FrequencyBin(frequency, 1F),
+                FrequencyBin(frequency + 1, 0F),
             )
         }
 
+        fun assertCircularEquals(expected: Float, actual: Float, tolerance: Float) {
+            val delta = abs(expected - actual)
+            val circularDelta = min(delta, 1F - delta)
+
+            // Values of 0.001 and 0.999 are effectively the same hue because values wrap around at 1.
+            assertTrue(
+                circularDelta <= tolerance,
+                "Expected $expected ± $tolerance but was $actual (circular distance: $circularDelta)"
+            )
+        }
     }
 
 

@@ -1,6 +1,6 @@
 package lightOrgan.spectrum
 
-import bins.frequency.FrequencyBins
+import bins.FrequencyBins
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow

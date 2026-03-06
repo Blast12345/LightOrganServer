@@ -1,52 +1,51 @@
 package lightOrgan.color.calculator.hue
 
-import bins.frequency.FrequencyBins
-import bins.frequency.PeakFrequencyBinsCalculator
-import bins.octave.OctaveBinFactory
-import bins.octave.OctaveBins
+import bins.FrequencyBins
+import bins.PeakFrequencyBinsCalculator
 import config.ConfigSingleton
+import math.geometry.Angle
+import music.Tuning
 import sound.bins.frequency.filters.Crossover
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+
 
 class OctaveHueCalculator(
     private val highCrossover: Crossover? = ConfigSingleton.highCrossover,
     private val peakFrequencyBinsCalculator: PeakFrequencyBinsCalculator = PeakFrequencyBinsCalculator(),
-    private val octaveBinFactory: OctaveBinFactory = OctaveBinFactory()
+    private val tuning: Tuning = Tuning.western(),
 ) : HueCalculator {
 
     override fun calculate(frequencyBins: FrequencyBins): Float? {
         val filteredBins = frequencyBins.belowCrossover()
         val peakFrequencyBins = peakFrequencyBinsCalculator.calculate(filteredBins)
-        val peakOctaveBins = peakFrequencyBins.map { octaveBinFactory.create(it) }
 
-        val weightedMagnitude = weightedMagnitude(peakOctaveBins)
-        val totalMagnitude = totalMagnitude(peakOctaveBins)
+        if (peakFrequencyBins.isEmpty()) return null
 
-        return if (totalMagnitude == 0F) {
-            null
-        } else {
-            weightedMagnitude / totalMagnitude
-        }
+        val averageAngle = weightedAverageAngle(peakFrequencyBins)
+        val normalizedAngle = averageAngle.turns.mod(1f).toFloat()
+
+        return normalizedAngle
     }
 
     private fun FrequencyBins.belowCrossover(): FrequencyBins {
-        // Hard cutoff — a roll-off would attenuate peaks near the boundary,
-        // distorting their relative magnitudes and skewing the hue calculation.
         val cutoffFrequency = highCrossover?.stopFrequency ?: Float.MAX_VALUE
         return this.filter { it.frequency <= cutoffFrequency }
     }
 
-    private fun weightedMagnitude(octaveBins: OctaveBins): Float {
-        var weightedMagnitude = 0F
+    private fun weightedAverageAngle(frequencyBins: FrequencyBins): Angle {
+        var sumCos = 0F
+        var sumSin = 0F
 
-        for (octaveBin in octaveBins) {
-            weightedMagnitude += octaveBin.position * octaveBin.magnitude
+        for (frequencyBin in frequencyBins) {
+            val angle = tuning.getPositionInOctave(frequencyBin.frequency)
+            sumCos += frequencyBin.magnitude * cos(angle.radians.toFloat())
+            sumSin += frequencyBin.magnitude * sin(angle.radians.toFloat())
         }
 
-        return weightedMagnitude
-    }
-
-    private fun totalMagnitude(octaveBins: OctaveBins): Float {
-        return octaveBins.map { it.magnitude }.sum()
+        val radians = atan2(sumSin, sumCos)
+        return Angle.fromRadians(radians)
     }
 
 }

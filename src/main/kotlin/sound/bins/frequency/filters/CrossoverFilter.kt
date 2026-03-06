@@ -1,9 +1,9 @@
 package sound.bins.frequency.filters
 
+import bins.FrequencyBin
+import bins.FrequencyBins
 import extensions.between
-import bins.frequency.FrequencyBin
-import bins.frequency.FrequencyBins
-import math.featureScaling.normalize
+import math.normalization.normalize
 import kotlin.math.abs
 
 class CrossoverFilter {
@@ -38,7 +38,7 @@ class CrossoverFilter {
 
     private fun getNormalizedFrequency(frequency: Float, crossover: Crossover): Float {
         return frequency.normalize(
-            minimum = crossover.cornerFrequency,
+            minimum = crossover.frequency,
             maximum = crossover.stopFrequency
         )
     }

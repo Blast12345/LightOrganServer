@@ -1,4 +1,4 @@
-package bins.frequency
+package bins
 
 data class FrequencyBin(
     val frequency: Float,
