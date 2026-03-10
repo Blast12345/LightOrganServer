@@ -10,7 +10,7 @@ class Tuning private constructor(
 ) {
 
     companion object {
-        // TODO: Test me
+
         fun western(a4Frequency: Float = 440f): Tuning {
             val semitonesPerOctave = 12
             val referenceOctave = 4
@@ -24,6 +24,7 @@ class Tuning private constructor(
                 ratio = 2f
             )
         }
+
     }
 
     fun getOctave(frequency: Float): Int {
@@ -37,7 +38,8 @@ class Tuning private constructor(
     }
 
     // Reference: https://www.researchgate.net/figure/The-helical-model-of-pitch-Musical-pitch-is-depicted-as-varying-along-both-a-linear_fig1_272318954
-    private fun getHelicalAngle(frequency: Float): Angle {
+    // TODO: Test me
+    fun getHelicalAngle(frequency: Float): Angle {
         val value = frequency.normalizeLogarithmically(
             minimum = zeroOctaveStartFrequency,
             maximum = zeroOctaveStartFrequency * ratio,

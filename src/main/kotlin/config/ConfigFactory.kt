@@ -1,9 +1,10 @@
 package config
 
+import bins.HighPassFilter
+import bins.LowPassFilter
 import config.children.Client
 import kotlinx.coroutines.flow.MutableStateFlow
-import music.Notes
-import sound.bins.frequency.filters.Crossover
+import music.Keys
 
 class ConfigFactory(
     private val persistedConfig: PersistedConfig = PersistedConfig()
@@ -13,13 +14,13 @@ class ConfigFactory(
         return Config(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
             clients = setOf(Client("192.168.1.55")),
-            lowCrossover = Crossover(
-                stopFrequency = Notes.C.getFrequency(octave = 0),
-                frequency = Notes.C.getFrequency(octave = 1)
+            highPassFilter = HighPassFilter(
+                frequency = Keys.C.getFrequency(octave = 1),
+                slope = 24f
             ),
-            highCrossover = Crossover(
-                frequency = Notes.C.getFrequency(octave = 2),
-                stopFrequency = Notes.C.getFrequency(octave = 3)
+            lowPassFilter = LowPassFilter(
+                frequency = Keys.G.getFrequency(octave = 2),
+                slope = 48f
             ),
             sampleSize = 2400, // now relative to sample rate because of mixdown
             interpolatedSampleSize = 65536, //32768, //65536,

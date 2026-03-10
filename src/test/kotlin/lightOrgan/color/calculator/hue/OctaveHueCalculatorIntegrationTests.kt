@@ -2,8 +2,9 @@ package lightOrgan.color.calculator.hue
 
 import bins.FrequencyBin
 import bins.FrequencyBins
+import bins.LowPassFilter
+import music.Keys
 import music.Note
-import music.Notes
 import music.Tuning
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Nested
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import sound.bins.frequency.filters.Crossover
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -21,13 +21,14 @@ class OctaveHueCalculatorIntegrationTests {
     @Nested
     inner class `given Western tuning` {
 
-        private val c3Crossover = Crossover(
-            Notes.C.getFrequency(3),
-            Notes.C.getFrequency(3)
+        private val c3LowPassFilter = LowPassFilter(
+            frequency = Keys.C.getFrequency(3),
+            slope = 48f,
+            thresholdDb = 48f
         )
 
-        private fun createSUT(highCrossover: Crossover? = null) = OctaveHueCalculator(
-            highCrossover = highCrossover,
+        private fun createSUT(lowPassFilter: LowPassFilter? = null) = OctaveHueCalculator(
+            lowPassFilter = lowPassFilter,
             tuning = Tuning.western()
         )
 
@@ -35,7 +36,7 @@ class OctaveHueCalculatorIntegrationTests {
         @Test
         fun `C notes are red`() {
             val sut = createSUT()
-            val bins = createFrequencyBinsFor(Notes.C)
+            val bins = createFrequencyBinsFor(Keys.C)
 
             val actual = sut.calculate(bins)
 
@@ -45,7 +46,7 @@ class OctaveHueCalculatorIntegrationTests {
         @Test
         fun `F# notes are teal`() {
             val sut = createSUT()
-            val bins = createFrequencyBinsFor(Notes.F_SHARP)
+            val bins = createFrequencyBinsFor(Keys.F_SHARP)
 
             val actual = sut.calculate(bins)
 
@@ -55,7 +56,7 @@ class OctaveHueCalculatorIntegrationTests {
         @Test
         fun `A notes are purple`() {
             val sut = createSUT()
-            val bins = createFrequencyBinsFor(Notes.A)
+            val bins = createFrequencyBinsFor(Keys.A)
 
             val actual = sut.calculate(bins)
 
@@ -66,8 +67,8 @@ class OctaveHueCalculatorIntegrationTests {
         @Test
         fun `D# and A at the same time is teal`() {
             val sut = createSUT()
-            val dSharpBins = createFrequencyBinsFor(Notes.D_SHARP)
-            val aBins = createFrequencyBinsFor(Notes.A)
+            val dSharpBins = createFrequencyBinsFor(Keys.D_SHARP)
+            val aBins = createFrequencyBinsFor(Keys.A)
 
             val actual = sut.calculate(dSharpBins + aBins)
 
@@ -77,8 +78,8 @@ class OctaveHueCalculatorIntegrationTests {
         @Test
         fun `F and G at the same time is teal`() {
             val sut = createSUT()
-            val fBins = createFrequencyBinsFor(Notes.F)
-            val gBins = createFrequencyBinsFor(Notes.G)
+            val fBins = createFrequencyBinsFor(Keys.F)
+            val gBins = createFrequencyBinsFor(Keys.G)
 
             val actual = sut.calculate(fBins + gBins)
 
@@ -88,8 +89,8 @@ class OctaveHueCalculatorIntegrationTests {
         @Test
         fun `D# and F at the same time is green`() {
             val sut = createSUT()
-            val dSharpBins = createFrequencyBinsFor(Notes.D_SHARP)
-            val fBins = createFrequencyBinsFor(Notes.F)
+            val dSharpBins = createFrequencyBinsFor(Keys.D_SHARP)
+            val fBins = createFrequencyBinsFor(Keys.F)
 
             val actual = sut.calculate(dSharpBins + fBins)
 
@@ -99,10 +100,21 @@ class OctaveHueCalculatorIntegrationTests {
         @Test
         fun `C slightly sharp and C slightly flat average to red`() {
             val sut = createSUT()
-            val cSlightlyFlat = createFrequencyBinsFor(Notes.C.getFrequency(3) - 1)
-            val cSlightlySharp = createFrequencyBinsFor(Notes.C.getFrequency(4) + 1)
+            val cSlightlyFlat = createFrequencyBinsFor(Keys.C.getFrequency(3) - 1)
+            val cSlightlySharp = createFrequencyBinsFor(Keys.C.getFrequency(4) + 1)
 
             val actual = sut.calculate(cSlightlyFlat + cSlightlySharp)
+
+            assertCircularEquals(0.0F, actual!!, 0.01F)
+        }
+
+        @Test
+        fun `two equidistant notes`() {
+            val sut = createSUT()
+            val bins1 = createFrequencyBinsFor(Keys.C.getFrequency(3))
+            val bins2 = createFrequencyBinsFor(Keys.F_SHARP.getFrequency(3))
+
+            val actual = sut.calculate(bins1 + bins2)
 
             assertCircularEquals(0.0F, actual!!, 0.01F)
         }
@@ -112,7 +124,7 @@ class OctaveHueCalculatorIntegrationTests {
         @ValueSource(ints = [-1, 0, 1, 10])
         fun `given a single note, the hue is consistent across octaves`(octave: Int) {
             val sut = createSUT()
-            val bins = createFrequencyBinsFor(Notes.F_SHARP, octave)
+            val bins = createFrequencyBinsFor(Keys.F_SHARP, octave)
 
             val actual = sut.calculate(bins)
 
@@ -122,8 +134,8 @@ class OctaveHueCalculatorIntegrationTests {
         @Test
         fun `given a multiple notes, the hue is consistent across octaves`() {
             val sut = createSUT()
-            val dSharpBins = createFrequencyBinsFor(Notes.D_SHARP, 1)
-            val aBins = createFrequencyBinsFor(Notes.A, 4)
+            val dSharpBins = createFrequencyBinsFor(Keys.D_SHARP, 1)
+            val aBins = createFrequencyBinsFor(Keys.A, 4)
 
             val actual = sut.calculate(dSharpBins + aBins)
 
@@ -132,9 +144,9 @@ class OctaveHueCalculatorIntegrationTests {
 
         // High crossover
         @Test
-        fun `given the peaks are below the crossover, return the hue`() {
-            val sut = createSUT(c3Crossover)
-            val bins = createFrequencyBinsFor(Notes.F_SHARP, 2)
+        fun `given the note is below the crossover, return the hue`() {
+            val sut = createSUT(c3LowPassFilter)
+            val bins = createFrequencyBinsFor(Keys.F_SHARP, 2)
 
             val actual = sut.calculate(bins)
 
@@ -142,25 +154,26 @@ class OctaveHueCalculatorIntegrationTests {
         }
 
         @Test
-        fun `given the peaks are above the crossover, return null`() {
-            val sut = createSUT(c3Crossover)
-            val bins = createFrequencyBinsFor(Notes.F_SHARP, 4)
+        fun `given the note is far above the crossover, return null`() {
+            val sut = createSUT(c3LowPassFilter)
+            val bins = createFrequencyBinsFor(Keys.F_SHARP, 6)
 
             val actual = sut.calculate(bins)
 
             assertNull(actual)
         }
 
-        @Test
-        fun `given one peak is above the crossover and another is below, return the hue of the lower note`() {
-            val sut = createSUT(c3Crossover)
-            val fSharpBins = createFrequencyBinsFor(Notes.F_SHARP, 2)
-            val cBins = createFrequencyBinsFor(Notes.C, 4)
-
-            val actual = sut.calculate(fSharpBins + cBins)
-
-            assertCircularEquals(0.5F, actual!!, 0.01F)
-        }
+        // TODO: Decide how to handle peaks in rolloff range
+//        @Test
+//        fun `given one note is slightly above the crossover and another is below, return the average`() {
+//            val sut = createSUT(c3LowPassFilter)
+//            val belowBins = createFrequencyBinsFor(Keys.C, 2)
+//            val aboveBins = createFrequencyBinsFor(Keys.F_SHARP, 3)
+//
+//            val actual = sut.calculate(belowBins + aboveBins)
+//
+//            assertCircularEquals(???F, actual!!, 0.01F)
+//        }
 
         // Helpers
         private fun createFrequencyBinsFor(

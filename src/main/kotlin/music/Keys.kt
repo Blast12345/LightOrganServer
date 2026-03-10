@@ -2,6 +2,9 @@ package music
 
 import kotlin.math.pow
 
+// Key.C.octave(1) -> Note.frequency
+
+// TODO: Should this be private? Should it be called something else?
 data class Note(val fundamentalFrequency: Float) {
 
     fun getFrequency(octave: Int): Float {
@@ -11,7 +14,7 @@ data class Note(val fundamentalFrequency: Float) {
 }
 
 // TODO: Western notes? Can the object take params for tuning? Also... are these only useful for tests now?
-object Notes {
+object Keys {
 
     // I'm just assuming A4=440 Hz tuning for simplicity's sake.
     // Reference: https://pages.mtu.edu/~suits/notefreqs.html
@@ -32,6 +35,8 @@ object Notes {
     val A = createNote(positionRelativeToA = 0)
     val A_SHARP = createNote(positionRelativeToA = 1)
     val B = createNote(positionRelativeToA = 2)
+
+    val all = listOf(C, C_SHARP, D, D_SHARP, E, F, F_SHARP, G, G_SHARP, A, A_SHARP, B)
 
     private fun createNote(positionRelativeToA: Int): Note {
         return Note(

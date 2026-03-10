@@ -12,7 +12,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import sound.bins.frequency.filters.Crossover
 import toolkit.monkeyTest.nextFrequencyBin
 import kotlin.random.Random
 
@@ -20,8 +19,6 @@ import kotlin.random.Random
 class SpectrumTileViewModelTests {
 
     private lateinit var spectrumManager: SpectrumManagerFixture
-    private val lowCrossover = Crossover(stopFrequency = 10f, frequency = 20f)
-    private val highCrossover = Crossover(frequency = 80f, stopFrequency = 90f)
     private val sutScope = TestScope()
     private val sharingPolicy = SharingStarted.Eagerly
 
@@ -41,8 +38,6 @@ class SpectrumTileViewModelTests {
     private fun createSUT(): SpectrumTileViewModel {
         return SpectrumTileViewModel(
             spectrumManager = spectrumManager.mock,
-            lowCrossover = lowCrossover,
-            highCrossover = highCrossover,
             scope = sutScope,
             sharingPolicy = sharingPolicy
         )
@@ -55,10 +50,48 @@ class SpectrumTileViewModelTests {
         spectrumManager.frequencyBins.value = allBins
         sutScope.advanceUntilIdle()
 
-        val binsInRange = allBins.filter { it.frequency in 10f..90f }
-        assertEquals(binsInRange, sut.displayedBins.value)
+        assertEquals(allBins, sut.displayedBins.value)
     }
 
+    // Filtering
+    @Test
+    fun `given a lowest frequency, then displayed bins are above that frequency`() = runTest {
+        val sut = createSUT()
+        spectrumManager.frequencyBins.value = allBins
+
+        sut.lowestFrequency = 10f
+        sutScope.advanceUntilIdle()
+
+        val expected = allBins.filter { it.frequency >= 10f }
+        assertEquals(expected, sut.displayedBins.value)
+    }
+
+    @Test
+    fun `given a highest frequency, then displayed bins are below that frequency`() = runTest {
+        val sut = createSUT()
+        spectrumManager.frequencyBins.value = allBins
+
+        sut.highestFrequency = 90f
+        sutScope.advanceUntilIdle()
+
+        val expected = allBins.filter { it.frequency <= 90f }
+        assertEquals(expected, sut.displayedBins.value)
+    }
+
+    @Test
+    fun `given a lowest and highest frequency, then displayed bins are between those frequencies`() = runTest {
+        val sut = createSUT()
+        spectrumManager.frequencyBins.value = allBins
+
+        sut.lowestFrequency = 10f
+        sut.highestFrequency = 90f
+        sutScope.advanceUntilIdle()
+
+        val expected = allBins.filter { it.frequency in 10f..90f }
+        assertEquals(expected, sut.displayedBins.value)
+    }
+
+    // Highlighting
     @Test
     fun `highlight a frequency bin`() {
         val sut = createSUT()

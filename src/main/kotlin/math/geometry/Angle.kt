@@ -1,6 +1,5 @@
 package math.geometry
 
-// TODO: Test me
 @JvmInline
 value class Angle private constructor(
     val radians: Double
