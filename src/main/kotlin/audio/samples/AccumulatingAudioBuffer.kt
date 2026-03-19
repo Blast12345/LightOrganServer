@@ -3,9 +3,6 @@ package audio.samples
 import extensions.clear
 import kotlinx.coroutines.channels.Channel
 
-// TODO: Test me
-// Basic behavior
-// Thread safety / locking?
 class AccumulatingAudioBuffer {
 
     private var format: AudioFormat? = null
