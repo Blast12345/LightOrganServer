@@ -73,7 +73,7 @@ class LightOrganTests {
         val sut = createSUT()
         sutScope.advanceUntilIdle()
 
-        audioInputManager.bufferedAudio.emit(newAudio)
+        audioInputManager.audioStream.emit(newAudio)
         sutScope.advanceUntilIdle()
 
         verify { spectrumManager.mock.calculate(newAudio) }

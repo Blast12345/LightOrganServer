@@ -10,7 +10,7 @@ data class AudioInputManagerFixture(
     val mock: AudioInputManager,
     val inputDetailsFlow: MutableStateFlow<AudioInputDetails?>,
     val isListeningFlow: MutableStateFlow<Boolean>,
-    val bufferedAudio: MutableSharedFlow<AudioFrame>
+    val audioStream: MutableSharedFlow<AudioFrame>
 ) {
 
     companion object {
@@ -19,12 +19,12 @@ data class AudioInputManagerFixture(
                 mock = mockk<AudioInputManager>(),
                 inputDetailsFlow = MutableStateFlow(null),
                 isListeningFlow = MutableStateFlow(false),
-                bufferedAudio = MutableSharedFlow(extraBufferCapacity = 1)
+                audioStream = MutableSharedFlow(extraBufferCapacity = 1)
             )
 
             every { fixture.mock.inputDetails } returns fixture.inputDetailsFlow
             every { fixture.mock.isListening } returns fixture.isListeningFlow
-            every { fixture.mock.audioStream } returns fixture.bufferedAudio
+            every { fixture.mock.audioStream } returns fixture.audioStream
 
             return fixture
         }
