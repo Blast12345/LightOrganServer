@@ -2,14 +2,19 @@ package toolkit.generators
 
 import kotlin.math.PI
 import kotlin.math.sin
+import kotlin.time.Duration
 
 fun generateSineWave(
     frequency: Float,
     amplitude: Float,
-    sampleSize: Int,
+    duration: Duration,
     sampleRate: Float
-): FloatArray {
-    return FloatArray(sampleSize) { i ->
-        amplitude * sin(2.0 * PI * frequency * i / sampleRate).toFloat()
-    }
+): WaveForm {
+    val sampleSize = (sampleRate * duration.inWholeSeconds).toInt()
+
+    return WaveForm(
+        sampleRate = sampleRate,
+        samples = FloatArray(sampleSize) { i -> amplitude * sin(2.0 * PI * frequency * i / sampleRate).toFloat() }
+    )
 }
+

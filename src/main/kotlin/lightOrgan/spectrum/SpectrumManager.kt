@@ -3,13 +3,13 @@ package lightOrgan.spectrum
 import audio.samples.AudioFrame
 import audio.samples.RollingAudioBuffer
 import config.ConfigSingleton
+import config.SpectrumConfig
 import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
 import dsp.fft.FrequencyBins
 import dsp.fft.FrequencyBinsCalculator
 import dsp.filtering.SampleFilter
 import dsp.filtering.config.FilterBuilder
-import dsp.filtering.config.FilterConfig
 import dsp.windowing.HannWindow
 import dsp.windowing.WindowFunction
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,14 +19,12 @@ import kotlinx.coroutines.flow.asStateFlow
 // ENHANCEMENT: If implementing other calculation strategies (e.g. DFT, CZT), then create a bin calculator interface
 // ENHANCEMENT: Make scaling configurable
 class SpectrumManager(
+    private val config: SpectrumConfig = ConfigSingleton.spectrum,
     private val monoMixer: MonoMixer = MonoMixer(),
-    private val highPassConfig: FilterConfig? = ConfigSingleton.highPassFilter,
-    private val lowPassConfig: FilterConfig? = ConfigSingleton.lowPassFilter,
-    private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(ConfigSingleton.sampleSize),
+    private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(config.sampleSize),
     private val windowFunction: WindowFunction = HannWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
-    private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),
-    private val magnitudeMultiplier: Float = ConfigSingleton.magnitudeMultiplier
+    private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator()
 ) {
 
     private var sampleRate: Float? = null
@@ -54,14 +52,12 @@ class SpectrumManager(
 
         val bufferedAudio = audioBuffer.current ?: return _frequencyBins.value
         val windowedFrame = windowFunction.appliedTo(bufferedAudio.samples)
-        val interpolatedFrame = interpolator.interpolate(windowedFrame)
+        val interpolatedFrame = interpolator.interpolate(windowedFrame, config.sampleSize)
 
         // Bin generation
-
         val allBins = frequencyBinsCalculator
             .calculate(interpolatedFrame, monoAudio.format)
             .applyWindowCorrection()
-            .applyMagnitudeMultiplier()
 
         _frequencyBins.value = allBins
 
@@ -70,16 +66,12 @@ class SpectrumManager(
 
     private fun rebuildFilters() {
         val rate = sampleRate ?: return
-        highPassFilter = highPassConfig?.let { FilterBuilder.build(it, rate) }
-        lowPassFilter = lowPassConfig?.let { FilterBuilder.build(it, rate) }
+        highPassFilter = config.highPassFilter?.let { FilterBuilder.build(it, rate) }
+        lowPassFilter = config.lowPassFilter?.let { FilterBuilder.build(it, rate) }
     }
 
     private fun FrequencyBins.applyWindowCorrection(): FrequencyBins {
         return map { it.copy(magnitude = it.magnitude * windowFunction.amplitudeCorrectionFactor) }
-    }
-
-    private fun FrequencyBins.applyMagnitudeMultiplier(): FrequencyBins {
-        return map { it.copy(magnitude = it.magnitude * magnitudeMultiplier) }
     }
 
 }

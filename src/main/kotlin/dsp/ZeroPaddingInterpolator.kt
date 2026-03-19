@@ -1,12 +1,8 @@
 package dsp
 
-import config.ConfigSingleton
+class ZeroPaddingInterpolator {
 
-class ZeroPaddingInterpolator(
-    private val desiredSize: Int = ConfigSingleton.interpolatedSampleSize
-) {
-
-    fun interpolate(frame: FloatArray): FloatArray {
+    fun interpolate(frame: FloatArray, desiredSize: Int): FloatArray {
         if (desiredSize < frame.size) throw InvalidInterpolationSizeException(desiredSize, frame.size)
 
         val scale = desiredSize.toFloat() / frame.size

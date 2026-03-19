@@ -1,9 +1,11 @@
 package color
 
+import config.ConfigSingleton
 import dsp.fft.FrequencyBins
 import sound.bins.frequency.GreatestMagnitudeFinder
 
 class BrightnessCalculator(
+    private val multiplier: Float = ConfigSingleton.brightnessMultiplier,
     private val greatestMagnitudeFinder: GreatestMagnitudeFinder = GreatestMagnitudeFinder(),
 ) {
 
@@ -12,7 +14,7 @@ class BrightnessCalculator(
         val magnitude = greatestMagnitudeFinder.find(frequencyBins) ?: return null
 
         return if (magnitude < 1F) {
-            magnitude
+            (magnitude * multiplier).coerceIn(0F, 1F)
         } else {
             1F
         }

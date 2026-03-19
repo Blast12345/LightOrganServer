@@ -8,12 +8,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class Config(
     val startAutomatically: MutableStateFlow<Boolean>,
     val clients: Set<Client>,
-    val highPassFilter: FilterConfig,
-    val lowPassFilter: FilterConfig,
-    val sampleSize: Int,
-    val interpolatedSampleSize: Int,
-    val magnitudeMultiplier: Float,
+    val spectrum: SpectrumConfig,
+    val spectrumGui: SpectrumGuiConfig,
+    val brightnessMultiplier: Float,
 )
 
+data class SpectrumConfig(
+    val sampleSize: Int,
+    val interpolatedSampleSize: Int,
+    val highPassFilter: FilterConfig?,
+    val lowPassFilter: FilterConfig?,
+)
 
-
+data class SpectrumGuiConfig(
+    val scale: Float,
+    val lowestFrequency: Float,
+    val highestFrequency: Float,
+)

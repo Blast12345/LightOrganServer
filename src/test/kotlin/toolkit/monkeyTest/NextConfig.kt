@@ -1,6 +1,8 @@
 package toolkit.monkeyTest
 
 import config.Config
+import config.SpectrumConfig
+import config.SpectrumGuiConfig
 import config.children.Client
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.random.Random
@@ -9,15 +11,22 @@ fun nextConfig(
     clients: Set<Client> = nextClients(),
     sampleSize: Int = nextPositiveInt(),
     interpolatedSampleSize: Int = nextPositiveInt(),
-    magnitudeMultiplier: Float = Random.nextFloat()
+    brightnessMultiplier: Float = Random.nextFloat()
 ): Config {
     return Config(
         startAutomatically = MutableStateFlow(Random.nextBoolean()),
         clients = clients,
-        lowPassFilter = nextCrossover(),
-        highPassFilter = nextCrossover(),
-        sampleSize = sampleSize,
-        interpolatedSampleSize = interpolatedSampleSize,
-        magnitudeMultiplier = magnitudeMultiplier
+        spectrum = SpectrumConfig(
+            sampleSize = sampleSize,
+            interpolatedSampleSize = interpolatedSampleSize,
+            highPassFilter = null,
+            lowPassFilter = null,
+        ),
+        spectrumGui = SpectrumGuiConfig(
+            scale = Random.nextFloat(),
+            lowestFrequency = Random.nextFloat(),
+            highestFrequency = Random.nextFloat(),
+        ),
+        brightnessMultiplier = brightnessMultiplier
     )
 }
