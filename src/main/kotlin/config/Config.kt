@@ -1,15 +1,15 @@
 package config
 
 import config.children.Client
+import dsp.filtering.config.FilterConfig
 import kotlinx.coroutines.flow.MutableStateFlow
-import sound.bins.frequency.filters.Crossover
 
 @Suppress("LongParameterList")
 class Config(
     val startAutomatically: MutableStateFlow<Boolean>,
     val clients: Set<Client>,
-    val lowCrossover: Crossover,
-    val highCrossover: Crossover,
+    val highPassFilter: FilterConfig,
+    val lowPassFilter: FilterConfig,
     val sampleSize: Int,
     val interpolatedSampleSize: Int,
     val magnitudeMultiplier: Float,

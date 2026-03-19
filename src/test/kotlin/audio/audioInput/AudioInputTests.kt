@@ -1,6 +1,5 @@
 package audio.audioInput
 
-import audio.samples.SampleBuffer
 import audio.samples.SampleNormalizer
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,13 +22,11 @@ class AudioInputTests {
 
     private val inputLine: InputLine = mockk()
     private val sampleNormalizer: SampleNormalizer = mockk()
-    private val sampleBuffer: SampleBuffer = mockk()
     private val sutScope = TestScope()
 
     private val readTime = nextDuration()
     private val readData = nextByteArray()
     private val normalizedSamples = nextFloatArray()
-    private val bufferedSamples = nextFloatArray()
 
     @BeforeEach
     fun setupHappyPath() {
@@ -44,8 +41,6 @@ class AudioInputTests {
         every { inputLine.stop() } returns Unit
 
         every { sampleNormalizer.normalize(readData) } returns normalizedSamples
-        every { sampleBuffer.append(normalizedSamples) } returns Unit
-        every { sampleBuffer.current } returns bufferedSamples
     }
 
     @AfterEach
@@ -58,7 +53,6 @@ class AudioInputTests {
         return AudioInput(
             inputLine = inputLine,
             sampleNormalizer = sampleNormalizer,
-            sampleBuffer = sampleBuffer,
             scope = sutScope
         )
     }
@@ -105,7 +99,7 @@ class AudioInputTests {
     fun `when started, then continuously capture audio`() = runTest {
         val sut = createSUT()
         val iterations = nextPositiveInt(max = 5)
-        val received = sut.bufferedAudio.collectInto(sutScope)
+        val received = sut.audioStream.collectInto(sutScope)
 
         sut.start()
 
@@ -116,7 +110,7 @@ class AudioInputTests {
 
         // Ideally, I'd verify all received values, but the test complexity didn't seem worth it.
         val firstAudio = received.first()
-        assertEquals(bufferedSamples, firstAudio.samples)
+        assertEquals(normalizedSamples, firstAudio.samples)
         assertEquals(sut.format, firstAudio.format)
         assertEquals(iterations, received.size)
     }
@@ -126,7 +120,7 @@ class AudioInputTests {
         runTest {
             val sut = createSUT()
             val iterations = nextPositiveInt(max = 5)
-            val received = sut.bufferedAudio.collectInto(sutScope)
+            val received = sut.audioStream.collectInto(sutScope)
 
             sut.start()
             sut.start()
@@ -144,7 +138,7 @@ class AudioInputTests {
     fun `stop capturing audio`() = runTest {
         val sut = createSUT()
         val iterations = 3
-        val received = sut.bufferedAudio.collectInto(sutScope)
+        val received = sut.audioStream.collectInto(sutScope)
 
         sut.start()
         repeat(iterations) {

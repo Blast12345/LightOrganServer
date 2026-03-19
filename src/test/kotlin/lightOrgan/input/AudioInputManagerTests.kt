@@ -180,34 +180,34 @@ class AudioInputManagerTests {
 
     // Capture
     @Test
-    fun `when an input updates its audio buffer, then the buffered audio is passed on`() = runTest {
+    fun `when an input emits new audio, then the audio is passed on`() = runTest {
         val sut = createSUT()
-        val received = sut.bufferedAudio.collectInto(sutScope)
+        val received = sut.audioStream.collectInto(sutScope)
 
         currentAudioInputFlow.value = audioInput1.mock
         sutScope.advanceUntilIdle()
 
         val frame = nextAudioFrame()
-        audioInput1.bufferedAudioFlow.emit(frame)
+        audioInput1.audioStreamFlow.emit(frame)
         sutScope.advanceUntilIdle()
 
         assertEquals(listOf(frame), received)
     }
 
     @Test
-    fun `when the input changes, then the new inputs buffered audio is passed on`() = runTest {
+    fun `when the input changes, then the new inputs audio is passed on`() = runTest {
         val sut = createSUT()
         val input1Frame = nextAudioFrame()
         val input2Frame = nextAudioFrame()
-        val received = sut.bufferedAudio.collectInto(sutScope)
+        val received = sut.audioStream.collectInto(sutScope)
 
         currentAudioInputFlow.value = audioInput1.mock
         sutScope.advanceUntilIdle()
-        audioInput1.bufferedAudioFlow.emit(input1Frame)
+        audioInput1.audioStreamFlow.emit(input1Frame)
         sutScope.advanceUntilIdle()
         currentAudioInputFlow.value = audioInput2.mock
         sutScope.advanceUntilIdle()
-        audioInput2.bufferedAudioFlow.emit(input2Frame)
+        audioInput2.audioStreamFlow.emit(input2Frame)
         sutScope.advanceUntilIdle()
 
         assertEquals(listOf(input1Frame, input2Frame), received)

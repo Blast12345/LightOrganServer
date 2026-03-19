@@ -14,8 +14,8 @@ fun nextConfig(
     return Config(
         startAutomatically = MutableStateFlow(Random.nextBoolean()),
         clients = clients,
-        lowCrossover = nextCrossover(),
-        highCrossover = nextCrossover(),
+        lowPassFilter = nextCrossover(),
+        highPassFilter = nextCrossover(),
         sampleSize = sampleSize,
         interpolatedSampleSize = interpolatedSampleSize,
         magnitudeMultiplier = magnitudeMultiplier

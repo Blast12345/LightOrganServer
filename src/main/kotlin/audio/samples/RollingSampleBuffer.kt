@@ -2,7 +2,8 @@ package audio.samples
 
 import extensions.takeLastArray
 
-class SampleBuffer(size: Int) {
+// TODO: Verify test names
+class RollingSampleBuffer(size: Int) {
 
     private val samples = FloatArray(size)
 
@@ -18,6 +19,10 @@ class SampleBuffer(size: Int) {
 
         // Copy new samples into the end of the buffer (i.e., the most recent time)
         trimmed.copyInto(samples, destinationOffset = samples.size - trimmed.size)
+    }
+
+    fun reset() {
+        samples.fill(0f)
     }
 
 }

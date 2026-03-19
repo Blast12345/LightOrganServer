@@ -9,6 +9,11 @@ object Logger {
         println("${LogColor.Green.code}SUCCESS: $message${LogColor.Default.code}")
     }
 
+    fun warning(message: String) {
+        if (!enabled) return
+        println("${LogColor.Orange.code}ERROR: $message${LogColor.Default.code}")
+    }
+
     fun error(message: String) {
         if (!enabled) return
         println("${LogColor.Red.code}ERROR: $message${LogColor.Default.code}")

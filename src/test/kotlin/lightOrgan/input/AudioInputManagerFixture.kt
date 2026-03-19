@@ -24,7 +24,7 @@ data class AudioInputManagerFixture(
 
             every { fixture.mock.inputDetails } returns fixture.inputDetailsFlow
             every { fixture.mock.isListening } returns fixture.isListeningFlow
-            every { fixture.mock.bufferedAudio } returns fixture.bufferedAudio
+            every { fixture.mock.audioStream } returns fixture.bufferedAudio
 
             return fixture
         }
