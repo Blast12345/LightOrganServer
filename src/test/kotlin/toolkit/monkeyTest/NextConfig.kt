@@ -8,25 +8,22 @@ import lightOrgan.spectrum.SpectrumConfig
 import kotlin.random.Random
 
 fun nextConfig(
-    clients: Set<Client> = nextClients(),
-    sampleSize: Int = nextPositiveInt(),
-    interpolatedSampleSize: Int = nextPositiveInt(),
-    brightnessMultiplier: Float = Random.nextFloat()
+    clients: Set<Client> = nextClients()
 ): Config {
     return Config(
         startAutomatically = MutableStateFlow(Random.nextBoolean()),
         clients = clients,
         spectrum = SpectrumConfig(
-            sampleSize = sampleSize,
-            interpolatedSampleSize = interpolatedSampleSize,
-            highPassFilter = null,
-            lowPassFilter = null,
+            sampleSize = nextPositiveInt(),
+            interpolatedSampleSize = nextPositiveInt(),
+            highPassFilter = nextFilterConfig(),
+            lowPassFilter = nextFilterConfig(),
         ),
         spectrumGui = SpectrumGuiConfig(
             scale = Random.nextFloat(),
             lowestFrequency = Random.nextFloat(),
             highestFrequency = Random.nextFloat(),
         ),
-        brightnessMultiplier = brightnessMultiplier
+        brightnessMultiplier = Random.nextFloat()
     )
 }
