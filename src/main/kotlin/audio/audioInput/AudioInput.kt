@@ -23,8 +23,7 @@ class AudioInput(
     private val _isListening: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     // NOTE: A small buffer to handle OS level bursts, not necessarily slow collectors.
-    // It is still advised to have collectors be minimally complex or the buffer could fill up anyway.
-    // It's not the responsibility of this class to cater to the performance needs of collectors.
+    // Collectors are responsible for ensuring they collect the samples in a performant way or risk the buffer overflowing and dropping samples.
     private val _audioStream = MutableSharedFlow<AudioFrame>(0, 8, BufferOverflow.DROP_OLDEST)
 
     val name: String = inputLine.name
