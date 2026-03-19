@@ -7,7 +7,7 @@ import toolkit.monkeyTest.nextPositiveInt
 class RollingSampleBufferTests {
 
     @Test
-    fun `given a size, initialize an empty buffer`() {
+    fun `initialize an empty buffer`() {
         val size = nextPositiveInt()
         val sut = RollingSampleBuffer(size)
 
@@ -28,7 +28,7 @@ class RollingSampleBufferTests {
     }
 
     @Test
-    fun `when appending samples, then the new samples are added to the end of the buffer and the oldest are discarded`() {
+    fun `appended samples are added to the end of the buffer and the oldest are discarded`() {
         val sut = RollingSampleBuffer(4)
 
         sut.append(floatArrayOf(1f, 2f))

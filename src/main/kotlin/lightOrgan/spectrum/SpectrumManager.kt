@@ -37,7 +37,6 @@ class SpectrumManager(
     fun calculate(audio: AudioFrame): FrequencyBins {
         if (audio.format.sampleRate != sampleRate) {
             sampleRate = audio.format.sampleRate
-            audioBuffer.reset()
             rebuildFilters()
         }
 
@@ -52,7 +51,7 @@ class SpectrumManager(
 
         val bufferedAudio = audioBuffer.current ?: return _frequencyBins.value
         val windowedFrame = windowFunction.appliedTo(bufferedAudio.samples)
-        val interpolatedFrame = interpolator.interpolate(windowedFrame, config.sampleSize)
+        val interpolatedFrame = interpolator.interpolate(windowedFrame, config.interpolatedSampleSize)
 
         // Bin generation
         val allBins = frequencyBinsCalculator

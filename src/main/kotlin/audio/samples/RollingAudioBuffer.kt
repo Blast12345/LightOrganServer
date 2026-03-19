@@ -1,6 +1,5 @@
 package audio.samples
 
-// TODO: Test
 class RollingAudioBuffer(
     private val capacity: Int
 ) {
@@ -13,14 +12,15 @@ class RollingAudioBuffer(
 
     fun append(frame: AudioFrame) {
         if (frame.format != format) {
-            rollingSampleBuffer.reset()
+            reset()
         }
 
         format = frame.format
         rollingSampleBuffer.append(frame.samples)
     }
 
-    fun reset() {
+    private fun reset() {
+        format = null
         rollingSampleBuffer.reset()
     }
 

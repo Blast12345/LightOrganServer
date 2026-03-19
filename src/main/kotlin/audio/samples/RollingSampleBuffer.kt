@@ -2,7 +2,6 @@ package audio.samples
 
 import extensions.takeLastArray
 
-// TODO: Verify test names
 class RollingSampleBuffer(size: Int) {
 
     private val samples = FloatArray(size)
