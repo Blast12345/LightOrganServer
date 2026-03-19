@@ -22,8 +22,10 @@ class AudioInput(
     private var listeningJob: Job? = null
     private val _isListening: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    // NOTE: A small buffer to handle OS level bursts, not necessarily slow collectors.
-    // Collectors are responsible for ensuring they collect the samples in a performant way or risk the buffer overflowing and dropping samples.
+    // NOTE: The OS may not deliver samples at a consistent rate.
+    // E.g., immediately after a read, more data is available, thus causing another immediate read.
+    // Back-to-back reads can cause even very fast collectors to fall behind, so we allow a small buffer to handle bursts.
+    // That said, collectors to be performant enough to handle high rates. If they are not, they will fall behind and experience dropped frames.
     private val _audioStream = MutableSharedFlow<AudioFrame>(0, 8, BufferOverflow.DROP_OLDEST)
 
     val name: String = inputLine.name
