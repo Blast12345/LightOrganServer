@@ -11,7 +11,7 @@ object Logger {
 
     fun warning(message: String) {
         if (!enabled) return
-        println("${LogColor.Orange.code}ERROR: $message${LogColor.Default.code}")
+        println("${LogColor.Orange.code}WARNING: $message${LogColor.Default.code}")
     }
 
     fun error(message: String) {
