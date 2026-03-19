@@ -1,6 +1,5 @@
 package gui.dashboard.tiles.spectrum
 
-import config.SpectrumGuiConfig
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

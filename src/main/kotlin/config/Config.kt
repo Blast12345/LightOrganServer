@@ -1,8 +1,9 @@
 package config
 
 import config.children.Client
-import dsp.filtering.config.FilterConfig
+import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
+import lightOrgan.spectrum.SpectrumConfig
 
 @Suppress("LongParameterList")
 class Config(
@@ -11,17 +12,4 @@ class Config(
     val spectrum: SpectrumConfig,
     val spectrumGui: SpectrumGuiConfig,
     val brightnessMultiplier: Float,
-)
-
-data class SpectrumConfig(
-    val sampleSize: Int,
-    val interpolatedSampleSize: Int,
-    val highPassFilter: FilterConfig?,
-    val lowPassFilter: FilterConfig?,
-)
-
-data class SpectrumGuiConfig(
-    val scale: Float,
-    val lowestFrequency: Float,
-    val highestFrequency: Float,
 )

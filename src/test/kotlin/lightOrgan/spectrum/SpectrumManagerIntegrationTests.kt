@@ -1,6 +1,5 @@
 package lightOrgan.spectrum
 
-import config.SpectrumConfig
 import dsp.filtering.config.FilterConfig
 import io.mockk.every
 import io.mockk.mockk

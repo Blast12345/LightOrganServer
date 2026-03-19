@@ -2,7 +2,9 @@ package config
 
 import config.children.Client
 import dsp.filtering.config.FilterConfig
+import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
+import lightOrgan.spectrum.SpectrumConfig
 import sound.notes.Notes
 
 class ConfigFactory(

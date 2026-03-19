@@ -3,7 +3,6 @@ package lightOrgan.spectrum
 import audio.samples.AudioFrame
 import audio.samples.RollingAudioBuffer
 import config.ConfigSingleton
-import config.SpectrumConfig
 import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
 import dsp.fft.FrequencyBins

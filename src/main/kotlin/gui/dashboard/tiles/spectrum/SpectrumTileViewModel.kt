@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import config.ConfigSingleton
-import config.SpectrumGuiConfig
 import dsp.fft.FrequencyBin
 import dsp.fft.FrequencyBins
 import kotlinx.coroutines.CoroutineScope

@@ -1,10 +1,10 @@
 package toolkit.monkeyTest
 
 import config.Config
-import config.SpectrumConfig
-import config.SpectrumGuiConfig
 import config.children.Client
+import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
+import lightOrgan.spectrum.SpectrumConfig
 import kotlin.random.Random
 
 fun nextConfig(
