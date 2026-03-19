@@ -15,12 +15,12 @@ class LightOrgan(
     private val spectrumManager: SpectrumManager,
     private val colorFactory: ColorFactory = ColorFactory(), // TODO: Refactor
     private val server: Server = Server(),
+    private val audioBuffer: AccumulatingAudioBuffer = AccumulatingAudioBuffer(),
     private val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 ) {
 
     private val timeBetweenColors = TimestampUtility("Time between colors")
-    private val audioBuffer = AccumulatingAudioBuffer()
 
     init {
         // Calculating colors could be slow, and we don't want to block the audio stream, so we launch them in separate coroutines.
