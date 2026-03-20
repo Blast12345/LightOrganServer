@@ -7,25 +7,25 @@ import toolkit.monkeyTest.nextPositiveInt
 
 class BiquadraticFilterTests {
 
-    val supportedSampleRate = nextPositiveInt().toFloat()
+    val sampleRate = nextPositiveInt().toFloat()
 
     @Test
     fun `order is 2`() {
-        val filter = BiquadraticFilter(supportedSampleRate, b0 = 1.0, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
+        val filter = BiquadraticFilter(sampleRate, b0 = 1.0, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
 
         assertEquals(2, filter.order)
     }
 
     @Test
     fun `get the sample rate supported by the filter`() {
-        val filter = BiquadraticFilter(supportedSampleRate, b0 = 0.0, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
+        val filter = BiquadraticFilter(sampleRate, b0 = 0.0, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
 
-        assertEquals(supportedSampleRate, filter.sampleRate)
+        assertEquals(sampleRate, filter.sampleRate)
     }
 
     @Test
     fun `current input scaled by b0`() {
-        val filter = BiquadraticFilter(supportedSampleRate, b0 = 0.5, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
+        val filter = BiquadraticFilter(sampleRate, b0 = 0.5, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
         val input = floatArrayOf(1f, 2f, 3f, 4f)
 
         val output = filter.filter(input)
@@ -35,7 +35,7 @@ class BiquadraticFilterTests {
 
     @Test
     fun `input from one step ago is scaled by b1`() {
-        val filter = BiquadraticFilter(supportedSampleRate, b0 = 0.0, b1 = 1.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
+        val filter = BiquadraticFilter(sampleRate, b0 = 0.0, b1 = 1.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
         val input = floatArrayOf(1f, 2f, 3f, 4f)
 
         val output = filter.filter(input)
@@ -45,7 +45,7 @@ class BiquadraticFilterTests {
 
     @Test
     fun `input from two steps ago is scaled by b2`() {
-        val filter = BiquadraticFilter(supportedSampleRate, b0 = 0.0, b1 = 0.0, b2 = 1.0, a1 = 0.0, a2 = 0.0)
+        val filter = BiquadraticFilter(sampleRate, b0 = 0.0, b1 = 0.0, b2 = 1.0, a1 = 0.0, a2 = 0.0)
         val input = floatArrayOf(1f, 2f, 3f, 4f)
 
         val output = filter.filter(input)
@@ -55,7 +55,7 @@ class BiquadraticFilterTests {
 
     @Test
     fun `output from one step ago is scaled by a1`() {
-        val filter = BiquadraticFilter(supportedSampleRate, b0 = 1.0, b1 = 0.0, b2 = 0.0, a1 = -0.5, a2 = 0.0)
+        val filter = BiquadraticFilter(sampleRate, b0 = 1.0, b1 = 0.0, b2 = 0.0, a1 = -0.5, a2 = 0.0)
         val input = floatArrayOf(1f, 0f, 0f, 0f)
 
         val output = filter.filter(input)
@@ -69,7 +69,7 @@ class BiquadraticFilterTests {
 
     @Test
     fun `output from two steps ago is scaled by a2`() {
-        val filter = BiquadraticFilter(supportedSampleRate, b0 = 1.0, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = -0.5)
+        val filter = BiquadraticFilter(sampleRate, b0 = 1.0, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = -0.5)
         val input = floatArrayOf(1f, 0f, 0f, 0f, 0f)
 
         val output = filter.filter(input)
@@ -84,7 +84,7 @@ class BiquadraticFilterTests {
 
     @Test
     fun `all coefficients combine additively`() {
-        val filter = BiquadraticFilter(supportedSampleRate, b0 = 1.0, b1 = 0.5, b2 = 0.0, a1 = 0.0, a2 = 0.0)
+        val filter = BiquadraticFilter(sampleRate, b0 = 1.0, b1 = 0.5, b2 = 0.0, a1 = 0.0, a2 = 0.0)
         val input = floatArrayOf(1f, 1f, 1f)
 
         val output = filter.filter(input)
@@ -97,7 +97,7 @@ class BiquadraticFilterTests {
 
     @Test
     fun `state carries across consecutive calls`() {
-        val filter = BiquadraticFilter(supportedSampleRate, b0 = 0.0, b1 = 1.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
+        val filter = BiquadraticFilter(sampleRate, b0 = 0.0, b1 = 1.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
 
         val output1 = filter.filter(floatArrayOf(1f, 2f))
         val output2 = filter.filter(floatArrayOf(5f, 6f))

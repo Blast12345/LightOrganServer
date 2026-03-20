@@ -14,7 +14,7 @@ class FilterBuilderTests {
     private val order = nextPositiveInt()
 
     @Test
-    fun `builds a Butterworth low pass filter`() {
+    fun `build a Butterworth low pass filter`() {
         val sut = FilterBuilder()
 
         val config = FilterConfig.lowPass(FilterFamily.BUTTERWORTH, frequency, order)
@@ -26,7 +26,7 @@ class FilterBuilderTests {
     }
 
     @Test
-    fun `builds a Butterworth high pass filter`() {
+    fun `build a Butterworth high pass filter`() {
         val sut = FilterBuilder()
 
         val config = FilterConfig.highPass(FilterFamily.BUTTERWORTH, frequency, order)
