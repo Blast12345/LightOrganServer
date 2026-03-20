@@ -4,7 +4,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-// NOTE: Think of the coefficients like mixing valves. Different values mix the input and output together differently.
+// NOTE: This is a -12 dB/octave filter. Different coefficients change the shape of attenuation, illustrated by factory methods.
 // b0 - how much the current input matters
 // b1 - how much the input from one step ago matters
 // b2 - how much the input from two steps ago matters
