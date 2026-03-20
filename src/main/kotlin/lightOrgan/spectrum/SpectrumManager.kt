@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class SpectrumManager(
     private val config: SpectrumConfig = ConfigSingleton.spectrum,
     private val monoMixer: MonoMixer = MonoMixer(),
+    private val filterBuilder: FilterBuilder = FilterBuilder(),
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(config.sampleSize),
     private val windowFunction: WindowFunction = HannWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
@@ -56,11 +57,11 @@ class SpectrumManager(
 
     private fun rebuildFiltersIfNeeded(sampleRate: Float) {
         if (config.highPassFilter != null && highPassFilter?.supportedSampleRate != sampleRate) {
-            highPassFilter = FilterBuilder.build(config.highPassFilter, sampleRate)
+            highPassFilter = filterBuilder.build(config.highPassFilter, sampleRate)
         }
 
         if (config.lowPassFilter != null && lowPassFilter?.supportedSampleRate != sampleRate) {
-            lowPassFilter = FilterBuilder.build(config.lowPassFilter, sampleRate)
+            lowPassFilter = filterBuilder.build(config.lowPassFilter, sampleRate)
         }
     }
 

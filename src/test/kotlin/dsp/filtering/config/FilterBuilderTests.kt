@@ -15,9 +15,10 @@ class FilterBuilderTests {
 
     @Test
     fun `builds a Butterworth low pass filter`() {
-        val config = FilterConfig.lowPass(FilterFamily.BUTTERWORTH, frequency, order)
+        val sut = FilterBuilder()
 
-        val filter = FilterBuilder.build(config, sampleRate)
+        val config = FilterConfig.lowPass(FilterFamily.BUTTERWORTH, frequency, order)
+        val filter = sut.build(config, sampleRate)
 
         assertTrue(filter is ButterworthLowPass)
         assertEquals(sampleRate, filter.supportedSampleRate)
@@ -26,9 +27,10 @@ class FilterBuilderTests {
 
     @Test
     fun `builds a Butterworth high pass filter`() {
-        val config = FilterConfig.highPass(FilterFamily.BUTTERWORTH, frequency, order)
+        val sut = FilterBuilder()
 
-        val filter = FilterBuilder.build(config, sampleRate)
+        val config = FilterConfig.highPass(FilterFamily.BUTTERWORTH, frequency, order)
+        val filter = sut.build(config, sampleRate)
 
         assertTrue(filter is ButterworthHighPass)
         assertEquals(sampleRate, filter.supportedSampleRate)

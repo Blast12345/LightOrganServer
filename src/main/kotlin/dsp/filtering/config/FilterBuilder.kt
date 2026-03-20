@@ -5,7 +5,7 @@ import dsp.filtering.ButterworthLowPass
 import dsp.filtering.CascadedFilter
 import dsp.filtering.OrderedFilter
 
-object FilterBuilder {
+class FilterBuilder {
 
     fun build(config: FilterConfig, sampleRate: Float): OrderedFilter {
         return when (config.family) {
