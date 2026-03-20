@@ -34,4 +34,5 @@ compose.desktop {
 
 tasks.test {
     useJUnitPlatform()
+    jvmArgs("-Djunit.jupiter.extensions.autodetection.enabled=true")
 }
