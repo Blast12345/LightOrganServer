@@ -21,7 +21,7 @@ class FilterBuilderTests {
         val filter = sut.build(config, sampleRate)
 
         assertTrue(filter is ButterworthLowPass)
-        assertEquals(sampleRate, filter.supportedSampleRate)
+        assertEquals(sampleRate, filter.sampleRate)
         assertEquals(order, filter.order)
     }
 
@@ -33,7 +33,7 @@ class FilterBuilderTests {
         val filter = sut.build(config, sampleRate)
 
         assertTrue(filter is ButterworthHighPass)
-        assertEquals(sampleRate, filter.supportedSampleRate)
+        assertEquals(sampleRate, filter.sampleRate)
         assertEquals(order, filter.order)
     }
 

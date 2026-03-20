@@ -28,7 +28,7 @@ class ButterworthHighPassTests {
     fun `get the sample rate supported by the filter`() {
         val filter = ButterworthHighPass(frequency, order = 4, sampleRate)
 
-        assertEquals(sampleRate, filter.supportedSampleRate)
+        assertEquals(sampleRate, filter.sampleRate)
     }
 
     @Test

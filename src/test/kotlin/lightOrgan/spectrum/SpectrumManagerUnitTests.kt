@@ -63,13 +63,13 @@ class SpectrumManagerUnitTests {
 
         every { monoMixer.mix(any()) } returns monoFrame
         every { lowPassFilter1.filter(any()) } returns lowPassedSamples
-        every { lowPassFilter1.supportedSampleRate } returns format1.sampleRate
+        every { lowPassFilter1.sampleRate } returns format1.sampleRate
         every { highPassFilter1.filter(any()) } returns highPassedSamples
-        every { highPassFilter1.supportedSampleRate } returns format1.sampleRate
+        every { highPassFilter1.sampleRate } returns format1.sampleRate
         every { lowPassFilter2.filter(any()) } returns lowPassedSamples
-        every { lowPassFilter2.supportedSampleRate } returns format2.sampleRate
+        every { lowPassFilter2.sampleRate } returns format2.sampleRate
         every { highPassFilter2.filter(any()) } returns highPassedSamples
-        every { highPassFilter2.supportedSampleRate } returns format2.sampleRate
+        every { highPassFilter2.sampleRate } returns format2.sampleRate
 
         every { audioBuffer.append(any()) } returns bufferedFrame
         every { windowFunction.appliedTo(any()) } returns windowedSamples

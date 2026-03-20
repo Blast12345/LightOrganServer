@@ -1,7 +1,7 @@
 package dsp.filtering
 
 abstract class CascadedFilter(
-    override val supportedSampleRate: Float,
+    override val sampleRate: Float,
     private val stages: List<OrderedFilter>
 ) : OrderedFilter {
 

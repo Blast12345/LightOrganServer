@@ -28,7 +28,7 @@ class ButterworthLowPassTests {
     fun `get the sample rate supported by the filter`() {
         val filter = ButterworthLowPass(frequency, order = 4, sampleRate)
 
-        assertEquals(sampleRate, filter.supportedSampleRate)
+        assertEquals(sampleRate, filter.sampleRate)
     }
 
     @Test

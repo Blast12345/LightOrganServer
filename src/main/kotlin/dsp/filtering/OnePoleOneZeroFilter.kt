@@ -8,7 +8,7 @@ import kotlin.math.tan
 // b1 - how much the input from one step ago matters
 // a1 - how much the output from one step ago matters
 class OnePoleOneZeroFilter(
-    override val supportedSampleRate: Float,
+    override val sampleRate: Float,
     val b0: Double,
     val b1: Double,
     val a1: Double,
@@ -37,7 +37,7 @@ class OnePoleOneZeroFilter(
             val a0 = 1.0 + t
 
             return OnePoleOneZeroFilter(
-                supportedSampleRate = sampleRate.toFloat(),
+                sampleRate = sampleRate.toFloat(),
                 b0 = t / a0,
                 b1 = t / a0,
                 a1 = (t - 1.0) / a0,
@@ -49,7 +49,7 @@ class OnePoleOneZeroFilter(
             val a0 = 1.0 + t
 
             return OnePoleOneZeroFilter(
-                supportedSampleRate = sampleRate.toFloat(),
+                sampleRate = sampleRate.toFloat(),
                 b0 = 1.0 / a0,
                 b1 = -1.0 / a0,
                 a1 = (t - 1.0) / a0,

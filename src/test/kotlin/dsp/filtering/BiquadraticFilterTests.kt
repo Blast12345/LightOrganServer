@@ -20,7 +20,7 @@ class BiquadraticFilterTests {
     fun `get the sample rate supported by the filter`() {
         val filter = BiquadraticFilter(supportedSampleRate, b0 = 0.0, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
 
-        assertEquals(supportedSampleRate, filter.supportedSampleRate)
+        assertEquals(supportedSampleRate, filter.sampleRate)
     }
 
     @Test

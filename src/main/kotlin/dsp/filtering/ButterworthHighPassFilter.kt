@@ -5,7 +5,7 @@ class ButterworthHighPass(
     order: Int,
     sampleRate: Float,
 ) : CascadedFilter(
-    supportedSampleRate = sampleRate,
+    sampleRate = sampleRate,
     stages = ButterworthFilter.buildStages(
         frequency, order, sampleRate,
         OnePoleOneZeroFilter::highPass,

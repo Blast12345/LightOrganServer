@@ -11,7 +11,7 @@ import kotlin.math.sin
 // a1 - how much the output from one step ago matters
 // a2 - how much the output from two steps ago matters
 class BiquadraticFilter(
-    override val supportedSampleRate: Float,
+    override val sampleRate: Float,
     val b0: Double,
     val b1: Double,
     val b2: Double,
@@ -46,7 +46,7 @@ class BiquadraticFilter(
             val a0 = 1.0 + alpha
 
             return BiquadraticFilter(
-                supportedSampleRate = sampleRate.toFloat(),
+                sampleRate = sampleRate.toFloat(),
                 b0 = ((1.0 - cosW0) / 2.0) / a0,
                 b1 = (1.0 - cosW0) / a0,
                 b2 = ((1.0 - cosW0) / 2.0) / a0,
@@ -62,7 +62,7 @@ class BiquadraticFilter(
             val a0 = 1.0 + alpha
 
             return BiquadraticFilter(
-                supportedSampleRate = sampleRate.toFloat(),
+                sampleRate = sampleRate.toFloat(),
                 b0 = ((1.0 + cosW0) / 2.0) / a0,
                 b1 = (-(1.0 + cosW0)) / a0,
                 b2 = ((1.0 + cosW0) / 2.0) / a0,
