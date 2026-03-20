@@ -3,11 +3,11 @@ package dsp.filtering.config
 import dsp.filtering.ButterworthHighPass
 import dsp.filtering.ButterworthLowPass
 import dsp.filtering.CascadedFilter
-import dsp.filtering.SampleFilter
+import dsp.filtering.OrderedFilter
 
 object FilterBuilder {
 
-    fun build(config: FilterConfig, sampleRate: Float): SampleFilter {
+    fun build(config: FilterConfig, sampleRate: Float): OrderedFilter {
         return when (config.family) {
             FilterFamily.BUTTERWORTH -> buildButterworth(config.topology, config.order, sampleRate)
         }

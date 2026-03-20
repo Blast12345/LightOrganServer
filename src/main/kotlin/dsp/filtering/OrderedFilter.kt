@@ -1,6 +1,7 @@
 package dsp.filtering
 
-interface SampleFilter {
+interface OrderedFilter {
+    val order: Int
     val supportedSampleRate: Float
     fun filter(samples: FloatArray): FloatArray
 }

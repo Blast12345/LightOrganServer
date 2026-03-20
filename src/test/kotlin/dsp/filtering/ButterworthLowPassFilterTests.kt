@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import toolkit.generators.generateSineWave
+import toolkit.monkeyTest.nextPositiveInt
 
 class ButterworthLowPassTests {
 
@@ -13,6 +14,15 @@ class ButterworthLowPassTests {
     private val toneOneOctaveDown = generateSineWave(frequency / 2f, sampleRate)
     private val tone = generateSineWave(frequency, sampleRate)
     private val toneOneOctaveUp = generateSineWave(frequency * 2f, sampleRate)
+
+    @Test
+    fun `get the order of the filter`() {
+        val order = nextPositiveInt()
+
+        val filter = ButterworthLowPass(frequency, order, sampleRate)
+
+        assertEquals(order, filter.order)
+    }
 
     @Test
     fun `get the sample rate supported by the filter`() {

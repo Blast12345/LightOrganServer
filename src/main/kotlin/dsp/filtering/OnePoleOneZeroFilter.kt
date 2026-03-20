@@ -12,8 +12,9 @@ class OnePoleOneZeroFilter(
     val b0: Double,
     val b1: Double,
     val a1: Double,
-) : SampleFilter {
+) : OrderedFilter {
 
+    override val order: Int = 1
     private var z1 = 0.0
 
     override fun filter(samples: FloatArray): FloatArray {

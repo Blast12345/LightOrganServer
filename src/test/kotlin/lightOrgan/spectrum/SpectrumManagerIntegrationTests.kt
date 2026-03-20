@@ -1,6 +1,7 @@
 package lightOrgan.spectrum
 
 import dsp.filtering.config.FilterConfig
+import dsp.filtering.config.FilterFamily
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -85,7 +86,11 @@ class SpectrumManagerIntegrationTests {
     @Test
     fun `given a frequency is below the high pass cutoff, it is filtered`() {
         val sut = createSUT()
-        every { config.highPassFilter } returns FilterConfig.butterworthHighPassFromSlope(frequency * 2f, 6)
+        every { config.highPassFilter } returns FilterConfig.highPassFromSlope(
+            FilterFamily.BUTTERWORTH,
+            frequency * 2f,
+            6
+        )
 
         val bins = sut.calculate(toneFrame)
 
@@ -97,7 +102,11 @@ class SpectrumManagerIntegrationTests {
     @Test
     fun `given a frequency is above the low pass cutoff, it is filtered`() {
         val sut = createSUT()
-        every { config.lowPassFilter } returns FilterConfig.butterworthLowPassFromSlope(frequency / 2f, 6)
+        every { config.lowPassFilter } returns FilterConfig.lowPassFromSlope(
+            FilterFamily.BUTTERWORTH,
+            frequency / 2f,
+            6
+        )
 
         val bins = sut.calculate(toneFrame)
 

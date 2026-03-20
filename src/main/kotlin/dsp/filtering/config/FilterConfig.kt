@@ -6,23 +6,22 @@ data class FilterConfig(
     val order: Int,
 ) {
 
-    // Factory methods
     companion object {
 
-        fun butterworthHighPass(frequency: Float, order: Int): FilterConfig {
-            return FilterConfig(FilterFamily.BUTTERWORTH, FilterTopology.HighPass(frequency), order)
+        fun highPass(family: FilterFamily, frequency: Float, order: Int): FilterConfig {
+            return FilterConfig(family, FilterTopology.HighPass(frequency), order)
         }
 
-        fun butterworthLowPass(frequency: Float, order: Int): FilterConfig {
-            return FilterConfig(FilterFamily.BUTTERWORTH, FilterTopology.LowPass(frequency), order)
+        fun lowPass(family: FilterFamily, frequency: Float, order: Int): FilterConfig {
+            return FilterConfig(family, FilterTopology.LowPass(frequency), order)
         }
 
-        fun butterworthHighPassFromSlope(frequency: Float, dbPerOctave: Int): FilterConfig {
-            return butterworthHighPass(frequency, orderFromSlope(dbPerOctave))
+        fun highPassFromSlope(family: FilterFamily, frequency: Float, dbPerOctave: Int): FilterConfig {
+            return highPass(family, frequency, orderFromSlope(dbPerOctave))
         }
 
-        fun butterworthLowPassFromSlope(frequency: Float, dbPerOctave: Int): FilterConfig {
-            return butterworthLowPass(frequency, orderFromSlope(dbPerOctave))
+        fun lowPassFromSlope(family: FilterFamily, frequency: Float, dbPerOctave: Int): FilterConfig {
+            return lowPass(family, frequency, orderFromSlope(dbPerOctave))
         }
 
         private fun orderFromSlope(dbPerOctave: Int): Int {

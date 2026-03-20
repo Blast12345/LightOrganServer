@@ -8,6 +8,13 @@ import toolkit.monkeyTest.nextPositiveInt
 class OnePoleOneZeroFilterTests {
 
     val supportedSampleRate = nextPositiveInt().toFloat()
+    
+    @Test
+    fun `order is 1`() {
+        val filter = OnePoleOneZeroFilter(supportedSampleRate, b0 = 1.0, b1 = 0.0, a1 = 0.0)
+
+        assertEquals(1, filter.order)
+    }
 
     @Test
     fun `get the sample rate supported by the filter`() {

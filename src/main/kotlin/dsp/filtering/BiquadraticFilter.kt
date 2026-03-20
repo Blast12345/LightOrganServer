@@ -17,8 +17,9 @@ class BiquadraticFilter(
     val b2: Double,
     val a1: Double,
     val a2: Double,
-) : SampleFilter {
+) : OrderedFilter {
 
+    override val order: Int = 2
     private var z1 = 0.0
     private var z2 = 0.0
 

@@ -7,7 +7,7 @@ import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
 import dsp.fft.FrequencyBins
 import dsp.fft.FrequencyBinsCalculator
-import dsp.filtering.SampleFilter
+import dsp.filtering.OrderedFilter
 import dsp.filtering.config.FilterBuilder
 import dsp.windowing.HannWindow
 import dsp.windowing.WindowFunction
@@ -26,8 +26,8 @@ class SpectrumManager(
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator()
 ) {
 
-    private var highPassFilter: SampleFilter? = null
-    private var lowPassFilter: SampleFilter? = null
+    private var highPassFilter: OrderedFilter? = null
+    private var lowPassFilter: OrderedFilter? = null
 
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
     val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
@@ -64,7 +64,7 @@ class SpectrumManager(
         }
     }
 
-    private fun SampleFilter.filter(audio: AudioFrame): AudioFrame {
+    private fun OrderedFilter.filter(audio: AudioFrame): AudioFrame {
         return AudioFrame(filter(audio.samples), audio.format)
     }
 

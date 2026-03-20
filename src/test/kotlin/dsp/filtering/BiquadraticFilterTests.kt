@@ -10,6 +10,13 @@ class BiquadraticFilterTests {
     val supportedSampleRate = nextPositiveInt().toFloat()
 
     @Test
+    fun `order is 2`() {
+        val filter = BiquadraticFilter(supportedSampleRate, b0 = 1.0, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
+
+        assertEquals(2, filter.order)
+    }
+
+    @Test
     fun `get the sample rate supported by the filter`() {
         val filter = BiquadraticFilter(supportedSampleRate, b0 = 0.0, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = 0.0)
 

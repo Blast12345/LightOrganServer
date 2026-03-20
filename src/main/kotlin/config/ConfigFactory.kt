@@ -2,6 +2,7 @@ package config
 
 import config.children.Client
 import dsp.filtering.config.FilterConfig
+import dsp.filtering.config.FilterFamily
 import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.spectrum.SpectrumConfig
@@ -18,11 +19,13 @@ class ConfigFactory(
             spectrum = SpectrumConfig(
                 sampleSize = 3000, // relative to sample rate, mono
                 interpolatedSampleSize = 65536,
-                highPassFilter = FilterConfig.butterworthHighPassFromSlope(
+                highPassFilter = FilterConfig.highPassFromSlope(
+                    family = FilterFamily.BUTTERWORTH,
                     frequency = Notes.C.getFrequency(octave = 1) - 10,
                     dbPerOctave = 48
                 ),
-                lowPassFilter = FilterConfig.butterworthLowPassFromSlope(
+                lowPassFilter = FilterConfig.lowPassFromSlope(
+                    family = FilterFamily.BUTTERWORTH,
                     frequency = Notes.G.getFrequency(octave = 2),
                     dbPerOctave = 48
                 ),
