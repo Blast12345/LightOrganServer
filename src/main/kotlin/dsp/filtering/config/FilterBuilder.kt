@@ -1,6 +1,7 @@
 package dsp.filtering.config
 
-import dsp.filtering.ButterworthFilter
+import dsp.filtering.ButterworthHighPass
+import dsp.filtering.ButterworthLowPass
 import dsp.filtering.CascadedFilter
 import dsp.filtering.SampleFilter
 
@@ -14,8 +15,8 @@ object FilterBuilder {
 
     private fun buildButterworth(topology: FilterTopology, order: Int, sampleRate: Float): CascadedFilter {
         return when (topology) {
-            is FilterTopology.LowPass -> ButterworthFilter.lowPass(topology.frequency, order, sampleRate)
-            is FilterTopology.HighPass -> ButterworthFilter.highPass(topology.frequency, order, sampleRate)
+            is FilterTopology.LowPass -> ButterworthLowPass(topology.frequency, order, sampleRate)
+            is FilterTopology.HighPass -> ButterworthHighPass(topology.frequency, order, sampleRate)
         }
     }
 
