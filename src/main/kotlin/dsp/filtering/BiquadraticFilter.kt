@@ -5,6 +5,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class BiquadraticFilter(
+    override val sampleRate: Float,
     val b0: Double,
     val b1: Double,
     val b2: Double,
@@ -43,6 +44,7 @@ class BiquadraticFilter(
             val a0 = 1.0 + alpha
 
             return BiquadraticFilter(
+                sampleRate = sampleRate.toFloat(),
                 b0 = ((1.0 - cosW0) / 2.0) / a0,
                 b1 = (1.0 - cosW0) / a0,
                 b2 = ((1.0 - cosW0) / 2.0) / a0,
@@ -58,6 +60,7 @@ class BiquadraticFilter(
             val a0 = 1.0 + alpha
 
             return BiquadraticFilter(
+                sampleRate = sampleRate.toFloat(),
                 b0 = ((1.0 + cosW0) / 2.0) / a0,
                 b1 = (-(1.0 + cosW0)) / a0,
                 b2 = ((1.0 + cosW0) / 2.0) / a0,

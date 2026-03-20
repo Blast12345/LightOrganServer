@@ -41,7 +41,7 @@ object ButterworthFilter {
             stages.add(stage)
         }
 
-        return CascadedFilter(stages)
+        return CascadedFilter(sampleRate, stages)
     }
 
     private fun q(order: Int, stageIndex: Int): Double {

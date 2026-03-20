@@ -26,7 +26,6 @@ class SpectrumManager(
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator()
 ) {
 
-    private var sampleRate: Float? = null
     private var highPassFilter: SampleFilter? = null
     private var lowPassFilter: SampleFilter? = null
 
@@ -34,10 +33,7 @@ class SpectrumManager(
     val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
 
     fun calculate(audio: AudioFrame): FrequencyBins {
-        if (audio.format.sampleRate != sampleRate) {
-            sampleRate = audio.format.sampleRate
-            rebuildFilters()
-        }
+        rebuildFiltersIfNeeded(audio.format.sampleRate)
 
         // Signal Processing
         val monoAudio = monoMixer.mix(audio)
@@ -62,10 +58,14 @@ class SpectrumManager(
         return allBins
     }
 
-    private fun rebuildFilters() {
-        val rate = sampleRate ?: return
-        highPassFilter = config.highPassFilter?.let { FilterBuilder.build(it, rate) }
-        lowPassFilter = config.lowPassFilter?.let { FilterBuilder.build(it, rate) }
+    private fun rebuildFiltersIfNeeded(sampleRate: Float) {
+        if (config.highPassFilter != null && highPassFilter?.sampleRate != sampleRate) {
+            highPassFilter = FilterBuilder.build(config.highPassFilter, sampleRate)
+        }
+
+        if (config.lowPassFilter != null && lowPassFilter?.sampleRate != sampleRate) {
+            lowPassFilter = FilterBuilder.build(config.lowPassFilter, sampleRate)
+        }
     }
 
     private fun FrequencyBins.applyWindowCorrection(): FrequencyBins {
