@@ -1,11 +1,9 @@
 package dsp.fft
 
-import dsp.fft.FrequencyBinsCalculator
-import dsp.fft.FrequencyBin
+import audio.samples.AudioFrame
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -18,8 +16,10 @@ class FrequencyBinsCalculatorTests {
 
     private val fftCalculator: FftCalculator = mockk()
 
-    private val frame = nextFloatArray()
-    private val format = nextAudioFormat(sampleRate = 6f)
+    private val audioFrame = AudioFrame(
+        samples = nextFloatArray(),
+        format = nextAudioFormat(sampleRate = 6f)
+    )
     private val magnitudes = floatArrayOf(1f, 2f, 3f)
 
     // nyquist frequency = (sample rate / 2) = (6 / 2) = 3
@@ -30,7 +30,7 @@ class FrequencyBinsCalculatorTests {
 
     @BeforeEach
     fun setupHappyPath() {
-        every { fftCalculator.calculateMagnitudes(any()) } returns magnitudes
+        every { fftCalculator.calculateMagnitudes(audioFrame.samples) } returns magnitudes
     }
 
     @AfterEach
@@ -48,17 +48,16 @@ class FrequencyBinsCalculatorTests {
     fun `calculate the frequency bins for a given audio frame`() {
         val sut = createSUT()
 
-        val actual = sut.calculate(frame, format)
+        val actual = sut.calculate(audioFrame)
 
         assertEquals(listOf(bin2, bin3), actual)
-        verify { fftCalculator.calculateMagnitudes(frame) }
     }
 
     @Test
     fun `exclude the DC offset bin`() {
         val sut = createSUT()
 
-        val actual = sut.calculate(frame, format)
+        val actual = sut.calculate(audioFrame)
 
         assertFalse(actual.contains(offsetBin))
     }

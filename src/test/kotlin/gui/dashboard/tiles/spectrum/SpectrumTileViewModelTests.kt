@@ -31,6 +31,7 @@ class SpectrumTileViewModelTests {
     fun setupHappyPath() {
         every { config.lowestFrequency } returns 0f
         every { config.highestFrequency } returns Float.MAX_VALUE
+        every { config.scale } returns 1f
         spectrumManager = SpectrumManagerFixture.create()
     }
 
@@ -70,6 +71,18 @@ class SpectrumTileViewModelTests {
 
         val binsInRange = allBins.filter { it.frequency in 10f..90f }
         assertEquals(binsInRange, sut.displayedBins.value)
+    }
+
+    @Test
+    fun `scale the displayed spectrum`() {
+        val sut = createSUT()
+        sut.scale = 2f
+
+        spectrumManager.frequencyBins.value = allBins
+        sutScope.advanceUntilIdle()
+
+        val scaledBins = allBins.map { it.copy(magnitude = it.magnitude * 2f) }
+        assertEquals(scaledBins, sut.displayedBins.value)
     }
 
     @Test

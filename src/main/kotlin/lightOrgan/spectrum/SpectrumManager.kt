@@ -33,28 +33,24 @@ class SpectrumManager(
     val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
 
     fun calculate(audio: AudioFrame): FrequencyBins {
+        // Signal Processing
         rebuildFiltersIfNeeded(audio.format.sampleRate)
 
-        // Signal Processing
-        val monoAudio = monoMixer.mix(audio)
-        val filteredAudio1 = highPassFilter?.filter(monoAudio.samples) ?: monoAudio.samples
-        val filteredAudio2 = lowPassFilter?.filter(filteredAudio1) ?: filteredAudio1
+        var processedAudio = monoMixer.mix(audio)
+        processedAudio = highPassFilter?.filter(processedAudio) ?: processedAudio
+        processedAudio = lowPassFilter?.filter(processedAudio) ?: processedAudio
 
-        val filteredFrame = AudioFrame(filteredAudio2, monoAudio.format)
-
-        audioBuffer.append(filteredFrame)
-
-        val bufferedAudio = audioBuffer.current ?: return _frequencyBins.value
-        val windowedFrame = windowFunction.appliedTo(bufferedAudio.samples)
-        val interpolatedFrame = interpolator.interpolate(windowedFrame, config.interpolatedSampleSize)
+        // Frame preparation
+        var preparedFrame = audioBuffer.append(processedAudio)
+        preparedFrame = windowFunction.appliedTo(preparedFrame)
+        preparedFrame = interpolator.interpolate(preparedFrame)
 
         // Bin generation
-        val allBins = frequencyBinsCalculator
-            .calculate(interpolatedFrame, monoAudio.format)
-            .applyWindowCorrection()
+        var allBins = frequencyBinsCalculator.calculate(preparedFrame)
+        allBins = applyWindowCorrection(allBins)
 
+        // Return
         _frequencyBins.value = allBins
-
         return allBins
     }
 
@@ -68,8 +64,20 @@ class SpectrumManager(
         }
     }
 
-    private fun FrequencyBins.applyWindowCorrection(): FrequencyBins {
-        return map { it.copy(magnitude = it.magnitude * windowFunction.amplitudeCorrectionFactor) }
+    private fun SampleFilter.filter(audio: AudioFrame): AudioFrame {
+        return AudioFrame(filter(audio.samples), audio.format)
+    }
+
+    private fun WindowFunction.appliedTo(audio: AudioFrame): AudioFrame {
+        return AudioFrame(appliedTo(audio.samples), audio.format)
+    }
+
+    private fun ZeroPaddingInterpolator.interpolate(audio: AudioFrame): AudioFrame {
+        return AudioFrame(interpolate(audio.samples, config.interpolatedSampleSize), audio.format)
+    }
+
+    private fun applyWindowCorrection(bins: FrequencyBins): FrequencyBins {
+        return bins.map { it.copy(magnitude = it.magnitude * windowFunction.amplitudeCorrectionFactor) }
     }
 
 }
