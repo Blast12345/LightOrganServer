@@ -1,8 +1,21 @@
 package bins
 
+
 data class FrequencyBin(
     val frequency: Float,
     val magnitude: Float
-)
+) {
+
+    /**
+     * Magnitude is proportional to sound pressure (pascals), normalized to digital
+     * full scale (0–1) rather than referenced to 20 µPa.
+     *
+     * That is to say, magnitude is analogous sound pressure (not to be confused with SPL, which is a log scale).
+     *
+     * Though this variable doesn't functionally do anything, it expresses the relationship - something I find valuable.
+     */
+    val normalizedSoundPressure: Float get() = magnitude
+
+}
 
 typealias FrequencyBins = List<FrequencyBin>

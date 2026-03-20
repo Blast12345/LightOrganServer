@@ -15,16 +15,16 @@ class ConfigFactory(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
             clients = setOf(Client("192.168.1.55")),
             highPassFilter = HighPassFilter(
-                frequency = Keys.C.getFrequency(octave = 1),
-                slope = 24f
+                frequency = Keys.C.getFrequency(octave = 1) - 10,
+                slope = 48f
             ),
             lowPassFilter = LowPassFilter(
                 frequency = Keys.G.getFrequency(octave = 2),
-                slope = 48f
+                slope = 36f
             ),
             sampleSize = 2400, // now relative to sample rate because of mixdown
             interpolatedSampleSize = 65536, //32768, //65536,
-            magnitudeMultiplier = 4F,
+            magnitudeMultiplier = 3F,
         )
     }
 

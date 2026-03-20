@@ -2,7 +2,7 @@ package server
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import wrappers.color.Color
+import java.awt.Color
 
 class ColorMessageFactoryTests {
 

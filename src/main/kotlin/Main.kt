@@ -17,6 +17,7 @@ import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 
 // TODO: Consolidate coroutine scopes
+// ENHANCEMENT: Add audio output? This can also delay audio to keep things aligned.
 fun main(args: Array<String>) {
     val audioInputManager = AudioInputManager()
     val spectrumManager = SpectrumManager()

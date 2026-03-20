@@ -33,10 +33,8 @@ class SpectrumManagerIntegrationTests {
         collectionScope.cancel()
     }
 
-    private fun createSUT(magnitudeMultiplier: Float = 1f): SpectrumManager {
-        return SpectrumManager(
-            magnitudeMultiplier = magnitudeMultiplier
-        )
+    private fun createSUT(): SpectrumManager {
+        return SpectrumManager()
     }
 
     @Test
@@ -57,19 +55,6 @@ class SpectrumManagerIntegrationTests {
 
         val peakBin = bins.maxBy { it.magnitude }
         assertEquals(1f, peakBin.magnitude, 0.1f)
-    }
-
-    @Test
-    fun `magnitude multiplier scales bin magnitudes`() {
-        val baselinSut = createSUT(magnitudeMultiplier = 1f)
-        val baselineBins = baselinSut.calculate(sixtyHzFrame)
-
-        val scaledSut = createSUT(magnitudeMultiplier = 2f)
-        val scaledBins = scaledSut.calculate(sixtyHzFrame)
-
-        val baselinePeak = baselineBins.maxBy { it.magnitude }
-        val scaledPeak = scaledBins.maxBy { it.magnitude }
-        assertEquals(baselinePeak.magnitude * 2f, scaledPeak.magnitude, 0.01f)
     }
 
     @Test

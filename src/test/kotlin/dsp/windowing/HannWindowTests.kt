@@ -42,7 +42,7 @@ class HannWindowTests {
     fun `get the amplitude correction factor`() {
         val sut = HannWindow()
 
-        assertEquals(2f, sut.amplitudeCorrectionFactor)
+        assertEquals(2f, sut.magnitudeCorrectionFactor)
     }
 
     @Test

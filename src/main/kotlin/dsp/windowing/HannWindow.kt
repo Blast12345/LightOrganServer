@@ -5,7 +5,7 @@ import kotlin.math.cos
 
 class HannWindow : WindowFunction {
 
-    override val amplitudeCorrectionFactor = 2f
+    override val magnitudeCorrectionFactor = 2f
     override val energyCorrectionFactor = 1.63f
 
     override fun appliedTo(frame: FloatArray): FloatArray {

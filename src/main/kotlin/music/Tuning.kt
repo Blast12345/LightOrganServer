@@ -29,12 +29,15 @@ class Tuning private constructor(
 
     fun getOctave(frequency: Float): Int {
         val helicalAngle = getHelicalAngle(frequency)
+
         return helicalAngle.turns.toInt()
     }
 
     fun getPositionInOctave(frequency: Float): Angle {
         val helicalAngle = getHelicalAngle(frequency)
-        return Angle.fromTurns(helicalAngle.turns.mod(1.0))
+        val degrees = helicalAngle.degrees.mod(360.0)
+
+        return Angle.fromDegrees(degrees)
     }
 
     // Reference: https://www.researchgate.net/figure/The-helical-model-of-pitch-Musical-pitch-is-depicted-as-varying-along-both-a-linear_fig1_272318954
@@ -45,6 +48,7 @@ class Tuning private constructor(
             maximum = zeroOctaveStartFrequency * ratio,
             base = 2F
         )
+
         return Angle.fromTurns(value.toDouble())
     }
 

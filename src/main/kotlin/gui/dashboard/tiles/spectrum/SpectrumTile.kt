@@ -4,9 +4,7 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -18,6 +16,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
 import bins.FrequencyBin
+import config.ConfigSingleton
 import gui.basicComponents.*
 
 @Preview
@@ -62,24 +61,30 @@ private fun GridSpectrum(viewModel: SpectrumTileViewModel) {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun Spectrum(viewModel: SpectrumTileViewModel) {
-    val bins by viewModel.displayedBins.collectAsState()
+    val bins = viewModel.displayedBins.collectAsState()
     val hoveredIndex = viewModel.highlightedIndex
     val barColor = MaterialTheme.colors.secondary
+
+    val binCountState = remember {
+        derivedStateOf { bins.value.size }
+    }
+
+    SideEffect { println("Box recomposed") }
 
     Canvas(
         modifier = Modifier
             .fillMaxSize()
             .clipToBounds()
             .onBinHover(
-                binCount = bins.size,
+                binCount = binCountState.value,
                 onHover = { viewModel.highlightedIndex = it },
                 onExit = { viewModel.highlightedIndex = null }
             )
     ) {
-        val barWidth = size.width / bins.size
+        val barWidth = size.width / bins.value.size
         val renderWidth = barWidth + 1f
 
-        bins.forEachIndexed { index, bin ->
+        bins.value.forEachIndexed { index, bin ->
             drawBar(index, bin, barWidth, renderWidth, barColor)
 
             if (index == hoveredIndex) {
@@ -110,7 +115,7 @@ private fun DrawScope.drawBar(
     renderWidth: Float,
     color: Color
 ) {
-    val barHeight = bin.magnitude * size.height
+    val barHeight = bin.magnitude * size.height * ConfigSingleton.magnitudeMultiplier
 
     drawRect(
         color = color,

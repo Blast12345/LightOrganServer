@@ -3,7 +3,7 @@ package lightOrgan.color
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import wrappers.color.Color
+import java.awt.Color
 
 data class ColorManagerFixture(
     val mock: ColorManager,
@@ -17,7 +17,7 @@ data class ColorManagerFixture(
                 color = MutableStateFlow(Color.black)
             )
 
-            every { fixture.mock.color } returns fixture.color
+            every { fixture.mock.colors } returns fixture.color
 
             return fixture
         }

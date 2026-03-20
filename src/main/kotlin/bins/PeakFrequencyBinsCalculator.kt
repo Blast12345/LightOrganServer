@@ -40,12 +40,20 @@ class PeakFrequencyBinsCalculator {
 
         val delta = 0.5F * (alpha - gamma) / denominator
         val binWidth = next.frequency - current.frequency
-        val logMagnitude = beta - 0.25F * (alpha - gamma) * delta
 
         return FrequencyBin(
             frequency = current.frequency + delta * binWidth,
-            magnitude = 10F.pow(logMagnitude)
+            magnitude = interpolateValue(previous.magnitude, current.magnitude, next.magnitude, delta),
         )
+    }
+
+    // TODO: Extract?
+    private fun interpolateValue(previous: Float, current: Float, next: Float, delta: Float): Float {
+        val alpha = log10(previous.coerceAtLeast(Float.MIN_VALUE))
+        val beta = log10(current.coerceAtLeast(Float.MIN_VALUE))
+        val gamma = log10(next.coerceAtLeast(Float.MIN_VALUE))
+        val logValue = beta - 0.25f * (alpha - gamma) * delta
+        return 10f.pow(logValue)
     }
 
 }

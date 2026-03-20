@@ -1,9 +1,10 @@
 package server
 
+import androidx.compose.ui.graphics.Color
 import config.Config
 import config.ConfigSingleton
 import config.children.Client
-import wrappers.color.Color
+
 
 class Server(
     private val config: Config = ConfigSingleton,
