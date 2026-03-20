@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.generators.generateSineWave
 import toolkit.monkeyTest.nextAudioFrame
-import kotlin.time.Duration.Companion.seconds
 
 
 // The processing chain is so long and specific that unit tests seemed like a mirror of implementation
@@ -20,8 +19,8 @@ class SpectrumManagerIntegrationTests {
     private val config: SpectrumConfig = mockk()
 
     private val frequency = 60f
-    private val tone = generateSineWave(frequency, 1f, 1.seconds, sampleRate)
-    private val silence = generateSineWave(frequency, 0f, 1.seconds, sampleRate)
+    private val tone = generateSineWave(frequency, sampleRate, amplitude = 1f)
+    private val silence = generateSineWave(frequency, sampleRate, amplitude = 0f)
 
     private val toneFrame = nextAudioFrame(tone)
     private val silenceFrame = nextAudioFrame(silence)
