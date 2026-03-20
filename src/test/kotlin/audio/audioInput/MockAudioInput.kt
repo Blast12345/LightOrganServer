@@ -1,6 +1,5 @@
 package audio.audioInput
 
-import audio.audioInput.AudioInput
 import audio.samples.AudioFrame
 import io.mockk.every
 import io.mockk.mockk
@@ -11,7 +10,7 @@ import toolkit.monkeyTest.nextAudioFormat
 data class MockAudioInput(
     val mock: AudioInput,
     val isListeningFlow: MutableStateFlow<Boolean>,
-    val bufferedAudioFlow: MutableSharedFlow<AudioFrame>
+    val audioStreamFlow: MutableSharedFlow<AudioFrame>
 ) {
 
     companion object {
@@ -19,16 +18,16 @@ data class MockAudioInput(
             val mock = mockk<AudioInput>()
             val isListeningFlow = MutableStateFlow(false)
             // NOTE: extra buffer to prevent emits from blocking thread
-            val bufferedAudioFlow = MutableSharedFlow<AudioFrame>(extraBufferCapacity = 1)
+            val audioStreamFlow = MutableSharedFlow<AudioFrame>(extraBufferCapacity = 1)
 
             every { mock.name } returns name
             every { mock.format } returns nextAudioFormat()
             every { mock.start() } returns Unit
             every { mock.stop() } returns Unit
             every { mock.isListening } returns isListeningFlow
-            every { mock.bufferedAudio } returns bufferedAudioFlow
+            every { mock.audioStream } returns audioStreamFlow
 
-            return MockAudioInput(mock, isListeningFlow, bufferedAudioFlow)
+            return MockAudioInput(mock, isListeningFlow, audioStreamFlow)
         }
     }
 }

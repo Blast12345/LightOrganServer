@@ -30,8 +30,8 @@ class AudioInputManager(
         }
         .stateIn(scope, sharingPolicy, false)
 
-    val bufferedAudio: SharedFlow<AudioFrame> = currentAudioInput
-        .flatMapLatest { it?.bufferedAudio ?: emptyFlow() }
+    val audioStream: SharedFlow<AudioFrame> = currentAudioInput
+        .flatMapLatest { it?.audioStream ?: emptyFlow() }
         .shareIn(scope, sharingPolicy)
 
     // Start-stop

@@ -1,8 +1,11 @@
 package config
 
 import config.children.Client
+import dsp.filtering.config.FilterConfig
+import dsp.filtering.config.FilterFamily
+import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
-import sound.bins.frequency.filters.Crossover
+import lightOrgan.spectrum.SpectrumConfig
 import sound.notes.Notes
 
 class ConfigFactory(
@@ -13,17 +16,26 @@ class ConfigFactory(
         return Config(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
             clients = setOf(Client("192.168.1.55")),
-            lowCrossover = Crossover(
-                stopFrequency = Notes.C.getFrequency(octave = 0),
-                cornerFrequency = Notes.C.getFrequency(octave = 1)
+            spectrum = SpectrumConfig(
+                sampleSize = 3000, // relative to sample rate, mono
+                interpolatedSampleSize = 65536,
+                highPassFilter = FilterConfig.highPassFromSlope(
+                    family = FilterFamily.BUTTERWORTH,
+                    frequency = Notes.C.getFrequency(octave = 1) - 10,
+                    dbPerOctave = 48
+                ),
+                lowPassFilter = FilterConfig.lowPassFromSlope(
+                    family = FilterFamily.BUTTERWORTH,
+                    frequency = Notes.G.getFrequency(octave = 2),
+                    dbPerOctave = 48
+                ),
             ),
-            highCrossover = Crossover(
-                cornerFrequency = Notes.C.getFrequency(octave = 2),
-                stopFrequency = Notes.C.getFrequency(octave = 3)
+            spectrumGui = SpectrumGuiConfig(
+                scale = 3F,
+                lowestFrequency = 0f,
+                highestFrequency = 160F,
             ),
-            sampleSize = 2400, // now relative to sample rate because of mixdown
-            interpolatedSampleSize = 65536,
-            magnitudeMultiplier = 4F,
+            brightnessMultiplier = 3F,
         )
     }
 

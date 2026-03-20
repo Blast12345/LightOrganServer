@@ -1,14 +1,14 @@
 package dsp.fft
 
-import audio.samples.AudioFormat
+import audio.samples.AudioFrame
 
 class FrequencyBinsCalculator(
     private val fftCalculator: FftCalculator = FftCalculator()
 ) {
 
-    fun calculate(frame: FloatArray, format: AudioFormat): FrequencyBins {
-        val magnitudes = fftCalculator.calculateMagnitudes(frame)
-        val binSpacing = format.nyquistFrequency / magnitudes.size
+    fun calculate(audio: AudioFrame): FrequencyBins {
+        val magnitudes = fftCalculator.calculateMagnitudes(audio.samples)
+        val binSpacing = audio.format.nyquistFrequency / magnitudes.size
 
         val allBins = magnitudes.indices.map { index -> FrequencyBin(index * binSpacing, magnitudes[index]) }
         return allBins.dropDcOffset()

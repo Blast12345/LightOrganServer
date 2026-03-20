@@ -1,19 +1,15 @@
 package config
 
 import config.children.Client
+import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
-import sound.bins.frequency.filters.Crossover
+import lightOrgan.spectrum.SpectrumConfig
 
 @Suppress("LongParameterList")
 class Config(
     val startAutomatically: MutableStateFlow<Boolean>,
     val clients: Set<Client>,
-    val lowCrossover: Crossover,
-    val highCrossover: Crossover,
-    val sampleSize: Int,
-    val interpolatedSampleSize: Int,
-    val magnitudeMultiplier: Float,
+    val spectrum: SpectrumConfig,
+    val spectrumGui: SpectrumGuiConfig,
+    val brightnessMultiplier: Float,
 )
-
-
-
