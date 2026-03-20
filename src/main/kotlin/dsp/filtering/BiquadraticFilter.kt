@@ -4,8 +4,14 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
+// NOTE: Think of the coefficients like mixing valves. Different values mix the input and output together differently.
+// b0 - how much the current input matters
+// b1 - how much the input from one step ago matters
+// b2 - how much the input from two steps ago matters
+// a1 - how much the output from one step ago matters
+// a2 - how much the output from two steps ago matters
 class BiquadraticFilter(
-    override val sampleRate: Float,
+    override val supportedSampleRate: Float,
     val b0: Double,
     val b1: Double,
     val b2: Double,
@@ -21,18 +27,13 @@ class BiquadraticFilter(
     }
 
     private fun process(sample: Float): Float {
-        val x = sample.toDouble()
-        val y = b0 * x + z1
+        val x = sample.toDouble() // input
+        val y = b0 * x + z1 // output
 
         z1 = b1 * x - a1 * y + z2
         z2 = b2 * x - a2 * y
 
         return y.toFloat()
-    }
-
-    override fun reset() {
-        z1 = 0.0
-        z2 = 0.0
     }
 
     companion object {
@@ -44,7 +45,7 @@ class BiquadraticFilter(
             val a0 = 1.0 + alpha
 
             return BiquadraticFilter(
-                sampleRate = sampleRate.toFloat(),
+                supportedSampleRate = sampleRate.toFloat(),
                 b0 = ((1.0 - cosW0) / 2.0) / a0,
                 b1 = (1.0 - cosW0) / a0,
                 b2 = ((1.0 - cosW0) / 2.0) / a0,
@@ -60,7 +61,7 @@ class BiquadraticFilter(
             val a0 = 1.0 + alpha
 
             return BiquadraticFilter(
-                sampleRate = sampleRate.toFloat(),
+                supportedSampleRate = sampleRate.toFloat(),
                 b0 = ((1.0 + cosW0) / 2.0) / a0,
                 b1 = (-(1.0 + cosW0)) / a0,
                 b2 = ((1.0 + cosW0) / 2.0) / a0,

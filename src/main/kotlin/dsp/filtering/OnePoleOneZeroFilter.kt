@@ -4,7 +4,7 @@ import kotlin.math.PI
 import kotlin.math.tan
 
 class OnePoleOneZeroFilter(
-    override val sampleRate: Float,
+    override val supportedSampleRate: Float,
     val b0: Double,
     val b1: Double,
     val a1: Double,
@@ -23,10 +23,6 @@ class OnePoleOneZeroFilter(
         return y.toFloat()
     }
 
-    override fun reset() {
-        z1 = 0.0
-    }
-
     companion object {
 
         fun lowPass(frequency: Double, sampleRate: Double): OnePoleOneZeroFilter {
@@ -34,7 +30,7 @@ class OnePoleOneZeroFilter(
             val a0 = 1.0 + t
 
             return OnePoleOneZeroFilter(
-                sampleRate = sampleRate.toFloat(),
+                supportedSampleRate = sampleRate.toFloat(),
                 b0 = t / a0,
                 b1 = t / a0,
                 a1 = (t - 1.0) / a0,
@@ -46,7 +42,7 @@ class OnePoleOneZeroFilter(
             val a0 = 1.0 + t
 
             return OnePoleOneZeroFilter(
-                sampleRate = sampleRate.toFloat(),
+                supportedSampleRate = sampleRate.toFloat(),
                 b0 = 1.0 / a0,
                 b1 = -1.0 / a0,
                 a1 = (t - 1.0) / a0,

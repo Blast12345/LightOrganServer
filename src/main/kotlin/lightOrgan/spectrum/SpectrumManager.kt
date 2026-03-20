@@ -55,11 +55,11 @@ class SpectrumManager(
     }
 
     private fun rebuildFiltersIfNeeded(sampleRate: Float) {
-        if (config.highPassFilter != null && highPassFilter?.sampleRate != sampleRate) {
+        if (config.highPassFilter != null && highPassFilter?.supportedSampleRate != sampleRate) {
             highPassFilter = FilterBuilder.build(config.highPassFilter, sampleRate)
         }
 
-        if (config.lowPassFilter != null && lowPassFilter?.sampleRate != sampleRate) {
+        if (config.lowPassFilter != null && lowPassFilter?.supportedSampleRate != sampleRate) {
             lowPassFilter = FilterBuilder.build(config.lowPassFilter, sampleRate)
         }
     }

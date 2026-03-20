@@ -2,7 +2,7 @@ package logging
 
 object Logger {
 
-    val enabled: Boolean = true
+    val enabled: Boolean = true // TODO: Disable this for unit tests
 
     fun success(message: String) {
         if (!enabled) return

@@ -17,4 +17,3 @@ fun generateSineWave(
         samples = FloatArray(sampleSize) { i -> amplitude * sin(2.0 * PI * frequency * i / sampleRate).toFloat() }
     )
 }
-
