@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -32,6 +33,7 @@ class LightOrganTests {
     private val frequencyBins = nextFrequencyBins()
 
     private val newAudio = nextAudioFrame()
+    private val bufferedAudio = nextAudioFrame()
     private val newColor = nextColor()
 
     @BeforeEach
@@ -40,6 +42,8 @@ class LightOrganTests {
         spectrumManager = SpectrumManagerFixture.create()
         colorManager = ColorManagerFixture.create()
 
+        every { audioBuffer.append(newAudio) } returns Unit
+        coEvery { audioBuffer.drain() } returns bufferedAudio coAndThen { awaitCancellation() }
         every { spectrumManager.mock.calculate(any()) } returns frequencyBins
         every { colorManager.mock.calculate(any()) } returns newColor
         every { server.new(newColor) } returns Unit
@@ -57,6 +61,8 @@ class LightOrganTests {
             spectrumManager = spectrumManager.mock,
             colorManager = colorManager.mock,
             server = server,
+            audioBuffer = audioBuffer,
+            subscribers = subscribers,
             scope = sutScope
         )
     }
@@ -66,7 +72,7 @@ class LightOrganTests {
         val sut = createSUT()
         sutScope.advanceUntilIdle()
 
-        audioInputManager.bufferedAudio.emit(newAudio)
+        audioInputManager.audioStream.emit(newAudio)
         sutScope.advanceUntilIdle()
 
         verify { spectrumManager.mock.calculate(newAudio) }

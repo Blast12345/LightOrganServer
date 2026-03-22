@@ -2,11 +2,16 @@ package logging
 
 object Logger {
 
-    val enabled: Boolean = false
+    var enabled: Boolean = true
 
     fun success(message: String) {
         if (!enabled) return
         println("${LogColor.Green.code}SUCCESS: $message${LogColor.Default.code}")
+    }
+
+    fun warning(message: String) {
+        if (!enabled) return
+        println("${LogColor.Orange.code}WARNING: $message${LogColor.Default.code}")
     }
 
     fun error(message: String) {

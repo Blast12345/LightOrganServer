@@ -5,7 +5,6 @@ import config.Config
 import config.ConfigSingleton
 import config.children.Client
 
-
 class Server(
     private val config: Config = ConfigSingleton,
     private val socket: UdpSocket = UdpSocket(),

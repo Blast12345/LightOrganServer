@@ -40,9 +40,6 @@ class ColorCalculator(
         val colorOfCombinedLight = smoothedLight.color.convert(ColorSpaces.Srgb)
         val hueAndSaturation = hueAndSaturation(colorOfCombinedLight)
 
-        if (hueAndSaturation.second > 0.1f) {
-            println("ASDF")
-        }
         return listOf(
             ComposeColor.hsv(
                 hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),

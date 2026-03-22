@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import bins.FrequencyBin
 import bins.FrequencyBins
+import config.ConfigSingleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -17,20 +18,19 @@ import lightOrgan.spectrum.SpectrumManager
 // ENHANCEMENT: Show latency
 class SpectrumTileViewModel(
     private val spectrumManager: SpectrumManager,
+    private val config: SpectrumGuiConfig = ConfigSingleton.spectrumGui,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main),
     private val sharingPolicy: SharingStarted = SharingStarted.WhileSubscribed()
 ) {
 
     // ENHANCEMENT: Expose GUI configuration for these, at which point we should update displayed bins on change.
-    var lowestFrequency: Float by mutableStateOf(0f)
-    var highestFrequency: Float by mutableStateOf(160f)
+    var lowestFrequency: Float by mutableStateOf(config.lowestFrequency)
+    var highestFrequency: Float by mutableStateOf(config.highestFrequency)
+    var scale: Float by mutableStateOf(config.scale)
 
     val displayedBins: StateFlow<FrequencyBins> = spectrumManager.frequencyBins
-        .map { bins ->
-            bins.filter { bin ->
-                bin.frequency in lowestFrequency..highestFrequency
-            }
-        }
+        .map { it.filter { bin -> bin.frequency in lowestFrequency..highestFrequency } }
+        .map { it.map { bin -> bin.copy(magnitude = bin.magnitude * scale) } }
         .stateIn(scope, sharingPolicy, emptyList())
 
     var highlightedIndex: Int? by mutableStateOf(null)

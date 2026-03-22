@@ -2,7 +2,6 @@ package audio.audioInput
 
 import audio.samples.AudioFormat
 import audio.samples.AudioFrame
-import audio.samples.SampleBuffer
 import audio.samples.SampleNormalizer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
@@ -16,14 +15,18 @@ import wrappers.sound.InputLine
 
 class AudioInput(
     private val inputLine: InputLine,
-    private val sampleBuffer: SampleBuffer,
     private val sampleNormalizer: SampleNormalizer,
     private val scope: CoroutineScope = IoScope
 ) {
 
     private var listeningJob: Job? = null
     private val _isListening: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    private val _bufferedAudio = MutableSharedFlow<AudioFrame>(0, 1, BufferOverflow.DROP_OLDEST)
+
+    // NOTE: The OS may not deliver samples at a consistent rate.
+    // E.g., immediately after a read, more data is available, thus causing another immediate read.
+    // Back-to-back reads can cause even very fast collectors to fall behind, so we allow a small buffer to handle bursts.
+    // That said, collectors to be performant enough to handle high rates. If they are not, they will fall behind and experience dropped frames.
+    private val _audioStream = MutableSharedFlow<AudioFrame>(0, 8, BufferOverflow.DROP_OLDEST)
 
     val name: String = inputLine.name
     val format = AudioFormat(
@@ -32,7 +35,7 @@ class AudioInput(
         channels = inputLine.channels
     )
     val isListening = _isListening.asStateFlow()
-    val bufferedAudio = _bufferedAudio.asSharedFlow()
+    val audioStream = _audioStream.asSharedFlow()
 
     fun start() {
         if (listeningJob?.isActive == true) return
@@ -53,10 +56,12 @@ class AudioInput(
             val inputData = inputLine.read()
             val newSamples = sampleNormalizer.normalize(inputData)
 
-            sampleBuffer.append(newSamples)
+            val audioFrame = AudioFrame(newSamples, format)
+            val emittedSuccessfully = _audioStream.tryEmit(audioFrame)
 
-            val audioFrame = AudioFrame(sampleBuffer.current, format)
-            _bufferedAudio.tryEmit(audioFrame)
+            if (!emittedSuccessfully) {
+                Logger.warning("Failed to emit audio frame to audioStream.")
+            }
         }
     }
 

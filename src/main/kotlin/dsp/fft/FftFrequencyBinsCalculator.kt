@@ -1,6 +1,6 @@
 package dsp.fft
 
-import audio.samples.AudioFormat
+import audio.samples.AudioFrame
 import bins.FrequencyBin
 import bins.FrequencyBins
 
@@ -9,12 +9,11 @@ class FftFrequencyBinsCalculator(
 ) {
 
     fun calculate(
-        frame: FloatArray,
-        format: AudioFormat,
+        frame: AudioFrame,
         magnitudeCorrectionFactor: Float
     ): FrequencyBins {
-        val magnitudes = fftCalculator.calculateMagnitudes(frame)
-        val binSpacing = format.nyquistFrequency / magnitudes.size
+        val magnitudes = fftCalculator.calculateMagnitudes(frame.samples)
+        val binSpacing = frame.format.nyquistFrequency / magnitudes.size
 
         return magnitudes.indices.map { index ->
             val rawMagnitude = magnitudes[index]

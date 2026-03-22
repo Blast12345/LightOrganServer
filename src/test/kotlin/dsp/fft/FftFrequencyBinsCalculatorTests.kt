@@ -1,5 +1,6 @@
 package dsp.fft
 
+import audio.samples.AudioFrame
 import bins.FrequencyBin
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -17,8 +18,10 @@ class FftFrequencyBinsCalculatorTests {
 
     private val fftCalculator: FftCalculator = mockk()
 
-    private val frame = nextFloatArray()
-    private val format = nextAudioFormat(sampleRate = 6f)
+    private val audioFrame = AudioFrame(
+        samples = nextFloatArray(),
+        format = nextAudioFormat(sampleRate = 6f)
+    )
     private val magnitudes = floatArrayOf(1f, 2f, 3f)
 
     private val bin1 = FrequencyBin(0f, 1f)
@@ -28,7 +31,7 @@ class FftFrequencyBinsCalculatorTests {
 
     @BeforeEach
     fun setupHappyPath() {
-        every { fftCalculator.calculateMagnitudes(any()) } returns magnitudes
+        every { fftCalculator.calculateMagnitudes(audioFrame.samples) } returns magnitudes
     }
 
     @AfterEach
@@ -46,10 +49,12 @@ class FftFrequencyBinsCalculatorTests {
     fun `calculate the frequency bins for a given audio frame`() {
         val sut = createSUT()
 
-        val actual = sut.calculate(frame, format)
+        val actual = sut.calculate(audioFrame, 1f)
 
         assertEquals(bins, actual)
-        verify { fftCalculator.calculateMagnitudes(frame) }
+        verify { fftCalculator.calculateMagnitudes(audioFrame.samples) }
     }
+
+    // TODO: Test scaling
 
 }

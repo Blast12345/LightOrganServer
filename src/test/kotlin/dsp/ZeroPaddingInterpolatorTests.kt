@@ -10,22 +10,21 @@ class ZeroPaddingInterpolatorTests {
 
     @Test
     fun `pad the frame with zeros until the desired size is reached`() {
-        val sut = ZeroPaddingInterpolator(desiredSize = 6)
+        val sut = ZeroPaddingInterpolator()
 
-        val result = sut.interpolate(frame)
+        val result = sut.interpolate(frame, desiredSize = 5)
 
-        Assertions.assertEquals(6, result.size)
+        Assertions.assertEquals(5, result.size)
         Assertions.assertEquals(0f, result[3])
         Assertions.assertEquals(0f, result[4])
-        Assertions.assertEquals(0f, result[5])
     }
 
     @Test
-    fun `scales original samples to preserve magnitude`() {
-        val sut = ZeroPaddingInterpolator(desiredSize = 6)
+    fun `scale original samples to preserve magnitude`() {
+        val sut = ZeroPaddingInterpolator()
         val frame = floatArrayOf(1f, 2f, 3f)
 
-        val result = sut.interpolate(frame)
+        val result = sut.interpolate(frame, desiredSize = 6)
 
         Assertions.assertEquals(2f, result[0], 0.001f)
         Assertions.assertEquals(4f, result[1], 0.001f)
@@ -34,9 +33,9 @@ class ZeroPaddingInterpolatorTests {
 
     @Test
     fun `throws when desired size is smaller than frame size`() {
-        val sut = ZeroPaddingInterpolator(desiredSize = 2)
+        val sut = ZeroPaddingInterpolator()
 
-        assertThrows<InvalidInterpolationSizeException> { sut.interpolate(frame) }
+        assertThrows<InvalidInterpolationSizeException> { sut.interpolate(frame, 2) }
     }
 
 }

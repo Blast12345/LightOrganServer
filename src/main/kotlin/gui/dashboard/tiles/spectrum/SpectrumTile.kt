@@ -16,7 +16,6 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
 import bins.FrequencyBin
-import config.ConfigSingleton
 import gui.basicComponents.*
 
 @Preview
@@ -65,6 +64,7 @@ private fun Spectrum(viewModel: SpectrumTileViewModel) {
     val hoveredIndex = viewModel.highlightedIndex
     val barColor = MaterialTheme.colors.secondary
 
+    // TODO: Make me a state on VM?
     val binCountState = remember {
         derivedStateOf { bins.value.size }
     }
@@ -115,7 +115,7 @@ private fun DrawScope.drawBar(
     renderWidth: Float,
     color: Color
 ) {
-    val barHeight = bin.magnitude * size.height * ConfigSingleton.magnitudeMultiplier
+    val barHeight = bin.magnitude * size.height
 
     drawRect(
         color = color,
