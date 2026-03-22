@@ -3,7 +3,6 @@ package bins
 import kotlin.math.log10
 import kotlin.math.pow
 
-// NOTE: This is using parabolic interpolation. If more strategies are added, then create an appropriate interface and give this class a more specific name.
 class PeakFrequencyBinsCalculator {
 
     fun calculate(frequencyBins: FrequencyBins): FrequencyBins {
@@ -43,17 +42,8 @@ class PeakFrequencyBinsCalculator {
 
         return FrequencyBin(
             frequency = current.frequency + delta * binWidth,
-            magnitude = interpolateValue(previous.magnitude, current.magnitude, next.magnitude, delta),
+            magnitude = 10f.pow(beta - 0.25f * (alpha - gamma) * delta),
         )
-    }
-
-    // TODO: Extract?
-    private fun interpolateValue(previous: Float, current: Float, next: Float, delta: Float): Float {
-        val alpha = log10(previous.coerceAtLeast(Float.MIN_VALUE))
-        val beta = log10(current.coerceAtLeast(Float.MIN_VALUE))
-        val gamma = log10(next.coerceAtLeast(Float.MIN_VALUE))
-        val logValue = beta - 0.25f * (alpha - gamma) * delta
-        return 10f.pow(logValue)
     }
 
 }

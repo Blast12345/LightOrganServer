@@ -4,6 +4,11 @@ import dsp.filtering.config.FilterConfig
 import dsp.filtering.config.FilterFamily
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -11,7 +16,6 @@ import org.junit.jupiter.api.Test
 import toolkit.extensions.collectInto
 import toolkit.generators.generateSineWave
 import toolkit.monkeyTest.nextAudioFrame
-
 
 // The processing chain is so long and specific that unit tests seemed like a mirror of implementation
 // rather than checks for meaningful behavior. As such, integration tests seemed like the right tool.
@@ -29,6 +33,8 @@ class SpectrumManagerIntegrationTests {
     private val silenceFrame = nextAudioFrame(silence)
     private val interleavedFrame = nextAudioFrame(tone, silence)
 
+    private val collectionScope = TestScope()
+
     @BeforeEach
     fun setupHappyPath() {
         every { config.sampleSize } returns (sampleRate / 10).toInt()
@@ -36,6 +42,12 @@ class SpectrumManagerIntegrationTests {
         every { config.highPassFilter } returns null
         every { config.lowPassFilter } returns null
     }
+
+    @AfterEach
+    fun tearDown() {
+        collectionScope.cancel()
+    }
+
 
     private fun createSUT(): SpectrumManager {
         return SpectrumManager(config)
@@ -123,7 +135,7 @@ class SpectrumManagerIntegrationTests {
         val sut = createSUT()
         val received = sut.frequencyBins.collectInto(collectionScope)
 
-        val bins = sut.calculate(sixtyHzFrame)
+        val bins = sut.calculate(toneFrame)
         collectionScope.advanceUntilIdle()
 
         assertEquals(listOf(bins), received)

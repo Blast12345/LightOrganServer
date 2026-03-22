@@ -4,7 +4,7 @@ import audio.samples.AudioFrame
 import audio.samples.RollingAudioBuffer
 import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
-import dsp.fft.FrequencyBinsCalculator
+import dsp.fft.FftFrequencyBinsCalculator
 import dsp.filtering.OrderedFilter
 import dsp.filtering.config.FilterBuilder
 import dsp.filtering.config.FilterConfig
@@ -26,7 +26,7 @@ class SpectrumManagerUnitTests {
     private val audioBuffer: RollingAudioBuffer = mockk()
     private val windowFunction: WindowFunction = mockk()
     private val interpolator: ZeroPaddingInterpolator = mockk()
-    private val frequencyBinsCalculator: FrequencyBinsCalculator = mockk()
+    private val frequencyBinsCalculator: FftFrequencyBinsCalculator = mockk()
 
     private val format1 = nextAudioFormat()
     private val format2 = nextAudioFormat()
@@ -73,9 +73,9 @@ class SpectrumManagerUnitTests {
 
         every { audioBuffer.append(any()) } returns bufferedFrame
         every { windowFunction.appliedTo(any()) } returns windowedSamples
-        every { windowFunction.amplitudeCorrectionFactor } returns 1f
+        every { windowFunction.magnitudeCorrectionFactor } returns 1f
         every { interpolator.interpolate(any(), any()) } returns interpolatedSamples
-        every { frequencyBinsCalculator.calculate(any()) } returns frequencyBins
+        every { frequencyBinsCalculator.calculate(any(), any()) } returns frequencyBins
     }
 
     private fun createSUT(): SpectrumManager {
