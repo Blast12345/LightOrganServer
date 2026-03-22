@@ -15,8 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-// ENHANCEMENT: If implementing other calculation strategies (e.g. DFT, CZT), then create a bin calculator interface
-// ENHANCEMENT: Make scaling configurable
 // ENHANCEMENT: Implement equal-loudness contours (ISO 226:2003). Manual SPL number with future plans of external meter?
 // ENHANCEMENT: If implementing other calculation strategies (e.g., DFT, CZT), then create a bin calculator interface
 // ENHANCEMENT: Explore sub-frame duration frequency calculation. Cool challenge, but probably not necessary for music.
@@ -56,7 +54,7 @@ class SpectrumManager(
 
         val allBins = frequencyBinsCalculator.calculate(preparedFrame, windowFunction.magnitudeCorrectionFactor)
             // TODO: Test
-            .filter { it.frequency > minimumCalculableFrequency } // This class a has a responsibility to filter out bad data
+            .filter { it.frequency > minimumCalculableFrequency }
 
         _frequencyBins.value = allBins
         return allBins
