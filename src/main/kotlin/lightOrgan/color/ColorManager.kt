@@ -24,9 +24,7 @@ class ColorManager(
     val colors: StateFlow<List<Color>> = _colors.asStateFlow()
 
     fun calculate(frequencyBins: FrequencyBins): Color { // TODO: Return metadata?
-        val peakBins = frequencyBins
-            .filter { it.frequency < 160f } // TODO: Calculate trim
-            .let { peakFrequencyBinsCalculator.calculate(it) }
+        val peakBins = peakFrequencyBinsCalculator.calculate(frequencyBins)
 
         val colors = if (peakBins.isEmpty()) listOf(
             Color.Black,

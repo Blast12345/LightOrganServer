@@ -55,6 +55,7 @@ class SpectrumManager(
         val allBins = frequencyBinsCalculator
             .calculate(preparedFrame, windowFunction.magnitudeCorrectionFactor)
             .filter { it.frequency > minimumCalculableFrequency }
+            .filter { it.frequency < 160f }// TODO: Trimming
 
         _frequencyBins.value = allBins
         return allBins
