@@ -53,7 +53,7 @@ class SpectrumManagerIntegrationTests {
         return SpectrumManager(config)
     }
 
-    // Frequency data
+    // Frequency Bins
     @Test
     fun `given a tone, the peak bin is at the frequency of the wave`() {
         val sut = createSUT()
@@ -83,6 +83,19 @@ class SpectrumManagerIntegrationTests {
         bins.forEach { assertTrue(it.magnitude < 0.1f) }
     }
 
+    @Test
+    fun `frequencies that are too long for the sample size are excluded`() {
+        val lowestFrequency = 100f // 100 for easy math
+        val cycleDuration = 1f / lowestFrequency // 100 Hz takes 0.01 seconds to complete a cycle
+        val samples = (sampleRate * cycleDuration).toInt()
+        every { config.sampleSize } returns samples
+        val sut = createSUT()
+
+        val bins = sut.calculate(toneFrame)
+
+        bins.forEach { assertTrue(it.frequency >= lowestFrequency) }
+    }
+
     // Multichannel
     @Test
     fun `stereo input is mixed to mono before processing`() {
@@ -96,7 +109,7 @@ class SpectrumManagerIntegrationTests {
         assertEquals(0.5f, peakBin.magnitude, 0.1f)
     }
 
-    // Filtering
+    // DSP Filtering
     @Test
     fun `given a frequency is below the high pass cutoff, it is filtered`() {
         val sut = createSUT()

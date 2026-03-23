@@ -49,11 +49,11 @@ class SpectrumManager(
         preparedFrame = interpolator.interpolate(preparedFrame)
 
         // Bin generation
-        val frameDuration = preparedFrame.samples.size / audio.format.sampleRate
+        val frameDuration = config.sampleSize / audio.format.sampleRate
         val minimumCalculableFrequency = 1 / frameDuration
 
-        val allBins = frequencyBinsCalculator.calculate(preparedFrame, windowFunction.magnitudeCorrectionFactor)
-            // TODO: Test
+        val allBins = frequencyBinsCalculator
+            .calculate(preparedFrame, windowFunction.magnitudeCorrectionFactor)
             .filter { it.frequency > minimumCalculableFrequency }
 
         _frequencyBins.value = allBins
