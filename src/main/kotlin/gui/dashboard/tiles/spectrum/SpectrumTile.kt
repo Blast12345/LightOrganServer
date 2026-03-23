@@ -4,7 +4,10 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -61,22 +64,16 @@ private fun GridSpectrum(viewModel: SpectrumTileViewModel) {
 @Composable
 private fun Spectrum(viewModel: SpectrumTileViewModel) {
     val bins = viewModel.displayedBins.collectAsState()
+    val binCount = remember { derivedStateOf { bins.value.size } } // optimization
     val hoveredIndex = viewModel.highlightedIndex
     val barColor = MaterialTheme.colors.secondary
-
-    // TODO: Make me a state on VM?
-    val binCountState = remember {
-        derivedStateOf { bins.value.size }
-    }
-
-    SideEffect { println("Box recomposed") }
 
     Canvas(
         modifier = Modifier
             .fillMaxSize()
             .clipToBounds()
             .onBinHover(
-                binCount = binCountState.value,
+                binCount = binCount.value,
                 onHover = { viewModel.highlightedIndex = it },
                 onExit = { viewModel.highlightedIndex = null }
             )

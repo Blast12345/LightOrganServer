@@ -26,7 +26,7 @@ class ConfigFactory(
                 ),
                 lowPassFilter = FilterConfig.lowPassFromSlope(
                     family = FilterFamily.BUTTERWORTH,
-                    frequency = Keys.C.getFrequency(octave = 3),
+                    frequency = Keys.A.getFrequency(octave = 2),
                     dbPerOctave = 48
                 ),
             ),
