@@ -11,10 +11,10 @@ object ButterworthFilter {
         sampleRate: Float,
         firstOrderFactory: (Double, Double) -> OnePoleOneZeroFilter,
         biquadraticFactory: (Double, Double, Double) -> BiquadraticFilter,
-    ): List<OrderedFilter> {
+    ): List<Filter> {
         require(order >= 1) { "Filter order must be at least 1" }
 
-        val stages = mutableListOf<OrderedFilter>()
+        val stages = mutableListOf<Filter>()
         val hasUnpairedPole = order % 2 != 0
 
         if (hasUnpairedPole) {

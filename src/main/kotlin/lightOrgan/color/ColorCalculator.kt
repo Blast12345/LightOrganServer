@@ -44,7 +44,7 @@ class ColorCalculator(
             ComposeColor.hsv(
                 hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),
                 saturation = hueAndSaturation.second.coerceIn(0f, 1f),
-                value = smoothedBrightness.pow(2.0f).coerceIn(0f, 1f),
+                value = smoothedBrightness.pow(1.5f).coerceIn(0f, 1f),
                 colorSpace = ColorSpaces.Srgb
             ),
             ComposeColor.hsv(
@@ -62,7 +62,7 @@ class ColorCalculator(
             ComposeColor.hsv(
                 hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),
                 saturation = hueAndSaturation.second.coerceIn(0f, 1f),
-                value = smoothedBrightness.coerceIn(0f, 1f),
+                value = 0f, //smoothedBrightness.coerceIn(0f, 1f),
                 colorSpace = ColorSpaces.Srgb
             )
         )

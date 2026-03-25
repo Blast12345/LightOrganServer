@@ -3,6 +3,7 @@ package dsp.filtering
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 // NOTE: This is a -12 dB/octave filter. Different coefficients change the shape of attenuation, illustrated by factory methods.
 // b0 - how much the current input matters
@@ -17,9 +18,9 @@ class BiquadraticFilter(
     val b2: Double,
     val a1: Double,
     val a2: Double,
-) : OrderedFilter {
+) : Filter {
 
-    override val order: Int = 2
+    override val order = 2
     private var z1 = 0.0
     private var z2 = 0.0
 
@@ -35,6 +36,27 @@ class BiquadraticFilter(
         z2 = b2 * x - a2 * y
 
         return y.toFloat()
+    }
+
+    // TODO: Test me
+    override fun magnitudeAt(frequency: Float): Float {
+        val w = 2.0 * PI * frequency / sampleRate
+
+        val cosW = cos(w)
+        val cos2W = cos(2 * w)
+        val sinW = sin(w)
+        val sin2W = sin(2 * w)
+
+        val numReal = b0 + b1 * cosW + b2 * cos2W
+        val numImag = -(b1 * sinW + b2 * sin2W)
+
+        val denReal = 1.0 + a1 * cosW + a2 * cos2W
+        val denImag = -(a1 * sinW + a2 * sin2W)
+
+        val numMag = sqrt(numReal * numReal + numImag * numImag)
+        val denMag = sqrt(denReal * denReal + denImag * denImag)
+
+        return (numMag / denMag).toFloat()
     }
 
     companion object {

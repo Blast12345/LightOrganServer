@@ -3,6 +3,8 @@ package config
 import config.children.Client
 import dsp.filtering.config.FilterConfig
 import dsp.filtering.config.FilterFamily
+import dsp.filtering.config.FilterOrder
+import dsp.filtering.config.FilterTopology
 import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.spectrum.SpectrumConfig
@@ -19,15 +21,13 @@ class ConfigFactory(
             spectrum = SpectrumConfig(
                 sampleSize = 3000, // relative to sample rate, mono
                 interpolatedSampleSize = 65536,
-                highPassFilter = FilterConfig.highPassFromSlope(
-                    family = FilterFamily.BUTTERWORTH,
-                    frequency = Keys.C.getFrequency(octave = 1) - 10,
-                    dbPerOctave = 48
+                highPassFilter = FilterConfig(
+                    family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
+                    topology = FilterTopology.HighPass(Keys.C.getFrequency(octave = 1)) // TODO: How to handle -3 dB?
                 ),
-                lowPassFilter = FilterConfig.lowPassFromSlope(
-                    family = FilterFamily.BUTTERWORTH,
-                    frequency = Keys.A.getFrequency(octave = 2),
-                    dbPerOctave = 48
+                lowPassFilter = FilterConfig(
+                    family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
+                    topology = FilterTopology.LowPass(Keys.A.getFrequency(octave = 2))
                 ),
             ),
             spectrumGui = SpectrumGuiConfig(
@@ -35,7 +35,7 @@ class ConfigFactory(
                 lowestFrequency = 0f,
                 highestFrequency = 160F,
             ),
-            brightnessMultiplier = 3F,
+            brightnessMultiplier = 3F, // TODO: Gain increase instead?
         )
     }
 

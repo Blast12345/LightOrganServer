@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+// TODO: Is this actually a LightManager? Do we return light objects and consumers are responsible for turning Light into concrete colors?
+// But it wouldn't know how to handle brightness.
 
 // ENHANCEMENT: Chaldi patterns
 // ENHANCEMENT: Expose configurability
@@ -20,8 +22,10 @@ class ColorManager(
     private val colorCalculator: ColorCalculator = ColorCalculator(),
 ) {
 
+
     private val _colors = MutableStateFlow(listOf(Color.Black, Color.Black, Color.Black, Color.Black))
     val colors: StateFlow<List<Color>> = _colors.asStateFlow()
+
 
     fun calculate(frequencyBins: FrequencyBins): Color { // TODO: Return metadata?
         val peakBins = peakFrequencyBinsCalculator.calculate(frequencyBins)
