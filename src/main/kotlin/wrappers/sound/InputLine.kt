@@ -1,8 +1,8 @@
 package wrappers.sound
 
+import logging.Logger
 import java.nio.ByteOrder
 import javax.sound.sampled.TargetDataLine
-
 
 // NOTE: Buffer size is temperamental.
 // Very low buffers (e.g., 128) result in seemingly random data, likely from data loss via overflow.
@@ -48,7 +48,11 @@ class InputLine(
         val bufferWasFull = available >= bufferSize
 
         val readData = ByteArray(readSize)
-        dataLine.read(readData, 0, readSize) // This will block until readSize bytes are available
+        val lengthRead = dataLine.read(readData, 0, readSize) // This will block until readSize bytes are available
+
+        if (lengthRead != readSize) {
+            Logger.warning("Read $lengthRead bytes instead of $readSize bytes")
+        }
 
         return ReadResult(readData, bufferWasFull)
     }

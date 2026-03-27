@@ -22,12 +22,12 @@ class AudioInputTests {
     private val inputLine: InputLine = mockk()
     private val sampleNormalizer: SampleNormalizer = mockk()
     private val sutScope = CoroutineScope(SupervisorJob() + newSingleThreadContext("TestAudioCapture"))
-    private val collectionScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private val readResults = List(3) { nextInputLineReadResult() }
     private val resultQueue = LinkedBlockingQueue<InputLine.ReadResult>()
     private val normalizedSamples = nextFloatArray()
 
+    private val collectionScope = CoroutineScope(SupervisorJob())
 
     @BeforeEach
     fun setupHappyPath() {

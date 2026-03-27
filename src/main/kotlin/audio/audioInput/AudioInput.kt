@@ -6,34 +6,21 @@ import audio.samples.AudioStreamFrame
 import audio.samples.SampleNormalizer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import logging.Logger
-import scopes.IoScope
+import utilities.DerivedStateFlow
 import wrappers.sound.InputLine
-
-class DerivedStateFlow<T, R>(
-    private val source: StateFlow<T>,
-    private val transform: (T) -> R
-) : StateFlow<R> {
-
-    override val value: R get() = transform(source.value)
-
-    override val replayCache: List<R> get() = listOf(value)
-
-    override suspend fun collect(collector: FlowCollector<R>): Nothing {
-        source.collect { collector.emit(transform(it)) }
-    }
-
-}
 
 class AudioInput(
     private val inputLine: InputLine,
     private val sampleNormalizer: SampleNormalizer,
-    private val scope: CoroutineScope = IoScope
+    private val scope: CoroutineScope = AudioCaptureScope
 ) {
 
     private val listeningJob = MutableStateFlow<Job?>(null)
-
 
     // NOTE: The OS may not deliver samples at a consistent rate.
     // E.g., immediately after a read, more data is available, thus causing another immediate read.
@@ -76,6 +63,7 @@ class AudioInput(
         while (currentCoroutineContext().isActive) {
             val readResult = inputLine.read()
             val newSamples = sampleNormalizer.normalize(readResult.data)
+
             val audioFrame = AudioFrame(newSamples, format)
             val audioStreamFrame = AudioStreamFrame(audioFrame, nextSequenceNumber++, readResult.bufferWasFull)
 

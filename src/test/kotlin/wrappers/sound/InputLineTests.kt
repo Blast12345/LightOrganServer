@@ -1,11 +1,8 @@
 package wrappers.sound
 
 import io.mockk.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertArrayEquals
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -17,13 +14,12 @@ import java.nio.ByteOrder
 import javax.sound.sampled.TargetDataLine
 import kotlin.random.Random.Default.nextBoolean
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class InputLineTests {
 
     private val name = nextString("name")
     private val dataLine: TargetDataLine = mockk()
     private val minimumReadSize = nextPositiveInt()
-    private val bufferSize = nextPositiveInt()
+    private val bufferSize = minimumReadSize * 2 // easy math
 
     private val format: javax.sound.sampled.AudioFormat = mockk()
     private val exception = nextException()
@@ -55,6 +51,14 @@ class InputLineTests {
             minimumReadSize = minimumReadSize,
             bufferSize = bufferSize
         )
+    }
+
+    // Init
+    @Test
+    fun `the buffer size must be greater than or equal to the minimum read size`() {
+        assertDoesNotThrow { InputLine(name, dataLine, minimumReadSize = 2, bufferSize = 3) }
+        assertDoesNotThrow { InputLine(name, dataLine, minimumReadSize = 2, bufferSize = 2) }
+        assertThrows<IllegalArgumentException> { InputLine(name, dataLine, minimumReadSize = 2, bufferSize = 1) }
     }
 
     // Details
@@ -102,7 +106,7 @@ class InputLineTests {
         assertEquals(ByteOrder.LITTLE_ENDIAN, sut.byteOrder)
     }
 
-    // Start
+    // Lifecycle
     @Test
     fun `open and start the data line`() {
         val sut = createSUT()
@@ -140,46 +144,6 @@ class InputLineTests {
     }
 
     @Test
-    fun `read data from the data line`() = runTest {
-        val sut = createSUT()
-
-        // Suggests that data is not immediately available
-        every { dataLine.available() } returns 0
-
-        // The next read will return the minimum read size
-        val readBytes = nextByteArray(minimumReadSize)
-        every { dataLine.read(any(), 0, minimumReadSize) } answers {
-            readBytes.copyInto(firstArg<ByteArray>())
-            readBytes.size
-        }
-
-        val result = sut.read()
-
-        assertArrayEquals(readBytes, result)
-    }
-
-    @Test
-    fun `when more data is available than minimum, read all available`() = runTest {
-        val sut = createSUT()
-
-        // Suggests that excess data is waiting to be read
-        val availableBytes = minimumReadSize * 2
-        every { dataLine.available() } returns availableBytes
-
-        // The next read will return up to
-        val readBytes = nextByteArray(availableBytes)
-        every { dataLine.read(any(), 0, availableBytes) } answers {
-            readBytes.copyInto(firstArg<ByteArray>())
-            readBytes.size
-        }
-
-        val result = sut.read()
-
-        assertArrayEquals(readBytes, result)
-    }
-
-    // Stop
-    @Test
     fun `stop stops and closes the data line`() {
         val sut = createSUT()
 
@@ -190,5 +154,95 @@ class InputLineTests {
             dataLine.close()
         }
     }
+
+    // Read - data
+    @Test
+    fun `when no data is available, read the minimum size`() {
+        val sut = createSUT()
+
+        every { dataLine.available() } returns 0
+
+        val bytesToBeRead = nextByteArray(minimumReadSize)
+        every { dataLine.read(any(), 0, minimumReadSize) } answers {
+            bytesToBeRead.copyInto(firstArg<ByteArray>())
+            bytesToBeRead.size
+        }
+
+        val result = sut.read()
+
+        assertArrayEquals(bytesToBeRead, result.data)
+    }
+
+    @Test
+    fun `when available data equals the minimum, read the minimum size`() {
+        val sut = createSUT()
+
+        every { dataLine.available() } returns minimumReadSize
+
+        val bytesToBeRead = nextByteArray(minimumReadSize)
+        every { dataLine.read(any(), 0, minimumReadSize) } answers {
+            bytesToBeRead.copyInto(firstArg<ByteArray>())
+            bytesToBeRead.size
+        }
+
+        val result = sut.read()
+
+        assertArrayEquals(bytesToBeRead, result.data)
+    }
+
+    @Test
+    fun `when available data exceeds the minimum, read all available`() {
+        val sut = createSUT()
+        val availableBytes = minimumReadSize + 1
+
+        every { dataLine.available() } returns availableBytes
+
+        val bytesToBeRead = nextByteArray(availableBytes)
+        every { dataLine.read(any(), 0, availableBytes) } answers {
+            bytesToBeRead.copyInto(firstArg<ByteArray>())
+            bytesToBeRead.size
+        }
+
+        val result = sut.read()
+
+        assertArrayEquals(bytesToBeRead, result.data)
+    }
+
+    // Read - buffer status
+    @Test
+    fun `when available data is less than the buffer size, the buffer was not full`() {
+        val sut = createSUT()
+        val availableBytes = bufferSize - 1
+        val bytesToBeRead = nextByteArray(availableBytes)
+
+        every { dataLine.available() } returns availableBytes
+        every { dataLine.read(any(), 0, availableBytes) } answers {
+            bytesToBeRead.copyInto(firstArg<ByteArray>())
+            bytesToBeRead.size
+        }
+
+        val result = sut.read()
+
+        assertEquals(false, result.bufferWasFull)
+    }
+
+
+    @Test
+    fun `when available data is equal to the buffer size, the buffer was full`() {
+        val sut = createSUT()
+        val availableBytes = bufferSize
+        val bytesToBeRead = nextByteArray(availableBytes)
+
+        every { dataLine.available() } returns availableBytes
+        every { dataLine.read(any(), 0, availableBytes) } answers {
+            bytesToBeRead.copyInto(firstArg<ByteArray>())
+            bytesToBeRead.size
+        }
+
+        val result = sut.read()
+
+        assertEquals(true, result.bufferWasFull)
+    }
+
 
 }

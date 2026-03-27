@@ -48,7 +48,7 @@ class LightOrganTests {
 
         every { audioBuffer.append(newStreamFrame.audio) } returns Unit
         coEvery { audioBuffer.drain() } returns bufferedAudio coAndThen { awaitCancellation() }
-        every { spectrumManager.mock.calculate(any()) } returns frequencyBins
+        every { spectrumManager.mock.calculate(bufferedAudio) } returns frequencyBins
         every { colorFactory.create(frequencyBins) } returns newColor
         every { subscriber1.new(newColor) } returns Unit
         every { subscriber2.new(newColor) } returns Unit
@@ -81,8 +81,6 @@ class LightOrganTests {
         audioInputManager.audioStream.emit(newStreamFrame)
         sutScope.advanceUntilIdle()
 
-        verify { spectrumManager.mock.calculate(bufferedAudio) }
-        verify { colorFactory.create(frequencyBins) }
         verify { subscriber1.new(newColor) }
         verify { subscriber2.new(newColor) }
         verify { server.new(newColor) }
