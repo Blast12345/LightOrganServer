@@ -2,7 +2,7 @@ package lightOrgan.input
 
 import audio.audioInput.AudioInput
 import audio.audioInput.AudioInputFinder
-import audio.samples.AudioFrame
+import audio.samples.AudioStreamFrame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,7 +30,7 @@ class AudioInputManager(
         }
         .stateIn(scope, sharingPolicy, false)
 
-    val audioStream: SharedFlow<AudioFrame> = currentAudioInput
+    val audioStream: SharedFlow<AudioStreamFrame> = currentAudioInput
         .flatMapLatest { it?.audioStream ?: emptyFlow() }
         .shareIn(scope, sharingPolicy)
 

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import server.Server
 import toolkit.monkeyTest.nextAudioFrame
+import toolkit.monkeyTest.nextAudioStreamFrame
 import toolkit.monkeyTest.nextColor
 import toolkit.monkeyTest.nextFrequencyBins
 
@@ -36,7 +37,7 @@ class LightOrganTests {
     private val subscriber2: LightOrganSubscriber = mockk(relaxed = true)
     private val subscribers = mutableSetOf(subscriber1, subscriber2)
 
-    private val newAudio = nextAudioFrame()
+    private val newStreamFrame = nextAudioStreamFrame()
     private val bufferedAudio = nextAudioFrame()
     private val newColor = nextColor()
 
@@ -45,7 +46,7 @@ class LightOrganTests {
         audioInputManager = AudioInputManagerFixture.create()
         spectrumManager = SpectrumManagerFixture.create()
 
-        every { audioBuffer.append(newAudio) } returns Unit
+        every { audioBuffer.append(newStreamFrame.audio) } returns Unit
         coEvery { audioBuffer.drain() } returns bufferedAudio coAndThen { awaitCancellation() }
         every { spectrumManager.mock.calculate(any()) } returns frequencyBins
         every { colorFactory.create(frequencyBins) } returns newColor
@@ -77,7 +78,7 @@ class LightOrganTests {
         val sut = createSUT()
         sutScope.advanceUntilIdle()
 
-        audioInputManager.audioStream.emit(newAudio)
+        audioInputManager.audioStream.emit(newStreamFrame)
         sutScope.advanceUntilIdle()
 
         verify { spectrumManager.mock.calculate(bufferedAudio) }
