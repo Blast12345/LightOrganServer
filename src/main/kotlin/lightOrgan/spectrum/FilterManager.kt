@@ -1,75 +1,98 @@
 package lightOrgan.spectrum
 
 import audio.samples.AudioFrame
-import bins.FrequencyBin
-import bins.FrequencyBins
-import dsp.filtering.Filter
+import dsp.filtering.HighPassFilter
+import dsp.filtering.LowPassFilter
 import dsp.filtering.config.FilterBuilder
 import dsp.filtering.config.FilterConfig
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
-import kotlin.math.log10
+import kotlin.math.pow
 
 // TODO: Magnitude typealias with toDBFS() and vice versa dbfs.toMagnitude()
 // ENHANCEMENT: Show the filter response in the UI
 // ENHANCEMENT: Make configs configurable via the UI, then automatically rebuild filters
 class FilterManager(
-    initialConfigs: List<FilterConfig>,
+    private val highPassConfig: FilterConfig.HighPass?,
+    private val lowPassConfig: FilterConfig.LowPass?,
     private val filterBuilder: FilterBuilder = FilterBuilder(),
-    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main),
 ) {
 
-    private val _configs = MutableStateFlow(initialConfigs)
-    private val _response = MutableStateFlow<FrequencyBins>(emptyList())
-    private var usableFrequencies: HashSet<Float> = hashSetOf()
-    private var filters: List<Filter> = emptyList()
-
-    init {
-        scope.launch {
-            _configs.collect {
-                filters = emptyList()
-                _response.value = emptyList()
-                usableFrequencies = hashSetOf()
-            }
-        }
-    }
+    private var highPassFilter: HighPassFilter? = null
+    private var lowPassFilter: LowPassFilter? = null
+    private var sampleRate: Float? = null
 
     fun filter(audio: AudioFrame): AudioFrame {
-        rebuildFiltersIfNeeded(audio.format.sampleRate)
+        rebuildIfNeeded(audio.format.sampleRate)
 
-        val filtered = filters.fold(audio.samples) { samples, filter ->
-            filter.filter(samples)
-        }
+        var samples = audio.samples
+        highPassFilter?.let { samples = it.filter(samples) }
+        lowPassFilter?.let { samples = it.filter(samples) }
 
-        return AudioFrame(filtered, audio.format)
+        return AudioFrame(samples, audio.format)
     }
 
-    fun responseFor(frequencies: List<Float>, thresholdDb: Float): FrequencyBins {
-        if (_response.value.size == frequencies.size && _response.value.isNotEmpty()) return _response.value
-        if (filters.isEmpty()) return emptyList()
+    fun highestPassingFrequency(
+        sampleRate: Float,
+        thresholdDb: Float,
+        precisionHz: Float = 1f
+    ): Float? {
+        val filter = lowPassFilter ?: return null
+        rebuildIfNeeded(sampleRate)
 
-        return frequencies.map { frequency ->
-            FrequencyBin(
-                frequency = frequency,
-                magnitude = filters.fold(1f) { mag, filter -> mag * filter.magnitudeAt(frequency) }
-            )
-        }.also {
-            _response.value = it
-            usableFrequencies = it
-                .filter { bin -> 20f * log10(bin.magnitude) >= thresholdDb }
-                .mapTo(hashSetOf()) { bin -> bin.frequency }
+        val threshold = 10.0.pow(thresholdDb / 20.0).toFloat()
+        val nyquist = sampleRate / 2f
+        val cutoff = filter.cutoffFrequency
+
+        var low = cutoff
+        var high = nyquist
+
+        while (high - low > precisionHz) {
+            val mid = (low + high) / 2f
+            if (filter.magnitudeAt(mid) > threshold) {
+                low = mid
+            } else {
+                high = mid
+            }
         }
+
+        return low
     }
 
-    fun usableFrequencies(): Set<Float> = usableFrequencies
+    private fun rebuildIfNeeded(sampleRate: Float) {
+        if (sampleRate == this.sampleRate) return
 
-    private fun rebuildFiltersIfNeeded(sampleRate: Float) {
-        if (filters.isNotEmpty() && filters.all { it.sampleRate == sampleRate }) return
+        this.sampleRate = sampleRate
+        highPassFilter = highPassConfig?.let { filterBuilder.build(it, sampleRate) }
+        lowPassFilter = lowPassConfig?.let { filterBuilder.build(it, sampleRate) }
+    }
 
-        filters = _configs.value.map { filterBuilder.build(it, sampleRate) }
+}
+
+class Downsampler {
+
+    private var remainder: Int = 0
+
+    fun decimate(audio: AudioFrame, targetFrequency: Float): AudioFrame {
+        val factor = (audio.format.sampleRate / (2 * targetFrequency)).toInt()
+
+        if (factor <= 1) return audio
+
+        val samples = audio.samples
+        val outputSize = if (remainder >= samples.size) 0
+        else (samples.size - remainder + factor - 1) / factor
+
+        val decimatedSamples = FloatArray(outputSize) { index ->
+            samples[remainder + index * factor]
+        }
+
+        remainder = remainder + outputSize * factor - samples.size
+
+        val decimatedFormat = audio.format.copy(sampleRate = audio.format.sampleRate / factor)
+
+        return AudioFrame(decimatedSamples, decimatedFormat)
+    }
+
+    fun reset() {
+        remainder = 0
     }
 
 }

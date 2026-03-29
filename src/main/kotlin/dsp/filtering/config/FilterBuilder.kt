@@ -2,23 +2,20 @@ package dsp.filtering.config
 
 import dsp.filtering.ButterworthHighPass
 import dsp.filtering.ButterworthLowPass
-import dsp.filtering.CascadedFilter
-import dsp.filtering.Filter
+import dsp.filtering.HighPassFilter
+import dsp.filtering.LowPassFilter
 
 class FilterBuilder {
 
-    fun build(config: FilterConfig, sampleRate: Float): Filter {
-        return when (config.family) {
-            is FilterFamily.Butterworth -> buildButterworth(config.topology, config.family.order, sampleRate)
+    fun build(config: FilterConfig.HighPass, sampleRate: Float): HighPassFilter {
+        return when (val family = config.family) {
+            is FilterFamily.Butterworth -> ButterworthHighPass(config.frequency, family.order.value, sampleRate)
         }
     }
 
-    private fun buildButterworth(
-        topology: FilterTopology, order: FilterOrder, sampleRate: Float
-    ): CascadedFilter {
-        return when (topology) {
-            is FilterTopology.LowPass -> ButterworthLowPass(topology.frequency, order.value, sampleRate)
-            is FilterTopology.HighPass -> ButterworthHighPass(topology.frequency, order.value, sampleRate)
+    fun build(config: FilterConfig.LowPass, sampleRate: Float): LowPassFilter {
+        return when (val family = config.family) {
+            is FilterFamily.Butterworth -> ButterworthLowPass(config.frequency, family.order.value, sampleRate)
         }
     }
 

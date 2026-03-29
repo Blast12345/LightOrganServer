@@ -1,14 +1,14 @@
 package dsp.filtering
 
 class ButterworthLowPass(
-    frequency: Float,
+    override val cutoffFrequency: Float,
     order: Int,
     sampleRate: Float,
 ) : CascadedFilter(
     sampleRate = sampleRate,
     stages = ButterworthFilter.buildStages(
-        frequency, order, sampleRate,
+        cutoffFrequency, order, sampleRate,
         OnePoleOneZeroFilter::lowPass,
         BiquadraticFilter::lowPass,
     ),
-)
+), LowPassFilter

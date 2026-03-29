@@ -50,7 +50,7 @@ class LightOrgan(
 
 //        server.new(color)
 
-        timeBetweenColors.logTimeSinceLast()
+//        timeBetweenColors.logTimeSinceLast()
     }
 
 }

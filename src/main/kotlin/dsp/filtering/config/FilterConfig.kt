@@ -1,6 +1,15 @@
 package dsp.filtering.config
 
-data class FilterConfig(
-    val family: FilterFamily,
-    val topology: FilterTopology
-)
+sealed class FilterConfig {
+    abstract val family: FilterFamily
+
+    data class HighPass(
+        override val family: FilterFamily,
+        val frequency: Float
+    ) : FilterConfig()
+
+    data class LowPass(
+        override val family: FilterFamily,
+        val frequency: Float
+    ) : FilterConfig()
+}

@@ -1,7 +1,5 @@
 package toolkit.monkeyTest
 
-import dsp.filtering.config.FilterTopology
-
 fun nextFilterTopology(): FilterTopology {
     val frequency = nextPositiveInt().toFloat()
 

@@ -21,23 +21,29 @@ import kotlinx.coroutines.flow.asStateFlow
 class SpectrumManager(
     private val config: SpectrumConfig = ConfigSingleton.spectrum,
     private val monoMixer: MonoMixer = MonoMixer(),
-    private val filterManager: FilterManager = FilterManager(
-        listOfNotNull(
-            config.highPassFilter,
-            config.lowPassFilter
-        )
-    ),
+    private val filterManager: FilterManager = FilterManager(config.highPassFilter, config.lowPassFilter),
+    private val downsampler: Downsampler = Downsampler(),
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(config.sampleSize),
     private val windowFunction: WindowFunction = HannWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FftFrequencyBinsCalculator = FftFrequencyBinsCalculator(),
 ) {
 
+    val thresholdDb = -48f
+
+    private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
+    val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
+
     fun calculate(audio: AudioFrame): FrequencyBins {
         // Signal processing
-        var processedAudio = monoMixer.mix(audio)
-        processedAudio = filterManager.filter(processedAudio)
-        // TODO: Decimate?
+        var processedAudio = monoMixer.mix(audio) // TODO: x.interleave
+//        processedAudio = filterManager.filter(processedAudio)
+
+        val highestFrequency = filterManager.highestPassingFrequency(audio.format.sampleRate, thresholdDb)
+
+        if (highestFrequency != null) {
+//            processedAudio = downsampler.decimate(processedAudio, highestFrequency)
+        }
 
         // Frame preparation
         var preparedFrame = audioBuffer.append(processedAudio) // TODO: Expose a duration?
@@ -51,16 +57,13 @@ class SpectrumManager(
         val minimumCalculableFrequency = 1 / frameDuration
 
         val relevantBins = allBins
-            .filter { it.frequency > minimumCalculableFrequency }
+//            .filter { it.frequency > minimumCalculableFrequency }
             .filter { it.frequency < 218f }
 
         // Result
         _frequencyBins.value = relevantBins
         return relevantBins
     }
-
-    private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
-    val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
 
     private fun WindowFunction.appliedTo(audio: AudioFrame): AudioFrame {
         return AudioFrame(appliedTo(audio.samples), audio.format)
