@@ -1,10 +1,10 @@
 package lightOrgan
 
-import audio.samples.AccumulatingAudioBuffer
 import audio.samples.AudioFrame
 import color.ColorFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import lightOrgan.input.AudioInputManager
@@ -15,17 +15,18 @@ import utilities.TimestampUtility
 import java.util.concurrent.ConcurrentHashMap
 
 // ENHANCEMENT: Gracefully handle crashed coroutines
+// ENHANCEMENT: Handle when cachedAudio starts to grow significantly - it's a sign that the computer is too slow for the settings.
 class LightOrgan(
     private val audioInputManager: AudioInputManager,
     private val spectrumManager: SpectrumManager,
     private val colorFactory: ColorFactory = ColorFactory(), // TODO: Refactor
     private val server: Server = Server(),
-    private val audioBuffer: AccumulatingAudioBuffer = AccumulatingAudioBuffer(),
     private val subscribers: MutableSet<LightOrganSubscriber> = ConcurrentHashMap.newKeySet(),
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) {
 
     private val timeBetweenColors = TimestampUtility("Time between colors")
+    private val cachedAudio = Channel<AudioFrame>(Channel.UNLIMITED)
 
     init {
         // Collection and calculation are separate jobs so that slow calculations don't block a collection.
@@ -37,9 +38,9 @@ class LightOrgan(
         scope.launch {
             val gapDetector = SequenceGapDetector("Audio stream")
 
-            audioInputManager.audioStream.collect { frame ->
-                gapDetector.check(frame.sequenceNumber)
-                audioBuffer.append(frame.audio)
+            audioInputManager.audioStream.collect { streamFrame ->
+                gapDetector.check(streamFrame.sequenceNumber)
+                cachedAudio.trySend(streamFrame.audio)
             }
         }
     }
@@ -47,7 +48,7 @@ class LightOrgan(
     private fun startCalculatingColors() {
         scope.launch {
             while (isActive) {
-                val audio = audioBuffer.drain()
+                val audio = cachedAudio.receive()
                 handle(audio)
             }
         }
