@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 // ENHANCEMENT: Explore sub-frame duration frequency calculation. Cool challenge, but probably not necessary for music.
 // ENHANCEMENT: Inaccurate low frequencies — bins below the window duration are unreliable. Dual-FFT?
 // ENHANCEMENT: Decimation - reduce the effective sample rate to increase performance.
+// ENHANCEMENT: Improve handling of discontinuities (though I have doubt it is possible)
 class SpectrumManager(
     private val config: SpectrumConfig = ConfigSingleton.spectrum,
     private val monoMixer: MonoMixer = MonoMixer(),

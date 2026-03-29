@@ -2,12 +2,12 @@ package lightOrgan.input
 
 import audio.audioInput.AudioInput
 import audio.audioInput.AudioInputFinder
-import audio.samples.AudioFrame
+import audio.samples.AudioStreamFrame
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
+import utilities.DerivedStateFlow
 
 // ENHANCEMENT: Handle unexpected disconnects.
 // ENHANCEMENT: Configure the read size. Note that different systems may behave unusually if the value is too low/high.
@@ -15,22 +15,19 @@ import kotlinx.coroutines.flow.*
 class AudioInputManager(
     private val currentAudioInput: MutableStateFlow<AudioInput?> = MutableStateFlow(null),
     private val audioInputFinder: AudioInputFinder = AudioInputFinder(),
-    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main),
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob()),
     private val sharingPolicy: SharingStarted = SharingStarted.WhileSubscribed(5000)
 ) {
 
-    // State
-    val inputDetails: StateFlow<AudioInputDetails?> = currentAudioInput
-        .map { it?.let { AudioInputDetails(it.name, it.format) } }
-        .stateIn(scope, sharingPolicy, null)
+    val inputDetails: StateFlow<AudioInputDetails?> = DerivedStateFlow(currentAudioInput) {
+        it?.let { AudioInputDetails(it.name, it.format) }
+    }
 
-    val isListening: StateFlow<Boolean> = currentAudioInput
-        .flatMapLatest {
-            it?.isListening ?: flowOf(false)
-        }
-        .stateIn(scope, sharingPolicy, false)
+    val isListening: StateFlow<Boolean> = DerivedStateFlow(currentAudioInput) {
+        it?.isListening?.value ?: false
+    }
 
-    val audioStream: SharedFlow<AudioFrame> = currentAudioInput
+    val audioStream: SharedFlow<AudioStreamFrame> = currentAudioInput
         .flatMapLatest { it?.audioStream ?: emptyFlow() }
         .shareIn(scope, sharingPolicy)
 

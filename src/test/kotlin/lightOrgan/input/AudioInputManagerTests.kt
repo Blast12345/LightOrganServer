@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.extensions.collectInto
-import toolkit.monkeyTest.nextAudioFrame
+import toolkit.monkeyTest.nextAudioStreamFrame
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -187,7 +187,7 @@ class AudioInputManagerTests {
         currentAudioInputFlow.value = audioInput1.mock
         sutScope.advanceUntilIdle()
 
-        val frame = nextAudioFrame()
+        val frame = nextAudioStreamFrame()
         audioInput1.audioStreamFlow.emit(frame)
         sutScope.advanceUntilIdle()
 
@@ -197,8 +197,8 @@ class AudioInputManagerTests {
     @Test
     fun `when the input changes, then the new inputs audio is passed on`() = runTest {
         val sut = createSUT()
-        val input1Frame = nextAudioFrame()
-        val input2Frame = nextAudioFrame()
+        val input1Frame = nextAudioStreamFrame()
+        val input2Frame = nextAudioStreamFrame()
         val received = sut.audioStream.collectInto(sutScope)
 
         currentAudioInputFlow.value = audioInput1.mock
