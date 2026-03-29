@@ -1,7 +1,6 @@
 package wrappers.sound
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import logging.Logger
 import java.nio.ByteOrder
 import javax.sound.sampled.TargetDataLine
 
@@ -13,15 +12,20 @@ import javax.sound.sampled.TargetDataLine
 class InputLine(
     val name: String,
     private val dataLine: TargetDataLine,
-    private val minimumReadSize: Int = 2048,
-    private val bufferSize: Int = minimumReadSize * 4
+    private val minimumReadSize: Int = 2048, // ENHANCEMENT: Make the minimum read size configurable in the GUI.
+    private val bufferSize: Int = 8192 // ENHANCEMENT: Make the buffer size configurable in the GUI.
 ) {
 
     val sampleRate = dataLine.format.sampleRate
     val bitDepth = dataLine.format.sampleSizeInBits
     val channels = dataLine.format.channels
     val byteOrder: ByteOrder = if (dataLine.format.isBigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN
-    
+
+    init {
+        require(bufferSize >= minimumReadSize) { "Minimum read size ($minimumReadSize) must not exceed buffer size ($bufferSize)" }
+    }
+
+    // Lifecycle
     fun start() {
         try {
             dataLine.open(dataLine.format, bufferSize)
@@ -32,23 +36,30 @@ class InputLine(
         }
     }
 
-    // ENHANCEMENT: Notify the UI when more data than the readSize is available (yellow / caution)
-    // ENHANCEMENT: Notify the UI when the buffer is full (red / warning)
-    suspend fun read(): ByteArray {
-        return withContext(Dispatchers.IO) {
-            val available = dataLine.available()
-            val readSize = if (available > minimumReadSize) available else minimumReadSize
-
-            val chunk = ByteArray(readSize)
-            dataLine.read(chunk, 0, readSize) // This will block until readSize bytes are available
-
-            return@withContext chunk
-        }
-    }
-
     fun stop() {
         dataLine.stop()
         dataLine.close()
     }
+
+    // Reading
+    fun read(): ReadResult {
+        val available = dataLine.available()
+        val readSize = if (available > minimumReadSize) available else minimumReadSize
+        val bufferWasFull = available >= bufferSize
+
+        val readData = ByteArray(readSize)
+        val lengthRead = dataLine.read(readData, 0, readSize) // This will block until readSize bytes are available
+
+        if (lengthRead != readSize) {
+            Logger.warning("Read $lengthRead bytes instead of $readSize bytes")
+        }
+
+        return ReadResult(readData, bufferWasFull)
+    }
+
+    class ReadResult(
+        val data: ByteArray,
+        val bufferWasFull: Boolean
+    )
 
 }

@@ -1,37 +1,46 @@
 package lightOrgan
 
-import audio.samples.AccumulatingAudioBuffer
 import audio.samples.AudioFrame
 import color.ColorFactory
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 import server.Server
+import utilities.SequenceGapDetector
 import utilities.TimestampUtility
+import java.util.concurrent.ConcurrentHashMap
 
 // ENHANCEMENT: Gracefully handle crashed coroutines
+// ENHANCEMENT: Handle when cachedAudio starts to grow significantly - it's a sign that the computer is too slow for the settings.
 class LightOrgan(
     private val audioInputManager: AudioInputManager,
     private val spectrumManager: SpectrumManager,
     private val colorFactory: ColorFactory = ColorFactory(), // TODO: Refactor
     private val server: Server = Server(),
-    private val audioBuffer: AccumulatingAudioBuffer = AccumulatingAudioBuffer(),
-    private val subscribers: MutableSet<LightOrganSubscriber> = mutableSetOf(),
-    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private val subscribers: MutableSet<LightOrganSubscriber> = ConcurrentHashMap.newKeySet(),
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) {
 
     private val timeBetweenColors = TimestampUtility("Time between colors")
+    private val cachedAudio = Channel<AudioFrame>(Channel.UNLIMITED)
 
     init {
-        // Calculating colors could be slow, and we don't want to block the audio stream, so we launch them in separate coroutines.
+        // Collection and calculation are separate jobs so that slow calculations don't block a collection.
         startCollectingAudio()
         startCalculatingColors()
     }
 
     private fun startCollectingAudio() {
         scope.launch {
-            audioInputManager.audioStream.collect {
-                audioBuffer.append(it)
+            val gapDetector = SequenceGapDetector("Audio stream")
+
+            audioInputManager.audioStream.collect { streamFrame ->
+                gapDetector.check(streamFrame.sequenceNumber)
+                cachedAudio.trySend(streamFrame.audio)
             }
         }
     }
@@ -39,7 +48,7 @@ class LightOrgan(
     private fun startCalculatingColors() {
         scope.launch {
             while (isActive) {
-                val audio = audioBuffer.drain()
+                val audio = cachedAudio.receive()
                 handle(audio)
             }
         }

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 // ENHANCEMENT: If implementing other calculation strategies (e.g. DFT, CZT), then create a bin calculator interface
 // ENHANCEMENT: Make scaling configurable
+// ENHANCEMENT: Improve handling of discontinuities (though I have doubt it is possible)
 class SpectrumManager(
     private val config: SpectrumConfig = ConfigSingleton.spectrum,
     private val monoMixer: MonoMixer = MonoMixer(),
