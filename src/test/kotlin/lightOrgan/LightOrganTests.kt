@@ -61,7 +61,7 @@ class LightOrganTests {
 
     private fun createSUT(): LightOrgan {
         return LightOrgan(
-            audioInputManager = audioInputManager.mock,
+            inputManager = audioInputManager.mock,
             spectrumManager = spectrumManager.mock,
             colorFactory = colorFactory,
             server = server,

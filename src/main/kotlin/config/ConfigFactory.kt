@@ -8,6 +8,7 @@ import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.spectrum.SpectrumConfig
 import music.Keys
+import kotlin.time.Duration.Companion.milliseconds
 
 class ConfigFactory(
     private val persistedConfig: PersistedConfig = PersistedConfig()
@@ -18,8 +19,8 @@ class ConfigFactory(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
             clients = setOf(Client("192.168.1.55")),
             spectrum = SpectrumConfig(
-                sampleSize = 3000, //28, // 3000
-                interpolatedSampleSize = 65536, //512, //65536,
+                frameDuration = 60.milliseconds,
+                approximateBinSpacing = 1f,
                 highPassFilter = FilterConfig.HighPass(
                     family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
                     frequency = Keys.C.getFrequency(octave = 1) // TODO: How to handle -3 dB?

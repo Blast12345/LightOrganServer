@@ -1,26 +1,21 @@
 package audio.samples
 
 class RollingAudioBuffer(
-    private val capacity: Int
+    private val rollingSampleBuffer: RollingSampleBuffer = RollingSampleBuffer()
 ) {
 
     private var format: AudioFormat? = null
-    private val rollingSampleBuffer: RollingSampleBuffer = RollingSampleBuffer(capacity)
 
-    fun append(frame: AudioFrame): AudioFrame {
+    fun append(frame: AudioFrame, requiredSize: Int): AudioFrame {
         if (frame.format != format) {
-            reset()
+            format = frame.format
+            rollingSampleBuffer.reset()
         }
 
-        format = frame.format
-        rollingSampleBuffer.append(frame.samples)
-
-        return AudioFrame(rollingSampleBuffer.current, frame.format)
-    }
-
-    private fun reset() {
-        format = null
-        rollingSampleBuffer.reset()
+        return AudioFrame(
+            samples = rollingSampleBuffer.append(frame.samples, requiredSize),
+            format = frame.format
+        )
     }
 
 }

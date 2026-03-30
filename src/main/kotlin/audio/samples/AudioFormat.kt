@@ -1,7 +1,7 @@
 package audio.samples
 
 data class AudioFormat(
-    val sampleRate: Float,
+    val sampleRate: Float, // TODO: Maybe make sample rate a type? It can contain the nyquist frequency
     val bitDepth: Int,
     val channels: Int
 ) {

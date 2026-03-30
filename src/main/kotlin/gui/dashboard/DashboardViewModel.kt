@@ -15,7 +15,7 @@ class DashboardViewModel(
     private val config: Config = ConfigSingleton
 ) {
 
-    val audioInputTileViewModel = AudioInputTileViewModel(lightOrgan.audioInputManager, snackbarController)
+    val audioInputTileViewModel = AudioInputTileViewModel(lightOrgan.inputManager, snackbarController)
     val spectrumTileViewModel = SpectrumTileViewModel(lightOrgan.spectrumManager)
     val colorTileViewModel = ColorTileViewModel(lightOrgan.colorManager)
 

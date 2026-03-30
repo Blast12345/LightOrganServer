@@ -1,23 +1,22 @@
 package lightOrgan
 
 import audio.samples.AudioFrame
-import color.ColorFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import lightOrgan.color.ColorManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 import server.Server
 import utilities.SequenceGapDetector
 import utilities.TimestampUtility
-import java.util.concurrent.ConcurrentHashMap
 
 // ENHANCEMENT: Gracefully handle crashed coroutines
 // ENHANCEMENT: Handle when cachedAudio starts to grow significantly - it's a sign that the computer is too slow for the settings.
 class LightOrgan(
-    val audioInputManager: AudioInputManager,
+    val inputManager: AudioInputManager,
     val spectrumManager: SpectrumManager,
     val colorManager: ColorManager,
     private val server: Server = Server(),
@@ -37,7 +36,7 @@ class LightOrgan(
         scope.launch {
             val gapDetector = SequenceGapDetector("Audio stream")
 
-            audioInputManager.audioStream.collect { streamFrame ->
+            inputManager.audioStream.collect { streamFrame ->
                 gapDetector.check(streamFrame.sequenceNumber)
                 cachedAudio.trySend(streamFrame.audio)
             }
