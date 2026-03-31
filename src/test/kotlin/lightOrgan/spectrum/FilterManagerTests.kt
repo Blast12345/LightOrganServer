@@ -1,10 +1,8 @@
 package lightOrgan.spectrum
 
-// Some behavior is important but hard to validate via integration tests.
-// This test file will encapsulate that.
-class SpectrumManagerUnitTests {
+class FilterManagerTests {
 
-//    private val config: SpectrumConfig = mockk()
+    //    private val config: SpectrumConfig = mockk()
 //    private val monoMixer: MonoMixer = mockk()
 //    private val filterBuilder: FilterBuilder = mockk()
 //    private val audioBuffer: RollingAudioBuffer = mockk()
@@ -121,5 +119,4 @@ class SpectrumManagerUnitTests {
 //        verify(exactly = 1) { filterBuilder.build(lowPassFilterConfig, format2.sampleRate) }
 //        verify(exactly = 1) { filterBuilder.build(highPassFilterConfig, format2.sampleRate) }
 //    }
-
 }
