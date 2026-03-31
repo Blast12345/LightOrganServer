@@ -3,7 +3,7 @@ package toolkit.monkeyTest
 import audio.samples.AudioFormat
 
 fun nextAudioFormat(
-    sampleRate: Float = nextPositiveInt().toFloat(),
+    sampleRate: Float = nextPositiveFloat(),
     channels: Int = nextPositiveInt()
 ): AudioFormat {
     return AudioFormat(

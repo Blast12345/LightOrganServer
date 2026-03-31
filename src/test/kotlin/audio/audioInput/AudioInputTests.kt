@@ -32,7 +32,7 @@ class AudioInputTests {
     @BeforeEach
     fun setupHappyPath() {
         every { inputLine.name } returns nextString("name")
-        every { inputLine.sampleRate } returns nextPositiveInt().toFloat()
+        every { inputLine.sampleRate } returns nextPositiveFloat()
         every { inputLine.bitDepth } returns nextPositiveInt()
         every { inputLine.channels } returns nextPositiveInt()
 

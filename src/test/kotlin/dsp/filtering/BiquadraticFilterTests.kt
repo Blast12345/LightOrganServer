@@ -3,11 +3,11 @@ package dsp.filtering
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import toolkit.monkeyTest.nextPositiveInt
+import toolkit.monkeyTest.nextPositiveFloat
 
 class BiquadraticFilterTests {
 
-    val sampleRate = nextPositiveInt().toFloat()
+    val sampleRate = nextPositiveFloat()
 
     @Test
     fun `order is 2`() {

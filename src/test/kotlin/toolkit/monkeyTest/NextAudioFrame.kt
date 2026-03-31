@@ -6,7 +6,7 @@ import toolkit.generators.WaveForm
 
 fun nextAudioFrame(
     channels: List<FloatArray> = listOf(nextFloatArray()),
-    sampleRate: Float = nextPositiveInt().toFloat(),
+    sampleRate: Float = nextPositiveFloat(),
     bitDepth: Int = nextPositiveInt()
 ): AudioFrame {
     require(channels.isNotEmpty())

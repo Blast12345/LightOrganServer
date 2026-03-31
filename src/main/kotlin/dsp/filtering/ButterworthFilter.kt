@@ -2,7 +2,6 @@ package dsp.filtering
 
 import kotlin.math.PI
 import kotlin.math.cos
-import kotlin.math.pow
 
 object ButterworthFilter {
 
@@ -34,11 +33,6 @@ object ButterworthFilter {
     fun q(order: Int, stageIndex: Int): Double {
         val pole = PI * (2 * stageIndex + 1) / (2.0 * order)
         return 1.0 / (2.0 * cos(pole))
-    }
-
-    fun rolloffRatio(magnitudeDb: Float, order: Int): Float {
-        val target = 10.0.pow(magnitudeDb / 20.0)
-        return (1.0 / target.pow(2) - 1.0).pow(1.0 / (2 * order)).toFloat()
     }
 
 }

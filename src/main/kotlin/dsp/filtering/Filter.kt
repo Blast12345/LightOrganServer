@@ -10,10 +10,8 @@ interface Filter {
 // TODO: Move me?
 interface LowPassFilter : Filter {
     val cutoffFrequency: Float
-    fun frequencyAtMagnitude(magnitudeDb: Float): Float
 }
 
 interface HighPassFilter : Filter {
     val cutoffFrequency: Float
-    fun frequencyAtMagnitude(magnitudeDb: Float): Float
 }

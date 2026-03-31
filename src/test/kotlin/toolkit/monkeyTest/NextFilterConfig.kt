@@ -2,11 +2,16 @@ package toolkit.monkeyTest
 
 import dsp.filtering.config.FilterConfig
 
-fun nextFilterConfig(): FilterConfig {
-    return FilterConfig(
+fun nextHighPassConfig(): FilterConfig.HighPass {
+    return FilterConfig.HighPass(
         family = nextFilterFamily(),
-        topology = nextFilterTopology()
+        frequency = nextPositiveFloat()
     )
 }
 
-
+fun nextLowPassConfig(): FilterConfig.LowPass {
+    return FilterConfig.LowPass(
+        family = nextFilterFamily(),
+        frequency = nextPositiveFloat()
+    )
+}

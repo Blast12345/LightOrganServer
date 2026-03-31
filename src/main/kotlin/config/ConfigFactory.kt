@@ -21,6 +21,7 @@ class ConfigFactory(
             spectrum = SpectrumConfig(
                 frameDuration = 60.milliseconds,
                 approximateBinSpacing = 1f,
+                rolloffThreshold = -48f,
                 highPassFilter = FilterConfig.HighPass(
                     family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
                     frequency = Keys.C.getFrequency(octave = 1) // TODO: How to handle -3 dB?

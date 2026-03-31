@@ -1,5 +1,6 @@
 package lightOrgan.spectrum
 
+import audio.samples.AudioFormat
 import audio.samples.AudioFrame
 import audio.samples.RollingAudioBuffer
 import bins.FrequencyBins
@@ -14,6 +15,7 @@ import extensions.inSeconds
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import math.nextPowerOfTwo
 
 // ENHANCEMENT: Implement equal-loudness contours (ISO 226:2003). Manual SPL number with future plans of external meter?
 // ENHANCEMENT: If implementing other calculation strategies (e.g., DFT, CZT), then create a bin calculator interface
@@ -25,7 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class SpectrumManager(
     private val config: SpectrumConfig = ConfigSingleton.spectrum,
     private val monoMixer: MonoMixer = MonoMixer(),
-    private val filterManager: FilterManager = FilterManager(),
+    private val filterManager: FilterManager = FilterManager(config.highPassFilter, config.lowPassFilter),
     private val downsampler: Downsampler = Downsampler(),
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
     private val windowFunction: WindowFunction = HannWindow(),
@@ -33,74 +35,79 @@ class SpectrumManager(
     private val frequencyBinsCalculator: FftFrequencyBinsCalculator = FftFrequencyBinsCalculator(),
 ) {
 
-    private val thresholdDb: Float = -48f
-
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
     val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
 
     fun calculate(audio: AudioFrame): FrequencyBins {
-        val highPassThreshold = filterManager.highPassThresholdFrequency(thresholdDb, audio.format.sampleRate)
-        val lowPassThreshold = filterManager.lowPassThresholdFrequency(thresholdDb, audio.format.sampleRate)
-
-        // Signal processing
-        var processedAudio = monoMixer.mix(audio)
-        processedAudio = filterManager.filter(processedAudio)
-        processedAudio = decimateIfNeeded(processedAudio, lowPassThreshold)
-
-        // Frame preparation
-        val sampleSize = (config.frameDuration.inSeconds * processedAudio.format.sampleRate).toInt()
-        val fftSize = nextPowerOfTwo((processedAudio.format.sampleRate / config.approximateBinSpacing).toInt())
-
-        var preparedFrame = audioBuffer.append(processedAudio, sampleSize)
-        preparedFrame = windowFunction.appliedTo(preparedFrame)
-        preparedFrame = interpolator.interpolate(preparedFrame, fftSize)
-
-        // Bin generation
+        val conditionedAudio = conditionAudio(audio)
+        val preparedFrame = prepareFrame(conditionedAudio)
         val allBins = frequencyBinsCalculator.calculate(preparedFrame, windowFunction.magnitudeCorrectionFactor)
+        val relevantBins = filterBins(allBins, preparedFrame.format)
 
-        // Filtering
-        val frequencyResolution = 1 / config.frameDuration.inSeconds
-        val nyquist = preparedFrame.format.nyquistFrequency
-        val lowestFrequency = maxOf(frequencyResolution, highPassThreshold ?: frequencyResolution)
-        val highestFrequency = minOf(nyquist, lowPassThreshold ?: nyquist)
-
-        val relevantBins = allBins
-            .filter { it.frequency >= lowestFrequency }
-            .filter { it.frequency <= highestFrequency }
-
-        // Result
         _frequencyBins.value = relevantBins
         return relevantBins
     }
 
-    private fun decimateIfNeeded(audio: AudioFrame, thresholdFrequency: Float?): AudioFrame {
-        if (thresholdFrequency == null) return audio
-        val factor = downsampler.decimationFactor(audio.format.sampleRate, thresholdFrequency)
+    // Conditioning
+    private fun conditionAudio(audio: AudioFrame): AudioFrame {
+        val higherStopbandFrequency = filterManager.lowPassThresholdFrequency(config.rolloffThreshold)
+        val targetNyquist = higherStopbandFrequency ?: audio.format.nyquistFrequency
+
+        return audio
+            .let { monoMixer.mix(it) }
+            .let { filterManager.filter(it) }
+            .let { decimateIfNeeded(it, targetNyquist) }
+    }
+
+    private fun decimateIfNeeded(audio: AudioFrame, targetNyquist: Float): AudioFrame {
+        val factor = downsampler.decimationFactor(audio.format.sampleRate, targetNyquist)
+        val effectiveSampleRate = audio.format.sampleRate / factor
+
         if (factor <= 1) return audio
 
-        val samples = downsampler.decimate(audio.samples, factor, audio.format.sampleRate, audio.format.channels)
-        return AudioFrame(samples, audio.format.copy(sampleRate = audio.format.sampleRate / factor))
-    }
-
-    // TODO: Probably a global function?
-    private fun nextPowerOfTwo(value: Int): Int {
-        require(value > 0) { "Value must be positive, got $value" }
-        if (value and (value - 1) == 0) return value
-        return Integer.highestOneBit(value) shl 1
-    }
-
-    private fun WindowFunction.appliedTo(audio: AudioFrame): AudioFrame {
         return AudioFrame(
-            samples = appliedTo(audio.samples),
+            samples = downsampler.decimate(audio.samples, factor, audio.format.sampleRate, audio.format.channels),
+            format = audio.format.copy(sampleRate = effectiveSampleRate)
+        )
+    }
+
+    // Frame Prep
+    private fun prepareFrame(audio: AudioFrame): AudioFrame {
+        val sampleSize = (config.frameDuration.inSeconds * audio.format.sampleRate).toInt()
+        val samplesSizeForDesiredSpacing = audio.format.sampleRate / config.approximateBinSpacing
+        val optimalFftLength = nextPowerOfTwo(samplesSizeForDesiredSpacing.toInt())
+
+        return audio
+            .let { audioBuffer.append(audio, sampleSize) }
+            .let { applyWindowFunction(it) }
+            .let { interpolate(it, optimalFftLength) }
+    }
+
+    private fun applyWindowFunction(audio: AudioFrame): AudioFrame {
+        return AudioFrame(
+            samples = windowFunction.appliedTo(audio.samples),
             format = audio.format
         )
     }
 
-    private fun ZeroPaddingInterpolator.interpolate(audio: AudioFrame, targetSize: Int): AudioFrame {
+    private fun interpolate(audio: AudioFrame, targetSize: Int): AudioFrame {
         return AudioFrame(
-            samples = interpolate(audio.samples, targetSize),
+            samples = interpolator.interpolate(audio.samples, targetSize),
             format = audio.format
         )
+    }
+
+    // Filtering
+    private fun filterBins(bins: FrequencyBins, format: AudioFormat): FrequencyBins {
+        val frequencyResolution = 1 / config.frameDuration.inSeconds
+        val nyquist = format.nyquistFrequency
+        val lowerStopbandFrequency = filterManager.highPassThresholdFrequency(config.rolloffThreshold)
+        val higherStopbandFrequency = filterManager.lowPassThresholdFrequency(config.rolloffThreshold)
+
+        val lowestFrequency = maxOf(frequencyResolution, lowerStopbandFrequency ?: frequencyResolution)
+        val highestFrequency = minOf(nyquist, higherStopbandFrequency ?: nyquist)
+
+        return bins.filter { it.frequency in lowestFrequency..highestFrequency }
     }
 
 }

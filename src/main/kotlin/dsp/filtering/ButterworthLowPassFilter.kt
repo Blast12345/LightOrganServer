@@ -11,12 +11,4 @@ class ButterworthLowPass(
         OnePoleOneZeroFilter::lowPass,
         BiquadraticFilter::lowPass,
     ),
-), LowPassFilter {
-
-    // TODO: Test me
-    override fun frequencyAtMagnitude(magnitudeDb: Float): Float {
-        val ratio = ButterworthFilter.rolloffRatio(magnitudeDb, order)
-        return cutoffFrequency * ratio
-    }
-
-}
+), LowPassFilter

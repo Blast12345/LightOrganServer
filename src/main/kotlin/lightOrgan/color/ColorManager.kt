@@ -27,6 +27,8 @@ class ColorManager(
     val colors: StateFlow<List<Color>> = _colors.asStateFlow()
 
 
+    // TODO: Reject peaks that are from aliasing?
+    // TODO: Reject peaks that are from sidelobes (or compensate)
     fun calculate(frequencyBins: FrequencyBins): Color { // TODO: Return metadata?
         val peakBins = peakFrequencyBinsCalculator.calculate(frequencyBins)
 

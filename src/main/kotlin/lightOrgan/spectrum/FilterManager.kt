@@ -1,7 +1,6 @@
 package lightOrgan.spectrum
 
 import audio.samples.AudioFrame
-import config.ConfigSingleton
 import dsp.filtering.HighPassFilter
 import dsp.filtering.LowPassFilter
 import dsp.filtering.config.FilterBuilder
@@ -11,8 +10,8 @@ import dsp.filtering.config.FilterConfig
 // ENHANCEMENT: Show the filter response in the UI
 // ENHANCEMENT: Make configs configurable via the UI, then automatically rebuild filters
 class FilterManager(
-    private val highPassConfig: FilterConfig.HighPass? = ConfigSingleton.spectrum.highPassFilter,
-    private val lowPassConfig: FilterConfig.LowPass? = ConfigSingleton.spectrum.lowPassFilter,
+    private val highPassConfig: FilterConfig.HighPass?,
+    private val lowPassConfig: FilterConfig.LowPass?,
     private val filterBuilder: FilterBuilder = FilterBuilder(),
 ) {
 
@@ -31,14 +30,12 @@ class FilterManager(
         return AudioFrame(samples, audio.format)
     }
 
-    fun highPassThresholdFrequency(thresholdDb: Float, sampleRate: Float): Float? {
-        rebuildIfNeeded(sampleRate)
-        return highPassFilter?.frequencyAtMagnitude(thresholdDb)
+    fun highPassThresholdFrequency(thresholdDb: Float): Float? {
+        return highPassConfig?.frequencyAtMagnitude(thresholdDb)
     }
 
-    fun lowPassThresholdFrequency(thresholdDb: Float, sampleRate: Float): Float? {
-        rebuildIfNeeded(sampleRate)
-        return lowPassFilter?.frequencyAtMagnitude(thresholdDb)
+    fun lowPassThresholdFrequency(thresholdDb: Float): Float? {
+        return lowPassConfig?.frequencyAtMagnitude(thresholdDb)
     }
 
     private fun rebuildIfNeeded(sampleRate: Float) {
