@@ -6,9 +6,11 @@ import dsp.filtering.config.FilterConfig
 import dsp.filtering.config.FilterFamily
 import dsp.filtering.config.FilterOrder
 import extensions.inSeconds
+import io.mockk.clearAllMocks
 import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -53,6 +55,11 @@ class SpectrumManagerIntegrationTests {
         family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
         frequency = middleFrequency
     )
+
+    @AfterEach
+    fun tearDown() {
+        clearAllMocks()
+    }
 
     // Frequency Bins
     @Test

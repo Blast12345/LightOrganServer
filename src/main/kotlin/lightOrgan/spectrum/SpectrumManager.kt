@@ -28,8 +28,8 @@ class SpectrumManager(
     private val config: SpectrumConfig = ConfigSingleton.spectrum,
     private val monoMixer: MonoMixer = MonoMixer(),
     private val filterManager: FilterManager = FilterManager(config.highPassFilter, config.lowPassFilter),
-    private val downsampler: Downsampler = Downsampler(),
-    private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
+    private val downsampler: Downsampler = Downsampler(), // TODO: Test me
+    private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(), // TODO: Test me
     private val windowFunction: WindowFunction = HannWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FftFrequencyBinsCalculator = FftFrequencyBinsCalculator(),

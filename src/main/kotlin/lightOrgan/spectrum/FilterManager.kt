@@ -6,7 +6,6 @@ import dsp.filtering.LowPassFilter
 import dsp.filtering.config.FilterBuilder
 import dsp.filtering.config.FilterConfig
 
-// TODO: Magnitude typealias with toDBFS() and vice versa dbfs.toMagnitude()
 // ENHANCEMENT: Show the filter response in the UI
 // ENHANCEMENT: Make configs configurable via the UI, then automatically rebuild filters
 class FilterManager(
@@ -30,20 +29,20 @@ class FilterManager(
         return AudioFrame(samples, audio.format)
     }
 
-    fun highPassThresholdFrequency(thresholdDb: Float): Float? {
-        return highPassConfig?.frequencyAtMagnitude(thresholdDb)
-    }
-
-    fun lowPassThresholdFrequency(thresholdDb: Float): Float? {
-        return lowPassConfig?.frequencyAtMagnitude(thresholdDb)
-    }
-
     private fun rebuildIfNeeded(sampleRate: Float) {
         if (sampleRate == this.sampleRate) return
 
         this.sampleRate = sampleRate
         highPassFilter = highPassConfig?.let { filterBuilder.build(it, sampleRate) }
         lowPassFilter = lowPassConfig?.let { filterBuilder.build(it, sampleRate) }
+    }
+
+    fun highPassThresholdFrequency(thresholdDb: Float): Float? {
+        return highPassConfig?.frequencyAtMagnitude(thresholdDb)
+    }
+
+    fun lowPassThresholdFrequency(thresholdDb: Float): Float? {
+        return lowPassConfig?.frequencyAtMagnitude(thresholdDb)
     }
 
 }
