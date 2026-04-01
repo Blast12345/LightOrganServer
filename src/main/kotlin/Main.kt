@@ -16,8 +16,11 @@ import lightOrgan.color.ColorManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 
-// TODO: Consolidate coroutine scopes
 // ENHANCEMENT: Add audio output? This can also delay audio to keep things aligned.
+// ENHANCEMENT: Introduce Samples type
+// ENHANCEMENT: Introduce Frequency type
+// ENHANCEMENT: Introduce SampleRate type (which exposes nyquistFrequency)
+// ENHANCEMENT: Introduce Magnitude and DBFS types (which can be converted back and forth)
 fun main(args: Array<String>) {
     val audioInputManager = AudioInputManager()
     val spectrumManager = SpectrumManager()
