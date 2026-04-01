@@ -3,15 +3,28 @@ package audio.samples
 import extensions.takeLastArray
 import logging.Logger
 
-class RollingSampleBuffer {
+class RollingSampleBuffer(initialSize: Int = 0) {
 
-    private var samples: FloatArray = FloatArray(0)
+    private var samples: FloatArray = FloatArray(initialSize)
 
     val current: FloatArray
         get() = samples.copyOf()
 
-    fun append(newSamples: FloatArray, requiredSize: Int): FloatArray {
-        resizeIfNeeded(requiredSize)
+    var size: Int = samples.size
+        set(value) {
+            if (field == value) return
+            field = value
+            resize(value)
+        }
+
+    private fun resize(newSize: Int) {
+        val old = samples
+        samples = FloatArray(newSize)
+        val copyCount = minOf(old.size, newSize)
+        old.copyInto(samples, destinationOffset = newSize - copyCount, startIndex = old.size - copyCount)
+    }
+
+    fun append(newSamples: FloatArray): FloatArray {
         checkForDiscontinuity(newSamples)
 
         val trimmed = newSamples.takeLastArray(samples.size)
@@ -19,15 +32,6 @@ class RollingSampleBuffer {
         trimmed.copyInto(samples, destinationOffset = samples.size - trimmed.size)
 
         return current
-    }
-
-    private fun resizeIfNeeded(requiredSize: Int) {
-        if (requiredSize == samples.size) return
-
-        val old = samples
-        samples = FloatArray(requiredSize)
-        val copyCount = minOf(old.size, requiredSize)
-        old.copyInto(samples, destinationOffset = requiredSize - copyCount, startIndex = old.size - copyCount)
     }
 
     private fun checkForDiscontinuity(newSamples: FloatArray) {

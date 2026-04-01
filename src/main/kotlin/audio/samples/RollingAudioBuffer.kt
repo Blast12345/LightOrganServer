@@ -6,14 +6,26 @@ class RollingAudioBuffer(
 
     private var format: AudioFormat? = null
 
-    fun append(frame: AudioFrame, requiredSize: Int): AudioFrame {
+    var size: Int
+        get() = rollingSampleBuffer.size
+        set(value) {
+            rollingSampleBuffer.size = value
+        }
+
+    val current: AudioFrame?
+        get() {
+            val format = format ?: return null
+            return AudioFrame(rollingSampleBuffer.current, format)
+        }
+
+    fun append(frame: AudioFrame): AudioFrame {
         if (frame.format != format) {
             format = frame.format
             rollingSampleBuffer.reset()
         }
 
         return AudioFrame(
-            samples = rollingSampleBuffer.append(frame.samples, requiredSize),
+            samples = rollingSampleBuffer.append(frame.samples),
             format = frame.format
         )
     }

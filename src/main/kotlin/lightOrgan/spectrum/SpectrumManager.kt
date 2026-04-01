@@ -29,7 +29,7 @@ class SpectrumManager(
     private val monoMixer: MonoMixer = MonoMixer(),
     private val filterManager: FilterManager = FilterManager(config.highPassFilter, config.lowPassFilter),
     private val decimator: Decimator = Decimator(),
-    private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(), // TODO: Test me
+    private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
     private val windowFunction: WindowFunction = HannWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FftFrequencyBinsCalculator = FftFrequencyBinsCalculator(),
@@ -78,9 +78,14 @@ class SpectrumManager(
         val optimalFftLength = nextPowerOfTwo(samplesSizeForDesiredSpacing.toInt())
 
         return audio
-            .let { audioBuffer.append(audio, sampleSize) }
+            .let { updateBuffer(audio, sampleSize) }
             .let { applyWindowFunction(it) }
             .let { interpolate(it, optimalFftLength) }
+    }
+
+    private fun updateBuffer(frame: AudioFrame, requiredSize: Int): AudioFrame {
+        audioBuffer.size = requiredSize
+        return audioBuffer.append(frame)
     }
 
     private fun applyWindowFunction(audio: AudioFrame): AudioFrame {
