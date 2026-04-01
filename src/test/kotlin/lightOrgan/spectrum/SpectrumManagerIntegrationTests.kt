@@ -1,7 +1,7 @@
 package lightOrgan.spectrum
 
 import bins.nearestTo
-import dsp.Downsampler
+import dsp.Decimator
 import dsp.filtering.config.FilterConfig
 import dsp.filtering.config.FilterFamily
 import dsp.filtering.config.FilterOrder
@@ -195,15 +195,15 @@ class SpectrumManagerIntegrationTests {
     // Optimization
     @Test
     fun `given a low pass filter is used, performance is optimized by decimating`() {
-        val downsampler = spyk(Downsampler())
+        val decimator = spyk(Decimator())
         val sut = SpectrumManager(
             config = config.copy(lowPassFilter = lowPassConfig),
-            downsampler = downsampler
+            decimator = decimator
         )
 
         sut.calculate(wave1Frame)
 
-        verify { downsampler.decimate(any(), any(), any(), any()) }
+        verify { decimator.decimate(any(), any(), any(), any()) }
     }
 
 }

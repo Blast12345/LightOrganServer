@@ -5,7 +5,7 @@ import audio.samples.AudioFrame
 import audio.samples.RollingAudioBuffer
 import bins.FrequencyBins
 import config.ConfigSingleton
-import dsp.Downsampler
+import dsp.Decimator
 import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
 import dsp.fft.FftFrequencyBinsCalculator
@@ -28,7 +28,7 @@ class SpectrumManager(
     private val config: SpectrumConfig = ConfigSingleton.spectrum,
     private val monoMixer: MonoMixer = MonoMixer(),
     private val filterManager: FilterManager = FilterManager(config.highPassFilter, config.lowPassFilter),
-    private val downsampler: Downsampler = Downsampler(), // TODO: Test me
+    private val decimator: Decimator = Decimator(),
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(), // TODO: Test me
     private val windowFunction: WindowFunction = HannWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
@@ -60,13 +60,13 @@ class SpectrumManager(
     }
 
     private fun decimateIfNeeded(audio: AudioFrame, targetNyquist: Float): AudioFrame {
-        val factor = downsampler.decimationFactor(audio.format.sampleRate, targetNyquist)
+        val factor = decimator.decimationFactor(audio.format.sampleRate, targetNyquist)
         val effectiveSampleRate = audio.format.sampleRate / factor
 
         if (factor <= 1) return audio
 
         return AudioFrame(
-            samples = downsampler.decimate(audio.samples, factor, audio.format.sampleRate, audio.format.channels),
+            samples = decimator.decimate(audio.samples, factor, audio.format.sampleRate, audio.format.channels),
             format = audio.format.copy(sampleRate = effectiveSampleRate)
         )
     }
