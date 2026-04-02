@@ -1,6 +1,6 @@
 package lightOrgan.spectrum
 
-import dsp.filtering.config.FilterConfig
+import dsp.filtering.FilterConfig
 import dsp.windowing.WindowType
 
 data class SpectrumConfig(

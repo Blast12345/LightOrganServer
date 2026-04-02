@@ -1,40 +1,48 @@
-package dsp.filtering.config
+package dsp.filtering
 
-import dsp.filtering.ButterworthHighPass
-import dsp.filtering.ButterworthLowPass
+import dsp.filtering.cascaded.butterworth.ButterworthHighPass
+import dsp.filtering.cascaded.butterworth.ButterworthLowPass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import toolkit.monkeyTest.nextPositiveInt
+import toolkit.monkeyTest.nextFilterOrder
 
 class FilterBuilderTests {
 
     private val sampleRate = 44100f
     private val frequency = 1000f
-    private val order = nextPositiveInt()
+    private val order = nextFilterOrder()
 
     @Test
     fun `build a Butterworth low pass filter`() {
         val sut = FilterBuilder()
 
-        val config = FilterConfig.lowPass(FilterFamily.BUTTERWORTH, frequency, order)
+        val config = FilterConfig(
+            type = FilterType.LowPass(frequency),
+            family = FilterFamily.Butterworth(order)
+        )
+
         val filter = sut.build(config, sampleRate)
 
         assertTrue(filter is ButterworthLowPass)
         assertEquals(sampleRate, filter.sampleRate)
-        assertEquals(order, filter.order)
+        assertEquals(order.value, filter.order)
     }
 
     @Test
     fun `build a Butterworth high pass filter`() {
         val sut = FilterBuilder()
 
-        val config = FilterConfig.highPass(FilterFamily.BUTTERWORTH, frequency, order)
+        val config = FilterConfig(
+            type = FilterType.HighPass(frequency),
+            family = FilterFamily.Butterworth(order),
+        )
+
         val filter = sut.build(config, sampleRate)
 
         assertTrue(filter is ButterworthHighPass)
         assertEquals(sampleRate, filter.sampleRate)
-        assertEquals(order, filter.order)
+        assertEquals(order.value, filter.order)
     }
 
 }
