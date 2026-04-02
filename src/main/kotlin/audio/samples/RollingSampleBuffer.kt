@@ -5,7 +5,7 @@ import logging.Logger
 
 class RollingSampleBuffer(initialSize: Int = 0) {
 
-    private var samples: FloatArray = FloatArray(initialSize)
+    private var samples = FloatArray(initialSize)
 
     val current: FloatArray
         get() = samples.copyOf()
