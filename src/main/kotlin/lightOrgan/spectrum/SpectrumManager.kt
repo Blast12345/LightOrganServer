@@ -7,6 +7,7 @@ import config.ConfigSingleton
 import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
 import dsp.fft.FrequencyBins
+import dsp.fft.FrequencyBinsCalculator
 import dsp.windowing.Window
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,15 +28,12 @@ class SpectrumManager(
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
     private val window: Window = config.window.createWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
-    private val frequencyBinsCalculator: FftFrequencyBinsCalculator = FftFrequencyBinsCalculator(),
+    private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),
 ) {
 
     init {
         audioBuffer.size = config.sampleSize
     }
-
-    private var highPassFilter: OrderedFilter? = null
-    private var lowPassFilter: OrderedFilter? = null
 
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
     val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
@@ -52,25 +50,9 @@ class SpectrumManager(
 
     // Conditioning
     private fun conditionAudio(audio: AudioFrame): AudioFrame {
-        val highStopbandFrequency = filterManager.lowPassConfig?.frequencyAt(config.rolloffThreshold)
-        val targetNyquist = highStopbandFrequency ?: audio.format.nyquistFrequency
-
         return audio
             .let { monoMixer.mix(it) }
             .let { filterManager.filter(it) }
-            .let { decimateIfNeeded(it, targetNyquist) }
-    }
-
-    private fun decimateIfNeeded(audio: AudioFrame, targetNyquist: Float): AudioFrame {
-        val factor = decimator.decimationFactor(audio.format.sampleRate, targetNyquist)
-        val effectiveSampleRate = audio.format.sampleRate / factor
-
-        if (factor <= 1) return audio
-
-        return AudioFrame(
-            samples = decimator.decimate(audio.samples, factor, audio.format.sampleRate, audio.format.channels),
-            format = audio.format.copy(sampleRate = effectiveSampleRate)
-        )
     }
 
     // Frame Prep
