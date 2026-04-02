@@ -1,5 +1,7 @@
 package bins
 
+import dsp.bins.FrequencyBin
+import lightOrgan.color.PeakFrequencyBinsCalculator
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.random.Random

@@ -1,10 +1,10 @@
 package lightOrgan.color
 
 import androidx.compose.ui.graphics.colorspace.ColorSpaces
-import bins.FrequencyBin
-import bins.FrequencyBins
 import color.Light
 import color.LightExponentialSmoother
+import dsp.bins.FrequencyBin
+import dsp.bins.FrequencyBins
 import math.physics.sumSoundPressure
 import math.smoothing.PeakSmoother
 import music.Tuning

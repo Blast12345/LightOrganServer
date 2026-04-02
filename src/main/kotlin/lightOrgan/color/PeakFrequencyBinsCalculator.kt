@@ -1,5 +1,7 @@
-package bins
+package lightOrgan.color
 
+import dsp.bins.FrequencyBin
+import dsp.bins.FrequencyBins
 import kotlin.math.log10
 import kotlin.math.pow
 

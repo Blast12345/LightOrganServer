@@ -1,9 +1,8 @@
 package lightOrgan.color
 
 import androidx.compose.ui.graphics.Color
-import bins.FrequencyBins
-import bins.PeakFrequencyBinsCalculator
 import config.ConfigSingleton
+import dsp.bins.FrequencyBins
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

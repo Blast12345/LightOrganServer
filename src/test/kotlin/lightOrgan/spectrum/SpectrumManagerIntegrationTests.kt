@@ -1,7 +1,7 @@
 package lightOrgan.spectrum
 
-import bins.nearestTo
 import dsp.Decimator
+import dsp.bins.nearestTo
 import dsp.filtering.FilterConfig
 import dsp.filtering.FilterFamily
 import dsp.filtering.FilterOrder
