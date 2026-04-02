@@ -8,6 +8,7 @@ import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
 import dsp.bins.FftFrequencyBinsCalculator
 import dsp.bins.FrequencyBins
+import dsp.bins.FrequencyBinsCalculator
 import dsp.windowing.Window
 import extensions.inSeconds
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +31,7 @@ class SpectrumManager(
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
     private val window: Window = config.window.createWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
-    private val frequencyBinsCalculator: FftFrequencyBinsCalculator = FftFrequencyBinsCalculator(),
+    private val frequencyBinsCalculator: FrequencyBinsCalculator = FftFrequencyBinsCalculator(),
 ) {
 
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())

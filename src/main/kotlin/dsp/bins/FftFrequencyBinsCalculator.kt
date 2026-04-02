@@ -3,9 +3,9 @@ package dsp.bins
 import org.jtransforms.fft.FloatFFT_1D
 import kotlin.math.sqrt
 
-class FftFrequencyBinsCalculator {
+class FftFrequencyBinsCalculator : FrequencyBinsCalculator {
 
-    fun calculate(
+    override fun calculate(
         monoSamples: FloatArray,
         sampleRate: Float,
         magnitudeCorrectionFactor: Float
