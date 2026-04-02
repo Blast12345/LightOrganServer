@@ -9,7 +9,7 @@ import dsp.Decimator
 import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
 import dsp.fft.FftFrequencyBinsCalculator
-import dsp.windowing.WindowFunction
+import dsp.windowing.Window
 import extensions.inSeconds
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +30,7 @@ class SpectrumManager(
     private val filterManager: FilterManager = FilterManager(config.highPassFilter, config.lowPassFilter),
     private val decimator: Decimator = Decimator(),
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
-    private val windowFunction: WindowFunction = config.windowFunction.createWindow(),
+    private val window: Window = config.windowFunction.createWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FftFrequencyBinsCalculator = FftFrequencyBinsCalculator(),
 ) {
@@ -84,7 +84,7 @@ class SpectrumManager(
 
         return PreparedFrame(
             audio = preparedAudio,
-            magnitudeCorrectionFactor = windowFunction.magnitudeCorrectionFactor(sampleSize)
+            magnitudeCorrectionFactor = window.magnitudeCorrectionFactor(sampleSize)
         )
     }
 
@@ -95,7 +95,7 @@ class SpectrumManager(
 
     private fun applyWindowFunction(audio: AudioFrame): AudioFrame {
         return AudioFrame(
-            samples = windowFunction.appliedTo(audio.samples),
+            samples = window.appliedTo(audio.samples),
             format = audio.format
         )
     }

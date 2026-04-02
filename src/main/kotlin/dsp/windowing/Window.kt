@@ -2,7 +2,7 @@ package dsp.windowing
 
 import kotlin.math.sqrt
 
-interface WindowFunction {
+interface Window {
 
     // coefficients are the scale for each given position in the window, producing the window shape
     fun coefficients(size: Int): FloatArray

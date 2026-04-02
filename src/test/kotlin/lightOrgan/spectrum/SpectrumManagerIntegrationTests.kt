@@ -5,7 +5,7 @@ import dsp.Decimator
 import dsp.filtering.config.FilterConfig
 import dsp.filtering.config.FilterFamily
 import dsp.filtering.config.FilterOrder
-import dsp.windowing.WindowFunctionType
+import dsp.windowing.WindowType
 import extensions.inSeconds
 import io.mockk.clearAllMocks
 import io.mockk.spyk
@@ -32,7 +32,7 @@ class SpectrumManagerIntegrationTests {
         rolloffThreshold = -48f,
         highPassFilter = null,
         lowPassFilter = null,
-        windowFunction = WindowFunctionType.Hann
+        windowFunction = WindowType.Hann
     )
 
     private val sampleRate = 48000f

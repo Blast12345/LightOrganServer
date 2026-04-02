@@ -1,7 +1,7 @@
 package lightOrgan.spectrum
 
 import dsp.filtering.config.FilterConfig
-import dsp.windowing.WindowFunctionType
+import dsp.windowing.WindowType
 import kotlin.time.Duration
 
 data class SpectrumConfig(
@@ -10,6 +10,6 @@ data class SpectrumConfig(
     val rolloffThreshold: Float, // e.g. -48 dBFS
     val highPassFilter: FilterConfig.HighPass?,
     val lowPassFilter: FilterConfig.LowPass?,
-    val windowFunction: WindowFunctionType
+    val windowFunction: WindowType
 )
 

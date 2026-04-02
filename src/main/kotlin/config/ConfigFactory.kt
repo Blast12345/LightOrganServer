@@ -4,7 +4,7 @@ import config.children.Client
 import dsp.filtering.config.FilterConfig
 import dsp.filtering.config.FilterFamily
 import dsp.filtering.config.FilterOrder
-import dsp.windowing.WindowFunctionType
+import dsp.windowing.WindowType
 import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.spectrum.SpectrumConfig
@@ -31,7 +31,7 @@ class ConfigFactory(
                     family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
                     frequency = Keys.A.getFrequency(octave = 2)
                 ),
-                windowFunction = WindowFunctionType.BlackmanHarris,
+                windowFunction = WindowType.BlackmanHarris3Term,
             ),
             spectrumGui = SpectrumGuiConfig(
                 scale = 4F,
