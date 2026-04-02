@@ -1,5 +1,6 @@
-package dsp.filtering
+package dsp.filtering.primitives
 
+import dsp.filtering.Filter
 import kotlin.math.PI
 import kotlin.math.tan
 
@@ -12,9 +13,9 @@ class OnePoleOneZeroFilter(
     val b0: Double,
     val b1: Double,
     val a1: Double,
-) : OrderedFilter {
+) : Filter {
 
-    override val order: Int = 1
+    override val order = 1
     private var z1 = 0.0
 
     override fun filter(samples: FloatArray): FloatArray {

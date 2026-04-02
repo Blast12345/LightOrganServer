@@ -1,5 +1,8 @@
-package dsp.filtering
+package dsp.filtering.cascaded.butterworth
 
+import dsp.filtering.Filter
+import dsp.filtering.primitives.BiquadraticFilter
+import dsp.filtering.primitives.OnePoleOneZeroFilter
 import kotlin.math.PI
 import kotlin.math.cos
 
@@ -11,10 +14,10 @@ object ButterworthFilter {
         sampleRate: Float,
         firstOrderFactory: (Double, Double) -> OnePoleOneZeroFilter,
         biquadraticFactory: (Double, Double, Double) -> BiquadraticFilter,
-    ): List<OrderedFilter> {
+    ): List<Filter> {
         require(order >= 1) { "Filter order must be at least 1" }
 
-        val stages = mutableListOf<OrderedFilter>()
+        val stages = mutableListOf<Filter>()
         val hasUnpairedPole = order % 2 != 0
 
         if (hasUnpairedPole) {

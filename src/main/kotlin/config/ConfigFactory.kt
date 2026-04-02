@@ -1,8 +1,10 @@
 package config
 
 import config.children.Client
-import dsp.filtering.config.FilterConfig
-import dsp.filtering.config.FilterFamily
+import dsp.filtering.FilterConfig
+import dsp.filtering.FilterFamily
+import dsp.filtering.FilterOrder
+import dsp.filtering.FilterType
 import dsp.windowing.WindowType
 import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,15 +23,14 @@ class ConfigFactory(
             spectrum = SpectrumConfig(
                 frameDuration = 60.milliseconds,
                 approximateBinSpacing = 1f,
-                highPassFilter = FilterConfig.highPassFromSlope(
-                    family = FilterFamily.BUTTERWORTH,
-                    frequency = Notes.C.getFrequency(octave = 1) - 10,
-                    dbPerOctave = 48
+                rolloffThreshold = -48f,
+                highPassFilter = FilterConfig(
+                    type = FilterType.HighPass(Notes.C.getFrequency(octave = 1)),
+                    family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
                 ),
-                lowPassFilter = FilterConfig.lowPassFromSlope(
-                    family = FilterFamily.BUTTERWORTH,
-                    frequency = Notes.G.getFrequency(octave = 2),
-                    dbPerOctave = 48
+                lowPassFilter = FilterConfig(
+                    type = FilterType.LowPass(Notes.A.getFrequency(octave = 2)),
+                    family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
                 ),
                 window = WindowType.BlackmanHarris3Term
             ),

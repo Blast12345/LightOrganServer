@@ -17,8 +17,9 @@ fun nextConfig(
         spectrum = SpectrumConfig(
             frameDuration = nextDuration(),
             approximateBinSpacing = nextPositiveFloat(),
-            highPassFilter = nextFilterConfig(),
-            lowPassFilter = nextFilterConfig(),
+            rolloffThreshold = nextPositiveFloat(),
+            highPassFilter = nextHighPassConfig(),
+            lowPassFilter = nextLowPassConfig(),
             window = nextEnum<WindowType>()
         ),
         spectrumGui = SpectrumGuiConfig(

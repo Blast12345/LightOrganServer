@@ -1,5 +1,6 @@
-package dsp.filtering
+package dsp.filtering.primitives
 
+import dsp.filtering.Filter
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -17,9 +18,9 @@ class BiquadraticFilter(
     val b2: Double,
     val a1: Double,
     val a2: Double,
-) : OrderedFilter {
+) : Filter {
 
-    override val order: Int = 2
+    override val order = 2
     private var z1 = 0.0
     private var z2 = 0.0
 
