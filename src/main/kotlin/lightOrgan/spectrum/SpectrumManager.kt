@@ -9,8 +9,7 @@ import dsp.fft.FrequencyBins
 import dsp.fft.FrequencyBinsCalculator
 import dsp.filtering.OrderedFilter
 import dsp.filtering.config.FilterBuilder
-import dsp.windowing.HannWindow
-import dsp.windowing.WindowFunction
+import dsp.windowing.Window
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +22,7 @@ class SpectrumManager(
     private val monoMixer: MonoMixer = MonoMixer(),
     private val filterBuilder: FilterBuilder = FilterBuilder(),
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(config.sampleSize),
-    private val windowFunction: WindowFunction = HannWindow(),
+    private val window: Window = config.window.createWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator()
 ) {
@@ -44,7 +43,7 @@ class SpectrumManager(
 
         // Frame preparation
         var preparedFrame = audioBuffer.append(processedAudio)
-        preparedFrame = windowFunction.appliedTo(preparedFrame)
+        preparedFrame = window.appliedTo(preparedFrame)
         preparedFrame = interpolator.interpolate(preparedFrame)
 
         // Bin generation
@@ -70,7 +69,7 @@ class SpectrumManager(
         return AudioFrame(filter(audio.samples), audio.format)
     }
 
-    private fun WindowFunction.appliedTo(audio: AudioFrame): AudioFrame {
+    private fun Window.appliedTo(audio: AudioFrame): AudioFrame {
         return AudioFrame(appliedTo(audio.samples), audio.format)
     }
 
@@ -79,7 +78,8 @@ class SpectrumManager(
     }
 
     private fun applyWindowCorrection(bins: FrequencyBins): FrequencyBins {
-        return bins.map { it.copy(magnitude = it.magnitude * windowFunction.amplitudeCorrectionFactor) }
+        val correctionFactor = window.magnitudeCorrectionFactor(config.sampleSize)
+        return bins.map { it.copy(magnitude = it.magnitude * correctionFactor) }
     }
 
 }
