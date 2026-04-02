@@ -2,6 +2,7 @@ package toolkit.monkeyTest
 
 import config.Config
 import config.children.Client
+import dsp.windowing.WindowType
 import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.spectrum.SpectrumConfig
@@ -18,6 +19,7 @@ fun nextConfig(
             interpolatedSampleSize = nextPositiveInt(),
             highPassFilter = nextFilterConfig(),
             lowPassFilter = nextFilterConfig(),
+            window = nextEnum<WindowType>()
         ),
         spectrumGui = SpectrumGuiConfig(
             scale = Random.nextFloat(),

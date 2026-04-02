@@ -21,11 +21,15 @@ class SpectrumManager(
     private val config: SpectrumConfig = ConfigSingleton.spectrum,
     private val monoMixer: MonoMixer = MonoMixer(),
     private val filterBuilder: FilterBuilder = FilterBuilder(),
-    private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(config.sampleSize),
+    private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
     private val window: Window = config.window.createWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator()
 ) {
+
+    init {
+        audioBuffer.size = config.sampleSize
+    }
 
     private var highPassFilter: OrderedFilter? = null
     private var lowPassFilter: OrderedFilter? = null

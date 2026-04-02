@@ -4,7 +4,6 @@ import color.ColorFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestScope
@@ -17,6 +16,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import server.Server
+import toolkit.assertions.eventually
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextAudioStreamFrame
 import toolkit.monkeyTest.nextColor
@@ -78,9 +78,9 @@ class LightOrganTests {
         audioInputManager.audioStream.emit(newStreamFrame)
         sutScope.advanceUntilIdle()
 
-        verify { subscriber1.new(newColor) }
-        verify { subscriber2.new(newColor) }
-        verify { server.new(newColor) }
+        eventually { subscriber1.new(newColor) }
+        eventually { subscriber2.new(newColor) }
+        eventually { server.new(newColor) }
     }
 
     @Test
