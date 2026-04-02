@@ -4,6 +4,7 @@ import audio.samples.AudioFormat
 import audio.samples.AudioFrame
 import audio.samples.RollingAudioBuffer
 import config.ConfigSingleton
+import dsp.Decimator
 import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
 import dsp.fft.FrequencyBins
@@ -27,6 +28,7 @@ class SpectrumManager(
     private val config: SpectrumConfig = ConfigSingleton.spectrum,
     private val monoMixer: MonoMixer = MonoMixer(),
     private val filterManager: FilterManager = FilterManager(config.highPassFilter, config.lowPassFilter),
+    private val decimator: Decimator = Decimator(),
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
     private val window: Window = config.window.createWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
@@ -50,9 +52,25 @@ class SpectrumManager(
 
     // Conditioning
     private fun conditionAudio(audio: AudioFrame): AudioFrame {
+        val highStopbandFrequency = filterManager.lowPassConfig?.frequencyAt(config.rolloffThreshold)
+        val targetNyquist = highStopbandFrequency ?: audio.format.nyquistFrequency
+        
         return audio
             .let { monoMixer.mix(it) }
             .let { filterManager.filter(it) }
+            .let { decimateIfNeeded(it, targetNyquist) }
+    }
+
+    private fun decimateIfNeeded(audio: AudioFrame, targetNyquist: Float): AudioFrame {
+        val factor = decimator.decimationFactor(audio.format.sampleRate, targetNyquist)
+        val effectiveSampleRate = audio.format.sampleRate / factor
+
+        if (factor <= 1) return audio
+
+        return AudioFrame(
+            samples = decimator.decimate(audio.samples, factor, audio.format.sampleRate, audio.format.channels),
+            format = audio.format.copy(sampleRate = effectiveSampleRate)
+        )
     }
 
     // Frame Prep
