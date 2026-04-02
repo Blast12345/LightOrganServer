@@ -1,6 +1,6 @@
 package sound.bins.frequency.dominant.magnitude
 
-import dsp.fft.FrequencyBin
+import dsp.bins.FrequencyBin
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

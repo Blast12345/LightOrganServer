@@ -1,6 +1,6 @@
 package sound.bins
 
-import dsp.fft.FrequencyBins
+import dsp.bins.FrequencyBins
 import sound.bins.octave.OctaveBins
 
 class FrequencyBinsToOctaveBinsConverter(

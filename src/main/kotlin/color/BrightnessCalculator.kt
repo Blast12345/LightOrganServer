@@ -1,7 +1,7 @@
 package color
 
 import config.ConfigSingleton
-import dsp.fft.FrequencyBins
+import dsp.bins.FrequencyBins
 import sound.bins.frequency.GreatestMagnitudeFinder
 
 class BrightnessCalculator(

@@ -21,11 +21,11 @@ class ConfigFactory(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
             clients = setOf(Client("192.168.1.55")),
             spectrum = SpectrumConfig(
-                frameDuration = 60.milliseconds,
+                frameDuration = 63.milliseconds,
                 approximateBinSpacing = 1f,
                 rolloffThreshold = -48f,
                 highPassFilter = FilterConfig(
-                    type = FilterType.HighPass(Notes.C.getFrequency(octave = 1)),
+                    type = FilterType.HighPass(Notes.A.getFrequency(octave = 0)),
                     family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
                 ),
                 lowPassFilter = FilterConfig(

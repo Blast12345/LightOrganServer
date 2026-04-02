@@ -1,6 +1,6 @@
 package color
 
-import dsp.fft.FrequencyBins
+import dsp.bins.FrequencyBins
 import sound.bins.octave.OctaveWeightedAverageCalculator
 import sound.bins.octave.PeakOctaveBinsFinder
 

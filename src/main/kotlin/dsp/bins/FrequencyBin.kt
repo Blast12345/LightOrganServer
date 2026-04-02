@@ -1,4 +1,4 @@
-package dsp.fft
+package dsp.bins
 
 import kotlin.math.abs
 

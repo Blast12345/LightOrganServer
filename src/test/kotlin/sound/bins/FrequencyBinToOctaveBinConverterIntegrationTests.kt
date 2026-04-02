@@ -1,6 +1,6 @@
 package sound.bins
 
-import dsp.fft.FrequencyBin
+import dsp.bins.FrequencyBin
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sound.bins.octave.OctaveBin
