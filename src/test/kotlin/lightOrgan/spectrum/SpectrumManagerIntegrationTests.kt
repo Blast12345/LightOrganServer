@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.generators.generateSineWave
 import toolkit.monkeyTest.nextAudioFrame
+import kotlin.time.Duration.Companion.milliseconds
 
 
 // The processing chain is so long and specific that unit tests seemed like a mirror of implementation
@@ -30,8 +31,8 @@ class SpectrumManagerIntegrationTests {
 
     @BeforeEach
     fun setupHappyPath() {
-        every { config.sampleSize } returns (sampleRate / 10).toInt()
-        every { config.interpolatedSampleSize } returns sampleRate.toInt()
+        every { config.frameDuration } returns 100.milliseconds
+        every { config.approximateBinSpacing } returns 1f
         every { config.highPassFilter } returns null
         every { config.lowPassFilter } returns null
         every { config.window } returns WindowType.Hann

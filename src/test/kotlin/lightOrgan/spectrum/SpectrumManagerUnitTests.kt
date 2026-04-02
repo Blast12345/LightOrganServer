@@ -14,6 +14,7 @@ import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.*
+import kotlin.time.Duration.Companion.milliseconds
 
 // Some behavior is important but hard to validate via integration tests.
 // This test file will encapsulate that.
@@ -33,8 +34,9 @@ class SpectrumManagerUnitTests {
     private val format1Frame2 = nextAudioFrame(sampleRate = format1.sampleRate)
     private val format2Frame1 = nextAudioFrame(sampleRate = format2.sampleRate)
 
+    private val frameDuration = nextPositiveInt().milliseconds
+    private val approximateBinSpacing = 1f
     private val windowType: WindowType = mockk()
-    private val interpolatedSampleSize = nextPositiveInt()
     private val lowPassFilterConfig: FilterConfig = mockk()
     private val highPassFilterConfig: FilterConfig = mockk()
     private val lowPassFilter1: OrderedFilter = mockk()
@@ -52,8 +54,8 @@ class SpectrumManagerUnitTests {
     @BeforeEach
     fun setupHappyPath() {
         // Don't worry about much input matching unless necessary - integration tests will verify the data flow.
-        every { config.sampleSize } returns nextPositiveInt()
-        every { config.interpolatedSampleSize } returns interpolatedSampleSize
+        every { config.frameDuration } returns frameDuration
+        every { config.approximateBinSpacing } returns approximateBinSpacing
         every { config.lowPassFilter } returns lowPassFilterConfig
         every { config.highPassFilter } returns highPassFilterConfig
         every { config.window } returns windowType
