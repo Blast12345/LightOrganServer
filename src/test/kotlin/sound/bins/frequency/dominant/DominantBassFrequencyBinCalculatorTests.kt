@@ -1,6 +1,6 @@
 package sound.bins.frequency.dominant
 
-import dsp.fft.FrequencyBin
+import dsp.bins.FrequencyBin
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk

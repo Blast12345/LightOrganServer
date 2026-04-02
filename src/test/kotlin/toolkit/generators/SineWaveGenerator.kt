@@ -7,8 +7,8 @@ import kotlin.time.Duration.Companion.seconds
 
 fun generateSineWave(
     frequency: Float,
-    sampleRate: Float,
     amplitude: Float = 1f,
+    sampleRate: Float,
     duration: Duration = 1.seconds,
 ): WaveForm {
     val sampleSize = (sampleRate * duration.inWholeSeconds).toInt()
@@ -20,7 +20,7 @@ fun generateSineWave(
 }
 
 fun generateSilence(sampleRate: Float, duration: Duration = 1.seconds): WaveForm {
-    return generateSineWave(frequency = 0f, sampleRate = sampleRate, amplitude = 0f, duration = duration)
+    return generateSineWave(frequency = 0f, amplitude = 0f, sampleRate = sampleRate, duration = duration)
 }
 
 fun combineWaves(vararg waves: WaveForm): WaveForm {

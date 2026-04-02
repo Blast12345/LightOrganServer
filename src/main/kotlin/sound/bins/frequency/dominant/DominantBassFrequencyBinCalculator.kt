@@ -1,7 +1,7 @@
 package sound.bins.frequency.dominant
 
-import dsp.fft.FrequencyBin
-import dsp.fft.FrequencyBins
+import dsp.bins.FrequencyBin
+import dsp.bins.FrequencyBins
 import sound.bins.frequency.dominant.frequency.DominantFrequencyCalculator
 import sound.bins.frequency.dominant.magnitude.DominantMagnitudeCalculator
 

@@ -1,6 +1,6 @@
 package sound.bins.octave
 
-import dsp.fft.FrequencyBins
+import dsp.bins.FrequencyBins
 import sound.bins.FrequencyBinsToOctaveBinsConverter
 import sound.bins.frequency.dominant.frequency.PeakFrequencyBinsFinder
 

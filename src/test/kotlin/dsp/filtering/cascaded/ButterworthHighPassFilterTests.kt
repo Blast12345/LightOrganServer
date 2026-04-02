@@ -14,9 +14,9 @@ class ButterworthHighPassTests {
     private val sampleRate = 44100f
     private val frequency = 1000f
 
-    private val toneOneOctaveDown = generateSineWave(frequency / 2f, sampleRate)
-    private val tone = generateSineWave(frequency, sampleRate)
-    private val toneOneOctaveUp = generateSineWave(frequency * 2f, sampleRate)
+    private val toneOneOctaveDown = generateSineWave(frequency / 2f, sampleRate = sampleRate)
+    private val tone = generateSineWave(frequency, sampleRate = sampleRate)
+    private val toneOneOctaveUp = generateSineWave(frequency * 2f, sampleRate = sampleRate)
 
     @Test
     fun `get the order of the filter`() {

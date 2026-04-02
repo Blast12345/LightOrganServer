@@ -1,6 +1,6 @@
 package toolkit.monkeyTest
 
-import dsp.fft.FrequencyBin
+import dsp.bins.FrequencyBin
 import kotlin.random.Random
 
 fun nextFrequencyBin(
