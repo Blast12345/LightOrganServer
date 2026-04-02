@@ -13,10 +13,4 @@ abstract class CascadedFilter(
         return stages.fold(samples) { signal, stage -> stage.filter(signal) }
     }
 
-    override fun magnitudeAt(frequency: Float): Float {
-        return stages.fold(1f) { magnitude, stage ->
-            magnitude * stage.magnitudeAt(frequency)
-        }
-    }
-
 }

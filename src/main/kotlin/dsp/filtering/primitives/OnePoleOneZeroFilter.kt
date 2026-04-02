@@ -1,7 +1,8 @@
 package dsp.filtering.primitives
 
 import dsp.filtering.Filter
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.tan
 
 // NOTE: This is a -6 dB/octave filter. Different coefficients change the shape of attenuation, illustrated by factory methods.
 // b0 - how much the current input matters
@@ -28,25 +29,6 @@ class OnePoleOneZeroFilter(
         z1 = b1 * x - a1 * y
 
         return y.toFloat()
-    }
-
-    // TODO: Test me
-    override fun magnitudeAt(frequency: Float): Float {
-        val w = 2.0 * PI * frequency / sampleRate
-
-        val cosW = cos(w)
-        val sinW = sin(w)
-
-        val numReal = b0 + b1 * cosW
-        val numImag = -(b1 * sinW)
-
-        val denReal = 1.0 + a1 * cosW
-        val denImag = -(a1 * sinW)
-
-        val numMag = sqrt(numReal * numReal + numImag * numImag)
-        val denMag = sqrt(denReal * denReal + denImag * denImag)
-
-        return (numMag / denMag).toFloat()
     }
 
     companion object {
