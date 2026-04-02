@@ -1,76 +1,129 @@
 package audio.samples
 
+import io.mockk.*
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNull
 import toolkit.monkeyTest.nextAudioFormat
+import toolkit.monkeyTest.nextAudioFrame
+import toolkit.monkeyTest.nextFloatArray
 import toolkit.monkeyTest.nextPositiveInt
 
 class RollingAudioBufferTests {
 
-    private val randomSize = nextPositiveInt()
+    private val rollingSampleBuffer: RollingSampleBuffer = mockk()
+
     private val format1 = nextAudioFormat()
     private val format2 = nextAudioFormat()
+    private val format1Frame1 = nextAudioFrame(format = format1)
+    private val format1Frame2 = nextAudioFrame(format = format1)
+    private val format2Frame = nextAudioFrame(format = format2)
 
-    private val format1Frame1 = AudioFrame(samples = floatArrayOf(1f, 2f), format1)
-    private val format1Frame2 = AudioFrame(samples = floatArrayOf(3f, 4f), format1)
-    private val format2Frame1 = AudioFrame(samples = floatArrayOf(5f, 6f), format2)
+    private val bufferSize = nextPositiveInt()
+    private val bufferedSamples = nextFloatArray()
 
+    @BeforeEach
+    fun setupHappyPath() {
+        every { rollingSampleBuffer.size = any() } just runs
+        every { rollingSampleBuffer.size } returns bufferSize
+        every { rollingSampleBuffer.current } returns bufferedSamples
+        every { rollingSampleBuffer.append(any()) } returns bufferedSamples
+        every { rollingSampleBuffer.reset() } returns Unit
+    }
+
+    @AfterEach
+    fun teardown() {
+        clearAllMocks()
+    }
+
+    private fun createSUT(): RollingAudioBuffer {
+        return RollingAudioBuffer(rollingSampleBuffer)
+    }
+
+    // Current
     @Test
-    fun `appending frame smaller than capacity is padded with leading zeros`() {
-        val sut = RollingAudioBuffer(capacity = 4)
+    fun `given no audio has been appended, then current is null`() {
+        val sut = createSUT()
 
-        val frame = AudioFrame(floatArrayOf(1f, 2f), format1)
-        val actual = sut.append(frame)
-
-        assertArrayEquals(floatArrayOf(0f, 0f, 1f, 2f), actual.samples)
+        assertNull(sut.current)
     }
 
     @Test
-    fun `appending frame equal to capacity fills the buffer exactly`() {
-        val sut = RollingAudioBuffer(capacity = 3)
+    fun `given audio has been appended, then get the buffered audio frame`() {
+        val sut = createSUT()
+        sut.append(format1Frame1)
 
-        val frame = AudioFrame(floatArrayOf(1f, 2f, 3f), format1)
-        val actual = sut.append(frame)
+        val result = sut.current
 
-        assertArrayEquals(floatArrayOf(1f, 2f, 3f), actual.samples)
+        assertArrayEquals(bufferedSamples, result?.samples)
+        assertEquals(format1, result?.format)
+    }
+
+    // Appending
+    @Test
+    fun `append samples from an audio frame`() {
+        val sut = createSUT()
+
+        sut.append(format1Frame1)
+
+        verify { rollingSampleBuffer.append(format1Frame1.samples) }
+    }
+
+
+    @Test
+    fun `when appending, return the buffered audio frame`() {
+        val sut = createSUT()
+
+        val result = sut.append(format1Frame1)
+
+        assertArrayEquals(bufferedSamples, result.samples)
+        assertEquals(format1, result.format)
+    }
+
+    // Resetting
+    @Test
+    fun `reset buffer when the audio format changes`() {
+        val sut = createSUT()
+        sut.append(format1Frame1)
+        clearMocks(rollingSampleBuffer, answers = false) // As written, the initial append() also triggers it
+
+        sut.append(format2Frame)
+
+        verify { rollingSampleBuffer.reset() }
     }
 
     @Test
-    fun `appending frame larger than capacity keeps only the final samples`() {
-        val sut = RollingAudioBuffer(capacity = 2)
+    fun `preserves buffer when audio format is unchanged`() {
+        val sut = createSUT()
+        sut.append(format1Frame1)
+        clearMocks(rollingSampleBuffer, answers = false)
 
-        val frame = AudioFrame(floatArrayOf(1f, 2f, 3f, 4f, 5f), format1)
-        val actual = sut.append(frame)
+        sut.append(format1Frame2)
 
-        assertArrayEquals(floatArrayOf(4f, 5f), actual.samples)
+        verify(exactly = 0) { rollingSampleBuffer.reset() }
+    }
+
+    // Size
+    @Test
+    fun `get the buffer size`() {
+        val sut = createSUT()
+
+        val result = sut.size
+
+        assertEquals(bufferSize, result)
     }
 
     @Test
-    fun `appending multiple frames of the same format`() {
-        val sut = RollingAudioBuffer(capacity = 4)
+    fun `set the buffer size`() {
+        val sut = createSUT()
+        val randomSize = nextPositiveInt()
 
-        val actual1 = sut.append(format1Frame1)
-        assertArrayEquals(floatArrayOf(0f, 0f, 1f, 2f), actual1.samples)
-        assertEquals(format1, actual1.format)
+        sut.size = randomSize
 
-
-        val actual2 = sut.append(format1Frame2)
-        assertArrayEquals(floatArrayOf(1f, 2f, 3f, 4f), actual2.samples)
-        assertEquals(format1, actual2.format)
-    }
-
-    @Test
-    fun `appending multiple frames of different forms clears previous samples`() {
-        val sut = RollingAudioBuffer(capacity = 5)
-
-        val actual1 = sut.append(format1Frame1)
-        assertArrayEquals(floatArrayOf(0f, 0f, 0f, 1f, 2f), actual1.samples)
-        assertEquals(format1, actual1.format)
-
-        val actual2 = sut.append(AudioFrame(floatArrayOf(3f, 4f), format2))
-        assertArrayEquals(floatArrayOf(0f, 0f, 0f, 3f, 4f), actual2.samples)
-        assertEquals(format2, actual2.format)
+        verify { rollingSampleBuffer.size = randomSize }
     }
 
 }

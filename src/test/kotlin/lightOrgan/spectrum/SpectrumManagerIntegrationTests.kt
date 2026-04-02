@@ -2,6 +2,7 @@ package lightOrgan.spectrum
 
 import dsp.filtering.config.FilterConfig
 import dsp.filtering.config.FilterFamily
+import dsp.windowing.WindowType
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -33,6 +34,7 @@ class SpectrumManagerIntegrationTests {
         every { config.interpolatedSampleSize } returns sampleRate.toInt()
         every { config.highPassFilter } returns null
         every { config.lowPassFilter } returns null
+        every { config.window } returns WindowType.Hann
     }
 
     private fun createSUT(): SpectrumManager {

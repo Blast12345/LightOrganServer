@@ -9,9 +9,8 @@ import dsp.filtering.OrderedFilter
 import dsp.filtering.config.FilterBuilder
 import dsp.filtering.config.FilterConfig
 import dsp.windowing.Window
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import dsp.windowing.WindowType
+import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.*
@@ -34,6 +33,7 @@ class SpectrumManagerUnitTests {
     private val format1Frame2 = nextAudioFrame(sampleRate = format1.sampleRate)
     private val format2Frame1 = nextAudioFrame(sampleRate = format2.sampleRate)
 
+    private val windowType: WindowType = mockk()
     private val interpolatedSampleSize = nextPositiveInt()
     private val lowPassFilterConfig: FilterConfig = mockk()
     private val highPassFilterConfig: FilterConfig = mockk()
@@ -56,6 +56,7 @@ class SpectrumManagerUnitTests {
         every { config.interpolatedSampleSize } returns interpolatedSampleSize
         every { config.lowPassFilter } returns lowPassFilterConfig
         every { config.highPassFilter } returns highPassFilterConfig
+        every { config.window } returns windowType
 
         every { filterBuilder.build(lowPassFilterConfig, format1.sampleRate) } returns lowPassFilter1
         every { filterBuilder.build(highPassFilterConfig, format1.sampleRate) } returns highPassFilter1
@@ -72,7 +73,9 @@ class SpectrumManagerUnitTests {
         every { highPassFilter2.filter(any()) } returns highPassedSamples
         every { highPassFilter2.sampleRate } returns format2.sampleRate
 
+        every { audioBuffer.size = any() } just runs
         every { audioBuffer.append(any()) } returns bufferedFrame
+        every { windowType.createWindow() } returns window
         every { window.appliedTo(any()) } returns windowedSamples
         every { window.magnitudeCorrectionFactor(any()) } returns 1f
         every { interpolator.interpolate(any(), any()) } returns interpolatedSamples

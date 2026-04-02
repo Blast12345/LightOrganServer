@@ -30,6 +30,13 @@ class SpectrumManager(
     private val frequencyBinsCalculator: FftFrequencyBinsCalculator = FftFrequencyBinsCalculator(),
 ) {
 
+    init {
+        audioBuffer.size = config.sampleSize
+    }
+
+    private var highPassFilter: OrderedFilter? = null
+    private var lowPassFilter: OrderedFilter? = null
+
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
     val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
 
