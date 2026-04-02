@@ -1,12 +1,18 @@
 package toolkit.monkeyTest
 
-import dsp.filtering.config.FilterConfig
-import dsp.filtering.config.FilterFamily
+import dsp.filtering.FilterConfig
+import dsp.filtering.FilterType
 
-fun nextFilterConfig(): FilterConfig {
+fun nextHighPassConfig(): FilterConfig {
     return FilterConfig(
-        family = nextEnum<FilterFamily>(),
-        topology = nextFilterTopology(),
-        order = nextPositiveInt()
+        type = FilterType.HighPass(nextPositiveFloat()),
+        family = nextFilterFamily(),
+    )
+}
+
+fun nextLowPassConfig(): FilterConfig {
+    return FilterConfig(
+        type = FilterType.LowPass(nextPositiveFloat()),
+        family = nextFilterFamily(),
     )
 }

@@ -15,10 +15,11 @@ fun nextConfig(
         startAutomatically = MutableStateFlow(Random.nextBoolean()),
         clients = clients,
         spectrum = SpectrumConfig(
-            sampleSize = nextPositiveInt(),
-            interpolatedSampleSize = nextPositiveInt(),
-            highPassFilter = nextFilterConfig(),
-            lowPassFilter = nextFilterConfig(),
+            frameDuration = nextDuration(),
+            approximateBinSpacing = nextPositiveFloat(),
+            rolloffThreshold = nextPositiveFloat(),
+            highPassFilter = nextHighPassConfig(),
+            lowPassFilter = nextLowPassConfig(),
             window = nextEnum<WindowType>()
         ),
         spectrumGui = SpectrumGuiConfig(

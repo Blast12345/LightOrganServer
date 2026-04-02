@@ -9,9 +9,11 @@ import dsp.ZeroPaddingInterpolator
 import dsp.fft.FrequencyBins
 import dsp.fft.FrequencyBinsCalculator
 import dsp.windowing.Window
+import extensions.inSeconds
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import math.nextPowerOfTwo
 
 // ENHANCEMENT: Multi-resolution bin generations
 // ENHANCEMENT: Implement equal-loudness contours (ISO 226:2003). Manual SPL number with future plans of external meter?
@@ -31,19 +33,17 @@ class SpectrumManager(
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FrequencyBinsCalculator(),
 ) {
 
-    init {
-        audioBuffer.size = config.sampleSize
-    }
-
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
     val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
 
     fun calculate(audio: AudioFrame): FrequencyBins {
         val conditionedAudio = conditionAudio(audio)
         val preparedFrame = prepareFrame(conditionedAudio)
-        val allBins = frequencyBinsCalculator.calculate(preparedFrame.audio, preparedFrame.magnitudeCorrectionFactor)
-        val relevantBins = filterBins(allBins, preparedFrame.audio.format)
+        val allBins = frequencyBinsCalculator.calculate(preparedFrame.audio)
+        val correctedBins = allBins.map { it.copy(magnitude = it.magnitude * preparedFrame.magnitudeCorrectionFactor) }
+        val relevantBins = filterBins(correctedBins, preparedFrame.audio.format)
 
+        // Return
         _frequencyBins.value = relevantBins
         return relevantBins
     }
