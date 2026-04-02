@@ -20,7 +20,7 @@ fun nextConfig(
             rolloffThreshold = nextPositiveFloat(),
             highPassFilter = nextHighPassConfig(),
             lowPassFilter = nextLowPassConfig(),
-            windowFunction = nextEnum<WindowType>()
+            window = nextEnum<WindowType>()
         ),
         spectrumGui = SpectrumGuiConfig(
             scale = Random.nextFloat(),

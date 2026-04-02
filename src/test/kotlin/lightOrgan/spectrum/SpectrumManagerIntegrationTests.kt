@@ -32,7 +32,7 @@ class SpectrumManagerIntegrationTests {
         rolloffThreshold = -48f,
         highPassFilter = null,
         lowPassFilter = null,
-        windowFunction = WindowType.Hann
+        window = WindowType.Hann
     )
 
     private val sampleRate = 48000f

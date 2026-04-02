@@ -31,7 +31,7 @@ class ConfigFactory(
                     family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
                     frequency = Keys.A.getFrequency(octave = 2)
                 ),
-                windowFunction = WindowType.BlackmanHarris3Term,
+                window = WindowType.BlackmanHarris3Term,
             ),
             spectrumGui = SpectrumGuiConfig(
                 scale = 4F,

@@ -30,7 +30,7 @@ class SpectrumManager(
     private val filterManager: FilterManager = FilterManager(config.highPassFilter, config.lowPassFilter),
     private val decimator: Decimator = Decimator(),
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
-    private val window: Window = config.windowFunction.createWindow(),
+    private val window: Window = config.window.createWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FftFrequencyBinsCalculator = FftFrequencyBinsCalculator(),
 ) {

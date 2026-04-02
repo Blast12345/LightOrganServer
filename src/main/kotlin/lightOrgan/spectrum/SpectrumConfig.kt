@@ -10,6 +10,6 @@ data class SpectrumConfig(
     val rolloffThreshold: Float, // e.g. -48 dBFS
     val highPassFilter: FilterConfig.HighPass?,
     val lowPassFilter: FilterConfig.LowPass?,
-    val windowFunction: WindowType
+    val window: WindowType
 )
 
