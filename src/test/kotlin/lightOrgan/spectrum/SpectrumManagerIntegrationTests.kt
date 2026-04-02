@@ -160,7 +160,7 @@ class SpectrumManagerIntegrationTests {
 
         val bins = sut.calculate(wave1Frame)
 
-        val threshold = highPassConfig.frequencyAtMagnitude(config.rolloffThreshold)
+        val threshold = highPassConfig.frequencyAt(config.rolloffThreshold)
         val lowestBin = bins.minBy { it.frequency }
         assertTrue(
             lowestBin.frequency >= threshold,
@@ -187,7 +187,7 @@ class SpectrumManagerIntegrationTests {
 
         val bins = sut.calculate(wave1Frame)
 
-        val threshold = lowPassConfig.frequencyAtMagnitude(config.rolloffThreshold)
+        val threshold = lowPassConfig.frequencyAt(config.rolloffThreshold)
         val highestBin = bins.maxBy { it.frequency }
         assertTrue(
             highestBin.frequency <= threshold,

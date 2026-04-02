@@ -50,7 +50,7 @@ class SpectrumManager(
 
     // Conditioning
     private fun conditionAudio(audio: AudioFrame): AudioFrame {
-        val highStopbandFrequency = filterManager.lowPassConfig?.frequencyAtMagnitude(config.rolloffThreshold)
+        val highStopbandFrequency = filterManager.lowPassConfig?.frequencyAt(config.rolloffThreshold)
         val targetNyquist = highStopbandFrequency ?: audio.format.nyquistFrequency
 
         return audio
@@ -116,8 +116,8 @@ class SpectrumManager(
     private fun filterBins(bins: FrequencyBins, format: AudioFormat): FrequencyBins {
         val frequencyResolution = 1 / config.frameDuration.inSeconds
         val nyquist = format.nyquistFrequency
-        val lowStopbandFrequency = filterManager.highPassConfig?.frequencyAtMagnitude(config.rolloffThreshold)
-        val highStopbandFrequency = filterManager.lowPassConfig?.frequencyAtMagnitude(config.rolloffThreshold)
+        val lowStopbandFrequency = filterManager.highPassConfig?.frequencyAt(config.rolloffThreshold)
+        val highStopbandFrequency = filterManager.lowPassConfig?.frequencyAt(config.rolloffThreshold)
 
         val lowestFrequency = maxOf(frequencyResolution, lowStopbandFrequency ?: frequencyResolution)
         val highestFrequency = minOf(nyquist, highStopbandFrequency ?: nyquist)

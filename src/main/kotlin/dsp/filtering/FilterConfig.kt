@@ -5,8 +5,8 @@ data class FilterConfig(
     val family: FilterFamily,
 ) {
 
-    fun frequencyAtMagnitude(magnitudeDb: Float): Float {
-        val ratio = family.rolloffRatio(magnitudeDb)
+    fun frequencyAt(dBFS: Float): Float {
+        val ratio = family.rolloffRatio(dBFS)
 
         return when (type) {
             is FilterType.LowPass -> type.frequency * ratio

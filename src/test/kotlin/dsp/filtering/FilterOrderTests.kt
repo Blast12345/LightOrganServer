@@ -23,9 +23,9 @@ class FilterOrderTests {
         assertThrows<Exception> { FilterOrder(0) }
     }
 
-    // order from slope
+    // Order from slope
     @Test
-    fun `create a filter order from slope`() {
+    fun `create a filter order from a slope`() {
         val order = nextPositiveInt()
         val slope = order * 6
 
@@ -40,8 +40,8 @@ class FilterOrderTests {
     }
 
     @Test
-    fun `slope must be positive`() {
-        assertThrows<Exception> { FilterOrder.fromDbPerOctave(-6) }
+    fun `slope must be non-zero`() {
+        assertThrows<Exception> { FilterOrder.fromDbPerOctave(0) }
     }
 
 }

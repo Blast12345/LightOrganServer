@@ -1,5 +1,7 @@
 package dsp.filtering
 
+import kotlin.math.absoluteValue
+
 @JvmInline
 value class FilterOrder(val value: Int) {
 
@@ -9,9 +11,9 @@ value class FilterOrder(val value: Int) {
 
     companion object {
         fun fromDbPerOctave(dbPerOctave: Int): FilterOrder {
-            require(dbPerOctave > 0) { "Slope must be positive" }
+            require(dbPerOctave != 0) { "Slope must be non-zero" }
             require(dbPerOctave % 6 == 0) { "Slope must be a multiple of 6 dB/oct" }
-            return FilterOrder(dbPerOctave / 6)
+            return FilterOrder(dbPerOctave.absoluteValue / 6)
         }
     }
 
