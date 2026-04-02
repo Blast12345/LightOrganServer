@@ -8,7 +8,7 @@ import dsp.fft.FrequencyBinsCalculator
 import dsp.filtering.OrderedFilter
 import dsp.filtering.config.FilterBuilder
 import dsp.filtering.config.FilterConfig
-import dsp.windowing.WindowFunction
+import dsp.windowing.Window
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -24,7 +24,7 @@ class SpectrumManagerUnitTests {
     private val monoMixer: MonoMixer = mockk()
     private val filterBuilder: FilterBuilder = mockk()
     private val audioBuffer: RollingAudioBuffer = mockk()
-    private val windowFunction: WindowFunction = mockk()
+    private val window: Window = mockk()
     private val interpolator: ZeroPaddingInterpolator = mockk()
     private val frequencyBinsCalculator: FrequencyBinsCalculator = mockk()
 
@@ -52,6 +52,7 @@ class SpectrumManagerUnitTests {
     @BeforeEach
     fun setupHappyPath() {
         // Don't worry about much input matching unless necessary - integration tests will verify the data flow.
+        every { config.sampleSize } returns nextPositiveInt()
         every { config.interpolatedSampleSize } returns interpolatedSampleSize
         every { config.lowPassFilter } returns lowPassFilterConfig
         every { config.highPassFilter } returns highPassFilterConfig
@@ -72,8 +73,8 @@ class SpectrumManagerUnitTests {
         every { highPassFilter2.sampleRate } returns format2.sampleRate
 
         every { audioBuffer.append(any()) } returns bufferedFrame
-        every { windowFunction.appliedTo(any()) } returns windowedSamples
-        every { windowFunction.amplitudeCorrectionFactor } returns 1f
+        every { window.appliedTo(any()) } returns windowedSamples
+        every { window.magnitudeCorrectionFactor(any()) } returns 1f
         every { interpolator.interpolate(any(), any()) } returns interpolatedSamples
         every { frequencyBinsCalculator.calculate(any()) } returns frequencyBins
     }
@@ -84,7 +85,7 @@ class SpectrumManagerUnitTests {
             monoMixer = monoMixer,
             filterBuilder = filterBuilder,
             audioBuffer = audioBuffer,
-            windowFunction = windowFunction,
+            window = window,
             interpolator = interpolator,
             frequencyBinsCalculator = frequencyBinsCalculator
         )

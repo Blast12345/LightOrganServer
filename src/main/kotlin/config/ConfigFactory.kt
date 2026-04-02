@@ -3,6 +3,7 @@ package config
 import config.children.Client
 import dsp.filtering.config.FilterConfig
 import dsp.filtering.config.FilterFamily
+import dsp.windowing.WindowType
 import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.spectrum.SpectrumConfig
@@ -29,9 +30,10 @@ class ConfigFactory(
                     frequency = Notes.G.getFrequency(octave = 2),
                     dbPerOctave = 48
                 ),
+                window = WindowType.BlackmanHarris3Term
             ),
             spectrumGui = SpectrumGuiConfig(
-                scale = 3F,
+                scale = 4F,
                 lowestFrequency = 0f,
                 highestFrequency = 160F,
             ),
