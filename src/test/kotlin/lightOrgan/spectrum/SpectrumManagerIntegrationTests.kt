@@ -40,8 +40,8 @@ class SpectrumManagerIntegrationTests {
     private val frequency1 = 60f
     private val frequency2 = 120f
     private val middleFrequency = (frequency1 + frequency2) / 2f
-    private val wave1 = generateSineWave(frequency1, sampleRate, amplitude = 1f)
-    private val wave2 = generateSineWave(frequency2, sampleRate, amplitude = 1f)
+    private val wave1 = generateSineWave(frequency1, sampleRate = sampleRate)
+    private val wave2 = generateSineWave(frequency2, sampleRate = sampleRate)
     private val combinedWaves = combineWaves(wave1, wave2)
     private val silence = generateSilence(sampleRate)
 

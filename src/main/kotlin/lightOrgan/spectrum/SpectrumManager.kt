@@ -3,12 +3,13 @@ package lightOrgan.spectrum
 import audio.samples.AudioFormat
 import audio.samples.AudioFrame
 import audio.samples.RollingAudioBuffer
-import bins.FrequencyBins
 import config.ConfigSingleton
 import dsp.Decimator
 import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
-import dsp.fft.FftFrequencyBinsCalculator
+import dsp.bins.FftFrequencyBinsCalculator
+import dsp.bins.FrequencyBins
+import dsp.bins.FrequencyBinsCalculator
 import dsp.windowing.Window
 import extensions.inSeconds
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +33,7 @@ class SpectrumManager(
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
     private val window: Window = config.window.createWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
-    private val frequencyBinsCalculator: FftFrequencyBinsCalculator = FftFrequencyBinsCalculator(),
+    private val frequencyBinsCalculator: FrequencyBinsCalculator = FftFrequencyBinsCalculator(),
 ) {
 
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
@@ -41,7 +42,7 @@ class SpectrumManager(
     fun calculate(audio: AudioFrame): FrequencyBins {
         val conditionedAudio = conditionAudio(audio)
         val preparedFrame = prepareFrame(conditionedAudio)
-        val allBins = frequencyBinsCalculator.calculate(preparedFrame.audio, preparedFrame.magnitudeCorrectionFactor)
+        val allBins = calculateBins(preparedFrame)
         val relevantBins = filterBins(allBins, preparedFrame.audio.format)
 
         _frequencyBins.value = relevantBins
@@ -111,6 +112,15 @@ class SpectrumManager(
         val audio: AudioFrame,
         val magnitudeCorrectionFactor: Float
     )
+
+    // Bin calculation
+    private fun calculateBins(preparedFrame: PreparedFrame): FrequencyBins {
+        return frequencyBinsCalculator.calculate(
+            preparedFrame.audio.samples,
+            preparedFrame.audio.format.sampleRate,
+            preparedFrame.magnitudeCorrectionFactor
+        )
+    }
 
     // Filtering
     private fun filterBins(bins: FrequencyBins, format: AudioFormat): FrequencyBins {

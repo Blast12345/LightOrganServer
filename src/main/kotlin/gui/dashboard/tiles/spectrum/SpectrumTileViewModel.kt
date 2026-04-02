@@ -3,9 +3,9 @@ package gui.dashboard.tiles.spectrum
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import bins.FrequencyBin
-import bins.FrequencyBins
 import config.ConfigSingleton
+import dsp.bins.FrequencyBin
+import dsp.bins.FrequencyBins
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
