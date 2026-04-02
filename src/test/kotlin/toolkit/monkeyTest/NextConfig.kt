@@ -15,8 +15,8 @@ fun nextConfig(
         startAutomatically = MutableStateFlow(Random.nextBoolean()),
         clients = clients,
         spectrum = SpectrumConfig(
-            sampleSize = nextPositiveInt(),
-            interpolatedSampleSize = nextPositiveInt(),
+            frameDuration = nextDuration(),
+            approximateBinSpacing = nextPositiveFloat(),
             highPassFilter = nextFilterConfig(),
             lowPassFilter = nextFilterConfig(),
             window = nextEnum<WindowType>()
