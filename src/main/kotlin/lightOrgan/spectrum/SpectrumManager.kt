@@ -9,7 +9,6 @@ import dsp.Decimator
 import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
 import dsp.fft.FftFrequencyBinsCalculator
-import dsp.windowing.HannWindow
 import dsp.windowing.WindowFunction
 import extensions.inSeconds
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import math.nextPowerOfTwo
 
+// ENHANCEMENT: Multi-resolution bin generations
 // ENHANCEMENT: Implement equal-loudness contours (ISO 226:2003). Manual SPL number with future plans of external meter?
 // ENHANCEMENT: If implementing other calculation strategies (e.g., DFT, CZT), then create a bin calculator interface
 // ENHANCEMENT: Explore sub-frame duration frequency calculation. Cool challenge, but probably not necessary for music.
@@ -30,7 +30,7 @@ class SpectrumManager(
     private val filterManager: FilterManager = FilterManager(config.highPassFilter, config.lowPassFilter),
     private val decimator: Decimator = Decimator(),
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
-    private val windowFunction: WindowFunction = HannWindow(),
+    private val windowFunction: WindowFunction = config.windowFunction.createWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FftFrequencyBinsCalculator = FftFrequencyBinsCalculator(),
 ) {
@@ -41,8 +41,8 @@ class SpectrumManager(
     fun calculate(audio: AudioFrame): FrequencyBins {
         val conditionedAudio = conditionAudio(audio)
         val preparedFrame = prepareFrame(conditionedAudio)
-        val allBins = frequencyBinsCalculator.calculate(preparedFrame, windowFunction.magnitudeCorrectionFactor)
-        val relevantBins = filterBins(allBins, preparedFrame.format)
+        val allBins = frequencyBinsCalculator.calculate(preparedFrame.audio, preparedFrame.magnitudeCorrectionFactor)
+        val relevantBins = filterBins(allBins, preparedFrame.audio.format)
 
         _frequencyBins.value = relevantBins
         return relevantBins
@@ -72,15 +72,20 @@ class SpectrumManager(
     }
 
     // Frame Prep
-    private fun prepareFrame(audio: AudioFrame): AudioFrame {
+    private fun prepareFrame(audio: AudioFrame): PreparedFrame {
         val sampleSize = (config.frameDuration.inSeconds * audio.format.sampleRate).toInt()
         val samplesSizeForDesiredSpacing = audio.format.sampleRate / config.approximateBinSpacing
         val optimalFftLength = nextPowerOfTwo(samplesSizeForDesiredSpacing.toInt())
 
-        return audio
+        val preparedAudio = audio
             .let { updateBuffer(audio, sampleSize) }
             .let { applyWindowFunction(it) }
             .let { interpolate(it, optimalFftLength) }
+
+        return PreparedFrame(
+            audio = preparedAudio,
+            magnitudeCorrectionFactor = windowFunction.magnitudeCorrectionFactor(sampleSize)
+        )
     }
 
     private fun updateBuffer(frame: AudioFrame, requiredSize: Int): AudioFrame {
@@ -101,6 +106,11 @@ class SpectrumManager(
             format = audio.format
         )
     }
+
+    private data class PreparedFrame(
+        val audio: AudioFrame,
+        val magnitudeCorrectionFactor: Float
+    )
 
     // Filtering
     private fun filterBins(bins: FrequencyBins, format: AudioFormat): FrequencyBins {

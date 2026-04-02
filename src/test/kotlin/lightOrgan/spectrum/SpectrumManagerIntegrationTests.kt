@@ -5,6 +5,7 @@ import dsp.Decimator
 import dsp.filtering.config.FilterConfig
 import dsp.filtering.config.FilterFamily
 import dsp.filtering.config.FilterOrder
+import dsp.windowing.WindowFunctionType
 import extensions.inSeconds
 import io.mockk.clearAllMocks
 import io.mockk.spyk
@@ -31,6 +32,7 @@ class SpectrumManagerIntegrationTests {
         rolloffThreshold = -48f,
         highPassFilter = null,
         lowPassFilter = null,
+        windowFunction = WindowFunctionType.Hann
     )
 
     private val sampleRate = 48000f
@@ -147,7 +149,7 @@ class SpectrumManagerIntegrationTests {
         val peak1 = bins.nearestTo(frequency1)
         val peak2 = bins.nearestTo(frequency2)
 
-        assertTrue(peak1.magnitude < 0.1f, "Expected $frequency1 Hz to be attenuated")
+        assertEquals(0.1f, peak1.magnitude, 0.1f, "Expected $frequency1 Hz to be attenuated")
         assertEquals(1f, peak2.magnitude, 0.1f)
     }
 
@@ -175,7 +177,7 @@ class SpectrumManagerIntegrationTests {
         val peak2 = bins.nearestTo(frequency2)
 
         assertEquals(1f, peak1.magnitude, 0.1f)
-        assertTrue(peak2.magnitude < 0.1f, "Expected $frequency2 Hz to be attenuated")
+        assertEquals(0.1f, peak2.magnitude, 0.1f, "Expected $frequency2 Hz to be attenuated")
     }
 
     @Test

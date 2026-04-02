@@ -2,6 +2,7 @@ package toolkit.monkeyTest
 
 import config.Config
 import config.children.Client
+import dsp.windowing.WindowFunctionType
 import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.spectrum.SpectrumConfig
@@ -19,6 +20,7 @@ fun nextConfig(
             rolloffThreshold = nextPositiveFloat(),
             highPassFilter = nextHighPassConfig(),
             lowPassFilter = nextLowPassConfig(),
+            windowFunction = nextEnum<WindowFunctionType>()
         ),
         spectrumGui = SpectrumGuiConfig(
             scale = Random.nextFloat(),

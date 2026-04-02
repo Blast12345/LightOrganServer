@@ -5,19 +5,12 @@ import kotlin.math.cos
 
 class HannWindow : WindowFunction {
 
-    override val magnitudeCorrectionFactor = 2f
-    override val energyCorrectionFactor = 1.63f
+    override fun coefficients(sampleSize: Int): FloatArray {
+        val lastIndex = sampleSize - 1
 
-    override fun appliedTo(frame: FloatArray): FloatArray {
-        val output = FloatArray(frame.size)
-        val lastIndex = frame.size - 1
-
-        for (i in frame.indices) {
-            val multiplier = 0.5f * (1f - cos(2f * PI.toFloat() * i / lastIndex))
-            output[i] = multiplier * frame[i]
+        return FloatArray(sampleSize) { index ->
+            0.5f * (1f - cos(2f * PI.toFloat() * index / lastIndex))
         }
-
-        return output
     }
 
 }

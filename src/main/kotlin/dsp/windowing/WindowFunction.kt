@@ -1,10 +1,25 @@
 package dsp.windowing
 
-// Reference: https://community.sw.siemens.com/s/article/window-correction-factors
-// Reference: https://dsp.stackexchange.com/questions/8317/fft-amplitude-or-magnitude
-// I'm using the term "magnitude" instead of "amplitude" because the value is inherently non-negative.
+import kotlin.math.sqrt
+
 interface WindowFunction {
-    val magnitudeCorrectionFactor: Float
-    val energyCorrectionFactor: Float
-    fun appliedTo(frame: FloatArray): FloatArray
+
+    // coefficients are the scale for each given position in the window, producing the window shape
+    fun coefficients(size: Int): FloatArray
+
+    fun magnitudeCorrectionFactor(sampleSize: Int): Float {
+        val coefficients = coefficients(sampleSize)
+        return coefficients.size / coefficients.sum()
+    }
+
+    fun energyCorrectionFactor(sampleSize: Int): Float {
+        val coefficients = coefficients(sampleSize)
+        return sqrt(coefficients.size / coefficients.map { coefficient -> coefficient * coefficient }.sum())
+    }
+
+    fun appliedTo(frame: FloatArray): FloatArray {
+        val coefficients = coefficients(frame.size)
+        return FloatArray(frame.size) { index -> coefficients[index] * frame[index] }
+    }
+
 }
