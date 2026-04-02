@@ -1,5 +1,6 @@
 package audio.samples
 
+// ENHANCEMENT: Introduce Samples type to make equality cleaner
 data class AudioFrame(
     val samples: FloatArray,
     val format: AudioFormat
