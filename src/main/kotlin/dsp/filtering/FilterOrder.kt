@@ -1,4 +1,4 @@
-package dsp.filtering.config
+package dsp.filtering
 
 @JvmInline
 value class FilterOrder(val value: Int) {

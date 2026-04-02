@@ -1,6 +1,6 @@
 package toolkit.monkeyTest
 
-import dsp.filtering.config.FilterOrder
+import dsp.filtering.FilterOrder
 
 fun nextFilterOrder(): FilterOrder {
     return FilterOrder(

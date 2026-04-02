@@ -1,4 +1,6 @@
-package dsp.filtering
+package dsp.filtering.cascaded
+
+import dsp.filtering.Filter
 
 abstract class CascadedFilter(
     override val sampleRate: Float,

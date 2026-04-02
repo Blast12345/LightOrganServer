@@ -1,5 +1,6 @@
-package dsp.filtering
+package dsp.filtering.primitives
 
+import dsp.filtering.Filter
 import kotlin.math.*
 
 // NOTE: This is a -6 dB/octave filter. Different coefficients change the shape of attenuation, illustrated by factory methods.

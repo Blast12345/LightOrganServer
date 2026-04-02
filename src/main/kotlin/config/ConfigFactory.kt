@@ -1,9 +1,10 @@
 package config
 
 import config.children.Client
-import dsp.filtering.config.FilterConfig
-import dsp.filtering.config.FilterFamily
-import dsp.filtering.config.FilterOrder
+import dsp.filtering.FilterConfig
+import dsp.filtering.FilterFamily
+import dsp.filtering.FilterOrder
+import dsp.filtering.FilterType
 import dsp.windowing.WindowType
 import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,13 +24,13 @@ class ConfigFactory(
                 frameDuration = 60.milliseconds,
                 approximateBinSpacing = 1f,
                 rolloffThreshold = -48f,
-                highPassFilter = FilterConfig.HighPass(
+                highPassFilter = FilterConfig(
+                    type = FilterType.HighPass(Keys.C.getFrequency(octave = 1)),
                     family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
-                    frequency = Keys.C.getFrequency(octave = 1) // TODO: How to handle -3 dB?
                 ),
-                lowPassFilter = FilterConfig.LowPass(
+                lowPassFilter = FilterConfig(
+                    type = FilterType.LowPass(Keys.A.getFrequency(octave = 2)),
                     family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
-                    frequency = Keys.A.getFrequency(octave = 2)
                 ),
                 window = WindowType.BlackmanHarris3Term,
             ),
@@ -38,7 +39,7 @@ class ConfigFactory(
                 lowestFrequency = 0f,
                 highestFrequency = 160F,
             ),
-            brightnessMultiplier = 3F, // TODO: Gain increase instead?
+            brightnessMultiplier = 4F, // TODO: Gain increase instead?
         )
     }
 

@@ -1,6 +1,6 @@
 package toolkit.monkeyTest
 
-import dsp.filtering.config.FilterFamily
+import dsp.filtering.FilterFamily
 
 fun nextFilterFamily(): FilterFamily {
     val order = nextFilterOrder()

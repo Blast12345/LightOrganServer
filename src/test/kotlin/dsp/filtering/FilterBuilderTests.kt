@@ -1,4 +1,4 @@
-package dsp.filtering.config
+package dsp.filtering
 
 class FilterBuilderTests {
 

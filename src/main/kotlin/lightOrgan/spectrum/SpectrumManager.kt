@@ -50,8 +50,8 @@ class SpectrumManager(
 
     // Conditioning
     private fun conditionAudio(audio: AudioFrame): AudioFrame {
-        val higherStopbandFrequency = filterManager.lowPassThresholdFrequency(config.rolloffThreshold)
-        val targetNyquist = higherStopbandFrequency ?: audio.format.nyquistFrequency
+        val highStopbandFrequency = filterManager.lowPassConfig?.frequencyAtMagnitude(config.rolloffThreshold)
+        val targetNyquist = highStopbandFrequency ?: audio.format.nyquistFrequency
 
         return audio
             .let { monoMixer.mix(it) }
@@ -116,11 +116,11 @@ class SpectrumManager(
     private fun filterBins(bins: FrequencyBins, format: AudioFormat): FrequencyBins {
         val frequencyResolution = 1 / config.frameDuration.inSeconds
         val nyquist = format.nyquistFrequency
-        val lowerStopbandFrequency = filterManager.highPassThresholdFrequency(config.rolloffThreshold)
-        val higherStopbandFrequency = filterManager.lowPassThresholdFrequency(config.rolloffThreshold)
+        val lowStopbandFrequency = filterManager.highPassConfig?.frequencyAtMagnitude(config.rolloffThreshold)
+        val highStopbandFrequency = filterManager.lowPassConfig?.frequencyAtMagnitude(config.rolloffThreshold)
 
-        val lowestFrequency = maxOf(frequencyResolution, lowerStopbandFrequency ?: frequencyResolution)
-        val highestFrequency = minOf(nyquist, higherStopbandFrequency ?: nyquist)
+        val lowestFrequency = maxOf(frequencyResolution, lowStopbandFrequency ?: frequencyResolution)
+        val highestFrequency = minOf(nyquist, highStopbandFrequency ?: nyquist)
 
         return bins.filter { it.frequency in lowestFrequency..highestFrequency }
     }

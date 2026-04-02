@@ -1,5 +1,8 @@
-package dsp.filtering
+package dsp.filtering.cascaded.butterworth
 
+import dsp.filtering.Filter
+import dsp.filtering.primitives.BiquadraticFilter
+import dsp.filtering.primitives.OnePoleOneZeroFilter
 import kotlin.math.PI
 import kotlin.math.cos
 

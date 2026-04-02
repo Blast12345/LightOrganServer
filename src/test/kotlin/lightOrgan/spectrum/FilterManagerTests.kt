@@ -1,10 +1,9 @@
 package lightOrgan.spectrum
 
 import audio.samples.AudioFrame
-import dsp.filtering.HighPassFilter
-import dsp.filtering.LowPassFilter
-import dsp.filtering.config.FilterBuilder
-import dsp.filtering.config.FilterConfig
+import dsp.filtering.Filter
+import dsp.filtering.FilterBuilder
+import dsp.filtering.FilterConfig
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -13,7 +12,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertNull
+import org.junit.jupiter.api.assertThrows
 import toolkit.monkeyTest.*
 
 class FilterManagerTests {
@@ -22,9 +21,9 @@ class FilterManagerTests {
     private val lowPassFilterConfig = nextLowPassConfig()
     private val filterBuilder: FilterBuilder = mockk()
 
-    private val mockHighPass: HighPassFilter = mockk()
+    private val mockHighPass: Filter = mockk()
     private val highPassedSamples = nextFloatArray()
-    private val mockLowPass: LowPassFilter = mockk()
+    private val mockLowPass: Filter = mockk()
     private val lowPassedSamples = nextFloatArray()
 
     private val format1 = nextAudioFormat()
@@ -32,8 +31,6 @@ class FilterManagerTests {
     private val format1Frame1 = nextAudioFrame(format = format1)
     private val format1Frame2 = nextAudioFrame(format = format1)
     private val format2Frame1 = nextAudioFrame(format = format2)
-
-    private val thresholdDb = -48f
 
     @BeforeEach
     fun setupHappyPath() {
@@ -50,10 +47,26 @@ class FilterManagerTests {
     }
 
     private fun createSUT(
-        highPass: FilterConfig.HighPass?,
-        lowPass: FilterConfig.LowPass?,
+        highPass: FilterConfig? = null,
+        lowPass: FilterConfig? = null,
         filterBuilder: FilterBuilder = this.filterBuilder
     ) = FilterManager(highPass, lowPass, filterBuilder)
+
+
+    // Construction
+    @Test
+    fun `the high pass filter must be a high pass filter`() {
+        assertThrows<IllegalArgumentException> {
+            createSUT(highPass = lowPassFilterConfig)
+        }
+    }
+
+    @Test
+    fun `the low pass filter must be a low pass filter`() {
+        assertThrows<IllegalArgumentException> {
+            createSUT(lowPass = highPassFilterConfig)
+        }
+    }
 
     // Filtering
     @Test
@@ -119,45 +132,6 @@ class FilterManagerTests {
         verify(exactly = 1) { filterBuilder.build(highPassFilterConfig, format2.sampleRate) }
         verify(exactly = 1) { filterBuilder.build(lowPassFilterConfig, format1.sampleRate) }
         verify(exactly = 1) { filterBuilder.build(lowPassFilterConfig, format2.sampleRate) }
-    }
-
-    // Thresholds
-    @Test
-    fun `given a high pass filter is defined, then get the threshold frequency`() {
-        val sut = createSUT(highPassFilterConfig, null)
-
-        val result = sut.highPassThresholdFrequency(thresholdDb)
-
-        val expected = highPassFilterConfig.frequencyAtMagnitude(thresholdDb)
-        assertEquals(expected, result)
-    }
-
-    @Test
-    fun `given no high pass filter is defined, then the threshold frequency is null`() {
-        val sut = createSUT(null, null)
-
-        val result = sut.highPassThresholdFrequency(thresholdDb)
-
-        assertNull(result)
-    }
-
-    @Test
-    fun `given a low pass filter is defined, then get the threshold frequency`() {
-        val sut = createSUT(null, lowPassFilterConfig)
-
-        val result = sut.lowPassThresholdFrequency(thresholdDb)
-
-        val expected = lowPassFilterConfig.frequencyAtMagnitude(thresholdDb)
-        assertEquals(expected, result)
-    }
-
-    @Test
-    fun `given no low pass filter is defined, then the threshold frequency is null`() {
-        val sut = createSUT(null, null)
-
-        val result = sut.lowPassThresholdFrequency(thresholdDb)
-
-        assertNull(result)
     }
 
 }

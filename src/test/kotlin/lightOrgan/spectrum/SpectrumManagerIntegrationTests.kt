@@ -2,9 +2,10 @@ package lightOrgan.spectrum
 
 import bins.nearestTo
 import dsp.Decimator
-import dsp.filtering.config.FilterConfig
-import dsp.filtering.config.FilterFamily
-import dsp.filtering.config.FilterOrder
+import dsp.filtering.FilterConfig
+import dsp.filtering.FilterFamily
+import dsp.filtering.FilterOrder
+import dsp.filtering.FilterType
 import dsp.windowing.WindowType
 import extensions.inSeconds
 import io.mockk.clearAllMocks
@@ -48,14 +49,14 @@ class SpectrumManagerIntegrationTests {
     private val combinedWavesFrame = nextAudioFrame(combinedWaves)
     private val silenceFrame = nextAudioFrame(silence)
 
-    val highPassConfig = FilterConfig.HighPass(
+    val highPassConfig = FilterConfig(
+        type = FilterType.HighPass(middleFrequency),
         family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
-        frequency = middleFrequency
     )
 
-    val lowPassConfig = FilterConfig.LowPass(
+    val lowPassConfig = FilterConfig(
+        type = FilterType.LowPass(middleFrequency),
         family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
-        frequency = middleFrequency
     )
 
     @AfterEach

@@ -1,5 +1,6 @@
-package dsp.filtering
+package dsp.filtering.primitives
 
+import dsp.filtering.Filter
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin

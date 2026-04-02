@@ -6,12 +6,3 @@ interface Filter {
     fun filter(samples: FloatArray): FloatArray
     fun magnitudeAt(frequency: Float): Float
 }
-
-// TODO: Move me?
-interface LowPassFilter : Filter {
-    val cutoffFrequency: Float
-}
-
-interface HighPassFilter : Filter {
-    val cutoffFrequency: Float
-}

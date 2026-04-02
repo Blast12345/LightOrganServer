@@ -1,4 +1,4 @@
-package dsp.filtering.config
+package dsp.filtering
 
 import kotlin.math.pow
 
