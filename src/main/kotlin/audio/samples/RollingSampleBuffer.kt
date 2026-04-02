@@ -3,30 +3,39 @@ package audio.samples
 import extensions.takeLastArray
 import logging.Logger
 
-class RollingSampleBuffer(size: Int) {
+class RollingSampleBuffer(initialSize: Int = 0) {
 
-    private val samples = FloatArray(size)
+    private var samples = FloatArray(initialSize)
 
     val current: FloatArray
         get() = samples.copyOf()
 
-    fun append(newSamples: FloatArray) {
+    var size: Int = samples.size
+        set(value) {
+            if (field == value) return
+            field = value
+            resize(value)
+        }
+
+    private fun resize(newSize: Int) {
+        val old = samples
+        samples = FloatArray(newSize)
+        val copyCount = minOf(old.size, newSize)
+        old.copyInto(samples, destinationOffset = newSize - copyCount, startIndex = old.size - copyCount)
+    }
+
+    fun append(newSamples: FloatArray): FloatArray {
         checkForDiscontinuity(newSamples)
 
-        // Trim our new samples to prevent buffer overflow
         val trimmed = newSamples.takeLastArray(samples.size)
-
-        // Shift existing samples over (i.e., back in time)
         samples.copyInto(samples, destinationOffset = 0, startIndex = trimmed.size)
-
-        // Copy new samples into the end of the buffer (i.e., the most recent time)
         trimmed.copyInto(samples, destinationOffset = samples.size - trimmed.size)
+
+        return current
     }
 
     private fun checkForDiscontinuity(newSamples: FloatArray) {
-        val causesDiscontinuity = newSamples.size > samples.size
-
-        if (causesDiscontinuity) {
+        if (newSamples.size > samples.size) {
             Logger.warning("Rolling buffer has dropped samples. (${newSamples.size} new samples, buffer capacity ${samples.size})")
         }
     }

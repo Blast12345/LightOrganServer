@@ -5,6 +5,16 @@ import audio.samples.AudioFrame
 import toolkit.generators.WaveForm
 
 fun nextAudioFrame(
+    samples: FloatArray = nextFloatArray(),
+    format: AudioFormat = nextAudioFormat()
+): AudioFrame {
+    return AudioFrame(
+        samples = samples,
+        format = format
+    )
+}
+
+fun nextAudioFrame(
     channels: List<FloatArray> = listOf(nextFloatArray()),
     sampleRate: Float = nextPositiveInt().toFloat(),
     bitDepth: Int = nextPositiveInt()
