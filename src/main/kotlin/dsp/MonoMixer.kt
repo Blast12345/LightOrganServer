@@ -7,13 +7,13 @@ class MonoMixer {
     fun mix(audio: AudioFrame): AudioFrame {
         if (audio.format.channels == 1) return audio
 
-        val monoSamples = mixToMono(audio.samples, audio.format.channels)
+        val monoSamples = sumToMono(audio.samples, audio.format.channels)
         val monoFormat = audio.format.copy(channels = 1)
 
         return AudioFrame(monoSamples, monoFormat)
     }
 
-    private fun mixToMono(samples: FloatArray, channels: Int): FloatArray {
+    private fun sumToMono(samples: FloatArray, channels: Int): FloatArray {
         val monoSamples = FloatArray(samples.size / channels)
 
         // average all channels together
