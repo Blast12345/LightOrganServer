@@ -21,14 +21,10 @@ import lightOrgan.spectrum.SpectrumManager
 // ENHANCEMENT: Introduce SampleRate type (which exposes nyquistFrequency)
 // ENHANCEMENT: Introduce Magnitude and DBFS types (which can be converted back and forth)
 fun main(args: Array<String>) {
-    val audioInputManager = AudioInputManager()
-    val spectrumManager = SpectrumManager()
-    val colorManager = ColorManager()
-
     val lightOrgan = LightOrgan(
-        audioInputManager,
-        spectrumManager,
-        colorManager
+        AudioInputManager(),
+        SpectrumManager(),
+        ColorManager()
     )
 
     if (args.contains("--headless")) {
