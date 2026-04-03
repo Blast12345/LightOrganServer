@@ -1,49 +1,46 @@
 package gui.dashboard.tiles.color
 
-import androidx.compose.runtime.MutableState
-import io.mockk.mockk
-import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
+import io.mockk.clearAllMocks
+import lightOrgan.color.ColorManagerFixture
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import kotlin.random.Random
+import toolkit.monkeyTest.nextColor
 
 class ColorTileViewModelTests {
 
-    private val colorState: MutableState<androidx.compose.ui.graphics.Color> = mockk()
-    private val sutScope = TestScope()
+    private lateinit var colorManager: ColorManagerFixture
 
-    private val hue = Random.nextFloat()
-    private val saturation = Random.nextFloat()
-    private val brightness = Random.nextFloat()
-    private val color = wrappers.color.Color(hue, saturation, brightness)
-    private val composeColor = androidx.compose.ui.graphics.Color.hsv(hue * 360, saturation, brightness)
+    private val color1 = nextColor()
+    private val color2 = nextColor()
+
+
+    @BeforeEach
+    fun setupHappyPath() {
+        colorManager = ColorManagerFixture.create()
+    }
 
     @AfterEach
     fun teardown() {
-        sutScope.cancel()
+        clearAllMocks()
     }
 
     private fun createSUT(): ColorTileViewModel {
         return ColorTileViewModel(
-            color = colorState,
-            scope = sutScope
+            colorManager = colorManager.mock
         )
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `the color state is set when a new color is received`() = runTest {
+    fun `when a new color is available, then show that color`() {
         val sut = createSUT()
 
-        sut.new(color)
-        sutScope.advanceUntilIdle()
+        colorManager.colorFlow.value = color1
+        assertEquals(color1, sut.color.value)
 
-        verify { colorState.value = composeColor }
+        colorManager.colorFlow.value = color2
+        assertEquals(color2, sut.color.value)
     }
 
 }

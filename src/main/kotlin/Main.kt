@@ -9,32 +9,32 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import gui.Theme
 import gui.dashboard.Dashboard
-import gui.dashboard.DashboardViewModelFactory
+import gui.dashboard.DashboardViewModel
 import gui.dashboard.SnackbarController
 import lightOrgan.LightOrgan
+import lightOrgan.color.ColorManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 
-// TODO: Consolidate coroutine scopes
+// ENHANCEMENT: Add audio output? This can also delay audio to keep things aligned.
+// ENHANCEMENT: Introduce Frequency type
+// ENHANCEMENT: Introduce SampleRate type (which exposes nyquistFrequency)
+// ENHANCEMENT: Introduce Magnitude and DBFS types (which can be converted back and forth)
 fun main(args: Array<String>) {
-    val audioInputManager = AudioInputManager()
-    val spectrumManager = SpectrumManager()
-
     val lightOrgan = LightOrgan(
-        audioInputManager = audioInputManager,
-        spectrumManager = spectrumManager
+        AudioInputManager(),
+        SpectrumManager(),
+        ColorManager()
     )
 
     if (args.contains("--headless")) {
         launchHeadless(lightOrgan)
     } else {
-        launchGUI(audioInputManager, spectrumManager, lightOrgan)
+        launchGUI(lightOrgan)
     }
 }
 
 private fun launchGUI(
-    audioInputManager: AudioInputManager,
-    spectrumManager: SpectrumManager,
     lightOrgan: LightOrgan
 ) =
     application {
@@ -64,15 +64,7 @@ private fun launchGUI(
                 Scaffold(
                     snackbarHost = { SnackbarHost(snackbarHostState) }
                 ) {
-                    val viewModel =
-                        remember {
-                            DashboardViewModelFactory().create(
-                                audioInputManager,
-                                spectrumManager,
-                                lightOrgan,
-                                snackbarController
-                            )
-                        }
+                    val viewModel = remember { DashboardViewModel(lightOrgan, snackbarController) }
                     Dashboard(viewModel)
                 }
             }

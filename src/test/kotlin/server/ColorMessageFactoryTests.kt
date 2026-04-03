@@ -1,8 +1,8 @@
 package server
 
+import androidx.compose.ui.graphics.Color
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import wrappers.color.Color
 
 class ColorMessageFactoryTests {
 

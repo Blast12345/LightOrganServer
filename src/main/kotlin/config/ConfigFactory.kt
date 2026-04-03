@@ -34,14 +34,14 @@ class ConfigFactory(
                     type = FilterType.LowPass(tuning.getFrequency(tuning.A, octave = 2)),
                     family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
                 ),
-                window = WindowType.BlackmanHarris3Term
+                window = WindowType.BlackmanHarris3Term,
             ),
             spectrumGui = SpectrumGuiConfig(
                 scale = 4F,
                 lowestFrequency = 0f,
                 highestFrequency = 160F,
             ),
-            brightnessMultiplier = 3F,
+            brightnessMultiplier = 4F, // TODO: Gain increase instead?
         )
     }
 

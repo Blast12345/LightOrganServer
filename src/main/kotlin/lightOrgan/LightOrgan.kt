@@ -1,27 +1,25 @@
 package lightOrgan
 
 import audio.samples.AudioFrame
-import color.ColorFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import lightOrgan.color.ColorManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 import server.Server
 import utilities.SequenceGapDetector
 import utilities.TimestampUtility
-import java.util.concurrent.ConcurrentHashMap
 
 // ENHANCEMENT: Gracefully handle crashed coroutines
 // ENHANCEMENT: Handle when cachedAudio starts to grow significantly - it's a sign that the computer is too slow for the settings.
 class LightOrgan(
-    private val audioInputManager: AudioInputManager,
-    private val spectrumManager: SpectrumManager,
-    private val colorFactory: ColorFactory = ColorFactory(), // TODO: Refactor
+    val inputManager: AudioInputManager,
+    val spectrumManager: SpectrumManager,
+    val colorManager: ColorManager,
     private val server: Server = Server(),
-    private val subscribers: MutableSet<LightOrganSubscriber> = ConcurrentHashMap.newKeySet(),
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) {
 
@@ -38,7 +36,7 @@ class LightOrgan(
         scope.launch {
             val gapDetector = SequenceGapDetector("Audio stream")
 
-            audioInputManager.audioStream.collect { streamFrame ->
+            inputManager.audioStream.collect { streamFrame ->
                 gapDetector.check(streamFrame.sequenceNumber)
                 cachedAudio.trySend(streamFrame.audio)
             }
@@ -56,16 +54,11 @@ class LightOrgan(
 
     private fun handle(newAudio: AudioFrame) {
         val frequencyBins = spectrumManager.calculate(newAudio)
-        val color = colorFactory.create(frequencyBins)
+        val color = colorManager.calculate(frequencyBins)
 
-        subscribers.forEach { it.new(color) }
-        server.new(color)
+//        server.new(color)
 
-        timeBetweenColors.logTimeSinceLast()
-    }
-
-    fun addSubscriber(subscriber: LightOrganSubscriber) {
-        subscribers.add(subscriber)
+//        timeBetweenColors.logTimeSinceLast()
     }
 
 }

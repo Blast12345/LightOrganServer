@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import toolkit.monkeyTest.nextByteArray
-import toolkit.monkeyTest.nextException
-import toolkit.monkeyTest.nextPositiveInt
-import toolkit.monkeyTest.nextString
+import toolkit.monkeyTest.*
 import java.nio.ByteOrder
 import javax.sound.sampled.TargetDataLine
 import kotlin.random.Random.Default.nextBoolean
@@ -27,7 +24,7 @@ class InputLineTests {
     @BeforeEach
     fun setupHappyPath() {
         every { dataLine.format } returns format
-        every { format.sampleRate } returns nextPositiveInt().toFloat()
+        every { format.sampleRate } returns nextPositiveFloat()
         every { format.sampleSizeInBits } returns nextPositiveInt()
         every { format.channels } returns nextPositiveInt()
         every { format.isBigEndian } returns nextBoolean()

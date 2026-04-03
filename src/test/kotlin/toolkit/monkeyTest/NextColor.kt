@@ -1,12 +1,12 @@
 package toolkit.monkeyTest
 
-import wrappers.color.Color
+import androidx.compose.ui.graphics.Color
 import kotlin.random.Random
 
 fun nextColor(): Color {
-    return Color(
-        hue = Random.nextFloat(),
+    return Color.hsv(
+        hue = Random.nextFloat() * 360f,
         saturation = Random.nextFloat(),
-        brightness = Random.nextFloat()
+        value = Random.nextFloat()
     )
 }

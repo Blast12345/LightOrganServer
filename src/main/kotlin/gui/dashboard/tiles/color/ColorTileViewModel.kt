@@ -1,28 +1,15 @@
 package gui.dashboard.tiles.color
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import lightOrgan.LightOrganSubscriber
+import kotlinx.coroutines.flow.StateFlow
+import lightOrgan.color.ColorManager
 
+// ENHANCEMENT: Consider showing Note ring, Color wheel, and color in the center.
+// ENHANCEMENT: Consider showing the helical pitch model https://www.researchgate.net/figure/The-helical-model-of-pitch-Musical-pitch-is-depicted-as-varying-along-both-a-linear_fig1_272318954
 class ColorTileViewModel(
-    val color: MutableState<Color>,
-    val scope: CoroutineScope
-) : LightOrganSubscriber {
+    private val colorManager: ColorManager
+) {
 
-    override fun new(color: wrappers.color.Color) {
-        scope.launch {
-            this@ColorTileViewModel.color.value = getComposeColor(color)
-        }
-    }
-
-    private fun getComposeColor(color: wrappers.color.Color): Color {
-        return Color.hsv(
-            hue = color.hue * 360,
-            saturation = color.saturation,
-            value = color.brightness
-        )
-    }
+    val color: StateFlow<Color> = colorManager.color
 
 }

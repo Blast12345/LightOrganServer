@@ -9,21 +9,18 @@ import gui.tiles.audioInput.AudioInputTileViewModel
 import lightOrgan.LightOrgan
 
 class DashboardViewModel(
-    val lightOrgan: LightOrgan,
-    val audioInputTileViewModel: AudioInputTileViewModel,
-    val colorTileViewModel: ColorTileViewModel,
-    val spectrumTileViewModel: SpectrumTileViewModel,
+    lightOrgan: LightOrgan,
+    snackbarController: SnackbarController,
     private val configPersister: ConfigPersister = ConfigPersister(),
     private val config: Config = ConfigSingleton
 ) {
 
-    init {
-        subscribeColorTileToTheLightOrgan()
-        startPersistingConfigChanges()
-    }
+    val audioInputTileViewModel = AudioInputTileViewModel(lightOrgan.inputManager, snackbarController)
+    val spectrumTileViewModel = SpectrumTileViewModel(lightOrgan.spectrumManager)
+    val colorTileViewModel = ColorTileViewModel(lightOrgan.colorManager)
 
-    private fun subscribeColorTileToTheLightOrgan() {
-        lightOrgan.addSubscriber(colorTileViewModel)
+    init {
+        startPersistingConfigChanges()
     }
 
     private fun startPersistingConfigChanges() {
