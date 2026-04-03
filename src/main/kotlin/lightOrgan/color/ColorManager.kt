@@ -21,10 +21,8 @@ class ColorManager(
     private val colorCalculator: ColorCalculator = ColorCalculator(),
 ) {
 
-
     private val _color = MutableStateFlow(Color.Black)
     val color: StateFlow<Color> = _color.asStateFlow()
-
 
     // TODO: Reject peaks that are from aliasing?
     // TODO: Reject peaks that are from sidelobes (or compensate)
