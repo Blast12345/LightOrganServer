@@ -20,13 +20,14 @@ import androidx.compose.ui.graphics.Color as ComposeColor
 // ENHANCEMENT: Equal loudness contours seems increasingly important
 // ENHANCEMENT: Expose brightness curve alteration
 class ColorCalculator(
+    private val gammaAdjustment: Float = 1f,
     private val tuning: TuningSystem = WesternTuningSystem(),
     private val colorSmoother: LightExponentialSmoother = LightExponentialSmoother(halfLife = 75.milliseconds),
     private val brightnessSmoother: PeakSmoother = PeakSmoother(halfLife = 1.milliseconds)
 ) {
 
     // TODO: Enforce sRGB via a type?
-    fun calculate(frequencyBins: FrequencyBins, brightnessMultiplier: Float): List<ComposeColor> {
+    fun calculate(frequencyBins: FrequencyBins, brightnessMultiplier: Float): ComposeColor {
         val lights = frequencyBins.map { createLight(it) }
         val combinedLight = lights.fold(Light()) { sum, current -> sum + current }
 
@@ -41,32 +42,29 @@ class ColorCalculator(
         val colorOfCombinedLight = smoothedLight.color.convert(ColorSpaces.Srgb)
         val hueAndSaturation = hueAndSaturation(colorOfCombinedLight)
 
-        return listOf(
-            ComposeColor.hsv(
-                hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),
-                saturation = hueAndSaturation.second.coerceIn(0f, 1f),
-                value = smoothedBrightness.pow(1.5f).coerceIn(0f, 1f),
-                colorSpace = ColorSpaces.Srgb
-            ),
-            ComposeColor.hsv(
-                hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),
-                saturation = hueAndSaturation.second.coerceIn(0f, 1f),
-                value = smoothedBrightness.pow(1.25f).coerceIn(0f, 1f),
-                colorSpace = ColorSpaces.Srgb
-            ),
-            ComposeColor.hsv(
-                hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),
-                saturation = hueAndSaturation.second.coerceIn(0f, 1f),
-                value = combinedSoundPressure.coerceIn(0f, 1f),
-                colorSpace = ColorSpaces.Srgb
-            ),
-            ComposeColor.hsv(
-                hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),
-                saturation = hueAndSaturation.second.coerceIn(0f, 1f),
-                value = 0f, //smoothedBrightness.coerceIn(0f, 1f),
-                colorSpace = ColorSpaces.Srgb
-            )
-        )
+        val hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f)
+        val saturation = hueAndSaturation.second.coerceIn(0f, 1f)
+        val value = smoothedBrightness.pow(gammaAdjustment).coerceIn(0f, 1f)
+
+        return ComposeColor.hsv(hue, saturation, value, colorSpace = ColorSpaces.Srgb)
+//            ComposeColor.hsv(
+//                hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),
+//                saturation = hueAndSaturation.second.coerceIn(0f, 1f),
+//                value = smoothedBrightness.pow(1.5f).coerceIn(0f, 1f),
+//                colorSpace = ColorSpaces.Srgb
+//            ),
+//            ComposeColor.hsv(
+//                hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),
+//                saturation = hueAndSaturation.second.coerceIn(0f, 1f),
+//                value = smoothedBrightness.pow(1.25f).coerceIn(0f, 1f),
+//                colorSpace = ColorSpaces.Srgb
+//            ),
+//            ComposeColor.hsv(
+//                hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),
+//                saturation = hueAndSaturation.second.coerceIn(0f, 1f),
+//                value = combinedSoundPressure.coerceIn(0f, 1f),
+//                colorSpace = ColorSpaces.Srgb
+//            ),
     }
 
     fun hueAndSaturation(color: ComposeColor): Pair<Float, Float> {

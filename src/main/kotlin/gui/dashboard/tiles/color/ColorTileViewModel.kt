@@ -8,6 +8,6 @@ class ColorTileViewModel(
     colorManager: ColorManager
 ) {
 
-    val colors = colorManager.colors
+    val color = colorManager.color
 
 }

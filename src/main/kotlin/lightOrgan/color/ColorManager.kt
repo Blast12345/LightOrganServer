@@ -22,8 +22,8 @@ class ColorManager(
 ) {
 
 
-    private val _colors = MutableStateFlow(listOf(Color.Black, Color.Black, Color.Black, Color.Black))
-    val colors: StateFlow<List<Color>> = _colors.asStateFlow()
+    private val _color = MutableStateFlow(Color.Black)
+    val color: StateFlow<Color> = _color.asStateFlow()
 
 
     // TODO: Reject peaks that are from aliasing?
@@ -31,16 +31,11 @@ class ColorManager(
     fun calculate(frequencyBins: FrequencyBins): Color { // TODO: Return metadata?
         val peakBins = peakFrequencyBinsCalculator.calculate(frequencyBins)
 
-        val colors = if (peakBins.isEmpty()) listOf(
-            Color.Black,
-            Color.Black,
-            Color.Black,
-            Color.Black
-        ) else colorCalculator.calculate(peakBins, brightnessMultiplier)
+        val color = if (peakBins.isEmpty()) Color.Black else colorCalculator.calculate(peakBins, brightnessMultiplier)
 
-        _colors.value = colors
-
-        return colors.first()
+        // Return
+        _color.value = color
+        return color
     }
 
 }
