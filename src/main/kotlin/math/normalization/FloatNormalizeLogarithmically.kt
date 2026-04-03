@@ -1,4 +1,4 @@
-package math.featureScaling
+package math.normalization
 
 import kotlin.math.log
 
