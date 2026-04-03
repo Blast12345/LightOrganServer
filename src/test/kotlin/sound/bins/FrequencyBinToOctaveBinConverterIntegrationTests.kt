@@ -1,26 +1,24 @@
 package sound.bins
 
 import dsp.bins.FrequencyBin
+import music.WesternTuningSystem
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sound.bins.octave.OctaveBin
-import sound.notes.Notes
 
 class FrequencyBinToOctaveBinConverterIntegrationTests {
 
-    private val rootNote = Notes.C
+    private val tuning = WesternTuningSystem()
 
     private fun createSUT(): FrequencyBinToOctaveBinConverter {
-        return FrequencyBinToOctaveBinConverter(
-            rootNote = rootNote
-        )
+        return FrequencyBinToOctaveBinConverter(tuning)
     }
 
     @Test
     fun `given a frequency of C1, create an octave bin`() {
         val sut = createSUT()
         val frequencyBin = FrequencyBin(
-            frequency = Notes.C.getFrequency(1),
+            frequency = tuning.getFrequency(tuning.C, 1),
             magnitude = 0.25F
         )
 
@@ -34,7 +32,7 @@ class FrequencyBinToOctaveBinConverterIntegrationTests {
     fun `given a frequency of C4, create an octave bin`() {
         val sut = createSUT()
         val frequencyBin = FrequencyBin(
-            frequency = Notes.C.getFrequency(4),
+            frequency = tuning.getFrequency(tuning.C, 4),
             magnitude = 0.5F
         )
 
@@ -49,7 +47,7 @@ class FrequencyBinToOctaveBinConverterIntegrationTests {
     fun `given a frequency of F#3, create an octave bin`() {
         val sut = createSUT()
         val frequencyBin = FrequencyBin(
-            frequency = Notes.F_SHARP.getFrequency(3),
+            frequency = tuning.getFrequency(tuning.F_SHARP, 3),
             magnitude = 0.75F
         )
 
@@ -58,6 +56,5 @@ class FrequencyBinToOctaveBinConverterIntegrationTests {
         val expected = OctaveBin(0.5F, 0.75F)
         assertEquals(expected, actual)
     }
-
 
 }
