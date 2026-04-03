@@ -1,5 +1,6 @@
 package lightOrgan.spectrum
 
+import dsp.Decimator
 import dsp.bins.nearestTo
 import dsp.filtering.FilterConfig
 import dsp.filtering.FilterFamily
@@ -8,6 +9,8 @@ import dsp.filtering.FilterType
 import dsp.windowing.WindowType
 import extensions.inSeconds
 import io.mockk.clearAllMocks
+import io.mockk.spyk
+import io.mockk.verify
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -191,4 +194,18 @@ class SpectrumManagerIntegrationTests {
         )
     }
 
+    // Optimization
+    @Test
+    fun `given a low pass filter is used, performance is optimized by decimating`() {
+        val decimator = spyk(Decimator())
+        val sut = SpectrumManager(
+            config = config.copy(lowPassFilter = lowPassConfig),
+            decimator = decimator
+        )
+
+        sut.calculate(wave1Frame)
+
+        verify { decimator.decimate(any(), any(), any(), any()) }
+    }
+    
 }
