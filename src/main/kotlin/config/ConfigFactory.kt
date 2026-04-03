@@ -9,7 +9,7 @@ import dsp.windowing.WindowType
 import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.spectrum.SpectrumConfig
-import music.Keys
+import music.WesternTuningSystem
 import kotlin.time.Duration.Companion.milliseconds
 
 class ConfigFactory(
@@ -17,6 +17,8 @@ class ConfigFactory(
 ) {
 
     fun create(): Config {
+        val tuning = WesternTuningSystem()
+
         return Config(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
             clients = setOf(Client("192.168.1.55")),
@@ -25,11 +27,11 @@ class ConfigFactory(
                 approximateBinSpacing = 1f,
                 rolloffThreshold = -48f,
                 highPassFilter = FilterConfig(
-                    type = FilterType.HighPass(Keys.A.getFrequency(octave = 0)),
+                    type = FilterType.HighPass(tuning.getFrequency(tuning.A, octave = 0)),
                     family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
                 ),
                 lowPassFilter = FilterConfig(
-                    type = FilterType.LowPass(Keys.A.getFrequency(octave = 2)),
+                    type = FilterType.LowPass(tuning.getFrequency(tuning.A, octave = 2)),
                     family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
                 ),
                 window = WindowType.BlackmanHarris3Term,
