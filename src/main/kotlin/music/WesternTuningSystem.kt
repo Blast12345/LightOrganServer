@@ -1,7 +1,7 @@
 package music
 
 @Suppress("PropertyName")
-class WesternTuning(a4Frequency: Float = 440f) : Tuning() {
+class WesternTuningSystem(a4Frequency: Float = 440f) : TuningSystem() {
 
     private val semitonesPerOctave = 12
 

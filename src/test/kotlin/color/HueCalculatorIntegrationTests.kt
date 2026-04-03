@@ -3,13 +3,13 @@ package color
 import dsp.bins.FrequencyBin
 import dsp.bins.FrequencyBins
 import music.PitchClass
-import music.WesternTuning
+import music.WesternTuningSystem
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class HueCalculatorIntegrationTests {
 
-    private val tuning = WesternTuning()
+    private val tuning = WesternTuningSystem()
 
     @Test
     fun `C notes are red`() {

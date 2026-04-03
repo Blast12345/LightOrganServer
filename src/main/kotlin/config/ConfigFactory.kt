@@ -9,7 +9,7 @@ import dsp.windowing.WindowType
 import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.spectrum.SpectrumConfig
-import music.WesternTuning
+import music.WesternTuningSystem
 import kotlin.time.Duration.Companion.milliseconds
 
 class ConfigFactory(
@@ -17,7 +17,7 @@ class ConfigFactory(
 ) {
 
     fun create(): Config {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         return Config(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),

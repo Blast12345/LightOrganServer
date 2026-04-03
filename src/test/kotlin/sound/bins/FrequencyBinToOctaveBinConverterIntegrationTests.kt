@@ -1,14 +1,14 @@
 package sound.bins
 
 import dsp.bins.FrequencyBin
-import music.WesternTuning
+import music.WesternTuningSystem
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sound.bins.octave.OctaveBin
 
 class FrequencyBinToOctaveBinConverterIntegrationTests {
 
-    private val tuning = WesternTuning()
+    private val tuning = WesternTuningSystem()
 
     private fun createSUT(): FrequencyBinToOctaveBinConverter {
         return FrequencyBinToOctaveBinConverter(tuning)

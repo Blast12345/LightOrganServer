@@ -3,13 +3,20 @@ package music
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class WesternTuningTest {
+class WesternTuningSystemTests {
+
+    @Test
+    fun `the system has 12 pitch classes`() {
+        val tuning = WesternTuningSystem()
+
+        assertEquals(12, tuning.pitchClasses.size)
+    }
 
     // Tuning
     // Reference: https://en.wikipedia.org/wiki/A440_(pitch_standard)
     @Test
     fun `the tuning is A4 440 Hz by default`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val a4Frequency = tuning.getFrequency(tuning.A, octave = 4)
 
@@ -19,25 +26,18 @@ class WesternTuningTest {
     @Test
     fun `custom tunings are supported`() {
         val baroquePitch = 415f
-        val tuning = WesternTuning(a4Frequency = baroquePitch)
+        val tuning = WesternTuningSystem(a4Frequency = baroquePitch)
 
         val a4Frequency = tuning.getFrequency(tuning.A, octave = 4)
 
         assertEquals(baroquePitch, a4Frequency, 0.01f)
     }
 
-    @Test
-    fun `the tuning has 12 pitch classes`() {
-        val tuning = WesternTuning()
-
-        assertEquals(12, tuning.pitchClasses.size)
-    }
-
     // Characterization tests
     // Reference: https://muted.io/note-frequencies/
     @Test
     fun `C4 is 261_63 Hz`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val frequency = tuning.getFrequency(tuning.C, octave = 4)
 
@@ -46,7 +46,7 @@ class WesternTuningTest {
 
     @Test
     fun `C#4 is 277_18 Hz`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val frequency = tuning.getFrequency(tuning.C_SHARP, octave = 4)
 
@@ -55,7 +55,7 @@ class WesternTuningTest {
 
     @Test
     fun `D4 is 293_66 Hz`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val frequency = tuning.getFrequency(tuning.D, octave = 4)
 
@@ -64,7 +64,7 @@ class WesternTuningTest {
 
     @Test
     fun `D#4 is 311_13 Hz`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val frequency = tuning.getFrequency(tuning.D_SHARP, octave = 4)
 
@@ -73,7 +73,7 @@ class WesternTuningTest {
 
     @Test
     fun `E4 is 329_63 Hz`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val frequency = tuning.getFrequency(tuning.E, octave = 4)
 
@@ -82,7 +82,7 @@ class WesternTuningTest {
 
     @Test
     fun `F4 is 349_23 Hz`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val frequency = tuning.getFrequency(tuning.F, octave = 4)
 
@@ -91,7 +91,7 @@ class WesternTuningTest {
 
     @Test
     fun `F#4 is 369_99 Hz`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val frequency = tuning.getFrequency(tuning.F_SHARP, octave = 4)
 
@@ -100,7 +100,7 @@ class WesternTuningTest {
 
     @Test
     fun `G4 is 392_00 Hz`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val frequency = tuning.getFrequency(tuning.G, octave = 4)
 
@@ -109,7 +109,7 @@ class WesternTuningTest {
 
     @Test
     fun `G#4 is 415_30 Hz`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val frequency = tuning.getFrequency(tuning.G_SHARP, octave = 4)
 
@@ -118,7 +118,7 @@ class WesternTuningTest {
 
     @Test
     fun `A4 is 440_00 Hz`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val frequency = tuning.getFrequency(tuning.A, octave = 4)
 
@@ -127,7 +127,7 @@ class WesternTuningTest {
 
     @Test
     fun `A#4 is 466_16 Hz`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val frequency = tuning.getFrequency(tuning.A_SHARP, octave = 4)
 
@@ -136,7 +136,7 @@ class WesternTuningTest {
 
     @Test
     fun `B4 is 493_88 Hz`() {
-        val tuning = WesternTuning()
+        val tuning = WesternTuningSystem()
 
         val frequency = tuning.getFrequency(tuning.B, octave = 4)
 

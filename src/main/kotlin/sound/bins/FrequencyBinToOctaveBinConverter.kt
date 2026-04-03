@@ -1,12 +1,12 @@
 package sound.bins
 
 import dsp.bins.FrequencyBin
-import music.Tuning
-import music.WesternTuning
+import music.TuningSystem
+import music.WesternTuningSystem
 import sound.bins.octave.OctaveBin
 
 class FrequencyBinToOctaveBinConverter(
-    private val tuning: Tuning = WesternTuning()
+    private val tuning: TuningSystem = WesternTuningSystem()
 ) {
 
     fun convert(frequencyBin: FrequencyBin): OctaveBin {

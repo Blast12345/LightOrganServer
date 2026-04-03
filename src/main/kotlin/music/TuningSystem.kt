@@ -4,7 +4,7 @@ import math.geometry.Angle
 import math.normalization.normalizeLogarithmically
 import kotlin.math.pow
 
-abstract class Tuning {
+abstract class TuningSystem {
 
     abstract val octaveRatio: Float
     abstract val pitchClasses: List<PitchClass>
