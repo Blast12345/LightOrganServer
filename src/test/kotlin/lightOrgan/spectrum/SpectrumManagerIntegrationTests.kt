@@ -11,7 +11,6 @@ import extensions.inSeconds
 import io.mockk.clearAllMocks
 import io.mockk.spyk
 import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -24,7 +23,6 @@ import kotlin.time.Duration.Companion.milliseconds
 
 // Calculating bins from audio is such a complex process that unit tests don't feel like they deliver the "big picture"
 // So, these tests represent the ultimate goal of the spectrum manager.
-@OptIn(ExperimentalCoroutinesApi::class)
 class SpectrumManagerIntegrationTests {
 
     private val config = SpectrumConfig(
