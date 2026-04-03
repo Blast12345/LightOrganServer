@@ -7,7 +7,8 @@ import dsp.bins.FrequencyBin
 import dsp.bins.FrequencyBins
 import math.physics.sumSoundPressure
 import math.smoothing.PeakSmoother
-import music.Tuning
+import music.TuningSystem
+import music.WesternTuningSystem
 import kotlin.math.pow
 import kotlin.time.Duration.Companion.milliseconds
 import androidx.compose.ui.graphics.Color as ComposeColor
@@ -19,7 +20,7 @@ import androidx.compose.ui.graphics.Color as ComposeColor
 // ENHANCEMENT: Equal loudness contours seems increasingly important
 // ENHANCEMENT: Expose brightness curve alteration
 class ColorCalculator(
-    private val tuning: Tuning = Tuning.western(),
+    private val tuning: TuningSystem = WesternTuningSystem(),
     private val colorSmoother: LightExponentialSmoother = LightExponentialSmoother(halfLife = 75.milliseconds),
     private val brightnessSmoother: PeakSmoother = PeakSmoother(halfLife = 1.milliseconds)
 ) {
