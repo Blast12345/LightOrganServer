@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color as ComposeColor
 // ENHANCEMENT: Equal loudness contours seems increasingly important
 // ENHANCEMENT: Expose brightness curve alteration
 class ColorCalculator(
-    private val gammaAdjustment: Float = 1f,
+    private val gammaAdjustment: Float = 1f, // e.g. 1.5f, 1.25f, 1f
     private val tuning: TuningSystem = WesternTuningSystem(),
     private val colorSmoother: LightExponentialSmoother = LightExponentialSmoother(halfLife = 75.milliseconds),
     private val brightnessSmoother: PeakSmoother = PeakSmoother(halfLife = 1.milliseconds)
@@ -47,24 +47,6 @@ class ColorCalculator(
         val value = smoothedBrightness.pow(gammaAdjustment).coerceIn(0f, 1f)
 
         return ComposeColor.hsv(hue, saturation, value, colorSpace = ColorSpaces.Srgb)
-//            ComposeColor.hsv(
-//                hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),
-//                saturation = hueAndSaturation.second.coerceIn(0f, 1f),
-//                value = smoothedBrightness.pow(1.5f).coerceIn(0f, 1f),
-//                colorSpace = ColorSpaces.Srgb
-//            ),
-//            ComposeColor.hsv(
-//                hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),
-//                saturation = hueAndSaturation.second.coerceIn(0f, 1f),
-//                value = smoothedBrightness.pow(1.25f).coerceIn(0f, 1f),
-//                colorSpace = ColorSpaces.Srgb
-//            ),
-//            ComposeColor.hsv(
-//                hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f),
-//                saturation = hueAndSaturation.second.coerceIn(0f, 1f),
-//                value = combinedSoundPressure.coerceIn(0f, 1f),
-//                colorSpace = ColorSpaces.Srgb
-//            ),
     }
 
     fun hueAndSaturation(color: ComposeColor): Pair<Float, Float> {
@@ -86,13 +68,16 @@ class ColorCalculator(
     }
 
     private fun createLight(frequencyBin: FrequencyBin): Light {
+        val soundPressure = frequencyBin.normalizedSoundPressure.coerceIn(0f, 1f)
+        val perceivedLoudness = soundPressure.pow(0.67f).coerceIn(0f, 1f)
         // TODO: This is where we choose the color space
+
         val color = ComposeColor.hsv(
             hue = tuning.getPositionInOctave(frequencyBin.frequency).degrees.toFloat().coerceIn(0f, 360f),
             saturation = 1f,
             // TODO: We should probably use the same scale as our brightness
-            value = frequencyBin.normalizedSoundPressure.coerceIn(0f, 1f),
-            colorSpace = ColorSpaces.Srgb
+            value = perceivedLoudness, // soundPressure or perceivedLoudness?
+            colorSpace = ColorSpaces.LinearSrgb
         )
 
         return Light.from(color)
