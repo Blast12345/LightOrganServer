@@ -6,7 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -62,7 +63,8 @@ private fun GridSpectrum(viewModel: SpectrumTileViewModel) {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun Spectrum(viewModel: SpectrumTileViewModel) {
-    val bins by viewModel.displayedBins.collectAsState()
+    val bins = viewModel.displayedBins.collectAsState()
+    val binCount = remember { derivedStateOf { bins.value.size } } // optimization
     val hoveredIndex = viewModel.highlightedIndex
     val barColor = MaterialTheme.colors.secondary
 
@@ -71,15 +73,15 @@ private fun Spectrum(viewModel: SpectrumTileViewModel) {
             .fillMaxSize()
             .clipToBounds()
             .onBinHover(
-                binCount = bins.size,
+                binCount = binCount.value,
                 onHover = { viewModel.highlightedIndex = it },
                 onExit = { viewModel.highlightedIndex = null }
             )
     ) {
-        val barWidth = size.width / bins.size
+        val barWidth = size.width / bins.value.size
         val renderWidth = barWidth + 1f
 
-        bins.forEachIndexed { index, bin ->
+        bins.value.forEachIndexed { index, bin ->
             drawBar(index, bin, barWidth, renderWidth, barColor)
 
             if (index == hoveredIndex) {

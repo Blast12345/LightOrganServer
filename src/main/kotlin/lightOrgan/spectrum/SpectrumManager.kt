@@ -45,7 +45,6 @@ class SpectrumManager(
         val allBins = calculateBins(preparedFrame)
         val relevantBins = filterBins(allBins, preparedFrame.audio.format)
 
-        // Return
         _frequencyBins.value = relevantBins
         return relevantBins
     }
@@ -54,13 +53,13 @@ class SpectrumManager(
     private fun conditionAudio(audio: AudioFrame): AudioFrame {
         val highStopbandFrequency = filterManager.lowPassConfig?.frequencyAt(config.rolloffThreshold)
         val targetNyquist = highStopbandFrequency ?: audio.format.nyquistFrequency
-        
+
         return audio
             .let { monoMixer.mix(it) }
             .let { filterManager.filter(it) }
             .let { decimateIfNeeded(it, targetNyquist) }
     }
-
+    
     private fun decimateIfNeeded(audio: AudioFrame, targetNyquist: Float): AudioFrame {
         val factor = decimator.decimationFactor(audio.format.sampleRate, targetNyquist)
         val effectiveSampleRate = audio.format.sampleRate / factor
