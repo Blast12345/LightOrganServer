@@ -59,7 +59,7 @@ class SpectrumManager(
             .let { filterManager.filter(it) }
             .let { decimateIfNeeded(it, targetNyquist) }
     }
-
+    
     private fun decimateIfNeeded(audio: AudioFrame, targetNyquist: Float): AudioFrame {
         val factor = decimator.decimationFactor(audio.format.sampleRate, targetNyquist)
         val effectiveSampleRate = audio.format.sampleRate / factor
