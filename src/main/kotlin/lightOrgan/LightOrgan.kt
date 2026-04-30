@@ -56,9 +56,9 @@ class LightOrgan(
         val frequencyBins = spectrumManager.calculate(newAudio)
         val color = colorManager.calculate(frequencyBins)
 
-//        server.new(color)
+        server.new(color)
 
-//        timeBetweenColors.logTimeSinceLast()
+        timeBetweenColors.logTimeSinceLast()
     }
 
 }
