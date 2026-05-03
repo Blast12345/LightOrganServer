@@ -32,11 +32,13 @@ class SpectrumManager(
     private val monoMixer: MonoMixer = MonoMixer(),
     private val filterManager: FilterManager = FilterManager(config.highPassFilter, config.lowPassFilter),
     private val decimator: Decimator = Decimator(),
-    private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
+    private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(), // TODO: Maybe make this 1s?
     private val window: Window = config.window.createWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FftFrequencyBinsCalculator(),
 ) {
+
+    // TODO: Maybe we "start" generating spectrums from an input stream? This owns the orchestration. Or does the LO?
 
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
     val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
