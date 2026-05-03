@@ -13,6 +13,7 @@ import lightOrgan.input.AudioInputDetails
 import lightOrgan.input.AudioInputManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextAudioInputDetails
@@ -34,6 +35,7 @@ class AudioInputTileViewModelTests {
 
     @BeforeEach
     fun setup() {
+        every { audioInputManager.selectDefaultInput() } returns Unit
         every { audioInputManager.inputDetails } returns audioInputDetailsFlow
         every { audioInputManager.isListening } returns isListeningFlow
 
@@ -55,19 +57,40 @@ class AudioInputTileViewModelTests {
         )
     }
 
-    // Input details
+    // Current input
     @Test
-    fun `given there is no input, then there are no input details`() = runTest {
+    fun `find the default input`() = runTest {
+        val sut = createSUT()
+
+        sut.findInput()
+
+        verify { audioInputManager.selectDefaultInput() }
+    }
+
+    // Input Details
+    @Test
+    fun `given no input details, then no input details are displayed`() = runTest {
         val sut = createSUT()
 
         sutScope.advanceUntilIdle()
 
-        assertEquals(null, sut.inputDetails.value)
+        assertNull(sut.inputDetails.value)
     }
 
     @Test
-    fun `given there is an input, then there are input details`() = runTest {
+    fun `given input details exist, then input details are displayed`() = runTest {
+        audioInputDetailsFlow.value = inputDetails
+
         val sut = createSUT()
+        sutScope.advanceUntilIdle()
+
+        assertEquals(inputDetails, sut.inputDetails.value)
+    }
+
+    @Test
+    fun `when input details change, then displayed input details reflect the change`() = runTest {
+        val sut = createSUT()
+        sutScope.advanceUntilIdle()
 
         audioInputDetailsFlow.value = inputDetails
         sutScope.advanceUntilIdle()
@@ -77,7 +100,9 @@ class AudioInputTileViewModelTests {
 
     // Listening state
     @Test
-    fun `given the input manager is not listening, then listening is false`() = runTest {
+    fun `given the input is not listening, then not listening is displayed`() = runTest {
+        isListeningFlow.value = false
+
         val sut = createSUT()
 
         sutScope.advanceUntilIdle()
@@ -86,75 +111,86 @@ class AudioInputTileViewModelTests {
     }
 
     @Test
-    fun `given the input manager is listening, then listening is true`() = runTest {
-        val sut = createSUT()
+    fun `given the input is listening, then listening is displayed`() = runTest {
         isListeningFlow.value = true
 
+        val sut = createSUT()
         sutScope.advanceUntilIdle()
 
         assertEquals(true, sut.isListening.value)
     }
 
-    // Connect
     @Test
-    fun `when connect is called, then start listening`() {
+    fun `when the inputs listening state changes, then the displayed listening state reflects the change`() = runTest {
+        val sut = createSUT()
+        sutScope.advanceUntilIdle()
+
+        isListeningFlow.value = true
+        sutScope.advanceUntilIdle()
+
+        assertEquals(true, sut.isListening.value)
+    }
+
+    // Start
+    @Test
+    fun `start listening to the input`() {
         val sut = createSUT()
 
-        sut.connect()
+        sut.start()
         sutScope.advanceUntilIdle()
 
         coVerify { audioInputManager.startListening() }
     }
 
     @Test
-    fun `when connect fails with an error, then show the error`() {
+    fun `when start fails with an error, then show the error`() {
         val sut = createSUT()
         coEvery { audioInputManager.startListening() } throws exceptionWithMessage
 
-        sut.connect()
+        sut.start()
         sutScope.advanceUntilIdle()
 
         coVerify { snackbarController.show(exceptionWithMessage.message!!) }
     }
 
     @Test
-    fun `when connect fails without an error, then show a generic error`() {
+    fun `when start fails without an error, then show a generic error`() {
         val sut = createSUT()
         coEvery { audioInputManager.startListening() } throws exceptionWithoutMessage
 
-        sut.connect()
+        sut.start()
         sutScope.advanceUntilIdle()
 
         coVerify { snackbarController.show("Failed to connect to input.") }
     }
 
-    // Disconnect
+    // Stop
     @Test
-    fun `when disconnect is called, then stop listening`() {
+    fun `stop listening to the input`() {
         val sut = createSUT()
 
-        sut.disconnect()
+        sut.stop()
 
         verify { audioInputManager.stopListening() }
     }
 
     @Test
-    fun `when disconnect fails with an error, then show the error`() = runTest {
+    fun `when stop fails with an error, then show the error`() = runTest {
         val sut = createSUT()
         every { audioInputManager.stopListening() } throws exceptionWithMessage
 
-        sut.disconnect()
+        sut.stop()
         sutScope.advanceUntilIdle()
 
         coVerify { snackbarController.show(exceptionWithMessage.message!!) }
     }
 
     @Test
-    fun `when disconnect fails without an error, then show a generic error`() = runTest {
+    fun `when stop fails without an error, then show a generic error`() = runTest {
         val sut = createSUT()
         every { audioInputManager.stopListening() } throws exceptionWithoutMessage
 
-        sut.disconnect()
+        sut.stop()
         sutScope.advanceUntilIdle()
 
         coVerify { snackbarController.show("Failed to disconnect from input.") }

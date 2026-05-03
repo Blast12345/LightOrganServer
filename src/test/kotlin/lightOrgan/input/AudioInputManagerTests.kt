@@ -111,17 +111,6 @@ class AudioInputManagerTests {
         verify { audioInput1.mock.start() }
     }
 
-    @Test
-    fun `given there is no current input, when start listening is called, then start listening to the default input`() {
-        val sut = createSUT()
-
-        sut.startListening()
-
-        verify { audioInputFinder.findDefaultInput() }
-        assertEquals(audioInput1.mock, currentAudioInputFlow.value)
-        verify { audioInput1.mock.start() }
-    }
-
     // Stop listening
     @Test
     fun `when stop listening is called, then stop listening to the current input`() {

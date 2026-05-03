@@ -31,21 +31,19 @@ class AudioInputManager(
         .flatMapLatest { it?.audioStream ?: emptyFlow() }
         .shareIn(scope, sharingPolicy)
 
+    // Input selection
+    fun selectDefaultInput() {
+        currentAudioInput.value?.stop()
+        currentAudioInput.value = audioInputFinder.findDefaultInput()
+    }
+
     // Start-stop
     fun startListening() {
-        if (currentAudioInput.value == null) selectDefaultInput()
-
         currentAudioInput.value?.start()
     }
 
     fun stopListening() {
         currentAudioInput.value?.stop()
-    }
-
-    // Input selection
-    fun selectDefaultInput() {
-        currentAudioInput.value?.stop()
-        currentAudioInput.value = audioInputFinder.findDefaultInput()
     }
 
 }
