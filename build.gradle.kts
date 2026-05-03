@@ -13,14 +13,16 @@ repositories {
 }
 
 dependencies {
+    val coroutinesVersion = "1.10.2"
+
     implementation("com.github.wendykierp:JTransforms:3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:${coroutinesVersion}")
     implementation(compose.desktop.currentOs)
 
     // Unit Testing
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
-    testImplementation("io.mockk:mockk:1.13.4")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${coroutinesVersion}")
+    testImplementation("io.mockk:mockk:1.14.9")
     testImplementation(platform("org.junit:junit-bom:6.0.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
