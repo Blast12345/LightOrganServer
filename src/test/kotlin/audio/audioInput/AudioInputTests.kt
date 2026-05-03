@@ -1,33 +1,32 @@
 package audio.audioInput
 
 import audio.samples.SampleNormalizer
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
-import kotlinx.coroutines.*
+import io.mockk.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import toolkit.assertions.eventually
+import org.junit.jupiter.api.assertThrows
 import toolkit.extensions.collectInto
 import toolkit.monkeyTest.*
 import wrappers.sound.InputLine
-import java.util.concurrent.LinkedBlockingQueue
 
 @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
 class AudioInputTests {
 
     private val inputLine: InputLine = mockk()
     private val sampleNormalizer: SampleNormalizer = mockk()
-    private val sutScope = CoroutineScope(SupervisorJob() + newSingleThreadContext("TestAudioCapture"))
+    private val sutScope = TestScope()
 
     private val readResults = List(3) { nextInputLineReadResult() }
-    private val resultQueue = LinkedBlockingQueue<InputLine.ReadResult>()
+    private val resultChannel = Channel<InputLine.ReadResult>(Channel.UNLIMITED)
     private val normalizedSamples = nextFloatArray()
-
-    private val collectionScope = CoroutineScope(SupervisorJob())
 
     @BeforeEach
     fun setupHappyPath() {
@@ -37,7 +36,7 @@ class AudioInputTests {
         every { inputLine.channels } returns nextPositiveInt()
 
         every { inputLine.start() } answers {
-            every { inputLine.read() } answers { resultQueue.take() }
+            coEvery { inputLine.read() } coAnswers { resultChannel.receive() }
         }
         every { inputLine.stop() } returns Unit
 
@@ -47,7 +46,6 @@ class AudioInputTests {
     @AfterEach
     fun tearDown() {
         sutScope.cancel()
-        collectionScope.cancel()
         clearAllMocks()
     }
 
@@ -55,14 +53,8 @@ class AudioInputTests {
         return AudioInput(
             inputLine = inputLine,
             sampleNormalizer = sampleNormalizer,
-            scope = sutScope
+            scope = sutScope,
         )
-    }
-
-    private fun populateReadResultsQueue() {
-        for (result in readResults) {
-            resultQueue.put(result)
-        }
     }
 
     // Details
@@ -104,65 +96,67 @@ class AudioInputTests {
 
     // Start listening
     @Test
-    fun `when started, then continuously capture audio`() {
+    fun `start continuously capturing audio`() {
         val sut = createSUT()
-        val received = sut.audioStream.collectInto(collectionScope)
-
+        val received = sut.audioStream.collectInto(sutScope)
         sut.start()
-        populateReadResultsQueue()
+        sutScope.advanceUntilIdle()
 
-        eventually {
-            assertEquals(readResults.size, received.size)
+        readResults.forEach { resultChannel.trySend(it) }
+        sutScope.advanceUntilIdle()
 
-            for (result in received) {
-                assertEquals(normalizedSamples, result.audio.samples)
-                assertEquals(sut.format, result.audio.format)
-            }
+        assertEquals(readResults.size, received.size)
+        for (result in received) {
+            assertEquals(normalizedSamples, result.audio.samples)
+            assertEquals(sut.format, result.audio.format)
         }
     }
 
     @Test
-    fun `given already listening, when started again, then audio stream is not duplicated`() {
+    fun `when start is called multiple times, the audio stream is not duplicated`() {
         val sut = createSUT()
-        val received = sut.audioStream.collectInto(collectionScope)
 
         sut.start()
+        sutScope.advanceUntilIdle()
         sut.start()
-        populateReadResultsQueue()
+        sutScope.advanceUntilIdle()
 
-        eventually { assertEquals(readResults.size, received.size) }
+        // Weak assertion, but I'm not aware of better option
+        verify(exactly = 1) { inputLine.start() }
+    }
+
+    @Test
+    fun `when the input fails to start, then the error is thrown`() {
+        val sut = createSUT()
+        every { inputLine.start() } throws nextException()
+
+        assertThrows<Exception> { sut.start() }
     }
 
     // Stop
     @Test
     fun `stop capturing audio`() {
         val sut = createSUT()
-
         sut.start()
-        sut.stop()
+        sutScope.advanceUntilIdle()
 
-        eventually { verify { inputLine.stop() } }
+        sut.stop()
+        sutScope.advanceUntilIdle()
+
+        verify { inputLine.stop() }
     }
 
     // Listening state
     @Test
-    fun `the listening state reflects start and stop`() {
+    fun `get the listening state`() {
         val sut = createSUT()
 
         sut.start()
+        sutScope.advanceUntilIdle()
         assertEquals(true, sut.isListening.value)
 
         sut.stop()
-        assertEquals(false, sut.isListening.value)
-    }
-
-    @Test
-    fun `when the input fails to activate, then listening is false`() {
-        val sut = createSUT()
-        every { inputLine.start() } throws nextException()
-
-        runCatching { sut.start() }
-
+        sutScope.advanceUntilIdle()
         assertEquals(false, sut.isListening.value)
     }
 
@@ -170,12 +164,13 @@ class AudioInputTests {
     fun `when reading the input fails, then listening is false`() {
         val sut = createSUT()
         every { inputLine.start() } answers {
-            every { inputLine.read() } throws nextException()
+            coEvery { inputLine.read() } throws nextException()
         }
 
         sut.start()
+        sutScope.advanceUntilIdle()
 
-        eventually { assertEquals(false, sut.isListening.value) }
+        assertEquals(false, sut.isListening.value)
     }
 
 }

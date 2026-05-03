@@ -1,6 +1,9 @@
 package wrappers.sound
 
 import io.mockk.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -14,6 +17,7 @@ import java.nio.ByteOrder
 import javax.sound.sampled.TargetDataLine
 import kotlin.random.Random.Default.nextBoolean
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class InputLineTests {
 
     private val name = nextString("name")
@@ -49,7 +53,8 @@ class InputLineTests {
             name = name,
             dataLine = dataLine,
             minimumReadSize = minimumReadSize,
-            bufferSize = bufferSize
+            bufferSize = bufferSize,
+            readDispatcher = UnconfinedTestDispatcher()
         )
     }
 
@@ -157,7 +162,7 @@ class InputLineTests {
 
     // Read - data
     @Test
-    fun `when no data is available, read the minimum size`() {
+    fun `when no data is available, read the minimum size`() = runTest {
         val sut = createSUT()
 
         every { dataLine.available() } returns 0
@@ -174,7 +179,7 @@ class InputLineTests {
     }
 
     @Test
-    fun `when available data equals the minimum, read the minimum size`() {
+    fun `when available data equals the minimum, read the minimum size`() = runTest {
         val sut = createSUT()
 
         every { dataLine.available() } returns minimumReadSize
@@ -191,7 +196,7 @@ class InputLineTests {
     }
 
     @Test
-    fun `when available data exceeds the minimum, read all available`() {
+    fun `when available data exceeds the minimum, read all available`() = runTest {
         val sut = createSUT()
         val availableBytes = minimumReadSize + 1
 
@@ -210,7 +215,7 @@ class InputLineTests {
 
     // Read - buffer status
     @Test
-    fun `when available data is less than the buffer size, the buffer was not full`() {
+    fun `when available data is less than the buffer size, the buffer was not full`() = runTest {
         val sut = createSUT()
         val availableBytes = bufferSize - 1
         val bytesToBeRead = nextByteArray(availableBytes)
@@ -228,7 +233,7 @@ class InputLineTests {
 
 
     @Test
-    fun `when available data is equal to the buffer size, the buffer was full`() {
+    fun `when available data is equal to the buffer size, the buffer was full`() = runTest {
         val sut = createSUT()
         val availableBytes = bufferSize
         val bytesToBeRead = nextByteArray(availableBytes)
