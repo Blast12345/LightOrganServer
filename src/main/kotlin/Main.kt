@@ -15,7 +15,7 @@ import lightOrgan.LightOrgan
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 
-// TODO: Consolidate coroutine scopes
+// TODO: Consolidate coroutine scopes. Maybe application coroutine as a singleton?
 fun main(args: Array<String>) {
     val audioInputManager = AudioInputManager()
     val spectrumManager = SpectrumManager()
