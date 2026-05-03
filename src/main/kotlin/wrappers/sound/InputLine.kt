@@ -12,7 +12,7 @@ import javax.sound.sampled.TargetDataLine
 class InputLine(
     val name: String,
     private val dataLine: TargetDataLine,
-    private val minimumReadSize: Int = 2048, // ENHANCEMENT: Make the minimum read size configurable in the GUI.
+    private val minimumReadSize: Int = 2048, // TODO: Eliminate me
     private val bufferSize: Int = 8192 // ENHANCEMENT: Make the buffer size configurable in the GUI.
 ) {
 

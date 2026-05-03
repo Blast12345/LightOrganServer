@@ -12,9 +12,11 @@ import dsp.bins.FrequencyBins
 import dsp.bins.FrequencyBinsCalculator
 import dsp.windowing.Window
 import extensions.inSeconds
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
 import math.nextPowerOfTwo
 
 // ENHANCEMENT: Multi-resolution bin generations
@@ -39,14 +41,14 @@ class SpectrumManager(
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
     val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
 
-    fun calculate(audio: AudioFrame): FrequencyBins {
+    suspend fun calculate(audio: AudioFrame): FrequencyBins = withContext(Dispatchers.Default) {
         val conditionedAudio = conditionAudio(audio)
         val preparedFrame = prepareFrame(conditionedAudio)
         val allBins = calculateBins(preparedFrame)
         val relevantBins = filterBins(allBins, preparedFrame.audio.format)
 
         _frequencyBins.value = relevantBins
-        return relevantBins
+        return@withContext relevantBins
     }
 
     // Conditioning
@@ -59,7 +61,7 @@ class SpectrumManager(
             .let { filterManager.filter(it) }
             .let { decimateIfNeeded(it, targetNyquist) }
     }
-    
+
     private fun decimateIfNeeded(audio: AudioFrame, targetNyquist: Float): AudioFrame {
         val factor = decimator.decimationFactor(audio.format.sampleRate, targetNyquist)
         val effectiveSampleRate = audio.format.sampleRate / factor

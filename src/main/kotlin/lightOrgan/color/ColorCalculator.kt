@@ -15,14 +15,12 @@ import androidx.compose.ui.graphics.Color as ComposeColor
 
 // ENHANCEMENT: Expose smoothing configuration
 // ENHANCEMENT: Return combined color and individual colors
-// ENHANCEMENT: Enforce sRGB via a type.
-// ENHANCEMENT: Gamma correction on clients
-// ENHANCEMENT: Equal loudness contours seems increasingly important
 // ENHANCEMENT: Expose brightness curve alteration
+// ENHANCEMENT: Support high gamut color spaces (ideally CIE XYZ) and compress for each output device
 class ColorCalculator(
     private val gammaAdjustment: Float = 1f, // e.g. 1.5f, 1.25f, 1f
     private val tuning: TuningSystem = WesternTuningSystem(),
-    private val colorSmoother: LightExponentialSmoother = LightExponentialSmoother(halfLife = 75.milliseconds),
+    private val lightSmoother: LightExponentialSmoother = LightExponentialSmoother(halfLife = 75.milliseconds),
     private val brightnessSmoother: PeakSmoother = PeakSmoother(halfLife = 1.milliseconds)
 ) {
 
@@ -36,75 +34,30 @@ class ColorCalculator(
         val perceivedLoudness = combinedSoundPressure.pow(0.67f) // TODO: Perceived brightness on bin?
         val brightness = perceivedLoudness
 
-        val smoothedLight = colorSmoother.smooth(combinedLight)
+        val smoothedLight = lightSmoother.smooth(combinedLight)
         val smoothedBrightness = brightnessSmoother.smooth(brightness)
 
-        val colorOfCombinedLight = smoothedLight.color.convert(ColorSpaces.Srgb)
-        val hueAndSaturation = hueAndSaturation(colorOfCombinedLight)
-
-        val hue = (hueAndSaturation.first * 360f).coerceIn(0f, 360f)
-        val saturation = hueAndSaturation.second.coerceIn(0f, 1f)
+        val hue = (smoothedLight.hue * 360f).coerceIn(0f, 360f)
+        val saturation = smoothedLight.saturation.coerceIn(0f, 1f)
         val value = smoothedBrightness.pow(gammaAdjustment).coerceIn(0f, 1f)
 
         return ComposeColor.hsv(hue, saturation, value, colorSpace = ColorSpaces.Srgb)
     }
 
-    fun hueAndSaturation(color: ComposeColor): Pair<Float, Float> {
-        val r = color.component1()
-        val g = color.component2()
-        val b = color.component3()
-        val max = maxOf(r, g, b)
-        val min = minOf(r, g, b)
-        val delta = max - min
-
-        val saturation = if (max == 0f) 0f else delta / max
-        val hue = when {
-            delta == 0f -> 0f
-            max == r -> ((g - b) / delta).mod(6f) / 6f
-            max == g -> ((b - r) / delta + 2f) / 6f
-            else -> ((r - g) / delta + 4f) / 6f
-        }
-        return hue to saturation
-    }
-
+    // TODO: This is where we choose the color space
     private fun createLight(frequencyBin: FrequencyBin): Light {
+        val perceptionScale = 2.0f
         val soundPressure = frequencyBin.normalizedSoundPressure.coerceIn(0f, 1f)
-        val perceivedLoudness = soundPressure.pow(0.67f).coerceIn(0f, 1f)
-        // TODO: This is where we choose the color space
 
         val color = ComposeColor.hsv(
             hue = tuning.getPositionInOctave(frequencyBin.frequency).degrees.toFloat().coerceIn(0f, 360f),
             saturation = 1f,
-            // TODO: We should probably use the same scale as our brightness
-            value = perceivedLoudness, // soundPressure or perceivedLoudness?
+            value = soundPressure.pow(perceptionScale),
             colorSpace = ColorSpaces.LinearSrgb
         )
 
-        return Light.from(color)
+        return Light(color.red, color.green, color.blue)
     }
-
-//    fun calculate(frequencyBins: FrequencyBins, brightnessMultiplier: Float): List<ComposeColor> {
-//        val lights = frequencyBins.map { createLight(it) }
-//        val combinedLight = lights.fold(Light()) { sum, current -> sum + current }
-//
-//        val combinedSoundPressure =
-//            sumSoundPressure(frequencyBins.map { it.normalizedSoundPressure }) * brightnessMultiplier
-//        val perceivedLoudness = combinedSoundPressure.pow(0.67f)
-//        val brightness = perceivedLoudness
-//
-//        val smoothedLight = colorSmoother.smooth(combinedLight)
-//        val smoothedBrightness = brightnessSmoother.smooth(brightness)
-//
-//        val colorOfCombinedLight = smoothedLight.color.convert(ColorSpaces.Srgb)
-//        val hueAndSaturation = hueAndSaturation(colorOfCombinedLight)
-//
-//        return ComposeColor.hsv(
-//            hue = hueAndSaturation.first * 360f,
-//            saturation = hueAndSaturation.second,
-//            value = (smoothedBrightness * brightnessMultiplier).coerceIn(0f, 1f),
-//            colorSpace = ColorSpaces.Srgb
-//        )
-//    }
 
 }
 
