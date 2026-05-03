@@ -2,9 +2,9 @@ package toolkit.monkeyTest
 
 import lightOrgan.input.AudioInputDetails
 
-fun nextAudioInputDetails(): AudioInputDetails {
+fun nextAudioInputDetails(name: String = nextString("input details")): AudioInputDetails {
     return AudioInputDetails(
-        name = nextString("lightOrgan/input"),
+        name = name,
         format = nextAudioFormat(),
     )
 }

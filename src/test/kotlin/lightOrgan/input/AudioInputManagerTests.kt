@@ -2,7 +2,7 @@ package lightOrgan.input
 
 import audio.audioInput.AudioInput
 import audio.audioInput.AudioInputFinder
-import audio.audioInput.MockAudioInput
+import audio.audioInput.AudioInputFixture
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -10,14 +10,11 @@ import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import toolkit.extensions.collectInto
 import toolkit.monkeyTest.nextAudioStreamFrame
 
@@ -29,18 +26,18 @@ class AudioInputManagerTests {
     private val audioInputFinder: AudioInputFinder = mockk()
     private val sutScope = TestScope()
 
-    private lateinit var audioInput1: MockAudioInput
-    private lateinit var audioInput2: MockAudioInput
-    private val allAudioInputs: List<AudioInput> get() = listOf(audioInput1.mock, audioInput2.mock)
+    private lateinit var defaultInput: AudioInputFixture
+    private lateinit var otherInput: AudioInputFixture
+    private val allAudioInputs: List<AudioInput> get() = listOf(defaultInput.mock, otherInput.mock)
 
     @BeforeEach
     fun setupHappyPath() {
-        audioInput1 = MockAudioInput.create("1")
-        audioInput2 = MockAudioInput.create("2")
+        defaultInput = AudioInputFixture.create("default")
+        otherInput = AudioInputFixture.create("other")
 
         currentAudioInputFlow.value = null
         every { audioInputFinder.findAll() } returns allAudioInputs
-        every { audioInputFinder.findDefaultInput() } returns audioInput1.mock
+        every { audioInputFinder.findDefaultInput() } returns defaultInput.mock
     }
 
     @AfterEach
@@ -53,126 +50,133 @@ class AudioInputManagerTests {
         return AudioInputManager(
             currentAudioInput = currentAudioInputFlow,
             audioInputFinder = audioInputFinder,
-            scope = sutScope,
-            sharingPolicy = SharingStarted.Eagerly
+            scope = sutScope
         )
+    }
+
+    // Input Details
+    @Test
+    fun `get the input details`() = runTest {
+        val sut = createSUT()
+        currentAudioInputFlow.value = defaultInput.mock
+        sutScope.advanceUntilIdle()
+
+        assertEquals(defaultInput.details, sut.inputDetails.value)
+    }
+
+    @Test
+    fun `given there is no input, then there are no input details`() = runTest {
+        val sut = createSUT()
+        currentAudioInputFlow.value = null
+        sutScope.advanceUntilIdle()
+
+        assertNull(sut.inputDetails.value)
+    }
+
+    @Test
+    fun `when the input changes, then the input details reflect the new input`() = runTest {
+        val sut = createSUT()
+
+        currentAudioInputFlow.value = defaultInput.mock
+        sutScope.advanceUntilIdle()
+
+        currentAudioInputFlow.value = otherInput.mock
+        sutScope.advanceUntilIdle()
+
+        assertEquals(otherInput.details, sut.inputDetails.value)
     }
 
     // Input selection
     @Test
-    fun `when selecting default input, then find and set the default`() {
+    fun `select the default input`() = runTest {
         val sut = createSUT()
 
         sut.selectDefaultInput()
+        sutScope.advanceUntilIdle()
 
-        assertEquals(audioInput1.mock, currentAudioInputFlow.value)
+        assertEquals(defaultInput.details, sut.inputDetails.value)
     }
 
     @Test
-    fun `when selecting default input, then stop the current input`() {
+    fun `given an input was already selected, then selecting the default stops the previous input`() {
         val sut = createSUT()
-        currentAudioInputFlow.value = audioInput2.mock
+        currentAudioInputFlow.value = otherInput.mock
 
         sut.selectDefaultInput()
 
-        verify { audioInput2.mock.stop() }
-    }
-
-    // Input details
-    @Test
-    fun `given there is no input, then there are no input details`() = runTest {
-        val sut = createSUT()
-
-        currentAudioInputFlow.value = null
-        sutScope.advanceUntilIdle()
-
-        assertEquals(null, sut.inputDetails.value)
-    }
-
-    @Test
-    fun `given there is an input, then map the input to details`() = runTest {
-        val sut = createSUT()
-
-        currentAudioInputFlow.value = audioInput1.mock
-        sutScope.advanceUntilIdle()
-
-        val expected = AudioInputDetails(audioInput1.mock.name, audioInput1.mock.format)
-        assertEquals(expected, sut.inputDetails.value)
+        verify { otherInput.mock.stop() }
     }
 
     // Start listening
     @Test
-    fun `given there is a current input, when start listening is called, then start listening to the current input`() {
+    fun `start listening to the current input`() {
         val sut = createSUT()
-        currentAudioInputFlow.value = audioInput1.mock
+        currentAudioInputFlow.value = defaultInput.mock
 
         sut.startListening()
 
-        verify { audioInput1.mock.start() }
+        verify { defaultInput.mock.start() }
     }
 
     @Test
-    fun `given there is no current input, when start listening is called, then start listening to the default input`() {
+    fun `given there is no input, then starting throws an error`() {
         val sut = createSUT()
 
-        sut.startListening()
-
-        verify { audioInputFinder.findDefaultInput() }
-        assertEquals(audioInput1.mock, currentAudioInputFlow.value)
-        verify { audioInput1.mock.start() }
+        assertThrows<IllegalStateException> { sut.startListening() }
     }
 
     // Stop listening
     @Test
-    fun `when stop listening is called, then stop listening to the current input`() {
+    fun `stop listening to the current input`() {
         val sut = createSUT()
-        currentAudioInputFlow.value = audioInput1.mock
+        currentAudioInputFlow.value = defaultInput.mock
 
         sut.stopListening()
 
-        verify { audioInput1.mock.stop() }
+        verify { defaultInput.mock.stop() }
+    }
+
+    @Test
+    fun `given there is no input, then stopping throws an error`() {
+        val sut = createSUT()
+
+        assertThrows<IllegalStateException> { sut.stopListening() }
     }
 
     // Listening state
     @Test
+    fun `get the inputs listening state `() = runTest {
+        val sut = createSUT()
+        currentAudioInputFlow.value = defaultInput.mock
+        sutScope.advanceUntilIdle()
+
+        defaultInput.isListeningFlow.value = true
+        sutScope.advanceUntilIdle()
+        assertEquals(true, sut.isListening.value)
+
+        defaultInput.isListeningFlow.value = false
+        sutScope.advanceUntilIdle()
+        assertEquals(false, sut.isListening.value)
+    }
+
+    @Test
     fun `given there is no input, then listening is false`() = runTest {
         val sut = createSUT()
-
+        currentAudioInputFlow.value = null
         sutScope.advanceUntilIdle()
 
         assertEquals(false, sut.isListening.value)
     }
 
     @Test
-    fun `given the input is not listening, then listening is false`() = runTest {
+    fun `when the input changes, then listening reflects the new inputs state`() = runTest {
         val sut = createSUT()
-
-        currentAudioInputFlow.value = audioInput1.mock
+        currentAudioInputFlow.value = defaultInput.mock
+        defaultInput.isListeningFlow.value = true
         sutScope.advanceUntilIdle()
 
-        assertEquals(false, sut.isListening.value)
-    }
-
-    @Test
-    fun `given the input is listening, then listening is true`() = runTest {
-        val sut = createSUT()
-
-        currentAudioInputFlow.value = audioInput1.mock
-        audioInput1.isListeningFlow.value = true
-        sutScope.advanceUntilIdle()
-
-        assertEquals(true, sut.isListening.value)
-    }
-
-    @Test
-    fun `when the input changes, then track the new input's listening state`() = runTest {
-        val sut = createSUT()
-
-        currentAudioInputFlow.value = audioInput1.mock
-        audioInput1.isListeningFlow.value = true
-        sutScope.advanceUntilIdle()
-
-        currentAudioInputFlow.value = audioInput2.mock
+        currentAudioInputFlow.value = otherInput.mock
+        otherInput.isListeningFlow.value = false
         sutScope.advanceUntilIdle()
 
         assertEquals(false, sut.isListening.value)
@@ -184,11 +188,11 @@ class AudioInputManagerTests {
         val sut = createSUT()
         val received = sut.audioStream.collectInto(sutScope)
 
-        currentAudioInputFlow.value = audioInput1.mock
+        currentAudioInputFlow.value = defaultInput.mock
         sutScope.advanceUntilIdle()
 
         val frame = nextAudioStreamFrame()
-        audioInput1.audioStreamFlow.emit(frame)
+        defaultInput.audioStreamFlow.emit(frame)
         sutScope.advanceUntilIdle()
 
         assertEquals(listOf(frame), received)
@@ -197,20 +201,20 @@ class AudioInputManagerTests {
     @Test
     fun `when the input changes, then the new inputs audio is passed on`() = runTest {
         val sut = createSUT()
-        val input1Frame = nextAudioStreamFrame()
-        val input2Frame = nextAudioStreamFrame()
+        val defaultFrame = nextAudioStreamFrame()
+        val otherFrame = nextAudioStreamFrame()
         val received = sut.audioStream.collectInto(sutScope)
 
-        currentAudioInputFlow.value = audioInput1.mock
+        currentAudioInputFlow.value = defaultInput.mock
         sutScope.advanceUntilIdle()
-        audioInput1.audioStreamFlow.emit(input1Frame)
+        defaultInput.audioStreamFlow.emit(defaultFrame)
         sutScope.advanceUntilIdle()
-        currentAudioInputFlow.value = audioInput2.mock
+        currentAudioInputFlow.value = otherInput.mock
         sutScope.advanceUntilIdle()
-        audioInput2.audioStreamFlow.emit(input2Frame)
+        otherInput.audioStreamFlow.emit(otherFrame)
         sutScope.advanceUntilIdle()
 
-        assertEquals(listOf(input1Frame, input2Frame), received)
+        assertEquals(listOf(defaultFrame, otherFrame), received)
     }
 
 }
