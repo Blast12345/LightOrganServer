@@ -25,6 +25,9 @@ fun main(args: Array<String>) {
         spectrumManager = spectrumManager
     )
 
+    // ENHANCEMENT: Select last known input, falling back on default
+    audioInputManager.selectDefaultInput()
+
     if (args.contains("--headless")) {
         launchHeadless(lightOrgan)
     } else {

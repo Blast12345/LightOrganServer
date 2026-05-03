@@ -59,16 +59,7 @@ class AudioInputTileViewModelTests {
 
     // Find input
     @Test
-    fun `given there is no current input, then attempt to automatically find one`() = runTest {
-        val sut = createSUT()
-
-        sut.findInput()
-
-        verify { audioInputManager.selectDefaultInput() }
-    }
-
-    @Test
-    fun `manually attempt to find the default input`() = runTest {
+    fun `attempt to find the default input`() = runTest {
         val sut = createSUT()
 
         sut.findInput()

@@ -18,10 +18,6 @@ class AudioInputTileViewModel(
     val inputDetails: StateFlow<AudioInputDetails?> = audioInputManager.inputDetails
     val isListening: StateFlow<Boolean> = audioInputManager.isListening
 
-    init {
-        findInput()
-    }
-
     fun findInput() {
         audioInputManager.selectDefaultInput()
     }
