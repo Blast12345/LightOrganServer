@@ -6,18 +6,14 @@ import audio.samples.AudioStreamFrame
 import audio.samples.SampleNormalizer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.*
 import logging.Logger
-import utilities.DerivedStateFlow
 import wrappers.sound.InputLine
 
 class AudioInput(
     private val inputLine: InputLine,
     private val sampleNormalizer: SampleNormalizer,
-    private val scope: CoroutineScope = AudioCaptureScope
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) {
 
     private val listeningJob = MutableStateFlow<Job?>(null)
@@ -35,24 +31,29 @@ class AudioInput(
         channels = inputLine.channels
     )
 
-    val isListening: StateFlow<Boolean> = DerivedStateFlow(listeningJob) { it?.isActive ?: false }
+    val isListening: StateFlow<Boolean> = listeningJob
+        .map { it != null }
+        .stateIn(scope, SharingStarted.Eagerly, false)
+
     val audioStream = _audioStream.asSharedFlow()
 
     fun start() {
-        if (isListening.value) return
+        if (listeningJob.value != null) return
 
         inputLine.start()
-        startCapturingAudio()
-    }
 
-    private fun startCapturingAudio() {
         listeningJob.value = scope.launch {
-            startReadLoop()
+            try {
+                startReadLoop()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Logger.error(e.message ?: "$name read loop has failed unexpectedly.")
+            }
         }.also {
-            it.invokeOnCompletion { cause ->
-                if (cause != null && cause !is CancellationException) {
-                    Logger.error(cause.message ?: "$name read loop has failed unexpectedly.")
-                }
+            it.invokeOnCompletion {
+                inputLine.stop()
+                listeningJob.value = null
             }
         }
     }
@@ -81,7 +82,6 @@ class AudioInput(
 
     fun stop() {
         listeningJob.value?.cancel()
-        inputLine.stop()
     }
 
 }
