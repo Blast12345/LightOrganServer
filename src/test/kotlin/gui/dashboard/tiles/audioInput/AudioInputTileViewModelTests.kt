@@ -13,7 +13,6 @@ import lightOrgan.input.AudioInputDetails
 import lightOrgan.input.AudioInputManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextAudioInputDetails
@@ -29,7 +28,8 @@ class AudioInputTileViewModelTests {
     private val audioInputDetailsFlow = MutableStateFlow<AudioInputDetails?>(null)
     private val isListeningFlow = MutableStateFlow(false)
 
-    private val inputDetails = nextAudioInputDetails()
+    private val inputDetails1 = nextAudioInputDetails()
+    private val inputDetails2 = nextAudioInputDetails()
     private val exceptionWithMessage = nextException()
     private val exceptionWithoutMessage = Exception()
 
@@ -69,65 +69,49 @@ class AudioInputTileViewModelTests {
 
     // Input Details
     @Test
-    fun `given no input details, then no input details are displayed`() = runTest {
+    fun `show the initial input details`() = runTest {
+        audioInputDetailsFlow.value = inputDetails1
         val sut = createSUT()
 
         sutScope.advanceUntilIdle()
 
-        assertNull(sut.inputDetails.value)
+        assertEquals(inputDetails1, sut.inputDetails.value)
     }
 
     @Test
-    fun `given input details exist, then input details are displayed`() = runTest {
-        audioInputDetailsFlow.value = inputDetails
-
+    fun `when the input details change, then show the updated details`() = runTest {
         val sut = createSUT()
+
+        audioInputDetailsFlow.value = inputDetails1
         sutScope.advanceUntilIdle()
+        assertEquals(inputDetails1, sut.inputDetails.value)
 
-        assertEquals(inputDetails, sut.inputDetails.value)
-    }
-
-    @Test
-    fun `when input details change, then displayed input details reflect the change`() = runTest {
-        val sut = createSUT()
+        audioInputDetailsFlow.value = inputDetails2
         sutScope.advanceUntilIdle()
-
-        audioInputDetailsFlow.value = inputDetails
-        sutScope.advanceUntilIdle()
-
-        assertEquals(inputDetails, sut.inputDetails.value)
+        assertEquals(inputDetails2, sut.inputDetails.value)
     }
 
     // Listening state
     @Test
-    fun `given the input is not listening, then not listening is displayed`() = runTest {
-        isListeningFlow.value = false
-
-        val sut = createSUT()
-
-        sutScope.advanceUntilIdle()
-
-        assertEquals(false, sut.isListening.value)
-    }
-
-    @Test
-    fun `given the input is listening, then listening is displayed`() = runTest {
+    fun `show the initial listening state`() = runTest {
         isListeningFlow.value = true
-
         val sut = createSUT()
+
         sutScope.advanceUntilIdle()
 
         assertEquals(true, sut.isListening.value)
     }
 
     @Test
-    fun `when the inputs listening state changes, then the displayed listening state reflects the change`() = runTest {
+    fun `when the listening state changes, then show the updated listening state`() = runTest {
         val sut = createSUT()
+
+        isListeningFlow.value = false
         sutScope.advanceUntilIdle()
+        assertEquals(false, sut.isListening.value)
 
         isListeningFlow.value = true
         sutScope.advanceUntilIdle()
-
         assertEquals(true, sut.isListening.value)
     }
 
