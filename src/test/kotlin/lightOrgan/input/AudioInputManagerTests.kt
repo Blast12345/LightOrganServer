@@ -13,11 +13,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import toolkit.extensions.collectInto
 import toolkit.monkeyTest.nextAudioStreamFrame
 
@@ -59,19 +56,8 @@ class AudioInputManagerTests {
 
     // Input Details
     @Test
-    fun `given there is no input, then the input details are unavailable`() = runTest {
+    fun `get the input details`() = runTest {
         val sut = createSUT()
-
-        currentAudioInputFlow.value = null
-        sutScope.advanceUntilIdle()
-
-        assertEquals(null, sut.inputDetails.value)
-    }
-
-    @Test
-    fun `given there is an input, then the input details are available`() = runTest {
-        val sut = createSUT()
-
         currentAudioInputFlow.value = defaultInput.mock
         sutScope.advanceUntilIdle()
 
@@ -79,7 +65,16 @@ class AudioInputManagerTests {
     }
 
     @Test
-    fun `given the input changes, then input details reflect the new input`() = runTest {
+    fun `given there is no input, then there are no input details`() = runTest {
+        val sut = createSUT()
+        currentAudioInputFlow.value = null
+        sutScope.advanceUntilIdle()
+
+        assertNull(sut.inputDetails.value)
+    }
+
+    @Test
+    fun `when the input changes, then the input details reflect the new input`() = runTest {
         val sut = createSUT()
 
         currentAudioInputFlow.value = defaultInput.mock
@@ -150,46 +145,38 @@ class AudioInputManagerTests {
 
     // Listening state
     @Test
-    fun `given there is no input, then listening is false`() = runTest {
+    fun `get the inputs listening state `() = runTest {
         val sut = createSUT()
-
+        currentAudioInputFlow.value = defaultInput.mock
         sutScope.advanceUntilIdle()
 
-        assertEquals(false, sut.isListening.value)
-    }
-
-    @Test
-    fun `given there is an input and it is not listening, then listening is false`() = runTest {
-        val sut = createSUT()
-
-        currentAudioInputFlow.value = defaultInput.mock
-        defaultInput.isListeningFlow.value = false
-        sutScope.advanceUntilIdle()
-
-        assertEquals(false, sut.isListening.value)
-    }
-
-    @Test
-    fun `given there is an input and it is listening, then listening is true`() = runTest {
-        val sut = createSUT()
-
-        currentAudioInputFlow.value = defaultInput.mock
         defaultInput.isListeningFlow.value = true
         sutScope.advanceUntilIdle()
-
         assertEquals(true, sut.isListening.value)
+
+        defaultInput.isListeningFlow.value = false
+        sutScope.advanceUntilIdle()
+        assertEquals(false, sut.isListening.value)
+    }
+
+    @Test
+    fun `given there is no input, then listening is false`() = runTest {
+        val sut = createSUT()
+        currentAudioInputFlow.value = null
+        sutScope.advanceUntilIdle()
+
+        assertEquals(false, sut.isListening.value)
     }
 
     @Test
     fun `when the input changes, then listening reflects the new inputs state`() = runTest {
         val sut = createSUT()
-
         currentAudioInputFlow.value = defaultInput.mock
         defaultInput.isListeningFlow.value = true
         sutScope.advanceUntilIdle()
 
         currentAudioInputFlow.value = otherInput.mock
-        defaultInput.isListeningFlow.value = false
+        otherInput.isListeningFlow.value = false
         sutScope.advanceUntilIdle()
 
         assertEquals(false, sut.isListening.value)

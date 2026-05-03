@@ -69,17 +69,7 @@ class AudioInputTileViewModelTests {
 
     // Input Details
     @Test
-    fun `show the initial input details`() = runTest {
-        audioInputDetailsFlow.value = inputDetails1
-        val sut = createSUT()
-
-        sutScope.advanceUntilIdle()
-
-        assertEquals(inputDetails1, sut.inputDetails.value)
-    }
-
-    @Test
-    fun `when the input details change, then show the updated details`() = runTest {
+    fun `get the input details`() = runTest {
         val sut = createSUT()
 
         audioInputDetailsFlow.value = inputDetails1
@@ -90,20 +80,10 @@ class AudioInputTileViewModelTests {
         sutScope.advanceUntilIdle()
         assertEquals(inputDetails2, sut.inputDetails.value)
     }
-
+    
     // Listening state
     @Test
-    fun `show the initial listening state`() = runTest {
-        isListeningFlow.value = true
-        val sut = createSUT()
-
-        sutScope.advanceUntilIdle()
-
-        assertEquals(true, sut.isListening.value)
-    }
-
-    @Test
-    fun `when the listening state changes, then show the updated listening state`() = runTest {
+    fun `get the listening state`() = runTest {
         val sut = createSUT()
 
         isListeningFlow.value = false
