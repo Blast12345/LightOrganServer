@@ -4,13 +4,17 @@ import logging.Logger
 
 class TimestampUtility(val name: String) {
 
-    var lastTimestamp = System.currentTimeMillis()
+    var lastTimestamp = System.nanoTime()
+
+    fun reset() {
+        lastTimestamp = System.nanoTime()
+    }
 
     fun logTimeSinceLast() {
-        val timeSinceLast = System.currentTimeMillis() - lastTimestamp
-        Logger.debug("$name: $timeSinceLast")
+        val timeSinceLast = System.nanoTime() - lastTimestamp
+        Logger.debug("$name: $timeSinceLast ns")
 
-        lastTimestamp = System.currentTimeMillis()
+        lastTimestamp = System.nanoTime()
     }
 
 }
