@@ -2,6 +2,7 @@ package lightOrgan
 
 import audio.samples.AudioFrame
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.launchIn
@@ -15,15 +16,17 @@ import utilities.TimestampUtility
 
 // ENHANCEMENT: Gracefully handle crashed coroutines
 class LightOrgan(
-    val inputManager: AudioInputManager,
-    val spectrumManager: SpectrumManager,
-    val colorManager: ColorManager,
-    private val server: Server = Server()
+    val inputManager: AudioInputManager = AudioInputManager(),
+    val spectrumManager: SpectrumManager = SpectrumManager(),
+    val colorManager: ColorManager = ColorManager(),
+    private val server: Server = Server(),
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) {
 
     private val timeBetweenColors = TimestampUtility("Time between colors")
 
-    fun start(scope: CoroutineScope) {
+    fun start() {
+        inputManager.selectDefaultInput()
         val gapDetector = SequenceGapDetector("Audio stream")
 
         // TODO: Optimize

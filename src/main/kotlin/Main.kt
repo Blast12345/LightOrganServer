@@ -12,25 +12,14 @@ import gui.dashboard.Dashboard
 import gui.dashboard.DashboardViewModel
 import gui.dashboard.SnackbarController
 import lightOrgan.LightOrgan
-import lightOrgan.color.ColorManager
-import lightOrgan.input.AudioInputManager
-import lightOrgan.spectrum.SpectrumManager
 
-// ENHANCEMENT: Add audio output? This can also delay audio to keep things aligned.
 // ENHANCEMENT: Introduce Frequency type
 // ENHANCEMENT: Introduce SampleRate type (which exposes nyquistFrequency)
 // ENHANCEMENT: Introduce Magnitude and DBFS types (which can be converted back and forth)
 // ENHANCEMENT: Bump JVM SDK version to 21
-// TODO: Consolidate coroutine scopes. Maybe application coroutine as a singleton?
 fun main(args: Array<String>) {
-    val lightOrgan = LightOrgan(
-        AudioInputManager(),
-        SpectrumManager(),
-        ColorManager()
-    )
-
-    // ENHANCEMENT: Select last known input, falling back on default
-    lightOrgan.inputManager.selectDefaultInput()
+    val lightOrgan = LightOrgan()
+    lightOrgan.start()
 
     if (args.contains("--headless")) {
         launchHeadless(lightOrgan)

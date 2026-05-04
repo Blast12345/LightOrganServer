@@ -1,8 +1,5 @@
 package wrappers.sound
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import logging.Logger
 import java.nio.ByteOrder
 import javax.sound.sampled.TargetDataLine
@@ -17,7 +14,6 @@ class InputLine(
     private val dataLine: TargetDataLine,
     private val minimumReadSize: Int = 2048, // TODO: Eliminate me
     private val bufferSize: Int = 8192, // ENHANCEMENT: Make the buffer size configurable in the GUI.
-    private val readDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
     val sampleRate = dataLine.format.sampleRate
@@ -46,7 +42,8 @@ class InputLine(
     }
 
     // Reading
-    suspend fun read(): ReadResult = withContext(readDispatcher) {
+    @Suppress("RedundantSuspendModifier")
+    suspend fun read(): ReadResult {
         val available = dataLine.available()
         val readSize = if (available > minimumReadSize) available else minimumReadSize
         val bufferWasFull = available >= bufferSize
@@ -58,7 +55,7 @@ class InputLine(
             Logger.warning("Read $lengthRead bytes instead of $readSize bytes")
         }
 
-        return@withContext ReadResult(readData, bufferWasFull)
+        return ReadResult(readData, bufferWasFull)
     }
 
     class ReadResult(
