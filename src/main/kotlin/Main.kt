@@ -20,6 +20,7 @@ import lightOrgan.spectrum.SpectrumManager
 // ENHANCEMENT: Introduce Frequency type
 // ENHANCEMENT: Introduce SampleRate type (which exposes nyquistFrequency)
 // ENHANCEMENT: Introduce Magnitude and DBFS types (which can be converted back and forth)
+// ENHANCEMENT: Bump JVM SDK version to 21
 // TODO: Consolidate coroutine scopes. Maybe application coroutine as a singleton?
 fun main(args: Array<String>) {
     val lightOrgan = LightOrgan(
@@ -29,7 +30,7 @@ fun main(args: Array<String>) {
     )
 
     // ENHANCEMENT: Select last known input, falling back on default
-    audioInputManager.selectDefaultInput()
+    lightOrgan.inputManager.selectDefaultInput()
 
     if (args.contains("--headless")) {
         launchHeadless(lightOrgan)
