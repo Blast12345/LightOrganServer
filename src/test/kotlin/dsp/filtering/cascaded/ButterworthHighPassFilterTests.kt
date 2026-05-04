@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import toolkit.generators.generateSineWave
-import toolkit.monkeyTest.nextPositiveInt
+import toolkit.monkeyTest.nextInt
 
 class ButterworthHighPassTests {
 
@@ -20,7 +20,7 @@ class ButterworthHighPassTests {
 
     @Test
     fun `get the order of the filter`() {
-        val order = nextPositiveInt()
+        val order = nextInt()
 
         val filter = ButterworthHighPass(frequency, order, sampleRate)
 

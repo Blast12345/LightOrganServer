@@ -4,6 +4,6 @@ import dsp.filtering.FilterOrder
 
 fun nextFilterOrder(): FilterOrder {
     return FilterOrder(
-        value = nextPositiveInt(min = 1)
+        value = nextInt(min = 1)
     )
 }

@@ -3,11 +3,11 @@ package audio.samples
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import toolkit.monkeyTest.nextPositiveInt
+import toolkit.monkeyTest.nextInt
 
 class RollingSampleBufferTests {
 
-    private val size = nextPositiveInt()
+    private val size = nextInt()
 
     // Init
     @Test
@@ -61,7 +61,7 @@ class RollingSampleBufferTests {
     @Test
     fun `set the buffer size`() {
         val sut = RollingSampleBuffer()
-        val newSize = nextPositiveInt()
+        val newSize = nextInt()
 
         sut.size = newSize
 
