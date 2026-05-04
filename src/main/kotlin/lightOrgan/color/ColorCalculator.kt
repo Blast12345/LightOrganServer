@@ -37,7 +37,7 @@ class ColorCalculator(
         val smoothedLight = lightSmoother.smooth(combinedLight)
         val smoothedBrightness = brightnessSmoother.smooth(brightness)
 
-        val hue = (smoothedLight.hue * 360f).coerceIn(0f, 360f)
+        val hue = smoothedLight.hue.coerceIn(0f, 360f)
         val saturation = smoothedLight.saturation.coerceIn(0f, 1f)
         val value = smoothedBrightness.pow(gammaAdjustment).coerceIn(0f, 1f)
 
