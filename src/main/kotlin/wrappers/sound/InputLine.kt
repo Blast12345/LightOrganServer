@@ -1,6 +1,5 @@
 package wrappers.sound
 
-import logging.Logger
 import java.nio.ByteOrder
 import javax.sound.sampled.TargetDataLine
 
@@ -12,7 +11,6 @@ import javax.sound.sampled.TargetDataLine
 class InputLine(
     val name: String,
     private val dataLine: TargetDataLine,
-    private val minimumReadSize: Int = 2048, // TODO: Eliminate me
     private val bufferSize: Int = 8192, // ENHANCEMENT: Make the buffer size configurable in the GUI.
 ) {
 
@@ -20,10 +18,6 @@ class InputLine(
     val bitDepth = dataLine.format.sampleSizeInBits
     val channels = dataLine.format.channels
     val byteOrder: ByteOrder = if (dataLine.format.isBigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN
-
-    init {
-        require(bufferSize >= minimumReadSize) { "Minimum read size ($minimumReadSize) must not exceed buffer size ($bufferSize)" }
-    }
 
     // Lifecycle
     fun start() {
@@ -44,18 +38,17 @@ class InputLine(
     // Reading
     @Suppress("RedundantSuspendModifier")
     suspend fun read(): ReadResult {
-        val available = dataLine.available()
-        val readSize = if (available > minimumReadSize) available else minimumReadSize
-        val bufferWasFull = available >= bufferSize
+        val frameSize = dataLine.format.frameSize
+        require(frameSize > 0) { "Cannot read: audio format has no valid frame size ($frameSize)" }
 
-        val readData = ByteArray(readSize)
-        val lengthRead = dataLine.read(readData, 0, readSize) // This will block until readSize bytes are available
+        val firstFrame = ByteArray(frameSize)
+        dataLine.read(firstFrame, 0, frameSize)
 
-        if (lengthRead != readSize) {
-            Logger.warning("Read $lengthRead bytes instead of $readSize bytes")
-        }
+        val remaining = dataLine.available()
+        val remainingFrames = ByteArray(remaining)
+        dataLine.read(remainingFrames, 0, remaining)
 
-        return ReadResult(readData, bufferWasFull)
+        return ReadResult(firstFrame + remainingFrames, (frameSize + remaining) >= bufferSize)
     }
 
     class ReadResult(
