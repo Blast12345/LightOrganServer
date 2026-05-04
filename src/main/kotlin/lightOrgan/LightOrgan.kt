@@ -2,6 +2,8 @@ package lightOrgan
 
 import audio.samples.AudioFrame
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import lightOrgan.color.ColorManager
@@ -22,9 +24,12 @@ class LightOrgan(
     private val timeBetweenColors = TimestampUtility("Time between colors")
 
     fun start(scope: CoroutineScope) {
-        val gapDetector = SequenceGapDetector("Audio stream") // TODO: Remove me?
+        val gapDetector = SequenceGapDetector("Audio stream")
 
+        // TODO: Optimize
         inputManager.audioStream
+            // WARNING: Overflowing the buffer will cause spectral artifacts
+            .buffer(64, onBufferOverflow = BufferOverflow.DROP_OLDEST)
             .onEach { gapDetector.check(it.sequenceNumber) }
             .onEach { handle(it.audio) }
             .launchIn(scope)
