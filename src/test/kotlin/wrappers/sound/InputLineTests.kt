@@ -1,43 +1,36 @@
 package wrappers.sound
 
-import io.mockk.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.verify
+import io.mockk.verifyOrder
+import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import toolkit.monkeyTest.*
+import toolkit.monkeyTest.nextByteArray
+import toolkit.monkeyTest.nextException
+import toolkit.monkeyTest.nextPositiveInt
+import toolkit.monkeyTest.nextString
 import java.nio.ByteOrder
-import javax.sound.sampled.TargetDataLine
-import kotlin.random.Random.Default.nextBoolean
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class InputLineTests {
 
     private val name = nextString("name")
-    private val dataLine: TargetDataLine = mockk()
-    private val minimumReadSize = nextPositiveInt()
-    private val bufferSize = minimumReadSize * 2 // easy math
+    private lateinit var fakeDataLine: FakeTargetDataLine
+    private val bufferSize = nextPositiveInt(min = 16)
 
-    private val format: javax.sound.sampled.AudioFormat = mockk()
     private val exception = nextException()
 
     @BeforeEach
     fun setupHappyPath() {
-        every { dataLine.format } returns format
-        every { format.sampleRate } returns nextPositiveFloat()
-        every { format.sampleSizeInBits } returns nextPositiveInt()
-        every { format.channels } returns nextPositiveInt()
-        every { format.isBigEndian } returns nextBoolean()
-
-        every { dataLine.open(any(), any()) } returns Unit
-        every { dataLine.start() } returns Unit
-        every { dataLine.read(any(), any(), any()) } returns nextPositiveInt()
-        every { dataLine.stop() } returns Unit
-        every { dataLine.close() } returns Unit
+        fakeDataLine = FakeTargetDataLine()
     }
 
     @AfterEach
@@ -48,19 +41,9 @@ class InputLineTests {
     private fun createSUT(): InputLine {
         return InputLine(
             name = name,
-            dataLine = dataLine,
-            minimumReadSize = minimumReadSize,
-            bufferSize = bufferSize,
-            readDispatcher = UnconfinedTestDispatcher()
+            dataLine = fakeDataLine.dataLine,
+            bufferSize = bufferSize
         )
-    }
-
-    // Init
-    @Test
-    fun `the buffer size must be greater than or equal to the minimum read size`() {
-        assertDoesNotThrow { InputLine(name, dataLine, minimumReadSize = 2, bufferSize = 3) }
-        assertDoesNotThrow { InputLine(name, dataLine, minimumReadSize = 2, bufferSize = 2) }
-        assertThrows<IllegalArgumentException> { InputLine(name, dataLine, minimumReadSize = 2, bufferSize = 1) }
     }
 
     // Details
@@ -75,26 +58,26 @@ class InputLineTests {
     fun `get the sample rate`() {
         val sut = createSUT()
 
-        assertEquals(format.sampleRate, sut.sampleRate)
+        assertEquals(fakeDataLine.sampleRate, sut.sampleRate)
     }
 
     @Test
     fun `get the bit depth`() {
         val sut = createSUT()
 
-        assertEquals(format.sampleSizeInBits, sut.bitDepth)
+        assertEquals(fakeDataLine.sampleSizeInBits, sut.bitDepth)
     }
 
     @Test
     fun `get the number of channels`() {
         val sut = createSUT()
 
-        assertEquals(format.channels, sut.channels)
+        assertEquals(fakeDataLine.channels, sut.channels)
     }
 
     @Test
     fun `given the format is big endian, then the byte order is big endian`() {
-        every { format.isBigEndian } returns true
+        fakeDataLine.isBigEndian = true
         val sut = createSUT()
 
         assertEquals(ByteOrder.BIG_ENDIAN, sut.byteOrder)
@@ -102,7 +85,7 @@ class InputLineTests {
 
     @Test
     fun `given the format not big endian, then the byte order is little endian`() {
-        every { format.isBigEndian } returns false
+        fakeDataLine.isBigEndian = false
         val sut = createSUT()
 
         assertEquals(ByteOrder.LITTLE_ENDIAN, sut.byteOrder)
@@ -110,141 +93,96 @@ class InputLineTests {
 
     // Lifecycle
     @Test
-    fun `open and start the data line`() {
+    fun `start the input`() {
         val sut = createSUT()
 
         sut.start()
 
         verifyOrder {
-            dataLine.open(format, bufferSize)
-            dataLine.start()
+            fakeDataLine.dataLine.open(fakeDataLine.format, bufferSize)
+            fakeDataLine.dataLine.start()
         }
     }
 
     @Test
-    fun `when open fails, then stop and rethrow`() {
+    fun `given the data line fails to open when starting the input, then throw`() {
         val sut = createSUT()
-        every { dataLine.open(any(), any()) } throws exception
+        every { fakeDataLine.dataLine.open(any(), any()) } throws exception
 
-        val actual = assertThrows<Exception> { sut.start() }
-
-        verify { dataLine.stop() }
-        verify { dataLine.close() }
-        assertEquals(exception, actual)
+        assertThrows<Exception> { sut.start() }
     }
 
     @Test
-    fun `when start fails, then stop and rethrow`() {
+    fun `given the data line fails to start when starting the input, then close the line and throw`() {
         val sut = createSUT()
-        every { dataLine.start() } throws exception
+        every { fakeDataLine.dataLine.start() } throws exception
 
-        val actual = assertThrows<Exception> { sut.start() }
+        assertThrows<Exception> { sut.start() }
 
-        verify { dataLine.stop() }
-        verify { dataLine.close() }
-        assertEquals(exception, actual)
+        verify { fakeDataLine.dataLine.close() }
     }
 
     @Test
-    fun `stop stops and closes the data line`() {
+    fun `stop the input`() {
         val sut = createSUT()
 
         sut.stop()
 
         verifyOrder {
-            dataLine.stop()
-            dataLine.close()
+            fakeDataLine.dataLine.stop()
+            fakeDataLine.dataLine.close()
         }
     }
 
     // Read - data
     @Test
-    fun `when no data is available, read the minimum size`() = runTest {
+    fun `given data is waiting to be read, read returns the data`() = runTest {
         val sut = createSUT()
-
-        every { dataLine.available() } returns 0
-
-        val bytesToBeRead = nextByteArray(minimumReadSize)
-        every { dataLine.read(any(), 0, minimumReadSize) } answers {
-            bytesToBeRead.copyInto(firstArg<ByteArray>())
-            bytesToBeRead.size
-        }
+        val data = nextByteArray(bufferSize)
+        fakeDataLine.queue(data)
 
         val result = sut.read()
 
-        assertArrayEquals(bytesToBeRead, result.data)
+        assertArrayEquals(data, result.data)
     }
 
     @Test
-    fun `when available data equals the minimum, read the minimum size`() = runTest {
+    fun `given no data is waiting to be read, read waits until it can return the data`() = runTest {
         val sut = createSUT()
+        val data = nextByteArray(10)
 
-        every { dataLine.available() } returns minimumReadSize
+        val result = async(Dispatchers.Default) { sut.read() }
 
-        val bytesToBeRead = nextByteArray(minimumReadSize)
-        every { dataLine.read(any(), 0, minimumReadSize) } answers {
-            bytesToBeRead.copyInto(firstArg<ByteArray>())
-            bytesToBeRead.size
-        }
+        delay(50.milliseconds)
+        assertFalse(result.isCompleted)
+
+        fakeDataLine.queue(data)
+
+        val readResult = withTimeout(1.seconds) { result.await() }
+        assertArrayEquals(data, readResult.data)
+    }
+
+    // Read - buffer state
+    @Test
+    fun `buffer was not full when data is less than buffer size`() = runTest {
+        val sut = createSUT()
+        val partialData = nextByteArray(bufferSize - 1)
+        fakeDataLine.queue(partialData)
 
         val result = sut.read()
 
-        assertArrayEquals(bytesToBeRead, result.data)
+        assertFalse(result.bufferWasFull)
     }
 
     @Test
-    fun `when available data exceeds the minimum, read all available`() = runTest {
+    fun `buffer was full when data equals buffer size`() = runTest {
         val sut = createSUT()
-        val availableBytes = minimumReadSize + 1
-
-        every { dataLine.available() } returns availableBytes
-
-        val bytesToBeRead = nextByteArray(availableBytes)
-        every { dataLine.read(any(), 0, availableBytes) } answers {
-            bytesToBeRead.copyInto(firstArg<ByteArray>())
-            bytesToBeRead.size
-        }
+        val fullData = nextByteArray(bufferSize)
+        fakeDataLine.queue(fullData)
 
         val result = sut.read()
 
-        assertArrayEquals(bytesToBeRead, result.data)
+        assertTrue(result.bufferWasFull)
     }
-
-    // Read - buffer status
-    @Test
-    fun `when available data is less than the buffer size, the buffer was not full`() = runTest {
-        val sut = createSUT()
-        val availableBytes = bufferSize - 1
-        val bytesToBeRead = nextByteArray(availableBytes)
-
-        every { dataLine.available() } returns availableBytes
-        every { dataLine.read(any(), 0, availableBytes) } answers {
-            bytesToBeRead.copyInto(firstArg<ByteArray>())
-            bytesToBeRead.size
-        }
-
-        val result = sut.read()
-
-        assertEquals(false, result.bufferWasFull)
-    }
-
-
-    @Test
-    fun `when available data is equal to the buffer size, the buffer was full`() = runTest {
-        val sut = createSUT()
-        val availableBytes = bufferSize
-        val bytesToBeRead = nextByteArray(availableBytes)
-
-        every { dataLine.available() } returns availableBytes
-        every { dataLine.read(any(), 0, availableBytes) } answers {
-            bytesToBeRead.copyInto(firstArg<ByteArray>())
-            bytesToBeRead.size
-        }
-
-        val result = sut.read()
-
-        assertEquals(true, result.bufferWasFull)
-    }
-
 
 }
