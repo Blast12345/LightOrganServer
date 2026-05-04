@@ -4,8 +4,8 @@ import androidx.compose.ui.graphics.Color
 
 fun nextComposeColor(): Color {
     return Color.hsv(
-        nextPositiveFloat(max = 360),
-        nextPositiveFloat(max = 1),
-        nextPositiveFloat(max = 1)
+        nextPositiveFloat(min = 0f, max = 360f),
+        nextPositiveFloat(min = 0f, max = 1f),
+        nextPositiveFloat(min = 0f, max = 1f)
     )
 }
