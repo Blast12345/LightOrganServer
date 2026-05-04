@@ -2,6 +2,8 @@ package toolkit.monkeyTest
 
 import kotlin.random.Random
 
-fun nextPositiveLong(): Long {
-    return Random.nextLong(0, 1024)
+fun nextPositiveLong(min: Long = 1, max: Long = 1024): Long {
+    require(min >= 0f) { "min must not be negative" }
+
+    return Random.nextLong(min, max)
 }

@@ -32,8 +32,8 @@ class AudioInputTests {
     fun setupHappyPath() {
         every { inputLine.name } returns nextString("name")
         every { inputLine.sampleRate } returns nextPositiveFloat()
-        every { inputLine.bitDepth } returns nextPositiveInt()
-        every { inputLine.channels } returns nextPositiveInt()
+        every { inputLine.bitDepth } returns nextInt()
+        every { inputLine.channels } returns nextInt()
 
         every { inputLine.start() } answers {
             coEvery { inputLine.read() } coAnswers { resultChannel.receive() }

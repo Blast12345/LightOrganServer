@@ -2,8 +2,8 @@ package wrappers.sound
 
 import io.mockk.every
 import io.mockk.mockk
+import toolkit.monkeyTest.nextInt
 import toolkit.monkeyTest.nextPositiveFloat
-import toolkit.monkeyTest.nextPositiveInt
 import java.util.concurrent.LinkedBlockingQueue
 import javax.sound.sampled.TargetDataLine
 import kotlin.random.Random.Default.nextBoolean
@@ -14,8 +14,8 @@ class FakeTargetDataLine(
 ) {
 
     var sampleRate = nextPositiveFloat()
-    var sampleSizeInBits = nextPositiveInt()
-    var channels = nextPositiveInt()
+    var sampleSizeInBits = nextInt()
+    var channels = nextInt()
     var isBigEndian = nextBoolean()
 
     private val buffer: LinkedBlockingQueue<Byte> = LinkedBlockingQueue()

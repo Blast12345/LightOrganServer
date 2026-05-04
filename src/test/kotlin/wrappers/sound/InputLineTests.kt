@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import toolkit.monkeyTest.nextByteArray
 import toolkit.monkeyTest.nextException
-import toolkit.monkeyTest.nextPositiveInt
+import toolkit.monkeyTest.nextInt
 import toolkit.monkeyTest.nextString
 import java.nio.ByteOrder
 import kotlin.time.Duration.Companion.milliseconds
@@ -24,7 +24,7 @@ class InputLineTests {
 
     private val name = nextString("name")
     private lateinit var fakeDataLine: FakeTargetDataLine
-    private val bufferSize = nextPositiveInt(min = 16)
+    private val bufferSize = nextInt(min = 16)
 
     private val exception = nextException()
 
