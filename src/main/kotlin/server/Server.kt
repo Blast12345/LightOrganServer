@@ -7,13 +7,14 @@ import config.children.Client
 
 class Server(
     private val config: Config = ConfigSingleton,
-    private val socket: UdpSocket = UdpSocket(),
-    private val colorMessageFactory: ColorMessageFactory = ColorMessageFactory()
+    private val socket: UdpSocket = UdpSocket()
 ) {
 
     fun new(color: Color) {
-        val colorMessage = colorMessageFactory.create(color)
-        sendMessage(colorMessage)
+        val red = (color.red * 255).toInt()
+        val green = (color.green * 255).toInt()
+        val blue = (color.blue * 255).toInt()
+        sendMessage("$red,$green,$blue")
     }
 
     private fun sendMessage(message: String) {
