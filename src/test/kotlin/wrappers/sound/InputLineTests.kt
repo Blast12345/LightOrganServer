@@ -2,7 +2,6 @@ package wrappers.sound
 
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
@@ -50,8 +49,7 @@ class InputLineTests {
             name = name,
             dataLine = dataLine,
             minimumReadSize = minimumReadSize,
-            bufferSize = bufferSize,
-            readDispatcher = UnconfinedTestDispatcher()
+            bufferSize = bufferSize
         )
     }
 
