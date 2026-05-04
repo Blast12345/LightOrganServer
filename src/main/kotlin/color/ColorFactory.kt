@@ -1,7 +1,7 @@
 package color
 
+import androidx.compose.ui.graphics.Color
 import dsp.bins.FrequencyBins
-import wrappers.color.Color
 
 // TODO: Rename to ColorCalculator
 class ColorFactory(
@@ -11,10 +11,10 @@ class ColorFactory(
 
     @Suppress("ReturnCount")
     fun create(frequencyBins: FrequencyBins): Color {
-        val hue = getHue(frequencyBins) ?: return Color.black
-        val brightness = getBrightness(frequencyBins) ?: return Color.black
+        val hue = getHue(frequencyBins) ?: return Color.Black
+        val brightness = getBrightness(frequencyBins) ?: return Color.Black
 
-        return Color(hue, 1F, brightness)
+        return Color.hsv(hue * 360f, 1F, brightness)
     }
 
     private fun getHue(bassBins: FrequencyBins): Float? {

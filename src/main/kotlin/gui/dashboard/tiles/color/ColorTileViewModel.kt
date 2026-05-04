@@ -11,18 +11,10 @@ class ColorTileViewModel(
     val scope: CoroutineScope
 ) : LightOrganSubscriber {
 
-    override fun new(color: wrappers.color.Color) {
+    override fun new(color: Color) {
         scope.launch {
-            this@ColorTileViewModel.color.value = getComposeColor(color)
+            this@ColorTileViewModel.color.value = color
         }
-    }
-
-    private fun getComposeColor(color: wrappers.color.Color): Color {
-        return Color.hsv(
-            hue = color.hue * 360,
-            saturation = color.saturation,
-            value = color.brightness
-        )
     }
 
 }

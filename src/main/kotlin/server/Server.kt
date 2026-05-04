@@ -1,20 +1,20 @@
 package server
 
+import androidx.compose.ui.graphics.Color
 import config.Config
 import config.ConfigSingleton
 import config.children.Client
-import lightOrgan.LightOrganSubscriber
-import wrappers.color.Color
 
 class Server(
     private val config: Config = ConfigSingleton,
-    private val socket: UdpSocket = UdpSocket(),
-    private val colorMessageFactory: ColorMessageFactory = ColorMessageFactory()
-) : LightOrganSubscriber {
+    private val socket: UdpSocket = UdpSocket()
+) {
 
-    override fun new(color: Color) {
-        val colorMessage = colorMessageFactory.create(color)
-        sendMessage(colorMessage)
+    fun new(color: Color) {
+        val red = (color.red * 255).toInt()
+        val green = (color.green * 255).toInt()
+        val blue = (color.blue * 255).toInt()
+        sendMessage("$red,$green,$blue")
     }
 
     private fun sendMessage(message: String) {
