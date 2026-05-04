@@ -12,11 +12,9 @@ import dsp.bins.FrequencyBins
 import dsp.bins.FrequencyBinsCalculator
 import dsp.windowing.Window
 import extensions.inSeconds
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.withContext
 import math.nextPowerOfTwo
 
 // ENHANCEMENT: Multi-resolution bin generations
@@ -32,25 +30,23 @@ class SpectrumManager(
     private val monoMixer: MonoMixer = MonoMixer(),
     private val filterManager: FilterManager = FilterManager(config.highPassFilter, config.lowPassFilter),
     private val decimator: Decimator = Decimator(),
-    private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(), // TODO: Maybe make this 1s?
+    private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
     private val window: Window = config.window.createWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FftFrequencyBinsCalculator(),
 ) {
 
-    // TODO: Maybe we "start" generating spectrums from an input stream? This owns the orchestration. Or does the LO?
-
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
     val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
 
-    suspend fun calculate(audio: AudioFrame): FrequencyBins = withContext(Dispatchers.Default) {
+    fun calculate(audio: AudioFrame): FrequencyBins {
         val conditionedAudio = conditionAudio(audio)
         val preparedFrame = prepareFrame(conditionedAudio)
         val allBins = calculateBins(preparedFrame)
         val relevantBins = filterBins(allBins, preparedFrame.audio.format)
 
         _frequencyBins.value = relevantBins
-        return@withContext relevantBins
+        return relevantBins
     }
 
     // Conditioning

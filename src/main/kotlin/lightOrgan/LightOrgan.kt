@@ -29,7 +29,7 @@ class LightOrgan(
         inputManager.selectDefaultInput()
         val gapDetector = SequenceGapDetector("Audio stream")
 
-        // TODO: Optimize
+        // TODO: Decouple ingest and calculation
         inputManager.audioStream
             // WARNING: Overflowing the buffer will cause spectral artifacts
             .buffer(64, onBufferOverflow = BufferOverflow.DROP_OLDEST)
