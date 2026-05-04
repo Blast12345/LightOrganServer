@@ -19,7 +19,7 @@ import server.Server
 import toolkit.assertions.eventually
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextAudioStreamFrame
-import toolkit.monkeyTest.nextColor
+import toolkit.monkeyTest.nextComposeColor
 import toolkit.monkeyTest.nextFrequencyBins
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -39,7 +39,7 @@ class LightOrganTests {
 
     private val newStreamFrame = nextAudioStreamFrame()
     private val bufferedAudio = nextAudioFrame()
-    private val newColor = nextColor()
+    private val newColor = nextComposeColor()
 
     @BeforeEach
     fun setupHappyPath() {

@@ -10,18 +10,15 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import kotlin.random.Random
+import toolkit.monkeyTest.nextComposeColor
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ColorTileViewModelTests {
 
     private val colorState: MutableState<androidx.compose.ui.graphics.Color> = mockk()
     private val sutScope = TestScope()
 
-    private val hue = Random.nextFloat()
-    private val saturation = Random.nextFloat()
-    private val brightness = Random.nextFloat()
-    private val color = wrappers.color.Color(hue, saturation, brightness)
-    private val composeColor = androidx.compose.ui.graphics.Color.hsv(hue * 360, saturation, brightness)
+    private val color = nextComposeColor()
 
     @AfterEach
     fun teardown() {
@@ -35,7 +32,6 @@ class ColorTileViewModelTests {
         )
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `the color state is set when a new color is received`() = runTest {
         val sut = createSUT()
@@ -43,7 +39,7 @@ class ColorTileViewModelTests {
         sut.new(color)
         sutScope.advanceUntilIdle()
 
-        verify { colorState.value = composeColor }
+        verify { colorState.value = color }
     }
 
 }

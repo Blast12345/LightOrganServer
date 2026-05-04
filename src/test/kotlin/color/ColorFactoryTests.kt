@@ -1,5 +1,6 @@
 package color
 
+import androidx.compose.ui.graphics.Color
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextFrequencyBins
-import wrappers.color.Color
 import kotlin.random.Random
 
 class ColorFactoryTests {
@@ -43,9 +43,8 @@ class ColorFactoryTests {
 
         val color = sut.create(frequencyBins)
 
-        assertEquals(hue, color.hue, 0.01F)
-        assertEquals(1F, color.saturation, 0.01F)
-        assertEquals(brightness, color.brightness, 0.01F)
+        val expected = Color.hsv(hue * 360f, 1F, brightness)
+        assertEquals(expected, color)
     }
 
     @Test
@@ -55,7 +54,7 @@ class ColorFactoryTests {
 
         val actual = sut.create(frequencyBins)
 
-        assertEquals(Color.black, actual)
+        assertEquals(Color.Black, actual)
     }
 
     @Test
@@ -65,7 +64,7 @@ class ColorFactoryTests {
 
         val actual = sut.create(frequencyBins)
 
-        assertEquals(Color.black, actual)
+        assertEquals(Color.Black, actual)
     }
 
 }
