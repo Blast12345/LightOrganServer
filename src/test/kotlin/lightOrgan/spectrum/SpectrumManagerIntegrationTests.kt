@@ -21,8 +21,8 @@ import toolkit.generators.generateSineWave
 import toolkit.monkeyTest.nextAudioFrame
 import kotlin.time.Duration.Companion.milliseconds
 
-// Calculating bins from audio is such a complex process that unit tests don't feel like they deliver the "big picture"
-// So, these tests represent the ultimate goal of the spectrum manager.
+// The processing chain is so long and specific that unit tests seemed like a mirror of implementation
+// rather than checks for meaningful behavior. As such, integration tests seemed like the right tool.
 class SpectrumManagerIntegrationTests {
 
     private val config = SpectrumConfig(
