@@ -21,7 +21,6 @@ import toolkit.generators.generateSineWave
 import toolkit.monkeyTest.nextAudioFrame
 import kotlin.time.Duration.Companion.milliseconds
 
-
 // The processing chain is so long and specific that unit tests seemed like a mirror of implementation
 // rather than checks for meaningful behavior. As such, integration tests seemed like the right tool.
 class SpectrumManagerIntegrationTests {
@@ -207,5 +206,5 @@ class SpectrumManagerIntegrationTests {
 
         verify { decimator.decimate(any(), any(), any(), any()) }
     }
-    
+
 }
