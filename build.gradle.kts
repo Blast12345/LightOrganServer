@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     val coroutinesVersion = "1.10.2"
+    val mockkVersion = "1.14.9"
 
     implementation("com.github.wendykierp:JTransforms:3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
@@ -22,7 +23,7 @@ dependencies {
 
     // Unit Testing
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${coroutinesVersion}")
-    testImplementation("io.mockk:mockk:1.14.9")
+    testImplementation("io.mockk:mockk:${mockkVersion}")
     testImplementation(platform("org.junit:junit-bom:6.0.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
