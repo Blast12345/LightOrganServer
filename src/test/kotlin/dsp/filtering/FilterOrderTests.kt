@@ -3,14 +3,14 @@ package dsp.filtering
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import toolkit.monkeyTest.nextPositiveInt
+import toolkit.monkeyTest.nextInt
 
 class FilterOrderTests {
 
     // plain order
     @Test
     fun `create a filter order`() {
-        val order = nextPositiveInt()
+        val order = nextInt()
 
         val sut = FilterOrder(order)
 
@@ -26,7 +26,7 @@ class FilterOrderTests {
     // Order from slope
     @Test
     fun `create a filter order from a slope`() {
-        val order = nextPositiveInt()
+        val order = nextInt()
         val slope = order * 6
 
         val sut = FilterOrder.fromDbPerOctave(slope)

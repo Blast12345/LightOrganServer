@@ -17,7 +17,7 @@ fun nextAudioFrame(
 fun nextAudioFrame(
     channels: List<FloatArray> = listOf(nextFloatArray()),
     sampleRate: Float = nextPositiveFloat(),
-    bitDepth: Int = nextPositiveInt()
+    bitDepth: Int = nextInt()
 ): AudioFrame {
     require(channels.isNotEmpty())
     val frameSize = channels[0].size

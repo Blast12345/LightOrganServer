@@ -4,11 +4,11 @@ import audio.samples.AudioFormat
 
 fun nextAudioFormat(
     sampleRate: Float = nextPositiveFloat(),
-    channels: Int = nextPositiveInt()
+    channels: Int = nextInt()
 ): AudioFormat {
     return AudioFormat(
         sampleRate = sampleRate,
-        bitDepth = nextPositiveInt(),
+        bitDepth = nextInt(),
         channels = channels
     )
 }

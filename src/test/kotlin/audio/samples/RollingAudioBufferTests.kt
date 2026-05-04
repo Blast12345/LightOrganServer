@@ -10,7 +10,7 @@ import org.junit.jupiter.api.assertNull
 import toolkit.monkeyTest.nextAudioFormat
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextFloatArray
-import toolkit.monkeyTest.nextPositiveInt
+import toolkit.monkeyTest.nextInt
 
 class RollingAudioBufferTests {
 
@@ -22,7 +22,7 @@ class RollingAudioBufferTests {
     private val format1Frame2 = nextAudioFrame(format = format1)
     private val format2Frame = nextAudioFrame(format = format2)
 
-    private val bufferSize = nextPositiveInt()
+    private val bufferSize = nextInt()
     private val bufferedSamples = nextFloatArray()
 
     @BeforeEach
@@ -119,7 +119,7 @@ class RollingAudioBufferTests {
     @Test
     fun `set the buffer size`() {
         val sut = createSUT()
-        val randomSize = nextPositiveInt()
+        val randomSize = nextInt()
 
         sut.size = randomSize
 
