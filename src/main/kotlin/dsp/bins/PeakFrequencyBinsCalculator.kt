@@ -1,28 +1,21 @@
-package lightOrgan.color
+package dsp.bins
 
-import dsp.bins.FrequencyBin
-import dsp.bins.FrequencyBins
 import kotlin.math.log10
 import kotlin.math.pow
 
 class PeakFrequencyBinsCalculator {
 
     fun calculate(frequencyBins: FrequencyBins): FrequencyBins {
-        val sortedBins = frequencyBins.sortedBy { it.frequency }
-        val peaks: MutableList<FrequencyBin> = mutableListOf()
-
-        for (i in sortedBins.indices) {
-            val previous = sortedBins.elementAtOrNull(i - 1) ?: continue
-            val current = sortedBins.elementAtOrNull(i) ?: continue
-            val next = sortedBins.elementAtOrNull(i + 1) ?: continue
-
-            if (!containsParabolicPeak(previous, current, next)) continue
-
-            val interpolatedBin = interpolate(previous, current, next)
-            peaks.add(interpolatedBin)
-        }
-
-        return peaks
+        return frequencyBins
+            .sortedBy { it.frequency }
+            .windowed(size = 3, step = 1)
+            .mapNotNull { (previous, current, next) ->
+                if (containsParabolicPeak(previous, current, next)) {
+                    interpolate(previous, current, next)
+                } else {
+                    null
+                }
+            }
     }
 
     private fun containsParabolicPeak(previous: FrequencyBin, current: FrequencyBin, next: FrequencyBin): Boolean {

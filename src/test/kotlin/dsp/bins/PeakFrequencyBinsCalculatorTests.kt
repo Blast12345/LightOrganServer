@@ -1,11 +1,10 @@
-package bins
+package dsp.bins
 
-import dsp.bins.FrequencyBin
-import lightOrgan.color.PeakFrequencyBinsCalculator
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import kotlin.random.Random
 
+// TODO: Move me
 class PeakFrequencyBinsCalculatorTests {
 
     private fun createSUT(): PeakFrequencyBinsCalculator {
@@ -24,9 +23,9 @@ class PeakFrequencyBinsCalculatorTests {
 
         val result = sut.calculate(bins)
 
-        assertEquals(1, result.size)
-        assertEquals(2f, result.first().frequency, 0.001f)
-        assertEquals(1.0f, result.first().magnitude, 0.001f)
+        Assertions.assertEquals(1, result.size)
+        Assertions.assertEquals(2f, result.first().frequency, 0.001f)
+        Assertions.assertEquals(1.0f, result.first().magnitude, 0.001f)
     }
 
     @Test
@@ -40,9 +39,9 @@ class PeakFrequencyBinsCalculatorTests {
 
         val result = sut.calculate(bins)
 
-        assertEquals(1, result.size)
-        assertEquals(2.5f, result.first().frequency, 0.01f)
-        assertEquals(1.09f, result.first().magnitude, 0.01f)
+        Assertions.assertEquals(1, result.size)
+        Assertions.assertEquals(2.5f, result.first().frequency, 0.01f)
+        Assertions.assertEquals(1.09f, result.first().magnitude, 0.01f)
     }
 
     // Multiple peaks
@@ -60,11 +59,11 @@ class PeakFrequencyBinsCalculatorTests {
 
         val result = sut.calculate(bins)
 
-        assertEquals(2, result.size)
-        assertEquals(2f, result[0].frequency, 0.001f)
-        assertEquals(5F, result[0].magnitude, 0.001f)
-        assertEquals(4f, result[1].frequency, 0.001f)
-        assertEquals(5F, result[1].magnitude, 0.001f)
+        Assertions.assertEquals(2, result.size)
+        Assertions.assertEquals(2f, result[0].frequency, 0.001f)
+        Assertions.assertEquals(5F, result[0].magnitude, 0.001f)
+        Assertions.assertEquals(4f, result[1].frequency, 0.001f)
+        Assertions.assertEquals(5F, result[1].magnitude, 0.001f)
     }
 
     // No peaks
@@ -81,7 +80,7 @@ class PeakFrequencyBinsCalculatorTests {
 
         val result = sut.calculate(bins)
 
-        assertEquals(0, result.size)
+        Assertions.assertEquals(0, result.size)
     }
 
     @Test
@@ -96,7 +95,7 @@ class PeakFrequencyBinsCalculatorTests {
 
         val result = sut.calculate(bins)
 
-        assertEquals(0, result.size)
+        Assertions.assertEquals(0, result.size)
     }
 
     @Test
@@ -111,7 +110,7 @@ class PeakFrequencyBinsCalculatorTests {
 
         val result = sut.calculate(bins)
 
-        assertEquals(0, result.size)
+        Assertions.assertEquals(0, result.size)
     }
 
     // Empty input
@@ -121,7 +120,7 @@ class PeakFrequencyBinsCalculatorTests {
 
         val result = sut.calculate(emptyList())
 
-        assertEquals(0, result.size)
+        Assertions.assertEquals(0, result.size)
     }
 
     // Edge bins
@@ -138,7 +137,7 @@ class PeakFrequencyBinsCalculatorTests {
 
         val result = sut.calculate(bins)
 
-        assertEquals(0, result.size)
+        Assertions.assertEquals(0, result.size)
     }
 
     @Test
@@ -152,7 +151,7 @@ class PeakFrequencyBinsCalculatorTests {
 
         val result = sut.calculate(bins)
 
-        assertEquals(0, result.size)
+        Assertions.assertEquals(0, result.size)
     }
 
     // Sorting - parabolic interpolation only works if the bins are in order
@@ -167,9 +166,9 @@ class PeakFrequencyBinsCalculatorTests {
 
         val result = sut.calculate(bins)
 
-        assertEquals(1, result.size)
-        assertEquals(2.5f, result.first().frequency, 0.01f)
-        assertEquals(1.09f, result.first().magnitude, 0.01f)
+        Assertions.assertEquals(1, result.size)
+        Assertions.assertEquals(2.5f, result.first().frequency, 0.01f)
+        Assertions.assertEquals(1.09f, result.first().magnitude, 0.01f)
     }
 
 }
