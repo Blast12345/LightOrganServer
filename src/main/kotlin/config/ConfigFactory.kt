@@ -41,7 +41,7 @@ class ConfigFactory(
                 lowestFrequency = 0f,
                 highestFrequency = 160F,
             ),
-            brightnessMultiplier = 4F, // TODO: Gain increase instead?
+            brightnessMultiplier = 4F, // ENHANCEMENT: Gain increase instead?
         )
     }
 
