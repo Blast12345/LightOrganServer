@@ -38,7 +38,7 @@ class LightOrgan(
             .launchIn(scope)
     }
 
-    private suspend fun handle(newAudio: AudioFrame) {
+    private fun handle(newAudio: AudioFrame) {
         val frequencyBins = spectrumManager.calculate(newAudio)
         val color = colorManager.calculate(frequencyBins)
 
