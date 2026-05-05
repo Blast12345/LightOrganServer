@@ -4,11 +4,9 @@ import androidx.compose.ui.graphics.Color
 import config.ConfigSingleton
 import dsp.bins.FrequencyBin
 import dsp.bins.FrequencyBins
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.withContext
 
 // TODO: Is this actually a LightManager? Do we return light objects and consumers are responsible for turning Light into concrete colors?
 // But it wouldn't know how to handle brightness.
@@ -32,19 +30,18 @@ class ColorManager(
 
     // TODO: Reject peaks that are from aliasing?
     // TODO: Reject peaks that are from sidelobes (or compensate)
-    suspend fun calculate(frequencyBins: FrequencyBins): Color =
-        withContext(Dispatchers.Default) { // TODO: Return metadata?
-            val peakBins = peakFrequencyBinsCalculator.calculate(frequencyBins)
-            val peaksWithProminence = prominenceCalculator.calculate(peakBins, frequencyBins)
-            val prominentBins = peaksWithProminence.filter { it.prominence > 0.0005 }.map { it.frequencyBin }
+    fun calculate(frequencyBins: FrequencyBins): Color { // TODO: Return metadata?
+        val peakBins = peakFrequencyBinsCalculator.calculate(frequencyBins)
+        val peaksWithProminence = prominenceCalculator.calculate(peakBins, frequencyBins)
+        val prominentBins = peaksWithProminence.filter { it.prominence > 0.0005 }.map { it.frequencyBin }
 
-            val color =
-                if (peakBins.isEmpty()) Color.Black else colorCalculator.calculate(prominentBins, brightnessMultiplier)
+        val color =
+            if (peakBins.isEmpty()) Color.Black else colorCalculator.calculate(prominentBins, brightnessMultiplier)
 
-            // Return
-            _color.value = color
-            return@withContext color
-        }
+        // Return
+        _color.value = color
+        return color
+    }
 
 }
 

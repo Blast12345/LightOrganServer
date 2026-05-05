@@ -29,7 +29,7 @@ class LightOrgan(
         inputManager.selectDefaultInput()
         val gapDetector = SequenceGapDetector("Audio stream")
 
-        // TODO: Decouple ingest and calculation
+        // ENHANCEMENT: Decouple ingest and calculation
         inputManager.audioStream
             // WARNING: Overflowing the buffer will cause spectral artifacts
             .buffer(64, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -38,7 +38,7 @@ class LightOrgan(
             .launchIn(scope)
     }
 
-    private suspend fun handle(newAudio: AudioFrame) {
+    private fun handle(newAudio: AudioFrame) {
         val frequencyBins = spectrumManager.calculate(newAudio)
         val color = colorManager.calculate(frequencyBins)
 
