@@ -1,6 +1,7 @@
 package gui.dashboard.tiles.color
 
 import io.mockk.clearAllMocks
+import kotlinx.coroutines.test.runTest
 import lightOrgan.color.ColorManagerFixture
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -32,13 +33,13 @@ class ColorTileViewModelTests {
     }
 
     @Test
-    fun `when a new color is available, then show that color`() {
+    fun `when a new color is available, then show that color`() = runTest {
         val sut = createSUT()
 
-        colorManager.colorFlow.value = color1
+        colorManager.colorFlow.emit(color1)
         assertEquals(color1, sut.color.value)
 
-        colorManager.colorFlow.value = color2
+        colorManager.colorFlow.emit(color2)
         assertEquals(color2, sut.color.value)
     }
 
