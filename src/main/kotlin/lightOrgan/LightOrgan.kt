@@ -16,9 +16,9 @@ import utilities.TimestampUtility
 
 // ENHANCEMENT: Gracefully handle crashed coroutines
 class LightOrgan(
-    val inputManager: AudioInputManager = AudioInputManager(),
-    val spectrumManager: SpectrumManager = SpectrumManager(),
-    val colorManager: ColorManager = ColorManager(),
+    private val inputManager: AudioInputManager,
+    private val spectrumManager: SpectrumManager,
+    private val colorManager: ColorManager,
     private val server: Server = Server(),
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) {
