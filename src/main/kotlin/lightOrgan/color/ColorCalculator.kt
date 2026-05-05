@@ -3,6 +3,7 @@ package lightOrgan.color
 import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import color.Light
 import color.LightExponentialSmoother
+import config.ConfigSingleton
 import dsp.bins.FrequencyBin
 import dsp.bins.FrequencyBins
 import math.physics.sumSoundPressure
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color as ComposeColor
 // ENHANCEMENT: Expose brightness curve alteration
 // ENHANCEMENT: Support high gamut color spaces (ideally CIE XYZ) and compress for each output device
 class ColorCalculator(
+    private val brightnessMultiplier: Float = ConfigSingleton.brightnessMultiplier,
     private val gammaAdjustment: Float = 1f, // e.g. 1.5f, 1.25f, 1f
     private val tuning: TuningSystem = WesternTuningSystem(),
     private val lightSmoother: LightExponentialSmoother = LightExponentialSmoother(halfLife = 75.milliseconds),
@@ -25,7 +27,7 @@ class ColorCalculator(
 ) {
 
     // TODO: Enforce sRGB via a type?
-    fun calculate(frequencyBins: FrequencyBins, brightnessMultiplier: Float): ComposeColor {
+    fun calculate(frequencyBins: FrequencyBins): ComposeColor {
         val lights = frequencyBins.map { createLight(it) }
         val combinedLight = lights.fold(Light()) { sum, current -> sum + current }
 
