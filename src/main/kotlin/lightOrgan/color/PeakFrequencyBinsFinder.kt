@@ -2,6 +2,7 @@ package lightOrgan.color
 
 import dsp.bins.FrequencyBins
 import dsp.bins.PeakFrequencyBinsCalculator
+import dsp.bins.ProminenceCalculator
 
 // TODO: Move me
 // ENHANCEMENT: Noise floor rejection
