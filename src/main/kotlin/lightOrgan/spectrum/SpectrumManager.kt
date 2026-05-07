@@ -7,9 +7,7 @@ import config.ConfigSingleton
 import dsp.Decimator
 import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
-import dsp.bins.FftFrequencyBinsCalculator
-import dsp.bins.FrequencyBins
-import dsp.bins.FrequencyBinsCalculator
+import dsp.bins.*
 import dsp.windowing.Window
 import extensions.inSeconds
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,19 +32,30 @@ class SpectrumManager(
     private val window: Window = config.window.createWindow(),
     private val interpolator: ZeroPaddingInterpolator = ZeroPaddingInterpolator(),
     private val frequencyBinsCalculator: FrequencyBinsCalculator = FftFrequencyBinsCalculator(),
+    private val deconvolver: CleanDeconvolver = CleanDeconvolver(),
 ) {
 
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
     val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
 
+    private val _peakBins = MutableStateFlow<FrequencyBins>(emptyList())
+    val peakBins: StateFlow<FrequencyBins> = _peakBins.asStateFlow()
+
     fun calculate(audio: AudioFrame): FrequencyBins {
         val conditionedAudio = conditionAudio(audio)
         val preparedFrame = prepareFrame(conditionedAudio)
-        val allBins = calculateBins(preparedFrame)
-        val relevantBins = filterBins(allBins, preparedFrame.audio.format)
+        val spectrum = computeSpectrum(preparedFrame)
+        val peakBins = findPeaks(spectrum, preparedFrame)
+        val relevantBins =
+            filterBins(
+                spectrum.toFrequencyBins(window.magnitudeCorrectionFactor(preparedFrame.windowSize)),
+                preparedFrame.audio.format
+            )
+        val relevantPeaks = filterBins(peakBins, preparedFrame.audio.format)
 
         _frequencyBins.value = relevantBins
-        return relevantBins
+        _peakBins.value = relevantPeaks
+        return relevantPeaks
     }
 
     // Conditioning
@@ -85,7 +94,9 @@ class SpectrumManager(
 
         return PreparedFrame(
             audio = preparedAudio,
-            magnitudeCorrectionFactor = window.magnitudeCorrectionFactor(sampleSize)
+            magnitudeCorrectionFactor = window.magnitudeCorrectionFactor(sampleSize),
+            windowSize = sampleSize,
+            fftLength = optimalFftLength,
         )
     }
 
@@ -110,16 +121,53 @@ class SpectrumManager(
 
     private data class PreparedFrame(
         val audio: AudioFrame,
-        val magnitudeCorrectionFactor: Float
+        val magnitudeCorrectionFactor: Float,
+        val windowSize: Int,
+        val fftLength: Int,
     )
 
     // Bin calculation
-    private fun calculateBins(preparedFrame: PreparedFrame): FrequencyBins {
-        return frequencyBinsCalculator.calculate(
+//    private fun calculateBins(preparedFrame: PreparedFrame): FrequencyBins {
+//        return frequencyBinsCalculator.calculate(
+//            preparedFrame.audio.samples,
+//            preparedFrame.audio.format.sampleRate,
+//            preparedFrame.magnitudeCorrectionFactor
+//        )
+//    }
+
+    private fun computeSpectrum(preparedFrame: PreparedFrame): ComplexSpectrum {
+        return FftCalculator.complexSpectrum(
             preparedFrame.audio.samples,
             preparedFrame.audio.format.sampleRate,
-            preparedFrame.magnitudeCorrectionFactor
         )
+    }
+
+    private fun toBins(spectrum: ComplexSpectrum, preparedFrame: PreparedFrame): FrequencyBins {
+        return spectrum.toFrequencyBins(preparedFrame.magnitudeCorrectionFactor)
+    }
+
+    // Find peaks - using the CLEAN algorithm
+    private fun findPeaks(spectrum: ComplexSpectrum, preparedFrame: PreparedFrame): FrequencyBins {
+        val psf = getOrCreatePsf(preparedFrame.windowSize, preparedFrame.fftLength)
+        return deconvolver.deconvolve(spectrum, psf).map { bin ->
+            FrequencyBin(bin.frequency, bin.magnitude * preparedFrame.magnitudeCorrectionFactor)
+        }
+    }
+
+    private var cachedPsf: PointSpreadFunction? = null
+    private var cachedPsfKey: Pair<Int, Int>? = null
+
+    private fun getOrCreatePsf(windowSize: Int, fftLength: Int): PointSpreadFunction {
+        val key = windowSize to fftLength
+        cachedPsf?.let { if (cachedPsfKey == key) return it }
+
+        val psf = WindowPointSpreadFunction.fromWindowCoefficients(
+            coefficients = window.coefficients(windowSize),
+            fftLength = fftLength,
+        )
+        cachedPsf = psf
+        cachedPsfKey = key
+        return psf
     }
 
     // Filtering

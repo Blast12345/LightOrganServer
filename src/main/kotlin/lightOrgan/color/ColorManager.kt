@@ -16,10 +16,10 @@ class ColorManager(
     private val _color = MutableStateFlow(Color.Black)
     val color: StateFlow<Color> = _color.asStateFlow()
 
-    fun calculate(frequencyBins: FrequencyBins): Color {
-        val peakFrequencyBins = peakFrequencyBinsFinder.find(frequencyBins)
+    fun calculate(peakBins: FrequencyBins): Color {
+//        val peakFrequencyBins = peakFrequencyBinsFinder.find(frequencyBins)
 
-        val color = if (peakFrequencyBins.isEmpty()) Color.Black else colorCalculator.calculate(peakFrequencyBins)
+        val color = if (peakBins.isEmpty()) Color.Black else colorCalculator.calculate(peakBins)
 
         _color.value = color
         return color

@@ -39,8 +39,8 @@ class LightOrgan(
     }
 
     private fun handle(newAudio: AudioFrame) {
-        val frequencyBins = spectrumManager.calculate(newAudio)
-        val color = colorManager.calculate(frequencyBins)
+        val peakBins = spectrumManager.calculate(newAudio)
+        val color = colorManager.calculate(peakBins)
 
         server.new(color)
 

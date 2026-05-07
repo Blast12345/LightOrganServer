@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import dsp.bins.FrequencyBin
 import gui.basicComponents.*
 
@@ -55,18 +56,22 @@ private fun HighlightedFrequency(bin: FrequencyBin?) {
 
 @Composable
 private fun GridSpectrum(viewModel: SpectrumTileViewModel) {
-    Grid {
-        Spectrum(viewModel)
-    }
+//    Grid {
+    Spectrum(viewModel)
+//    }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun Spectrum(viewModel: SpectrumTileViewModel) {
     val bins = viewModel.displayedBins.collectAsState()
+    val peakBins = viewModel.peakBins.collectAsState()
     val binCount = remember { derivedStateOf { bins.value.size } } // optimization
     val hoveredIndex = viewModel.highlightedIndex
     val barColor = MaterialTheme.colors.secondary
+    val gridColor = MaterialTheme.colors.primary
+
+    val cleanColor = Color.Red
 
     Canvas(
         modifier = Modifier
@@ -88,7 +93,34 @@ private fun Spectrum(viewModel: SpectrumTileViewModel) {
                 drawHoverHighlight(index, barWidth, renderWidth)
             }
         }
+
+        drawGrid(this, gridColor)
+
+        if (bins.value.isNotEmpty()) {
+            val frequencyRange = bins.value.first().frequency..bins.value.last().frequency
+
+            peakBins.value.forEach { bin ->
+                val x = frequencyToX(bin.frequency, frequencyRange, size.width)
+                val height = bin.magnitude * size.height
+
+                drawLine(
+                    color = cleanColor,
+                    start = Offset(x, size.height),
+                    end = Offset(x, size.height - height),
+                    strokeWidth = 2.dp.toPx()
+                )
+            }
+        }
     }
+}
+
+private fun frequencyToX(
+    frequency: Float,
+    range: ClosedFloatingPointRange<Float>,
+    width: Float,
+): Float {
+    val normalized = (frequency - range.start) / (range.endInclusive - range.start)
+    return normalized * width
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
