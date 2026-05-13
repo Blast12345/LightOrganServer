@@ -26,6 +26,16 @@ class ColorCalculator(
     private val brightnessSmoother: PeakSmoother = PeakSmoother(halfLife = 1.milliseconds)
 ) {
 
+    /**
+     * Magnitude is analogous to sound pressure (not to be confused with SPL, which is a log scale).
+     * Because digital audio has a finite range, it's akin to saying with we have a finite pressure range (e.g. 0-100 pascals).
+     * Because it's a finite range, we can normalize it to a value from 0 to 1.
+     * So, we can say that a magnitude of 0.1 is 10 pascals.
+     *
+     * Though this variable doesn't functionally do anything, it expresses the relationship.
+     */
+    private val FrequencyBin.normalizedSoundPressure: Float get() = magnitude
+
     // TODO: Enforce sRGB via a type?
     fun calculate(frequencyBins: FrequencyBins): ComposeColor {
         val lights = frequencyBins.map { createLight(it) }
