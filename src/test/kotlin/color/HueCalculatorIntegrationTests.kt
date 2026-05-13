@@ -4,7 +4,6 @@ import dsp.bins.FrequencyBin
 import dsp.bins.FrequencyBins
 import music.PitchClass
 import music.WesternTuningSystem
-import org.apache.commons.math3.complex.Complex
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -68,8 +67,8 @@ class HueCalculatorIntegrationTests {
 
         val actual = sut.calculate(
             listOf(
-                FrequencyBin(tuning.getFrequency(tuning.D_SHARP, 0), Complex(1.0, 0.0)),
-                FrequencyBin(tuning.getFrequency(tuning.A, 0), Complex(1.0, 0.0))
+                FrequencyBin(tuning.getFrequency(tuning.D_SHARP, 0), 1.0),
+                FrequencyBin(tuning.getFrequency(tuning.A, 0), 1.0)
             )
         )
 
@@ -82,8 +81,8 @@ class HueCalculatorIntegrationTests {
 
         val actual = sut.calculate(
             listOf(
-                FrequencyBin(tuning.getFrequency(tuning.F, 0), Complex(1.0, 0.0)),
-                FrequencyBin(tuning.getFrequency(tuning.G, 0), Complex(1.0, 0.0))
+                FrequencyBin(tuning.getFrequency(tuning.F, 0), 1.0),
+                FrequencyBin(tuning.getFrequency(tuning.G, 0), 1.0)
             )
         )
 
@@ -96,8 +95,8 @@ class HueCalculatorIntegrationTests {
 
         val actual = sut.calculate(
             listOf(
-                FrequencyBin(tuning.getFrequency(tuning.D_SHARP, 0), Complex(1.0, 0.0)),
-                FrequencyBin(tuning.getFrequency(tuning.F, 0), Complex(1.0, 0.0))
+                FrequencyBin(tuning.getFrequency(tuning.D_SHARP, 0), 1.0),
+                FrequencyBin(tuning.getFrequency(tuning.F, 0), 1.0)
             )
         )
 
@@ -110,8 +109,8 @@ class HueCalculatorIntegrationTests {
 
         val actual = sut.calculate(
             listOf(
-                FrequencyBin(tuning.getFrequency(tuning.C, octave = 0), Complex(1.0, 0.0)),
-                FrequencyBin(tuning.getFrequency(tuning.F_SHARP, octave = 0), Complex(1.0, 0.0))
+                FrequencyBin(tuning.getFrequency(tuning.C, octave = 0), 1.0),
+                FrequencyBin(tuning.getFrequency(tuning.F_SHARP, octave = 0), 1.0)
             )
         )
 
@@ -124,10 +123,7 @@ class HueCalculatorIntegrationTests {
 
         for (octave in 0 until 8) {
             bins.add(
-                FrequencyBin(
-                    frequency = tuning.getFrequency(pitchClass, octave),
-                    value = Complex(1.0, 0.0)
-                )
+                FrequencyBin(tuning.getFrequency(pitchClass, octave), 1.0)
             )
         }
 
