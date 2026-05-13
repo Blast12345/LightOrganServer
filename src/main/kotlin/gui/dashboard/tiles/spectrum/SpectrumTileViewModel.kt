@@ -33,7 +33,7 @@ class SpectrumTileViewModel(
         .map { it.map { bin -> bin.copy(magnitude = bin.magnitude * scale) } }
         .stateIn(scope, sharingPolicy, emptyList())
 
-    val peakBins = spectrumManager.peakBins
+    val peakBins = spectrumManager.peaks
         .map { it.filter { bin -> bin.frequency in lowestFrequency..highestFrequency } }
         .map { it.map { bin -> bin.copy(magnitude = bin.magnitude * scale) } }
         .stateIn(scope, sharingPolicy, emptyList())

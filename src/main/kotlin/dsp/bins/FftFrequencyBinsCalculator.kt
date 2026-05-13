@@ -1,37 +1,32 @@
 package dsp.bins
 
+import org.apache.commons.math3.complex.Complex
 import org.jtransforms.fft.FloatFFT_1D
-import kotlin.math.sqrt
 
 class FftFrequencyBinsCalculator : FrequencyBinsCalculator {
 
     override fun calculate(
         monoSamples: FloatArray,
         sampleRate: Float,
-        magnitudeCorrectionFactor: Float
+        magnitudeCorrectionFactor: Float // TODO: Double?
     ): FrequencyBins {
-        val magnitudes = calculateMagnitudes(monoSamples)
+        val fftData = computeFft(monoSamples)
+        val binCount = fftData.size / 2
         val nyquistFrequency = sampleRate / 2f
-        val binSpacing = nyquistFrequency / magnitudes.size
+        val binSpacing = nyquistFrequency / binCount
+        val singleSidedCompensation = 2.0
+        val fftAmplitudeScaling = 1.0 / monoSamples.size
 
-        return magnitudes.indices.map { index ->
-            val rawMagnitude = magnitudes[index]
+        val scaling = singleSidedCompensation * fftAmplitudeScaling * magnitudeCorrectionFactor
+
+        return (0 until binCount).map { index ->
+            val real = fftData[index * 2] * scaling
+            val imaginary = fftData[index * 2 + 1] * scaling
 
             FrequencyBin(
                 frequency = index * binSpacing,
-                magnitude = rawMagnitude * magnitudeCorrectionFactor,
+                value = Complex(real, imaginary)
             )
-        }
-    }
-
-    private fun calculateMagnitudes(frame: FloatArray): FloatArray {
-        val fftData = computeFft(frame)
-        val binCount = fftData.size / 2
-
-        return FloatArray(binCount) { i ->
-            val real = fftData[i * 2]
-            val imaginary = fftData[i * 2 + 1]
-            sqrt(real * real + imaginary * imaginary) * 2 / frame.size
         }
     }
 

@@ -1,13 +1,17 @@
 package dsp.bins
 
+import org.apache.commons.math3.complex.Complex
 import kotlin.math.abs
 
 // Reference: https://dsp.stackexchange.com/questions/8317/fft-amplitude-or-magnitude
 // I'm using the term "magnitude" instead of "amplitude" because the value is inherently non-negative.
 data class FrequencyBin(
+    // TODO: Make these doubles again?
     val frequency: Float,
-    val magnitude: Float
+    val value: Complex
 ) {
+
+    val magnitude: Float get() = value.abs().toFloat()
 
     /**
      * Magnitude is proportional to sound pressure (pascals), normalized to digital full scale (0–1) rather than referenced to 20 µPa.
