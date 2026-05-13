@@ -1,6 +1,7 @@
 package lightOrgan.color
 
 import androidx.compose.ui.graphics.Color
+import dsp.bins.PeakFrequencyBinsCalculator
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -15,7 +16,7 @@ import toolkit.monkeyTest.nextFrequencyBins
 @OptIn(ExperimentalCoroutinesApi::class)
 class ColorManagerTests {
 
-    private val peakFrequencyBinsFinder: PeakFrequencyBinsFinder = mockk()
+    private val peakFrequencyBinsCalculator: PeakFrequencyBinsCalculator = mockk()
     private val colorCalculator: ColorCalculator = mockk()
 
     private val frequencyBins = nextFrequencyBins()
@@ -24,7 +25,7 @@ class ColorManagerTests {
 
     @BeforeEach
     fun setupHappyPath() {
-        every { peakFrequencyBinsFinder.find(frequencyBins) } returns peakFrequencyBins
+        every { peakFrequencyBinsCalculator.calculate(frequencyBins) } returns peakFrequencyBins
         every { colorCalculator.calculate(peakFrequencyBins) } returns color
     }
 
@@ -35,7 +36,7 @@ class ColorManagerTests {
 
     private fun createSUT(): ColorManager {
         return ColorManager(
-            peakFrequencyBinsFinder = peakFrequencyBinsFinder,
+            peakFrequencyBinsCalculator = peakFrequencyBinsCalculator,
             colorCalculator = colorCalculator,
         )
     }
@@ -54,7 +55,7 @@ class ColorManagerTests {
     fun `given no peaks are present, then the color is black`() {
         val sut = createSUT()
 
-        every { peakFrequencyBinsFinder.find(frequencyBins) } returns listOf()
+        every { peakFrequencyBinsCalculator.calculate(frequencyBins) } returns listOf()
         val actual = sut.calculate(frequencyBins)
 
         assertEquals(Color.Black, actual)
