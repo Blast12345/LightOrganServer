@@ -10,38 +10,38 @@ class FftFrequencyBinsCalculator : FrequencyBinsCalculator {
         sampleRate: Float,
         magnitudeCorrectionFactor: Float
     ): FrequencyBins {
-        val complexValues = extractComplexValues(monoSamples)
-        val binSpacing = sampleRate / monoSamples.size
-        val fftScalingFactor = 2.0 / monoSamples.size
+        val fftResult = performFft(monoSamples)
 
-        return complexValues.mapIndexed { index, value ->
+        val binSpacing = sampleRate / monoSamples.size
+        val scalingFactor = 2.0 / monoSamples.size
+
+        return fftResult.mapIndexed { index, complex ->
             FrequencyBin(
                 frequency = index * binSpacing,
-                value = value.multiply(fftScalingFactor * magnitudeCorrectionFactor),
+                value = complex.multiply(scalingFactor * magnitudeCorrectionFactor),
             )
         }
     }
 
-    private fun extractComplexValues(samples: FloatArray): List<Complex> {
-        val fftOutput = computeFft(samples)
-        val binCount = samples.size / 2
+    private fun performFft(samples: FloatArray): List<Complex> {
+        val packed = samples.copyOf()
+        FloatFFT_1D(packed.size.toLong()).realForward(packed)
+        return unpack(packed)
+    }
+
+    private fun unpack(packed: FloatArray): List<Complex> {
+        val binCount = packed.size / 2
 
         return (0..binCount).map { index ->
             when (index) {
-                0 -> Complex(fftOutput[0].toDouble(), 0.0)
-                binCount -> Complex(fftOutput[1].toDouble(), 0.0)
+                0 -> Complex(packed[0].toDouble(), 0.0)
+                binCount -> Complex(packed[1].toDouble(), 0.0)
                 else -> Complex(
-                    fftOutput[2 * index].toDouble(),
-                    fftOutput[2 * index + 1].toDouble()
+                    packed[2 * index].toDouble(),
+                    packed[2 * index + 1].toDouble()
                 )
             }
         }
-    }
-
-    private fun computeFft(frame: FloatArray): FloatArray {
-        val output = frame.copyOf()
-        FloatFFT_1D(output.size.toLong()).realForward(output)
-        return output
     }
 
 }
