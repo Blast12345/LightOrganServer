@@ -19,7 +19,7 @@ class FrequencyBinToOctaveBinConverterIntegrationTests {
         val sut = createSUT()
         val frequencyBin = FrequencyBin(
             frequency = tuning.getFrequency(tuning.C, 1),
-            magnitude = 0.25F
+            magnitude = 0.25
         )
 
         val actual = sut.convert(frequencyBin)
@@ -33,7 +33,7 @@ class FrequencyBinToOctaveBinConverterIntegrationTests {
         val sut = createSUT()
         val frequencyBin = FrequencyBin(
             frequency = tuning.getFrequency(tuning.C, 4),
-            magnitude = 0.5F
+            magnitude = 0.5
         )
 
         val actual = sut.convert(frequencyBin)
@@ -48,7 +48,7 @@ class FrequencyBinToOctaveBinConverterIntegrationTests {
         val sut = createSUT()
         val frequencyBin = FrequencyBin(
             frequency = tuning.getFrequency(tuning.F_SHARP, 3),
-            magnitude = 0.75F
+            magnitude = 0.75
         )
 
         val actual = sut.convert(frequencyBin)

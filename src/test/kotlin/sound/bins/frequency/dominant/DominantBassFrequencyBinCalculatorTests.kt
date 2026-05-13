@@ -46,7 +46,7 @@ class DominantBassFrequencyBinCalculatorTests {
 
         val frequencyBin = sut.calculate(frequencyBins)
 
-        val expected = FrequencyBin(dominantFrequency, estimatedMagnitude)
+        val expected = FrequencyBin(dominantFrequency, estimatedMagnitude.toDouble())
         assertEquals(expected, frequencyBin)
     }
 

@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test
 
 class TotalMagnitudeCalculatorTests {
 
-    private val bin1 = FrequencyBin(10F, 20F)
-    private val bin2 = FrequencyBin(20F, 30F)
+    private val bin1 = FrequencyBin(10F, 20.0)
+    private val bin2 = FrequencyBin(20F, 30.0)
     private val frequencyBins = listOf(bin1, bin2)
 
     private fun createSUT(): TotalMagnitudeCalculator {

@@ -81,7 +81,7 @@ class SpectrumTileViewModelTests {
         spectrumManager.frequencyBins.value = allBins
         sutScope.advanceUntilIdle()
 
-        val scaledBins = allBins.map { it.copy(magnitude = it.magnitude * 2f) }
+        val scaledBins = allBins.map { it.copy(value = it.value.multiply(2.0)) }
         assertEquals(scaledBins, sut.displayedBins.value)
     }
 

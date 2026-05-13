@@ -15,7 +15,8 @@ class DominantBassFrequencyBinCalculator(
         val frequency = dominantFrequencyCalculator.calculate(frequencyBins) ?: return null
         val magnitude = dominantMagnitudeCalculator.calculate(frequencyBins) ?: return null
 
-        return FrequencyBin(frequency, magnitude)
+
+        return FrequencyBin(frequency, magnitude.toDouble())
     }
 
 }

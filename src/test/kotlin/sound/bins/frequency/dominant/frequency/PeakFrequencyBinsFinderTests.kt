@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test
 
 class PeakFrequencyBinsFinderTests {
 
-    private val bin0 = FrequencyBin(00F, 4F)
-    private val bin1 = FrequencyBin(10F, 1F)
-    private val bin2 = FrequencyBin(20F, 2F)
-    private val bin3 = FrequencyBin(30F, 1F)
-    private val bin4 = FrequencyBin(40F, 2F)
-    private val bin5 = FrequencyBin(50F, 3F)
+    private val bin0 = FrequencyBin(00F, 4.0)
+    private val bin1 = FrequencyBin(10F, 1.0)
+    private val bin2 = FrequencyBin(20F, 2.0)
+    private val bin3 = FrequencyBin(30F, 1.0)
+    private val bin4 = FrequencyBin(40F, 2.0)
+    private val bin5 = FrequencyBin(50F, 3.0)
     private val frequencyBins = listOf(bin0, bin1, bin2, bin3, bin4, bin5)
 
     private fun createSUT(): PeakFrequencyBinsFinder {

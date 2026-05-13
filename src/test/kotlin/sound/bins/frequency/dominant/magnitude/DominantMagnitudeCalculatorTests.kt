@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test
 class DominantMagnitudeCalculatorTests {
 
     private val frequencyBins = listOf(
-        FrequencyBin(10F, 0.5F),
-        FrequencyBin(100F, 1.2F),
-        FrequencyBin(1000F, 0.75F)
+        FrequencyBin(10F, 0.5),
+        FrequencyBin(100F, 1.2),
+        FrequencyBin(1000F, 0.75)
     )
 
 
