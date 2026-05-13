@@ -2,6 +2,7 @@ package sound.bins
 
 import dsp.bins.FrequencyBin
 import music.WesternTuningSystem
+import org.apache.commons.math3.complex.Complex
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import sound.bins.octave.OctaveBin
@@ -19,7 +20,7 @@ class FrequencyBinToOctaveBinConverterIntegrationTests {
         val sut = createSUT()
         val frequencyBin = FrequencyBin(
             frequency = tuning.getFrequency(tuning.C, 1),
-            magnitude = 0.25F
+            value = Complex(0.25, 0.0)
         )
 
         val actual = sut.convert(frequencyBin)
@@ -33,7 +34,7 @@ class FrequencyBinToOctaveBinConverterIntegrationTests {
         val sut = createSUT()
         val frequencyBin = FrequencyBin(
             frequency = tuning.getFrequency(tuning.C, 4),
-            magnitude = 0.5F
+            value = Complex(0.0, 0.5)
         )
 
         val actual = sut.convert(frequencyBin)
@@ -48,7 +49,7 @@ class FrequencyBinToOctaveBinConverterIntegrationTests {
         val sut = createSUT()
         val frequencyBin = FrequencyBin(
             frequency = tuning.getFrequency(tuning.F_SHARP, 3),
-            magnitude = 0.75F
+            value = Complex(0.0, 0.75)
         )
 
         val actual = sut.convert(frequencyBin)

@@ -4,6 +4,7 @@ import dsp.bins.FrequencyBin
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import org.apache.commons.math3.complex.Complex
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -46,7 +47,7 @@ class DominantBassFrequencyBinCalculatorTests {
 
         val frequencyBin = sut.calculate(frequencyBins)
 
-        val expected = FrequencyBin(dominantFrequency, estimatedMagnitude)
+        val expected = FrequencyBin(dominantFrequency, Complex(estimatedMagnitude.toDouble(), 0.0))
         assertEquals(expected, frequencyBin)
     }
 

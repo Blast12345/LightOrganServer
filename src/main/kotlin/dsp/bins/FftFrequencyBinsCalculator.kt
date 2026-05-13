@@ -1,7 +1,7 @@
 package dsp.bins
 
+import org.apache.commons.math3.complex.Complex
 import org.jtransforms.fft.FloatFFT_1D
-import kotlin.math.sqrt
 
 class FftFrequencyBinsCalculator : FrequencyBinsCalculator {
 
@@ -10,28 +10,31 @@ class FftFrequencyBinsCalculator : FrequencyBinsCalculator {
         sampleRate: Float,
         magnitudeCorrectionFactor: Float
     ): FrequencyBins {
-        val magnitudes = calculateMagnitudes(monoSamples)
-        val nyquistFrequency = sampleRate / 2f
-        val binSpacing = nyquistFrequency / magnitudes.size
+        val complexValues = extractComplexValues(monoSamples)
+        val binSpacing = sampleRate / monoSamples.size
+        val fftScalingFactor = 2.0 / monoSamples.size
 
-        return magnitudes.indices.map { index ->
-            val rawMagnitude = magnitudes[index]
-
+        return complexValues.mapIndexed { index, value ->
             FrequencyBin(
                 frequency = index * binSpacing,
-                magnitude = rawMagnitude * magnitudeCorrectionFactor,
+                value = value.multiply(fftScalingFactor * magnitudeCorrectionFactor),
             )
         }
     }
 
-    private fun calculateMagnitudes(frame: FloatArray): FloatArray {
-        val fftData = computeFft(frame)
-        val binCount = fftData.size / 2
+    private fun extractComplexValues(samples: FloatArray): List<Complex> {
+        val fftOutput = computeFft(samples)
+        val binCount = samples.size / 2
 
-        return FloatArray(binCount) { i ->
-            val real = fftData[i * 2]
-            val imaginary = fftData[i * 2 + 1]
-            sqrt(real * real + imaginary * imaginary) * 2 / frame.size
+        return (0..binCount).map { index ->
+            when (index) {
+                0 -> Complex(fftOutput[0].toDouble(), 0.0)
+                binCount -> Complex(fftOutput[1].toDouble(), 0.0)
+                else -> Complex(
+                    fftOutput[2 * index].toDouble(),
+                    fftOutput[2 * index + 1].toDouble()
+                )
+            }
         }
     }
 

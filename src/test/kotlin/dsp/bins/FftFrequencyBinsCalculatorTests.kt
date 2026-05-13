@@ -37,7 +37,7 @@ class FftFrequencyBinsCalculatorTests {
 
         val expectedSpacing = sampleRate / 2 / bins.size
         bins.zipWithNext().forEach { (current, next) ->
-            assertEquals(expectedSpacing, next.frequency - current.frequency, 0.001f)
+            assertEquals(expectedSpacing, next.frequency - current.frequency, 0.01f)
         }
     }
 

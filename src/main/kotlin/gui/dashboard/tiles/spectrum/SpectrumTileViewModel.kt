@@ -30,7 +30,7 @@ class SpectrumTileViewModel(
 
     val displayedBins: StateFlow<FrequencyBins> = spectrumManager.frequencyBins
         .map { it.filter { bin -> bin.frequency in lowestFrequency..highestFrequency } }
-        .map { it.map { bin -> bin.copy(magnitude = bin.magnitude * scale) } }
+        .map { it.map { bin -> bin.copy(value = bin.value.multiply(scale.toDouble())) } }
         .stateIn(scope, sharingPolicy, emptyList())
 
     var highlightedIndex: Int? by mutableStateOf(null)
