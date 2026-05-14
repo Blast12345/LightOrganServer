@@ -1,7 +1,7 @@
 package lightOrgan.color
 
 import androidx.compose.ui.graphics.Color
-import dsp.bins.PeakFrequencyBinsCalculator
+import dsp.peakExtraction.ParabolicSpectralPeakExtractor
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -12,21 +12,22 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextComposeColor
 import toolkit.monkeyTest.nextFrequencyBins
+import toolkit.monkeyTest.nextSpectralPeaks
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ColorManagerTests {
 
-    private val peakFrequencyBinsCalculator: PeakFrequencyBinsCalculator = mockk()
+    private val parabolicSpectralPeakExtractor: ParabolicSpectralPeakExtractor = mockk()
     private val colorCalculator: ColorCalculator = mockk()
 
-    private val frequencyBins = nextFrequencyBins()
-    private val peakFrequencyBins = nextFrequencyBins()
+    private val spectrum = nextFrequencyBins()
+    private val spectralPeaks = nextSpectralPeaks()
     private val color = nextComposeColor()
 
     @BeforeEach
     fun setupHappyPath() {
-        every { peakFrequencyBinsCalculator.calculate(frequencyBins) } returns peakFrequencyBins
-        every { colorCalculator.calculate(peakFrequencyBins) } returns color
+        every { parabolicSpectralPeakExtractor.extract(spectrum) } returns spectralPeaks
+        every { colorCalculator.calculate(spectralPeaks) } returns color
     }
 
     @AfterEach
@@ -36,7 +37,7 @@ class ColorManagerTests {
 
     private fun createSUT(): ColorManager {
         return ColorManager(
-            peakFrequencyBinsCalculator = peakFrequencyBinsCalculator,
+            parabolicSpectralPeakExtractor = parabolicSpectralPeakExtractor,
             colorCalculator = colorCalculator,
         )
     }
@@ -45,7 +46,7 @@ class ColorManagerTests {
     fun `calculate a color from frequency bins`() {
         val sut = createSUT()
 
-        val actual = sut.calculate(frequencyBins)
+        val actual = sut.calculate(spectrum)
 
         assertEquals(color, actual)
         assertEquals(color, sut.color.value)
@@ -55,8 +56,8 @@ class ColorManagerTests {
     fun `given no peaks are present, then the color is black`() {
         val sut = createSUT()
 
-        every { peakFrequencyBinsCalculator.calculate(frequencyBins) } returns listOf()
-        val actual = sut.calculate(frequencyBins)
+        every { parabolicSpectralPeakExtractor.extract(spectrum) } returns listOf()
+        val actual = sut.calculate(spectrum)
 
         assertEquals(Color.Black, actual)
         assertEquals(Color.Black, sut.color.value)

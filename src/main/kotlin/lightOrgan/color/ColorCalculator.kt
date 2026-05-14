@@ -4,8 +4,8 @@ import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import color.Light
 import color.LightExponentialSmoother
 import config.ConfigSingleton
-import dsp.bins.FrequencyBin
-import dsp.bins.FrequencyBins
+import dsp.peakExtraction.SpectralPeak
+import dsp.peakExtraction.SpectralPeaks
 import math.physics.sumSoundPressure
 import math.smoothing.PeakSmoother
 import music.TuningSystem
@@ -34,15 +34,14 @@ class ColorCalculator(
      *
      * Though this variable doesn't functionally do anything, it expresses the relationship.
      */
-    private val FrequencyBin.normalizedSoundPressure: Float get() = magnitude
+    private val SpectralPeak.normalizedSoundPressure: Float get() = magnitude
 
     // TODO: Enforce sRGB via a type?
-    fun calculate(frequencyBins: FrequencyBins): ComposeColor {
-        val lights = frequencyBins.map { createLight(it) }
+    fun calculate(spectralPeaks: SpectralPeaks): ComposeColor {
+        val lights = spectralPeaks.map { createLight(it) }
         val combinedLight = lights.fold(Light()) { sum, current -> sum + current }
 
-        val combinedSoundPressure =
-            sumSoundPressure(frequencyBins.map { it.normalizedSoundPressure * brightnessMultiplier })
+        val combinedSoundPressure = sumSoundPressure(spectralPeaks.map { it.normalizedSoundPressure * brightnessMultiplier })
         val perceivedLoudness = combinedSoundPressure.pow(0.67f) // TODO: Perceived brightness on bin?
         val brightness = perceivedLoudness
 
@@ -57,12 +56,12 @@ class ColorCalculator(
     }
 
     // TODO: This is where we choose the color space
-    private fun createLight(frequencyBin: FrequencyBin): Light {
+    private fun createLight(spectralPeak: SpectralPeak): Light {
         val perceptionScale = 2.0f
-        val soundPressure = frequencyBin.normalizedSoundPressure.coerceIn(0f, 1f)
+        val soundPressure = spectralPeak.normalizedSoundPressure.coerceIn(0f, 1f)
 
         val color = ComposeColor.hsv(
-            hue = tuning.getPositionInOctave(frequencyBin.frequency).degrees.toFloat().coerceIn(0f, 360f),
+            hue = tuning.getPositionInOctave(spectralPeak.frequency).degrees.toFloat().coerceIn(0f, 360f),
             saturation = 1f,
             value = soundPressure.pow(perceptionScale),
             colorSpace = ColorSpaces.LinearSrgb
