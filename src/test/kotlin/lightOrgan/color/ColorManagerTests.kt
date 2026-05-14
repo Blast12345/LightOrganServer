@@ -1,7 +1,7 @@
 package lightOrgan.color
 
 import androidx.compose.ui.graphics.Color
-import dsp.peakExtraction.ParabolicSpectralPeakExtractor
+import dsp.peakExtraction.SpectralPeakExtractor
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -17,7 +17,7 @@ import toolkit.monkeyTest.nextSpectralPeaks
 @OptIn(ExperimentalCoroutinesApi::class)
 class ColorManagerTests {
 
-    private val parabolicSpectralPeakExtractor: ParabolicSpectralPeakExtractor = mockk()
+    private val peakExtractor: SpectralPeakExtractor = mockk()
     private val colorCalculator: ColorCalculator = mockk()
 
     private val spectrum = nextFrequencyBins()
@@ -26,7 +26,7 @@ class ColorManagerTests {
 
     @BeforeEach
     fun setupHappyPath() {
-        every { parabolicSpectralPeakExtractor.extract(spectrum) } returns spectralPeaks
+        every { peakExtractor.extract(spectrum) } returns spectralPeaks
         every { colorCalculator.calculate(spectralPeaks) } returns color
     }
 
@@ -37,7 +37,7 @@ class ColorManagerTests {
 
     private fun createSUT(): ColorManager {
         return ColorManager(
-            parabolicSpectralPeakExtractor = parabolicSpectralPeakExtractor,
+            peakExtractor = peakExtractor,
             colorCalculator = colorCalculator,
         )
     }
@@ -56,7 +56,7 @@ class ColorManagerTests {
     fun `given no peaks are present, then the color is black`() {
         val sut = createSUT()
 
-        every { parabolicSpectralPeakExtractor.extract(spectrum) } returns listOf()
+        every { peakExtractor.extract(spectrum) } returns listOf()
         val actual = sut.calculate(spectrum)
 
         assertEquals(Color.Black, actual)
