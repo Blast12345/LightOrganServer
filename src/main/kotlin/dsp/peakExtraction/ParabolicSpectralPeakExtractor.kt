@@ -20,26 +20,30 @@ class ParabolicSpectralPeakExtractor : SpectralPeakExtractor {
     }
 
     private fun containsPeak(previous: FrequencyBin, current: FrequencyBin, next: FrequencyBin): Boolean {
-        return current.magnitude >= previous.magnitude
-                && current.magnitude >= next.magnitude
-                && (current.magnitude > previous.magnitude || current.magnitude > next.magnitude)
+        // Peak detection is biased to one side to avoid duplicates when plateaus are found
+        // e.g. magnitudes [0.1, 0.5, 0.5, 0.1] should result in one peak between the 0.5 values
+        return current.magnitude > previous.magnitude && current.magnitude >= next.magnitude
     }
 
     private fun interpolate(previous: FrequencyBin, current: FrequencyBin, next: FrequencyBin): SpectralPeak {
-        val previousLogMagnitude = log10(previous.magnitude.coerceAtLeast(Float.MIN_VALUE))
-        val currentLogMagnitude = log10(current.magnitude.coerceAtLeast(Float.MIN_VALUE))
-        val nextLogMagnitude = log10(next.magnitude.coerceAtLeast(Float.MIN_VALUE))
+        val previousLog = safeLog10(previous.magnitude)
+        val currentLog = safeLog10(current.magnitude)
+        val nextLog = safeLog10(next.magnitude)
 
-        val denominator = previousLogMagnitude - 2 * currentLogMagnitude + nextLogMagnitude
-        if (denominator == 0F) return SpectralPeak(current.frequency, current.magnitude)
+        val slope = previousLog - nextLog
+        val curvature = previousLog - 2 * currentLog + nextLog
+        check(curvature < 0) { "Curvature must be negative (concave down); containsPeak should guarantee this" }
 
-        val delta = 0.5F * (previousLogMagnitude - nextLogMagnitude) / denominator
+        val delta = 0.5f * slope / curvature
         val binWidth = next.frequency - current.frequency
+        val interpolatedLogMagnitude = currentLog - 0.25f * slope * delta
 
         return SpectralPeak(
             frequency = current.frequency + delta * binWidth,
-            magnitude = 10f.pow(currentLogMagnitude - 0.25f * (previousLogMagnitude - nextLogMagnitude) * delta)
+            magnitude = 10f.pow(interpolatedLogMagnitude)
         )
     }
+
+    private fun safeLog10(value: Float): Float = log10(value.coerceAtLeast(Float.MIN_VALUE))
 
 }

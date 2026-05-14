@@ -13,7 +13,7 @@ class ParabolicSpectralPeakExtractorTests {
 
     // Single peak
     @Test
-    fun `given there is a single symmetric peak, return that peak`() {
+    fun `given the peak lands on a bin, return that peak`() {
         val sut = createSUT()
         val bins = listOf(
             FrequencyBin(1f, 0.0),
@@ -29,19 +29,36 @@ class ParabolicSpectralPeakExtractorTests {
     }
 
     @Test
-    fun `given there is a single peak between two bins, return that peak`() {
+    fun `given peak lands between two unequal bins, return that peak`() {
         val sut = createSUT()
         val bins = listOf(
             FrequencyBin(1f, 0.5),
             FrequencyBin(2f, 1.0),
-            FrequencyBin(3f, 1.0),
+            FrequencyBin(3f, 0.8),
+        )
+
+        val result = sut.extract(bins)
+
+        Assertions.assertEquals(1, result.size)
+        Assertions.assertEquals(2.25f, result.first().frequency, 0.01f)
+        Assertions.assertEquals(1.03f, result.first().magnitude, 0.01f)
+    }
+
+    @Test
+    fun `given the peak lands between two equal bins, return that peak`() {
+        val sut = createSUT()
+        val bins = listOf(
+            FrequencyBin(1f, 0.1),
+            FrequencyBin(2f, 0.5),
+            FrequencyBin(3f, 0.5),
+            FrequencyBin(4f, 0.1),
         )
 
         val result = sut.extract(bins)
 
         Assertions.assertEquals(1, result.size)
         Assertions.assertEquals(2.5f, result.first().frequency, 0.01f)
-        Assertions.assertEquals(1.09f, result.first().magnitude, 0.01f)
+        Assertions.assertEquals(0.612f, result.first().magnitude, 0.01f)
     }
 
     // Multiple peaks
