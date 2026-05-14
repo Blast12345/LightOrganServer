@@ -1,7 +1,7 @@
 package dsp.bins
 
+import org.apache.commons.math3.complex.Complex
 import org.jtransforms.fft.FloatFFT_1D
-import kotlin.math.sqrt
 
 class FftFrequencyBinsCalculator : FrequencyBinsCalculator {
 
@@ -10,35 +10,38 @@ class FftFrequencyBinsCalculator : FrequencyBinsCalculator {
         sampleRate: Float,
         magnitudeCorrectionFactor: Float
     ): FrequencyBins {
-        val magnitudes = calculateMagnitudes(monoSamples)
-        val nyquistFrequency = sampleRate / 2f
-        val binSpacing = nyquistFrequency / magnitudes.size
+        val fftResult = performFft(monoSamples)
 
-        return magnitudes.indices.map { index ->
-            val rawMagnitude = magnitudes[index]
+        val binSpacing = sampleRate / monoSamples.size
+        val scalingFactor = 2.0 / monoSamples.size
 
+        return fftResult.mapIndexed { index, complex ->
             FrequencyBin(
                 frequency = index * binSpacing,
-                magnitude = rawMagnitude * magnitudeCorrectionFactor,
+                value = complex.multiply(scalingFactor * magnitudeCorrectionFactor),
             )
         }
     }
 
-    private fun calculateMagnitudes(frame: FloatArray): FloatArray {
-        val fftData = computeFft(frame)
-        val binCount = fftData.size / 2
-
-        return FloatArray(binCount) { i ->
-            val real = fftData[i * 2]
-            val imaginary = fftData[i * 2 + 1]
-            sqrt(real * real + imaginary * imaginary) * 2 / frame.size
-        }
+    private fun performFft(samples: FloatArray): List<Complex> {
+        val packed = samples.copyOf()
+        FloatFFT_1D(packed.size.toLong()).realForward(packed)
+        return unpack(packed)
     }
 
-    private fun computeFft(frame: FloatArray): FloatArray {
-        val output = frame.copyOf()
-        FloatFFT_1D(output.size.toLong()).realForward(output)
-        return output
+    private fun unpack(packed: FloatArray): List<Complex> {
+        val binCount = packed.size / 2
+
+        return (0..binCount).map { index ->
+            when (index) {
+                0 -> Complex(packed[0].toDouble(), 0.0)
+                binCount -> Complex(packed[1].toDouble(), 0.0)
+                else -> Complex(
+                    packed[2 * index].toDouble(),
+                    packed[2 * index + 1].toDouble()
+                )
+            }
+        }
     }
 
 }

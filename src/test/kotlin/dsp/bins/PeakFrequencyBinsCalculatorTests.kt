@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import kotlin.random.Random
 
 // TODO: Move me
+// TODO: Phase interpolation?
 class PeakFrequencyBinsCalculatorTests {
 
     private fun createSUT(): PeakFrequencyBinsCalculator {
@@ -16,9 +17,9 @@ class PeakFrequencyBinsCalculatorTests {
     fun `given there is a single symmetric peak, return that peak`() {
         val sut = createSUT()
         val bins = listOf(
-            FrequencyBin(1f, 0.0f),
-            FrequencyBin(2f, 1.0f),
-            FrequencyBin(3f, 0.0f),
+            FrequencyBin(1f, 0.0),
+            FrequencyBin(2f, 1.0),
+            FrequencyBin(3f, 0.0),
         )
 
         val result = sut.calculate(bins)
@@ -32,9 +33,9 @@ class PeakFrequencyBinsCalculatorTests {
     fun `given there is a single peak between two bins, return that peak`() {
         val sut = createSUT()
         val bins = listOf(
-            FrequencyBin(1f, 0.5f),
-            FrequencyBin(2f, 1.0f),
-            FrequencyBin(3f, 1.0f),
+            FrequencyBin(1f, 0.5),
+            FrequencyBin(2f, 1.0),
+            FrequencyBin(3f, 1.0),
         )
 
         val result = sut.calculate(bins)
@@ -50,11 +51,11 @@ class PeakFrequencyBinsCalculatorTests {
         val sut = createSUT()
 
         val bins = listOf(
-            FrequencyBin(1f, 1F),
-            FrequencyBin(2f, 5F),
-            FrequencyBin(3f, 1F),
-            FrequencyBin(4f, 5F),
-            FrequencyBin(5f, 1F)
+            FrequencyBin(1f, 1.0),
+            FrequencyBin(2f, 5.0),
+            FrequencyBin(3f, 1.0),
+            FrequencyBin(4f, 5.0),
+            FrequencyBin(5f, 1.0)
         )
 
         val result = sut.calculate(bins)
@@ -70,7 +71,7 @@ class PeakFrequencyBinsCalculatorTests {
     @Test
     fun `given all magnitudes are the same, return an empty list`() {
         val sut = createSUT()
-        val magnitude = Random.nextFloat()
+        val magnitude = Random.nextDouble()
 
         val bins = listOf(
             FrequencyBin(1f, magnitude),
@@ -88,9 +89,9 @@ class PeakFrequencyBinsCalculatorTests {
         val sut = createSUT()
 
         val bins = listOf(
-            FrequencyBin(1f, 1f),
-            FrequencyBin(2f, 2f),
-            FrequencyBin(3f, 3f),
+            FrequencyBin(1f, 1.0),
+            FrequencyBin(2f, 2.0),
+            FrequencyBin(3f, 3.0),
         )
 
         val result = sut.calculate(bins)
@@ -103,9 +104,9 @@ class PeakFrequencyBinsCalculatorTests {
         val sut = createSUT()
 
         val bins = listOf(
-            FrequencyBin(1f, 3f),
-            FrequencyBin(2f, 2f),
-            FrequencyBin(3f, 1f),
+            FrequencyBin(1f, 3.0),
+            FrequencyBin(2f, 2.0),
+            FrequencyBin(3f, 1.0),
         )
 
         val result = sut.calculate(bins)
@@ -130,9 +131,9 @@ class PeakFrequencyBinsCalculatorTests {
     fun `given the only peak is at the lowest bin, then return an empty list`() {
         val sut = createSUT()
         val bins = listOf(
-            FrequencyBin(1f, 1.0F),
-            FrequencyBin(2f, 0.2F),
-            FrequencyBin(3f, 0.1f)
+            FrequencyBin(1f, 1.0),
+            FrequencyBin(2f, 0.2),
+            FrequencyBin(3f, 0.1)
         )
 
         val result = sut.calculate(bins)
@@ -144,9 +145,9 @@ class PeakFrequencyBinsCalculatorTests {
     fun `given the only peak is at the highest bin, then return an empty list`() {
         val sut = createSUT()
         val bins = listOf(
-            FrequencyBin(1f, 0.1F),
-            FrequencyBin(2f, 0.2F),
-            FrequencyBin(3f, 1.0f)
+            FrequencyBin(1f, 0.1),
+            FrequencyBin(2f, 0.2),
+            FrequencyBin(3f, 1.0)
         )
 
         val result = sut.calculate(bins)
@@ -159,9 +160,9 @@ class PeakFrequencyBinsCalculatorTests {
     fun `given unsorted bins, peaks are still detected`() {
         val sut = createSUT()
         val bins = listOf(
-            FrequencyBin(3f, 1.0f),
-            FrequencyBin(1f, 0.5f),
-            FrequencyBin(2f, 1.0f),
+            FrequencyBin(3f, 1.0),
+            FrequencyBin(1f, 0.5),
+            FrequencyBin(2f, 1.0),
         )
 
         val result = sut.calculate(bins)

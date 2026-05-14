@@ -5,7 +5,7 @@ import kotlin.random.Random
 
 fun nextFrequencyBin(
     frequency: Float = Random.nextFloat(),
-    magnitude: Float = Random.nextFloat()
+    magnitude: Double = Random.nextDouble(),
 ): FrequencyBin {
     return FrequencyBin(
         frequency = frequency,
