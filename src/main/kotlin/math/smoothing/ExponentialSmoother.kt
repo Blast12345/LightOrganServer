@@ -6,7 +6,7 @@ import kotlin.time.Duration
 class ExponentialSmoother<T>(
     private val halfLife: Duration,
     private val zero: T,
-    private val scale: (T, Float) -> T,
+    private val scale: (T, Double) -> T,
     private val add: (T, T) -> T
 ) : Smoother<T> {
 
@@ -18,7 +18,7 @@ class ExponentialSmoother<T>(
         val elapsed = lastTimestamp?.let { now - it } ?: 0L
         lastTimestamp = now
 
-        val decay = 2.0.pow(-elapsed.toDouble() / halfLife.inWholeMilliseconds).toFloat()
+        val decay = 2.0.pow(-elapsed.toDouble() / halfLife.inWholeMilliseconds)
         smoothed = add(scale(smoothed, decay), value)
 
         return smoothed

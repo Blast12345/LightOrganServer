@@ -37,8 +37,7 @@ abstract class TuningSystem {
     }
 
     fun getPositionInOctave(frequency: Float): Angle {
-        val degrees = getHelicalAngle(frequency).degrees.mod(360.0)
-        return Angle.fromDegrees(degrees)
+        return getHelicalAngle(frequency).normalized
     }
 
 }
