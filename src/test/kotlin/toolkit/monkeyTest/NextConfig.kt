@@ -15,6 +15,7 @@ fun nextConfig(
         startAutomatically = MutableStateFlow(Random.nextBoolean()),
         clients = clients,
         spectrum = SpectrumConfig(
+            gainDb = nextPositiveFloat(),
             frameDuration = nextDuration(),
             approximateBinSpacing = nextPositiveFloat(),
             rolloffThreshold = nextPositiveFloat(),
@@ -23,10 +24,8 @@ fun nextConfig(
             window = nextEnum<WindowType>()
         ),
         spectrumGui = SpectrumGuiConfig(
-            scale = Random.nextFloat(),
             lowestFrequency = Random.nextFloat(),
             highestFrequency = Random.nextFloat(),
-        ),
-        brightnessMultiplier = Random.nextFloat()
+        )
     )
 }

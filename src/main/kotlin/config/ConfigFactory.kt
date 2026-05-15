@@ -23,6 +23,7 @@ class ConfigFactory(
             startAutomatically = MutableStateFlow(persistedConfig.startAutomatically),
             clients = setOf(Client("192.168.1.55")),
             spectrum = SpectrumConfig(
+                gainDb = 12f,
                 frameDuration = 63.milliseconds,
                 approximateBinSpacing = 1f,
                 rolloffThreshold = -48f,
@@ -37,11 +38,9 @@ class ConfigFactory(
                 window = WindowType.BlackmanHarris3Term,
             ),
             spectrumGui = SpectrumGuiConfig(
-                scale = 4F,
                 lowestFrequency = 0f,
                 highestFrequency = 160F,
             ),
-            brightnessMultiplier = 4F, // ENHANCEMENT: Gain increase instead?
         )
     }
 
