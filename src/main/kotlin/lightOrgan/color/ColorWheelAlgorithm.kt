@@ -4,7 +4,7 @@ import dsp.peakExtraction.SpectralPeak
 import dsp.peakExtraction.SpectralPeaks
 import math.geometry.Angle
 import math.normalization.UnitInterval
-import math.perception.StevensPower
+import math.perception.StevensPowerLaw
 import math.physics.Light
 import math.physics.sumSoundPressure
 import music.TuningSystem
@@ -46,9 +46,9 @@ class ColorWheelAlgorithm(
 
     private fun createLight(spectralPeak: SpectralPeak): Light {
         val objectiveLoudness = spectralPeak.normalizedSoundPressure
-        val subjectiveLoudness = objectiveLoudness.pow(StevensPower.LOUDNESS_3KHZ_TONE.exponent)
+        val subjectiveLoudness = objectiveLoudness.pow(StevensPowerLaw.LOUDNESS_3KHZ_TONE.exponent)
         val desiredSubjectiveBrightness = subjectiveLoudness // We want it to look as bright as it sounds loud
-        val objectiveBrightness = desiredSubjectiveBrightness.pow(1.0 / StevensPower.BRIGHTNESS_5DEG_IN_DARK.exponent)
+        val objectiveBrightness = desiredSubjectiveBrightness.pow(1.0 / StevensPowerLaw.BRIGHTNESS_5DEG_IN_DARK.exponent)
 
         val hue = tuning.getPositionInOctave(spectralPeak.frequency)
 

@@ -2,7 +2,7 @@ package lightOrgan.color.calculator
 
 import dsp.peakExtraction.SpectralPeak
 import lightOrgan.color.ColorWheelAlgorithm
-import math.perception.StevensPower
+import math.perception.StevensPowerLaw
 import music.WesternTuningSystem
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -17,7 +17,7 @@ class ColorWheelAlgorithmIntegrationTests {
     private val fullLoudness = loudnessToMagnitude(1.0)
 
     fun loudnessToMagnitude(loudness: Double): Float {
-        return loudness.pow(1.0 / StevensPower.LOUDNESS_3KHZ_TONE.exponent).toFloat()
+        return loudness.pow(1.0 / StevensPowerLaw.LOUDNESS_3KHZ_TONE.exponent).toFloat()
     }
 
     private fun createSUT(): ColorWheelAlgorithm {
