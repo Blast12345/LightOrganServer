@@ -5,6 +5,7 @@ import dsp.windowing.WindowType
 import kotlin.time.Duration
 
 data class SpectrumConfig(
+    val gainDb: Float,  // e.g. 12 dBFS
     val frameDuration: Duration,
     val approximateBinSpacing: Float,
     val rolloffThreshold: Float, // e.g. -48 dBFS

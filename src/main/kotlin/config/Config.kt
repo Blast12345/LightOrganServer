@@ -10,6 +10,5 @@ class Config(
     val startAutomatically: MutableStateFlow<Boolean>,
     val clients: Set<Client>,
     val spectrum: SpectrumConfig,
-    val spectrumGui: SpectrumGuiConfig,
-    val brightnessMultiplier: Float,
+    val spectrumGui: SpectrumGuiConfig
 )

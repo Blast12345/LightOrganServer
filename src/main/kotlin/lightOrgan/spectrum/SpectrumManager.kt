@@ -5,6 +5,7 @@ import audio.samples.AudioFrame
 import audio.samples.RollingAudioBuffer
 import config.ConfigSingleton
 import dsp.Decimator
+import dsp.Gain
 import dsp.MonoMixer
 import dsp.ZeroPaddingInterpolator
 import dsp.bins.FftFrequencyBinsCalculator
@@ -28,6 +29,7 @@ import math.nextPowerOfTwo
 class SpectrumManager(
     private val config: SpectrumConfig = ConfigSingleton.spectrum,
     private val monoMixer: MonoMixer = MonoMixer(),
+    private val gain: Gain = Gain(),
     private val filterManager: FilterManager = FilterManager(config.highPassFilter, config.lowPassFilter),
     private val decimator: Decimator = Decimator(),
     private val audioBuffer: RollingAudioBuffer = RollingAudioBuffer(),
@@ -56,8 +58,14 @@ class SpectrumManager(
 
         return audio
             .let { monoMixer.mix(it) }
+            .let { applyGain(it, config.gainDb) }
             .let { filterManager.filter(it) }
             .let { decimateIfNeeded(it, targetNyquist) }
+    }
+
+    private fun applyGain(audioFrame: AudioFrame, gainDb: Float): AudioFrame {
+        val adjustedSamples = gain.apply(audioFrame.samples, gainDb)
+        return audioFrame.copy(samples = adjustedSamples)
     }
 
     private fun decimateIfNeeded(audio: AudioFrame, targetNyquist: Float): AudioFrame {
