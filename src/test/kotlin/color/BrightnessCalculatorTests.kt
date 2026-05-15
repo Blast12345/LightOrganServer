@@ -20,7 +20,6 @@ class BrightnessCalculatorTests {
 
     private fun createSUT(): BrightnessCalculator {
         return BrightnessCalculator(
-            multiplier = 1f,
             greatestMagnitudeFinder = greatestMagnitudeFinder
         )
     }

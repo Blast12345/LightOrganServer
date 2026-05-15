@@ -26,6 +26,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class SpectrumManagerIntegrationTests {
 
     private val config = SpectrumConfig(
+        gainDb = 0f,
         frameDuration = 50.milliseconds, // 20 Hz spacing
         approximateBinSpacing = 1f,
         rolloffThreshold = -48f,
@@ -137,6 +138,34 @@ class SpectrumManagerIntegrationTests {
         assertEquals(frequency1, peakBin.frequency, config.approximateBinSpacing)
         assertEquals(0.5f, peakBin.magnitude, 0.1f) // Half-amplitude because only one channel (i.e., half) has the tone
     }
+
+    // Gain
+    @Test
+    fun `given a 6 dB gain increase, the peak's magnitude is doubled`() {
+        val sut = SpectrumManager(
+            config.copy(gainDb = 6f)
+        )
+
+        val bins = sut.calculate(wave1Frame)
+
+        val peakBin = bins.maxBy { it.magnitude }
+        assertEquals(frequency1, peakBin.frequency, config.approximateBinSpacing)
+        assertEquals(2f, peakBin.magnitude, 0.1f)
+    }
+
+    @Test
+    fun `given a 6 dB gain reduction, the peak's magnitude is halved`() {
+        val sut = SpectrumManager(
+            config.copy(gainDb = -6f)
+        )
+
+        val bins = sut.calculate(wave1Frame)
+
+        val peakBin = bins.maxBy { it.magnitude }
+        assertEquals(frequency1, peakBin.frequency, config.approximateBinSpacing)
+        assertEquals(0.5f, peakBin.magnitude, 0.1f)
+    }
+
 
     // DSP Filters
     @Test
