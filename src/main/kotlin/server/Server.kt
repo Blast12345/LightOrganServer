@@ -4,6 +4,7 @@ import color.StandardRgbColor
 import config.Config
 import config.ConfigSingleton
 import config.children.Client
+import kotlin.math.roundToInt
 
 class Server(
     private val config: Config = ConfigSingleton,
@@ -11,9 +12,9 @@ class Server(
 ) {
 
     fun new(color: StandardRgbColor) {
-        val red = (color.red.value * 255).toInt()
-        val green = (color.green.value * 255).toInt()
-        val blue = (color.blue.value * 255).toInt()
+        val red = (color.red.value * 255).roundToInt()
+        val green = (color.green.value * 255).roundToInt()
+        val blue = (color.blue.value * 255).roundToInt()
         sendMessage("$red,$green,$blue")
     }
 
