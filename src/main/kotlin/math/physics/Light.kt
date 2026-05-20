@@ -1,5 +1,9 @@
 package math.physics
 
+import color.Chromaticity
+import math.geometry.Angle
+import math.normalization.UnitInterval
+
 typealias RadiantFlux = Double
 
 // TODO: Test me
@@ -16,6 +20,30 @@ class Light(
     val radiantFlux: RadiantFlux by lazy {
         red + green + blue
     }
+
+    val chromaticity: Chromaticity
+        get() {
+            val max = maxOf(red, green, blue)
+            if (max == 0.0) return Chromaticity(Angle.zero, UnitInterval.zero)
+
+            val min = minOf(red, green, blue)
+            val chroma = max - min
+
+            val hue = if (chroma == 0.0) {
+                Angle.zero
+            } else {
+                val degrees = when (max) {
+                    red -> 60.0 * ((green - blue) / chroma).mod(6.0)
+                    green -> 60.0 * ((blue - red) / chroma + 2.0)
+                    else -> 60.0 * ((red - green) / chroma + 4.0)
+                }
+                Angle.fromDegrees(degrees)
+            }
+
+            val saturation = UnitInterval.clamped(chroma / max)
+
+            return Chromaticity(hue, saturation)
+        }
 
     operator fun plus(other: Light) = Light(
         red = red + other.red,

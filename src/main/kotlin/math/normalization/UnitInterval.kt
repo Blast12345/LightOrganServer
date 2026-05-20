@@ -10,6 +10,9 @@ value class UnitInterval(val value: Double) {
     }
 
     companion object {
+        val zero = UnitInterval(0.0)
+        val one = UnitInterval(1.0)
+
         fun clamped(raw: Double): UnitInterval = UnitInterval(raw.coerceIn(0.0, 1.0))
     }
 

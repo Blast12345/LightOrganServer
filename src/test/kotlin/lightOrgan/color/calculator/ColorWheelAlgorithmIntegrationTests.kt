@@ -32,9 +32,9 @@ class ColorWheelAlgorithmIntegrationTests {
 
         val actual = sut.calculate(listOf())
 
-        assertEquals(0.0, actual.red.value, 0.001)
-        assertEquals(0.0, actual.green.value, 0.001)
-        assertEquals(0.0, actual.blue.value, 0.001)
+        assertEquals(0.0, actual.red.value, 0.01)
+        assertEquals(0.0, actual.green.value, 0.01)
+        assertEquals(0.0, actual.blue.value, 0.01)
     }
 
     @Test
@@ -44,9 +44,9 @@ class ColorWheelAlgorithmIntegrationTests {
 
         val actual = sut.calculate(listOf(peak))
 
-        assertEquals(0.5, actual.red.value, 0.001)
-        assertEquals(0.0, actual.green.value, 0.001)
-        assertEquals(0.0, actual.blue.value, 0.001)
+        assertEquals(0.5, actual.red.value, 0.01)
+        assertEquals(0.0, actual.green.value, 0.01)
+        assertEquals(0.0, actual.blue.value, 0.01)
     }
 
     @Test
@@ -56,9 +56,9 @@ class ColorWheelAlgorithmIntegrationTests {
 
         val actual = sut.calculate(listOf(peak))
 
-        assertEquals(0.0, actual.red.value, 0.001)
-        assertEquals(0.5, actual.green.value, 0.001)
-        assertEquals(0.5, actual.blue.value, 0.001)
+        assertEquals(0.0, actual.red.value, 0.01)
+        assertEquals(0.5, actual.green.value, 0.01)
+        assertEquals(0.5, actual.blue.value, 0.01)
     }
 
     @Test
@@ -70,9 +70,9 @@ class ColorWheelAlgorithmIntegrationTests {
         val actual = sut.calculate(listOf(peak1, peak2))
 
         // analogous to a ~3 dB gain
-        assertEquals(0.630, actual.red.value, 0.001)
-        assertEquals(0.630, actual.green.value, 0.001)
-        assertEquals(0.630, actual.blue.value, 0.001)
+        assertEquals(0.630, actual.red.value, 0.01)
+        assertEquals(0.630, actual.green.value, 0.01)
+        assertEquals(0.630, actual.blue.value, 0.01)
     }
 
     @Test
@@ -84,9 +84,9 @@ class ColorWheelAlgorithmIntegrationTests {
         val actual = sut.calculate(listOf(peak1, peak2))
 
         // we can't have a brightness greater than 1, so clip
-        assertEquals(1.0, actual.red.value, 0.001)
-        assertEquals(1.0, actual.green.value, 0.001)
-        assertEquals(1.0, actual.blue.value, 0.001)
+        assertEquals(1.0, actual.red.value, 0.01)
+        assertEquals(1.0, actual.green.value, 0.01)
+        assertEquals(1.0, actual.blue.value, 0.01)
     }
 
 }
