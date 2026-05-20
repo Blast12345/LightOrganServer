@@ -27,8 +27,6 @@ class ConfigFactory(
                 frameDuration = 63.milliseconds,
                 approximateBinSpacing = 1f,
                 rolloffThreshold = -48f,
-//                highPassFilter = null,
-//                lowPassFilter = null,
                 highPassFilter = FilterConfig(
                     type = FilterType.HighPass(tuning.getFrequency(tuning.A, octave = 0)),
                     family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
