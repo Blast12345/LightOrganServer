@@ -5,8 +5,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -21,12 +21,12 @@ fun ColorTile(
     viewModel: ColorTileViewModel,
     modifier: Modifier = Modifier
 ) {
-    val color = viewModel.color.collectAsState()
+    val color by viewModel.color.collectAsState()
 
     Tile(modifier) {
         Title()
         SimpleSpacer(dpSize = 12)
-        ColorBox(color)
+        ColorBox(color.toComposeColor())
     }
 }
 
@@ -40,12 +40,12 @@ private fun Title() {
 }
 
 @Composable
-private fun ColorBox(color: State<Color>) {
+private fun ColorBox(color: Color) {
     Canvas(
         Modifier
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        drawRect(color = color.value)
+        drawRect(color = color)
     }
 }

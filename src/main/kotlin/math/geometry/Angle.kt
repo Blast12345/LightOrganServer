@@ -10,6 +10,8 @@ value class Angle private constructor(
     val normalized: Angle get() = fromTurns(turns.mod(1.0)) // TODO: Test me
 
     companion object {
+        val zero = Angle(0.0)
+        
         fun fromRadians(value: Double) = Angle(value)
         fun fromDegrees(value: Double) = Angle(Math.toRadians(value))
         fun fromTurns(value: Double) = Angle(value * 2 * Math.PI)

@@ -1,7 +1,5 @@
 package gui.dashboard.tiles.color
 
-import androidx.compose.ui.graphics.Color
-import kotlinx.coroutines.flow.StateFlow
 import lightOrgan.color.ColorManager
 
 // ENHANCEMENT: Consider showing Note ring, Color wheel, and color in the center.
@@ -10,6 +8,6 @@ class ColorTileViewModel(
     private val colorManager: ColorManager
 ) {
 
-    val color: StateFlow<Color> = colorManager.color
+    val color = colorManager.color
 
 }

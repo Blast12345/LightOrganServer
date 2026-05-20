@@ -1,20 +1,20 @@
 package lightOrgan.color
 
-import androidx.compose.ui.graphics.Color
+import color.StandardRgbColor
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class ColorManagerFixture(
     val mock: ColorManager,
-    val colorFlow: MutableStateFlow<Color>
+    val colorFlow: MutableStateFlow<StandardRgbColor>
 ) {
 
     companion object {
         fun create(): ColorManagerFixture {
             val fixture = ColorManagerFixture(
                 mock = mockk<ColorManager>(),
-                colorFlow = MutableStateFlow(Color.Black)
+                colorFlow = MutableStateFlow(StandardRgbColor.Black)
             )
 
             every { fixture.mock.color } returns fixture.colorFlow
