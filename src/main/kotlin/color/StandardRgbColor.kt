@@ -16,6 +16,10 @@ value class StandardRgbColor private constructor(private val color: Color) : Rgb
 
     companion object {
         val Black = StandardRgbColor(Color.Black)
+        val White = StandardRgbColor(Color.White)
+        val Red = StandardRgbColor(Color.Red)
+        val Green = StandardRgbColor(Color.Green)
+        val Blue = StandardRgbColor(Color.Blue)
 
         fun fromRGB(
             red: UnitInterval,
