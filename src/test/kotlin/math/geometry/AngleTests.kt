@@ -45,4 +45,12 @@ class AngleTests {
         assertEquals(540.0, angle.degrees, 0.001)
     }
 
+    // Normalized
+    @Test
+    fun `given the number of rotations is greater than one, then normalize the angle`() {
+        val angle = Angle.fromTurns(1.5)
+
+        assertEquals(0.5, angle.normalized.turns, 0.001)
+    }
+
 }

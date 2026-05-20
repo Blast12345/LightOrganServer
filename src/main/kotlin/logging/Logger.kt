@@ -2,7 +2,7 @@ package logging
 
 object Logger {
 
-    var enabled: Boolean = false
+    var enabled: Boolean = true
 
     fun success(message: String) {
         if (!enabled) return
