@@ -1,7 +1,6 @@
-package lightOrgan.color.calculator
+package math.physics
 
-import math.physics.Light
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 
@@ -12,9 +11,9 @@ class LightTests {
     fun `the levels are zero by default`() {
         val light = Light()
 
-        assertEquals(0.0, light.red)
-        assertEquals(0.0, light.green)
-        assertEquals(0.0, light.blue)
+        Assertions.assertEquals(0.0, light.red)
+        Assertions.assertEquals(0.0, light.green)
+        Assertions.assertEquals(0.0, light.blue)
     }
 
     // Operators
@@ -25,9 +24,9 @@ class LightTests {
 
         val combined = red + green
 
-        assertEquals(1.0, combined.red)
-        assertEquals(2.0, combined.green)
-        assertEquals(0.0, combined.blue)
+        Assertions.assertEquals(1.0, combined.red)
+        Assertions.assertEquals(2.0, combined.green)
+        Assertions.assertEquals(0.0, combined.blue)
     }
 
     // Intensity
@@ -35,7 +34,7 @@ class LightTests {
     fun `get the overall intensity of the light`() {
         val sut = Light(1.0, 2.0, 3.0)
 
-        assertEquals(6.0, sut.radiantFlux, 0.001)
+        Assertions.assertEquals(6.0, sut.radiantFlux, 0.001)
     }
 
     // Chromaticity - the color of light, independent of brightness
@@ -45,8 +44,8 @@ class LightTests {
 
         val chromaticity = light.chromaticity!!
 
-        assertEquals(0.0, chromaticity.hue!!.turns, 0.01)
-        assertEquals(1.0, chromaticity.saturation.value, 0.01)
+        Assertions.assertEquals(0.0, chromaticity.hue!!.turns, 0.01)
+        Assertions.assertEquals(1.0, chromaticity.saturation.value, 0.01)
     }
 
     @Test
@@ -55,8 +54,8 @@ class LightTests {
 
         val chromaticity = light.chromaticity!!
 
-        assertEquals(0.33, chromaticity.hue!!.turns, 0.01)
-        assertEquals(1.0, chromaticity.saturation.value, 0.01)
+        Assertions.assertEquals(0.33, chromaticity.hue!!.turns, 0.01)
+        Assertions.assertEquals(1.0, chromaticity.saturation.value, 0.01)
     }
 
     @Test
@@ -65,8 +64,8 @@ class LightTests {
 
         val chromaticity = light.chromaticity!!
 
-        assertEquals(0.66, chromaticity.hue!!.turns, 0.01)
-        assertEquals(1.0, chromaticity.saturation.value, 0.01)
+        Assertions.assertEquals(0.66, chromaticity.hue!!.turns, 0.01)
+        Assertions.assertEquals(1.0, chromaticity.saturation.value, 0.01)
     }
 
     @Test
@@ -75,8 +74,8 @@ class LightTests {
 
         val chromaticity = light.chromaticity!!
 
-        assertEquals(0.0, chromaticity.hue!!.turns, 0.01)
-        assertEquals(0.5, chromaticity.saturation.value, 0.01)
+        Assertions.assertEquals(0.0, chromaticity.hue!!.turns, 0.01)
+        Assertions.assertEquals(0.5, chromaticity.saturation.value, 0.01)
     }
 
     @Test
@@ -86,7 +85,7 @@ class LightTests {
         val chromaticity = light.chromaticity!!
 
         assertNull(chromaticity.hue)
-        assertEquals(0.0, chromaticity.saturation.value, 0.01)
+        Assertions.assertEquals(0.0, chromaticity.saturation.value, 0.01)
     }
 
     @Test
@@ -103,7 +102,7 @@ class LightTests {
         val dim = Light(1.0, 0.0, 0.0)
         val bright = Light(5.0, 0.0, 0.0)
 
-        assertEquals(dim.chromaticity, bright.chromaticity)
+        Assertions.assertEquals(dim.chromaticity, bright.chromaticity)
     }
 
 }
