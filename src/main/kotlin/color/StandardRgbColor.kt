@@ -39,15 +39,30 @@ value class StandardRgbColor private constructor(private val color: Color) : Rgb
         }
 
         fun fromHSB(
-            hue: Angle?,
-            saturation: UnitInterval?,
+            hue: Angle,
+            saturation: UnitInterval,
             brightness: UnitInterval,
             alpha: UnitInterval = UnitInterval(1.0)
         ): StandardRgbColor {
             return StandardRgbColor(
                 Color.hsv(
-                    hue?.normalized?.degrees?.toFloat() ?: 0f,
-                    saturation?.value?.toFloat() ?: 0f,
+                    hue.normalized.degrees.toFloat(),
+                    saturation.value.toFloat(),
+                    brightness.value.toFloat(),
+                    alpha.value.toFloat(),
+                    ColorSpaces.Srgb
+                )
+            )
+        }
+
+        fun white(
+            brightness: UnitInterval,
+            alpha: UnitInterval = UnitInterval(1.0)
+        ): StandardRgbColor {
+            return StandardRgbColor(
+                Color.hsv(
+                    0f,
+                    0f,
                     brightness.value.toFloat(),
                     alpha.value.toFloat(),
                     ColorSpaces.Srgb
