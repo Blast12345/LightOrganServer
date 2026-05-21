@@ -7,14 +7,14 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import toolkit.monkeyTest.nextRgbColor
+import toolkit.monkeyTest.nextSrgbColor
 
 class ColorTileViewModelTests {
 
     private lateinit var colorManager: ColorManagerFixture
 
-    private val color1 = nextRgbColor()
-    private val color2 = nextRgbColor()
+    private val color1 = nextSrgbColor()
+    private val color2 = nextSrgbColor()
 
     @BeforeEach
     fun setupHappyPath() {

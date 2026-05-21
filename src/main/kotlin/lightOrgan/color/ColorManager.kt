@@ -1,6 +1,7 @@
 package lightOrgan.color
 
-import color.RgbColor
+import color.Srgb
+import color.SrgbColor
 import dsp.bins.FrequencyBins
 import dsp.peakExtraction.ParabolicSpectralPeakExtractor
 import dsp.peakExtraction.SpectralPeakExtractor
@@ -15,10 +16,10 @@ class ColorManager(
     private val colorAlgorithm: ColorAlgorithm = ColorWheelAlgorithm(),
 ) {
 
-    private val _color = MutableStateFlow(RgbColor.Black)
-    val color: StateFlow<RgbColor> = _color.asStateFlow()
+    private val _color = MutableStateFlow(Srgb.Black)
+    val color: StateFlow<SrgbColor> = _color.asStateFlow()
 
-    fun calculate(frequencyBins: FrequencyBins): RgbColor {
+    fun calculate(frequencyBins: FrequencyBins): SrgbColor {
         val peaks = peakExtractor.extract(frequencyBins)
         _color.value = colorAlgorithm.calculate(peaks)
         return _color.value

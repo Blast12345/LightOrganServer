@@ -2,15 +2,10 @@ package color
 
 import math.normalization.UnitInterval
 
-data class RgbColor(
+data class RgbColor<S : ColorSpace>(
     val red: UnitInterval,
     val green: UnitInterval,
     val blue: UnitInterval,
-    // TODO: Color space
-) {
+)
 
-    companion object {
-        val Black = RgbColor(UnitInterval.zero, UnitInterval.zero, UnitInterval.zero)
-    }
-
-}
+typealias SrgbColor = RgbColor<Srgb>

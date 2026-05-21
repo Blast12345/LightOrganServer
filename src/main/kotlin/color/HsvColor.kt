@@ -4,14 +4,13 @@ import math.geometry.Angle
 import math.normalization.UnitInterval
 import kotlin.math.abs
 
-data class HsvColor(
+data class HsvColor<S : ColorSpace>(
     val hue: Angle,
     val saturation: UnitInterval,
     val brightness: UnitInterval
-    // TODO: Color space
 ) {
 
-    fun toRgb(): RgbColor {
+    fun toRgb(): RgbColor<S> {
         val chroma = brightness.value * saturation.value
         val hueSegment = hue.degrees / 60.0
         val secondary = chroma * (1.0 - abs(hueSegment % 2.0 - 1.0))

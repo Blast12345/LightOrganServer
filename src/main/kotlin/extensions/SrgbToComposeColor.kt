@@ -1,11 +1,12 @@
 package extensions
 
 import androidx.compose.ui.graphics.Color
-import color.RgbColor
+import androidx.compose.ui.graphics.colorspace.ColorSpaces
+import color.SrgbColor
 
-fun RgbColor.toComposeColor(): Color = Color(
+fun SrgbColor.toComposeColor(): Color = Color(
     red = red.value.toFloat(),
     green = green.value.toFloat(),
     blue = blue.value.toFloat(),
-    // TODO: Color space
+    colorSpace = ColorSpaces.Srgb
 )

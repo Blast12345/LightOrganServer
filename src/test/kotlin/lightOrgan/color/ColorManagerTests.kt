@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextFrequencyBins
-import toolkit.monkeyTest.nextRgbColor
 import toolkit.monkeyTest.nextSpectralPeaks
+import toolkit.monkeyTest.nextSrgbColor
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ColorManagerTests {
@@ -21,7 +21,7 @@ class ColorManagerTests {
 
     private val spectrum = nextFrequencyBins()
     private val spectralPeaks = nextSpectralPeaks()
-    private val color = nextRgbColor()
+    private val color = nextSrgbColor()
 
     @BeforeEach
     fun setupHappyPath() {
