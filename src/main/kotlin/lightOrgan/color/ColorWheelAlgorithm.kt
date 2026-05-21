@@ -33,8 +33,8 @@ class ColorWheelAlgorithm(
         // finally, we create a color using the hue and saturation of the combined light
         // and make it as bright as the sound is loud
         return StandardRgbColor.fromHSB(
-            hue = combinedChromaticity.hue,
-            saturation = combinedChromaticity.saturation,
+            hue = combinedChromaticity?.hue,
+            saturation = combinedChromaticity?.saturation,
             brightness = UnitInterval.clamped(subjectiveLoudness)
         )
     }
