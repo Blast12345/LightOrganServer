@@ -4,7 +4,7 @@ import math.geometry.Angle
 import math.normalization.UnitInterval
 import kotlin.math.abs
 
-data class HsvColor<S : ColorSpace>(
+data class HsbColor<S : RgbColorSpace>(
     val hue: Angle,
     val saturation: UnitInterval,
     val brightness: UnitInterval

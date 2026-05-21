@@ -32,9 +32,9 @@ class ColorWheelAlgorithm(
         // finally, we create a color using the hue and saturation of the combined light
         // and make it as bright as the sound is loud
         return when (combinedChromaticity) {
-            is Chromaticity.Chromatic -> HsvColor<Srgb>(combinedChromaticity.hue, combinedChromaticity.saturation, brightness).toRgb()
-            is Chromaticity.Achromatic -> HsvColor<Srgb>(Angle.zero, UnitInterval.zero, brightness).toRgb()
-            null -> Srgb.Black
+            is Chromaticity.Chromatic -> HsbColor<Srgb>(combinedChromaticity.hue, combinedChromaticity.saturation, brightness).toRgb()
+            is Chromaticity.Achromatic -> HsbColor<Srgb>(Angle.zero, UnitInterval.zero, brightness).toRgb()
+            null -> SrgbColors.Black
         }
     }
 
