@@ -8,10 +8,8 @@ enum class StevensPowerLaw(val exponent: Double) {
     BRIGHTNESS_5DEG_IN_DARK(0.33),
     BRIGHTNESS_POINT_SOURCE(0.5),
     BRIGHTNESS_BRIEF_FLASH(0.5),
-    BRIGHTNESS_POINT_SOURCE_BRIEF_FLASH(1.0),
-    ;
+    BRIGHTNESS_POINT_SOURCE_BRIEF_FLASH(1.0);
 
-    // TODO: Test me
     // WARNING: The inputs and outputs should be in linear scale (i.e. dB would be invalid)
     fun perceivedIntensity(stimulus: Double): Double = stimulus.pow(exponent)
     fun stimulusIntensity(perception: Double): Double = perception.pow(1.0 / exponent)

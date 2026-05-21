@@ -10,7 +10,7 @@ class LightTests {
     @Test
     fun `the levels are zero by default`() {
         val light = Light()
-        
+
         assertEquals(0.0, light.red)
         assertEquals(0.0, light.green)
         assertEquals(0.0, light.blue)
