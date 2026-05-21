@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 import server.Server
 import toolkit.monkeyTest.nextAudioStreamFrame
 import toolkit.monkeyTest.nextFrequencyBins
-import toolkit.monkeyTest.nextStandardRgbColor
+import toolkit.monkeyTest.nextRgbColor
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LightOrganTests {
@@ -29,7 +29,7 @@ class LightOrganTests {
 
     private val streamFrame = nextAudioStreamFrame()
     private val frequencyBins = nextFrequencyBins()
-    private val newColor = nextStandardRgbColor()
+    private val newColor = nextRgbColor()
 
     @BeforeEach
     fun setupHappyPath() {

@@ -1,9 +1,9 @@
 package toolkit.monkeyTest
 
-import color.StandardRgbColor
+import color.RgbColor
 
-fun nextStandardRgbColor(): StandardRgbColor {
-    return StandardRgbColor.fromRGB(
+fun nextRgbColor(): RgbColor {
+    return RgbColor(
         red = nextUnitInterval(),
         green = nextUnitInterval(),
         blue = nextUnitInterval(),

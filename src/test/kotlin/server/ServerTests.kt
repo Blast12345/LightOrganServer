@@ -1,6 +1,6 @@
 package server
 
-import color.StandardRgbColor
+import color.RgbColor
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -39,7 +39,7 @@ class ServerTests {
     @Test
     fun `when a new color is received then the server sends a string representation of that color`() {
         val sut = createSUT()
-        val color = StandardRgbColor.fromRGB(
+        val color = RgbColor(
             red = UnitInterval(1.0),
             green = UnitInterval(0.5),
             blue = UnitInterval(0.25)

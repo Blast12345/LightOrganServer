@@ -1,11 +1,13 @@
 package lightOrgan.color
 
 import color.Chromaticity
+import color.HsvColor
+import color.RgbColor
 import color.RgbRatios
-import color.StandardRgbColor
 import dsp.peakExtraction.SpectralPeak
 import dsp.peakExtraction.SpectralPeaks
 import dsp.peakExtraction.combinedMagnitude
+import math.geometry.Angle
 import math.normalization.UnitInterval
 import math.perception.StevensPowerLaw
 import math.physics.Light
@@ -16,7 +18,7 @@ class ColorWheelAlgorithm(
     private val tuning: TuningSystem = WesternTuningSystem(),
 ) : ColorAlgorithm {
 
-    override fun calculate(spectralPeaks: SpectralPeaks): StandardRgbColor {
+    override fun calculate(spectralPeaks: SpectralPeaks): RgbColor {
         // think of each peak as its own light source
         val lights = spectralPeaks.map { createLight(it) }
 
@@ -33,9 +35,9 @@ class ColorWheelAlgorithm(
         // finally, we create a color using the hue and saturation of the combined light
         // and make it as bright as the sound is loud
         return when (combinedChromaticity) {
-            is Chromaticity.Chromatic -> StandardRgbColor.fromHSB(combinedChromaticity.hue, combinedChromaticity.saturation, brightness)
-            is Chromaticity.Achromatic -> StandardRgbColor.white(brightness)
-            null -> StandardRgbColor.Black
+            is Chromaticity.Chromatic -> HsvColor(combinedChromaticity.hue, combinedChromaticity.saturation, brightness).toRgb()
+            is Chromaticity.Achromatic -> HsvColor(Angle.zero, UnitInterval.zero, brightness).toRgb()
+            null -> RgbColor.Black
         }
     }
 

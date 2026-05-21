@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import extensions.toComposeColor
 import gui.basicComponents.SimpleSpacer
 import gui.basicComponents.SimpleText
 import gui.basicComponents.Tile
