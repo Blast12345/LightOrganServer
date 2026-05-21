@@ -1,10 +1,12 @@
 package lightOrgan.color
 
+import color.Chromaticity
 import color.RgbRatios
 import color.StandardRgbColor
 import dsp.peakExtraction.SpectralPeak
 import dsp.peakExtraction.SpectralPeaks
 import dsp.peakExtraction.combinedMagnitude
+import math.geometry.Angle
 import math.normalization.UnitInterval
 import math.perception.StevensPowerLaw
 import math.physics.Light
@@ -27,14 +29,15 @@ class ColorWheelAlgorithm(
 
         // we then calculate the overall loudness of the sound
         val subjectiveLoudness = StevensPowerLaw.LOUDNESS_3KHZ_TONE.perceivedIntensity(spectralPeaks.combinedMagnitude)
+        val brightness = UnitInterval.clamped(subjectiveLoudness)
 
         // finally, we create a color using the hue and saturation of the combined light
         // and make it as bright as the sound is loud
-        return StandardRgbColor.fromHSB(
-            hue = combinedChromaticity?.hue,
-            saturation = combinedChromaticity?.saturation,
-            brightness = UnitInterval.clamped(subjectiveLoudness)
-        )
+        return when (combinedChromaticity) {
+            is Chromaticity.Chromatic -> StandardRgbColor.fromHSB(combinedChromaticity.hue, combinedChromaticity.saturation, brightness)
+            is Chromaticity.Achromatic -> StandardRgbColor.fromHSB(Angle.zero, UnitInterval.zero, brightness)
+            null -> StandardRgbColor.Black
+        }
     }
 
     private fun createLight(spectralPeak: SpectralPeak): Light {

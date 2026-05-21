@@ -24,7 +24,7 @@ data class Light(
         val chroma = max - min
 
         if (chroma == 0.0) {
-            return@lazy Chromaticity(hue = null, saturation = UnitInterval.zero)
+            return@lazy Chromaticity.Achromatic
         }
 
         val hue = Angle.fromDegrees(
@@ -37,7 +37,7 @@ data class Light(
 
         val saturation = UnitInterval.clamped(chroma / max)
 
-        return@lazy Chromaticity(hue, saturation)
+        return@lazy Chromaticity.Chromatic(hue, saturation)
     }
 
     operator fun plus(other: Light) = Light(

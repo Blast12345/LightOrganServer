@@ -1,5 +1,6 @@
 package math.physics
 
+import color.Chromaticity
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
@@ -42,9 +43,9 @@ class LightTests {
     fun `chromaticity of red light`() {
         val light = Light(1.0, 0.0, 0.0)
 
-        val chromaticity = light.chromaticity!!
+        val chromaticity = light.chromaticity as Chromaticity.Chromatic
 
-        assertEquals(0.0, chromaticity.hue!!.turns, 0.01)
+        assertEquals(0.0, chromaticity.hue.turns, 0.01)
         assertEquals(1.0, chromaticity.saturation.value, 0.01)
     }
 
@@ -52,9 +53,9 @@ class LightTests {
     fun `chromaticity of green light`() {
         val light = Light(0.0, 1.0, 0.0)
 
-        val chromaticity = light.chromaticity!!
+        val chromaticity = light.chromaticity as Chromaticity.Chromatic
 
-        assertEquals(0.33, chromaticity.hue!!.turns, 0.01)
+        assertEquals(0.33, chromaticity.hue.turns, 0.01)
         assertEquals(1.0, chromaticity.saturation.value, 0.01)
     }
 
@@ -62,9 +63,9 @@ class LightTests {
     fun `chromaticity of blue light`() {
         val light = Light(0.0, 0.0, 1.0)
 
-        val chromaticity = light.chromaticity!!
+        val chromaticity = light.chromaticity as Chromaticity.Chromatic
 
-        assertEquals(0.66, chromaticity.hue!!.turns, 0.01)
+        assertEquals(0.66, chromaticity.hue.turns, 0.01)
         assertEquals(1.0, chromaticity.saturation.value, 0.01)
     }
 
@@ -72,29 +73,24 @@ class LightTests {
     fun `chromaticity of desaturated red light`() {
         val light = Light(2.0, 1.0, 1.0)
 
-        val chromaticity = light.chromaticity!!
+        val chromaticity = light.chromaticity as Chromaticity.Chromatic
 
-        assertEquals(0.0, chromaticity.hue!!.turns, 0.01)
+        assertEquals(0.0, chromaticity.hue.turns, 0.01)
         assertEquals(0.5, chromaticity.saturation.value, 0.01)
     }
 
     @Test
-    fun `chromaticity of white light`() {
+    fun `white light is achromatic`() {
         val light = Light(1.0, 1.0, 1.0)
 
-        val chromaticity = light.chromaticity!!
-
-        assertNull(chromaticity.hue)
-        assertEquals(0.0, chromaticity.saturation.value, 0.01)
+        assertEquals(Chromaticity.Achromatic, light.chromaticity)
     }
 
     @Test
     fun `chromaticity is null if there is no light`() {
         val light = Light(0.0, 0.0, 0.0)
 
-        val chromaticity = light.chromaticity
-
-        assertNull(chromaticity)
+        assertNull(light.chromaticity)
     }
 
     @Test

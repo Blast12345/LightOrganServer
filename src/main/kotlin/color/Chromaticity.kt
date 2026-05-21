@@ -4,7 +4,17 @@ import math.geometry.Angle
 import math.normalization.UnitInterval
 
 // Reference: https://en.wikipedia.org/wiki/Chromaticity
-data class Chromaticity(
-    val hue: Angle?, // zero saturation means no hue
-    val saturation: UnitInterval
-)
+sealed class Chromaticity {
+
+    data class Chromatic(
+        val hue: Angle,
+        val saturation: UnitInterval
+    ) : Chromaticity() {
+        init {
+            require(saturation != UnitInterval.zero) { "Chromatic requires nonzero saturation" }
+        }
+    }
+
+    data object Achromatic : Chromaticity()
+
+}
