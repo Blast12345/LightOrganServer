@@ -1,10 +1,11 @@
 package server
 
-import androidx.compose.ui.graphics.Color
+import color.StandardRgbColor
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import math.normalization.UnitInterval
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -38,7 +39,11 @@ class ServerTests {
     @Test
     fun `when a new color is received then the server sends a string representation of that color`() {
         val sut = createSUT()
-        val color = Color(255, 128, 64)
+        val color = StandardRgbColor(
+            red = UnitInterval(1.0),
+            green = UnitInterval(0.5),
+            blue = UnitInterval(0.25)
+        )
 
         sut.new(color)
 

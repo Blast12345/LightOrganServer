@@ -1,96 +1,72 @@
 package lightOrgan
 
-import color.ColorFactory
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import lightOrgan.color.ColorManagerFixture
 import lightOrgan.input.AudioInputManagerFixture
 import lightOrgan.spectrum.SpectrumManagerFixture
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import server.Server
-import toolkit.assertions.eventually
-import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextAudioStreamFrame
-import toolkit.monkeyTest.nextComposeColor
 import toolkit.monkeyTest.nextFrequencyBins
+import toolkit.monkeyTest.nextStandardRgbColor
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LightOrganTests {
 
-    private lateinit var audioInputManager: AudioInputManagerFixture
+    private lateinit var inputManager: AudioInputManagerFixture
     private lateinit var spectrumManager: SpectrumManagerFixture
-    private val colorFactory: ColorFactory = mockk()
+    private lateinit var colorManager: ColorManagerFixture
     private val server: Server = mockk()
-    private val sutScope = TestScope()
 
+    private val streamFrame = nextAudioStreamFrame()
     private val frequencyBins = nextFrequencyBins()
-
-    private val subscriber1: LightOrganSubscriber = mockk(relaxed = true)
-    private val subscriber2: LightOrganSubscriber = mockk(relaxed = true)
-    private val subscribers = mutableSetOf(subscriber1, subscriber2)
-
-    private val newStreamFrame = nextAudioStreamFrame()
-    private val bufferedAudio = nextAudioFrame()
-    private val newColor = nextComposeColor()
+    private val newColor = nextStandardRgbColor()
 
     @BeforeEach
     fun setupHappyPath() {
-        audioInputManager = AudioInputManagerFixture.create()
+        inputManager = AudioInputManagerFixture.create()
         spectrumManager = SpectrumManagerFixture.create()
+        colorManager = ColorManagerFixture.create()
 
-        every { spectrumManager.mock.calculate(bufferedAudio) } returns frequencyBins
-        every { colorFactory.create(frequencyBins) } returns newColor
-        every { subscriber1.new(newColor) } returns Unit
-        every { subscriber2.new(newColor) } returns Unit
+        every { spectrumManager.mock.calculate(streamFrame.audio) } returns frequencyBins
+        every { colorManager.mock.calculate(frequencyBins) } returns newColor
         every { server.new(newColor) } returns Unit
     }
 
     @AfterEach
     fun tearDown() {
-        sutScope.cancel()
         clearAllMocks()
     }
 
-    private fun createSUT(): LightOrgan {
+    private fun createSUT(scope: CoroutineScope): LightOrgan {
         return LightOrgan(
-            audioInputManager = audioInputManager.mock,
+            inputManager = inputManager.mock,
             spectrumManager = spectrumManager.mock,
-            colorFactory = colorFactory,
+            colorManager = colorManager.mock,
             server = server,
-            subscribers = subscribers,
-            scope = sutScope
+            scope = scope,
         )
     }
 
     @Test
-    fun `when new audio is received, broadcast the color`() = runTest {
-        val sut = createSUT()
-        sutScope.advanceUntilIdle()
+    fun `when an audio frame is received, then a color is derived and broadcast`() = runTest {
+        val sut = createSUT(backgroundScope)
+        sut.start()
+        runCurrent()
 
-        audioInputManager.audioStream.emit(newStreamFrame)
-        sutScope.advanceUntilIdle()
+        inputManager.audioStream.emit(streamFrame)
+        runCurrent()
 
-        eventually { subscriber1.new(newColor) }
-        eventually { subscriber2.new(newColor) }
-        eventually { server.new(newColor) }
-    }
-
-    @Test
-    fun `add a subscriber`() {
-        val sut = createSUT()
-        val newSubscriber: LightOrganSubscriber = mockk()
-
-        sut.addSubscriber(newSubscriber)
-
-        assertTrue(subscribers.contains(newSubscriber))
+        verify { server.new(newColor) }
     }
 
 }

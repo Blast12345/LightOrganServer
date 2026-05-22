@@ -1,71 +1,50 @@
 package lightOrgan
 
 import audio.samples.AudioFrame
-import color.ColorFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import lightOrgan.color.ColorManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 import server.Server
 import utilities.SequenceGapDetector
 import utilities.TimestampUtility
-import java.util.concurrent.ConcurrentHashMap
 
 // ENHANCEMENT: Gracefully handle crashed coroutines
-// ENHANCEMENT: Handle when cachedAudio starts to grow significantly - it's a sign that the computer is too slow for the settings.
 class LightOrgan(
-    private val audioInputManager: AudioInputManager,
+    private val inputManager: AudioInputManager,
     private val spectrumManager: SpectrumManager,
-    private val colorFactory: ColorFactory = ColorFactory(), // TODO: Refactor
+    private val colorManager: ColorManager,
     private val server: Server = Server(),
-    private val subscribers: MutableSet<LightOrganSubscriber> = ConcurrentHashMap.newKeySet(),
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) {
 
     private val timeBetweenColors = TimestampUtility("Time between colors")
-    private val cachedAudio = Channel<AudioFrame>(Channel.UNLIMITED)
 
-    init {
-        // Collection and calculation are separate jobs so that slow calculations don't block a collection.
-        startCollectingAudio()
-        startCalculatingColors()
-    }
+    fun start() {
+        inputManager.selectDefaultInput()
+        val gapDetector = SequenceGapDetector("Audio stream")
 
-    private fun startCollectingAudio() {
-        scope.launch {
-            val gapDetector = SequenceGapDetector("Audio stream")
-
-            audioInputManager.audioStream.collect { streamFrame ->
-                gapDetector.check(streamFrame.sequenceNumber)
-                cachedAudio.trySend(streamFrame.audio)
-            }
-        }
-    }
-
-    private fun startCalculatingColors() {
-        scope.launch {
-            while (isActive) {
-                val audio = cachedAudio.receive()
-                handle(audio)
-            }
-        }
+        // ENHANCEMENT: Decouple ingest and calculation
+        inputManager.audioStream
+            // WARNING: Overflowing the buffer will cause spectral artifacts
+            .buffer(64, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+            .onEach { gapDetector.check(it.sequenceNumber) }
+            .onEach { handle(it.audio) }
+            .launchIn(scope)
     }
 
     private fun handle(newAudio: AudioFrame) {
         val frequencyBins = spectrumManager.calculate(newAudio)
-        val color = colorFactory.create(frequencyBins)
+        val color = colorManager.calculate(frequencyBins)
 
-        subscribers.forEach { it.new(color) }
         server.new(color)
 
         timeBetweenColors.logTimeSinceLast()
-    }
-
-    fun addSubscriber(subscriber: LightOrganSubscriber) {
-        subscribers.add(subscriber)
     }
 
 }

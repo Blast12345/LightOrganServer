@@ -33,7 +33,7 @@ class AudioInputManager(
         currentAudioInput.value?.stop()
         currentAudioInput.value = audioInputFinder.findDefaultInput()
     }
-
+    
     // Start-stop
     fun startListening() {
         val input = currentAudioInput.value ?: throw IllegalStateException("Cannot start listening. No input selected.")

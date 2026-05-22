@@ -1,45 +1,46 @@
 package gui.dashboard.tiles.color
 
-import androidx.compose.runtime.MutableState
-import io.mockk.mockk
-import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.advanceUntilIdle
+import io.mockk.clearAllMocks
 import kotlinx.coroutines.test.runTest
+import lightOrgan.color.ColorManagerFixture
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import toolkit.monkeyTest.nextComposeColor
+import toolkit.monkeyTest.nextStandardRgbColor
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ColorTileViewModelTests {
 
-    private val colorState: MutableState<androidx.compose.ui.graphics.Color> = mockk()
-    private val sutScope = TestScope()
+    private lateinit var colorManager: ColorManagerFixture
 
-    private val color = nextComposeColor()
+    private val color1 = nextStandardRgbColor()
+    private val color2 = nextStandardRgbColor()
+
+    @BeforeEach
+    fun setupHappyPath() {
+        colorManager = ColorManagerFixture.create()
+    }
 
     @AfterEach
     fun teardown() {
-        sutScope.cancel()
+        clearAllMocks()
     }
 
     private fun createSUT(): ColorTileViewModel {
         return ColorTileViewModel(
-            color = colorState,
-            scope = sutScope
+            colorManager = colorManager.mock
         )
     }
 
     @Test
-    fun `the color state is set when a new color is received`() = runTest {
+    fun `when a new color is available, then show that color`() = runTest {
         val sut = createSUT()
 
-        sut.new(color)
-        sutScope.advanceUntilIdle()
+        colorManager.colorFlow.emit(color1)
+        assertEquals(color1, sut.color.value)
 
-        verify { colorState.value = color }
+        colorManager.colorFlow.emit(color2)
+        assertEquals(color2, sut.color.value)
     }
 
 }

@@ -6,24 +6,25 @@ import config.ConfigSingleton
 import gui.dashboard.tiles.color.ColorTileViewModel
 import gui.dashboard.tiles.spectrum.SpectrumTileViewModel
 import gui.tiles.audioInput.AudioInputTileViewModel
-import lightOrgan.LightOrgan
+import lightOrgan.color.ColorManager
+import lightOrgan.input.AudioInputManager
+import lightOrgan.spectrum.SpectrumManager
 
 class DashboardViewModel(
-    val lightOrgan: LightOrgan,
-    val audioInputTileViewModel: AudioInputTileViewModel,
-    val colorTileViewModel: ColorTileViewModel,
-    val spectrumTileViewModel: SpectrumTileViewModel,
+    inputManager: AudioInputManager,
+    spectrumManager: SpectrumManager,
+    colorManager: ColorManager,
+    snackbarController: SnackbarController,
     private val configPersister: ConfigPersister = ConfigPersister(),
     private val config: Config = ConfigSingleton
 ) {
 
-    init {
-        subscribeColorTileToTheLightOrgan()
-        startPersistingConfigChanges()
-    }
+    val audioInputTileViewModel = AudioInputTileViewModel(inputManager, snackbarController)
+    val spectrumTileViewModel = SpectrumTileViewModel(spectrumManager)
+    val colorTileViewModel = ColorTileViewModel(colorManager)
 
-    private fun subscribeColorTileToTheLightOrgan() {
-        lightOrgan.addSubscriber(colorTileViewModel)
+    init {
+        startPersistingConfigChanges()
     }
 
     private fun startPersistingConfigChanges() {

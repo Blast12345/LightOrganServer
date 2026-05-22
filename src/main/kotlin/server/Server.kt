@@ -1,19 +1,20 @@
 package server
 
-import androidx.compose.ui.graphics.Color
+import color.StandardRgbColor
 import config.Config
 import config.ConfigSingleton
 import config.children.Client
+import kotlin.math.roundToInt
 
 class Server(
     private val config: Config = ConfigSingleton,
     private val socket: UdpSocket = UdpSocket()
 ) {
 
-    fun new(color: Color) {
-        val red = (color.red * 255).toInt()
-        val green = (color.green * 255).toInt()
-        val blue = (color.blue * 255).toInt()
+    fun new(color: StandardRgbColor) {
+        val red = (color.red.value * 255).roundToInt()
+        val green = (color.green.value * 255).roundToInt()
+        val blue = (color.blue.value * 255).roundToInt()
         sendMessage("$red,$green,$blue")
     }
 

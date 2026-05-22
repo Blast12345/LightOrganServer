@@ -22,6 +22,7 @@ data class AudioInputManagerFixture(
                 audioStream = MutableSharedFlow(extraBufferCapacity = 1)
             )
 
+            every { fixture.mock.selectDefaultInput() } returns Unit
             every { fixture.mock.inputDetails } returns fixture.inputDetailsFlow
             every { fixture.mock.isListening } returns fixture.isListeningFlow
             every { fixture.mock.audioStream } returns fixture.audioStream

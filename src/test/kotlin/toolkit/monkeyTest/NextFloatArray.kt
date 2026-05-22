@@ -2,7 +2,7 @@ package toolkit.monkeyTest
 
 import kotlin.random.Random
 
-fun nextFloatArray(length: Int = Random.nextInt(1024)): FloatArray {
+fun nextFloatArray(length: Int = Random.nextInt(16)): FloatArray {
     val list: MutableList<Float> = mutableListOf()
 
     repeat(length) {

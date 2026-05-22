@@ -10,7 +10,9 @@ data class FrequencyBin(
     val value: Complex
 ) {
 
-    val magnitude: Float get() = value.abs().toFloat()
+    // I'm using the term "magnitude" instead of "amplitude" because the value is inherently non-negative.
+    // Reference: https://dsp.stackexchange.com/questions/8317/fft-amplitude-or-magnitude
+    val magnitude: Float = value.abs().toFloat()
 
     constructor(frequency: Float, magnitude: Double, phase: Double = 0.0) : this(
         frequency = frequency,

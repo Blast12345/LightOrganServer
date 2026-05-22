@@ -35,7 +35,7 @@ class ConfigFactory(
                     type = FilterType.LowPass(tuning.getFrequency(tuning.A, octave = 2)),
                     family = FilterFamily.Butterworth(FilterOrder.fromDbPerOctave(48)),
                 ),
-                window = WindowType.BlackmanHarris3Term
+                window = WindowType.BlackmanHarris3Term,
             ),
             spectrumGui = SpectrumGuiConfig(
                 lowestFrequency = 0f,
