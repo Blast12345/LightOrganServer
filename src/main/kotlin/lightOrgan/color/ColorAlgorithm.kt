@@ -1,8 +1,8 @@
 package lightOrgan.color
 
-import color.SrgbColor
+import color.StandardRgbColor
 import dsp.peakExtraction.SpectralPeaks
 
 interface ColorAlgorithm {
-    fun calculate(spectralPeaks: SpectralPeaks): SrgbColor
+    fun calculate(spectralPeaks: SpectralPeaks): StandardRgbColor
 }

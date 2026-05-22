@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test
 class RgbColorTests {
 
     @Nested
-    inner class SrgbToLinear {
+    inner class StandardRGBToLinear {
 
         @Test
         fun `low value uses linear segment`() {
-            val srgb = SrgbColor(
+            val srgb = StandardRgbColor(
                 red = UnitInterval(0.02),
                 green = UnitInterval(0.02),
                 blue = UnitInterval(0.02),
@@ -34,7 +34,7 @@ class RgbColorTests {
 
         @Test
         fun `mid value uses gamma curve`() {
-            val srgb = SrgbColor(
+            val srgb = StandardRgbColor(
                 red = UnitInterval(0.5),
                 green = UnitInterval(0.5),
                 blue = UnitInterval(0.5),
@@ -54,7 +54,7 @@ class RgbColorTests {
 
         @Test
         fun `converting to linear and back yields the original color`() {
-            val original = SrgbColor(
+            val original = StandardRgbColor(
                 red = UnitInterval(0.3),
                 green = UnitInterval(0.6),
                 blue = UnitInterval(0.9),
@@ -67,7 +67,7 @@ class RgbColorTests {
     }
 
     @Nested
-    inner class LinearToSrgb {
+    inner class LinearToStandardRGB {
 
         @Test
         fun `low value uses linear segment`() {
@@ -80,7 +80,7 @@ class RgbColorTests {
             val srgb = linear.toSrgb()
 
             assertColorEquals(
-                expected = SrgbColor(
+                expected = StandardRgbColor(
                     red = UnitInterval(0.025840),
                     green = UnitInterval(0.025840),
                     blue = UnitInterval(0.025840),
@@ -100,7 +100,7 @@ class RgbColorTests {
             val srgb = linear.toSrgb()
 
             assertColorEquals(
-                expected = SrgbColor(
+                expected = StandardRgbColor(
                     red = UnitInterval(0.537098729),
                     green = UnitInterval(0.537098729),
                     blue = UnitInterval(0.537098729),

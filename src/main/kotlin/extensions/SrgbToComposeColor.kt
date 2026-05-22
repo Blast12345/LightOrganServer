@@ -3,10 +3,10 @@ package extensions
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import annotations.SkipCoverage
-import color.SrgbColor
+import color.StandardRgbColor
 
 @SkipCoverage
-fun SrgbColor.toComposeColor(): Color = Color(
+fun StandardRgbColor.toComposeColor(): Color = Color(
     red = red.value.toFloat(),
     green = green.value.toFloat(),
     blue = blue.value.toFloat(),

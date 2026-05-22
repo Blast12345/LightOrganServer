@@ -1,6 +1,6 @@
 package server
 
-import color.SrgbColor
+import color.StandardRgbColor
 import config.Config
 import config.ConfigSingleton
 import config.children.Client
@@ -11,7 +11,7 @@ class Server(
     private val socket: UdpSocket = UdpSocket()
 ) {
 
-    fun new(color: SrgbColor) {
+    fun new(color: StandardRgbColor) {
         val red = (color.red.value * 255).roundToInt()
         val green = (color.green.value * 255).roundToInt()
         val blue = (color.blue.value * 255).roundToInt()

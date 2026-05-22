@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextFrequencyBins
 import toolkit.monkeyTest.nextSpectralPeaks
-import toolkit.monkeyTest.nextSrgbColor
+import toolkit.monkeyTest.nextStandardRgbColor
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ColorManagerTests {
@@ -21,7 +21,7 @@ class ColorManagerTests {
 
     private val spectrum = nextFrequencyBins()
     private val spectralPeaks = nextSpectralPeaks()
-    private val color = nextSrgbColor()
+    private val color = nextStandardRgbColor()
 
     @BeforeEach
     fun setupHappyPath() {

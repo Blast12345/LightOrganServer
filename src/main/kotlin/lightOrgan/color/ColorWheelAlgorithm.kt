@@ -15,7 +15,7 @@ class ColorWheelAlgorithm(
     private val tuning: TuningSystem = WesternTuningSystem(),
 ) : ColorAlgorithm {
 
-    override fun calculate(spectralPeaks: SpectralPeaks): SrgbColor {
+    override fun calculate(spectralPeaks: SpectralPeaks): StandardRgbColor {
         // think of each peak as its own light source
         val lights = spectralPeaks.map { createLight(it) }
 
@@ -32,14 +32,14 @@ class ColorWheelAlgorithm(
         // finally, we create a color using the hue and saturation of the combined light
         // and make it as bright as the sound is loud
         return when (combinedChromaticity) {
-            is Chromaticity.Chromatic -> HsbColor<Srgb>(combinedChromaticity.hue, combinedChromaticity.saturation, brightness).toRgb()
-            is Chromaticity.Achromatic -> HsbColor<Srgb>(Angle.zero, UnitInterval.zero, brightness).toRgb()
-            null -> SrgbColors.Black
+            is Chromaticity.Chromatic -> HsbColor<StandardRGB>(combinedChromaticity.hue, combinedChromaticity.saturation, brightness).toRgb()
+            is Chromaticity.Achromatic -> HsbColor<StandardRGB>(Angle.zero, UnitInterval.zero, brightness).toRgb()
+            null -> StandardRgbColors.Black
         }
     }
 
     private fun createLight(spectralPeak: SpectralPeak): Light {
-        val colorForHue = HsbColor<Srgb>(
+        val colorForHue = HsbColor<StandardRGB>(
             hue = tuning.getPositionInOctave(spectralPeak.frequency),
             saturation = UnitInterval.one,
             brightness = UnitInterval.one

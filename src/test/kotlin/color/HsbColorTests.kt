@@ -11,7 +11,7 @@ class HsbColorTests {
     // To RGB
     @Test
     fun `given the color is white, convert to RGB`() {
-        val color = HsbColor<Srgb>(Angle.zero, UnitInterval.zero, UnitInterval.one)
+        val color = HsbColor<StandardRGB>(Angle.zero, UnitInterval.zero, UnitInterval.one)
 
         val actual = color.toRgb()
 
@@ -22,7 +22,7 @@ class HsbColorTests {
 
     @Test
     fun `given the color is black, convert to RGB`() {
-        val color = HsbColor<Srgb>(Angle.zero, UnitInterval.zero, UnitInterval.zero)
+        val color = HsbColor<StandardRGB>(Angle.zero, UnitInterval.zero, UnitInterval.zero)
 
         val actual = color.toRgb()
 
@@ -33,7 +33,7 @@ class HsbColorTests {
 
     @Test
     fun `given the color is purple, convert to RGB`() {
-        val color = HsbColor<Srgb>(
+        val color = HsbColor<StandardRGB>(
             Angle.fromDegrees(30.0),
             UnitInterval(0.8),
             UnitInterval(0.9),

@@ -9,35 +9,35 @@ data class RgbColor<S : RgbColorSpace>(
     val blue: UnitInterval,
 )
 
-// SRGB
-typealias SrgbColor = RgbColor<Srgb>
+// Standard
+typealias StandardRgbColor = RgbColor<StandardRGB>
 
-object SrgbColors {
-    val Black = SrgbColor(UnitInterval.zero, UnitInterval.zero, UnitInterval.zero)
-    val White = SrgbColor(UnitInterval.one, UnitInterval.one, UnitInterval.one)
+object StandardRgbColors {
+    val Black = StandardRgbColor(UnitInterval.zero, UnitInterval.zero, UnitInterval.zero)
+    val White = StandardRgbColor(UnitInterval.one, UnitInterval.one, UnitInterval.one)
 }
 
-fun SrgbColor.toLinear(): LinearRgbColor = mapChannels { value ->
+fun StandardRgbColor.toLinear(): LinearRgbColor = mapChannels { value ->
     if (value <= 0.04045) value / 12.92
     else ((value + 0.055) / 1.055).pow(2.4)
 }
 
 
 // Linear
-typealias LinearRgbColor = RgbColor<LinearRgb>
+typealias LinearRgbColor = RgbColor<LinearRGB>
 
 object LinearRgbColors {
     val Black = LinearRgbColor(UnitInterval.zero, UnitInterval.zero, UnitInterval.zero)
     val White = LinearRgbColor(UnitInterval.one, UnitInterval.one, UnitInterval.one)
 }
 
-fun LinearRgbColor.toSrgb(): SrgbColor = mapChannels { value ->
+fun LinearRgbColor.toSrgb(): StandardRgbColor = mapChannels { value ->
     if (value <= 0.0031308) value * 12.92
     else 1.055 * value.pow(1.0 / 2.4) - 0.055
 }
 
 // Helpers
-private fun <S : RgbColorSpace, T : RgbColorSpace> RgbColor<S>.mapChannels(
+private inline fun <S : RgbColorSpace, T : RgbColorSpace> RgbColor<S>.mapChannels(
     transform: (Double) -> Double
 ): RgbColor<T> = RgbColor(
     red = UnitInterval(transform(red.value)),

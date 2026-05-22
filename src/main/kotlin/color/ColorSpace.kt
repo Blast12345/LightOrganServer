@@ -4,5 +4,5 @@ sealed interface ColorSpace
 
 // RGB
 sealed interface RgbColorSpace : ColorSpace
-data object Srgb : RgbColorSpace
-data object LinearRgb : RgbColorSpace
+data object StandardRGB : RgbColorSpace
+data object LinearRGB : RgbColorSpace
