@@ -39,16 +39,19 @@ class ColorWheelAlgorithm(
     }
 
     private fun createLight(spectralPeak: SpectralPeak): Light {
-        val hue = tuning.getPositionInOctave(spectralPeak.frequency)
-        val hueRatios = RgbRatios.fromHue(hue)
+        val rawColor = HsbColor<Srgb>(
+            hue = tuning.getPositionInOctave(spectralPeak.frequency),
+            saturation = UnitInterval.one,
+            brightness = UnitInterval.one
+        ).toRgb().toLinear()
 
         val subjectiveLoudness = StevensPowerLaw.LOUDNESS_3KHZ_TONE.perceivedIntensity(spectralPeak.magnitude.toDouble())
         val objectiveBrightness = StevensPowerLaw.BRIGHTNESS_5DEG_IN_DARK.stimulusIntensity(subjectiveLoudness)
 
         return Light(
-            hueRatios.red * objectiveBrightness,
-            hueRatios.green * objectiveBrightness,
-            hueRatios.blue * objectiveBrightness,
+            rawColor.red.value * objectiveBrightness,
+            rawColor.green.value * objectiveBrightness,
+            rawColor.blue.value * objectiveBrightness,
         )
     }
 

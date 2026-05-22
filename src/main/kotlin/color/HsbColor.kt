@@ -4,6 +4,7 @@ import math.geometry.Angle
 import math.normalization.UnitInterval
 import kotlin.math.abs
 
+// NOTE: As I understand it, HSB and HSV are the same. I use HSB because "brightness" is more intuitive than "value"
 data class HsbColor<S : RgbColorSpace>(
     val hue: Angle,
     val saturation: UnitInterval,
