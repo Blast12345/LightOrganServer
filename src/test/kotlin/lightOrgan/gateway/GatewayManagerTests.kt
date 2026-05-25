@@ -5,11 +5,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import lightOrgan.gateway.Gateway
 import lightOrgan.gateway.GatewayDetails
@@ -20,7 +17,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextString
-import kotlin.time.Duration.Companion.milliseconds
 
 fun nextGatewayDetails(): GatewayDetails {
     return GatewayDetails(
@@ -79,21 +75,6 @@ class GatewayManagerTests {
         sut.findGateway()
 
         assertEquals(null, sut.gatewayDetails.first())
-    }
-
-    @Test
-    fun `given a search was already in progress, then no additional search is started`() = runTest {
-        val sut = createSUT()
-        coEvery { gatewayFinder.find() } coAnswers { delay(1000.milliseconds); gateway }
-
-        // First attempt
-        launch { sut.findGateway() }
-        advanceTimeBy(500.milliseconds)
-
-        // Second attempt
-        sut.findGateway()
-
-        coVerify(exactly = 1) { gatewayFinder.find() }
     }
 
     @Test

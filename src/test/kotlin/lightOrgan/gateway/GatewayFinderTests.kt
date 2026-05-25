@@ -1,0 +1,69 @@
+package lightOrgan.gateway
+
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import wrappers.serial.SerialPort
+import wrappers.serial.SerialPortFinder
+
+class GatewayFinderTests {
+
+    val serialPortFinder: SerialPortFinder = mockk()
+
+    val otherPort1: SerialPort = mockk()
+    val otherPort2: SerialPort = mockk()
+    val gatewayPort: SerialPort = mockk()
+
+    val gateway: Gateway = mockk()
+
+    private fun createSUT(): GatewayFinder {
+        return GatewayFinder(
+            serialPortFinder = serialPortFinder
+        )
+    }
+
+    @BeforeEach
+    fun setupHappyPath() {
+//        mockkObject(Gateway.Companion)
+//
+//        coEvery { Gateway.connect(otherPort1, any()) } throws Exception("ASDF 1")
+//        coEvery { Gateway.connect(otherPort2, any()) } throws Exception("ASDF 2")
+//        coEvery { Gateway.connect(gatewayPort, any()) } returns gateway
+    }
+
+    @AfterEach
+    fun tearDown() {
+        clearAllMocks()
+    }
+
+    // Find
+    @Test
+    fun `given a gateway is available, then return the gateway`() = runTest {
+        val sut = createSUT()
+        every { serialPortFinder.find() } returns listOf(otherPort1, otherPort2, gatewayPort)
+
+        val actual = sut.find()
+
+        assertEquals(gateway, actual)
+    }
+
+    @Test
+    fun `given no gateway is available, then return null`() = runTest {
+        val sut = createSUT()
+        every { serialPortFinder.find() } returns listOf(otherPort1, otherPort2)
+
+        val actual = sut.find()
+
+        assertEquals(null, actual)
+    }
+
+    // Status
+//    @Test
+//    fun `get the searching
+
+}

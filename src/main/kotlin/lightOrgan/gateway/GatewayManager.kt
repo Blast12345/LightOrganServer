@@ -11,22 +11,13 @@ class GatewayManager(
     private val gatewayFinder: GatewayFinder = GatewayFinder()
 ) {
 
-    private val _isSearching = MutableStateFlow(false)
-
     val gatewayDetails: Flow<GatewayDetails?> = currentGateway.map { it?.details }
     val isConnected: Flow<Boolean> = currentGateway.map { it?.isConnected == true }
-    val isSearching: Flow<Boolean> = _isSearching
+    val isSearching: Flow<Boolean> = gatewayFinder.isSearching
 
     suspend fun findGateway() {
-        if (_isSearching.value) return
         if (currentGateway.value != null) return
-
-        try {
-            _isSearching.value = true
-            currentGateway.value = gatewayFinder.find()
-        } finally {
-            _isSearching.value = false
-        }
+        currentGateway.value = gatewayFinder.find()
     }
 
     fun send(color: StandardRgbColor) {
