@@ -10,9 +10,10 @@ import androidx.compose.ui.window.rememberWindowState
 import gui.Theme
 import gui.dashboard.Dashboard
 import gui.dashboard.DashboardViewModel
-import gui.dashboard.SnackbarController
+import gui.dashboard.SharedFlowSnackbarController
 import lightOrgan.LightOrgan
 import lightOrgan.color.ColorManager
+import lightOrgan.gateway.GatewayManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 
@@ -24,14 +25,15 @@ fun main(args: Array<String>) {
     val inputManager = AudioInputManager()
     val spectrumManager = SpectrumManager()
     val colorManager = ColorManager()
+    val gatewayManager = GatewayManager()
 
-    val lightOrgan = LightOrgan(inputManager, spectrumManager, colorManager)
+    val lightOrgan = LightOrgan(inputManager, spectrumManager, colorManager, gatewayManager)
     lightOrgan.start()
 
     if (args.contains("--headless")) {
         launchHeadless(lightOrgan)
     } else {
-        launchGUI(inputManager, spectrumManager, colorManager)
+        launchGUI(inputManager, spectrumManager, colorManager, gatewayManager)
     }
 }
 
@@ -39,6 +41,7 @@ private fun launchGUI(
     inputManager: AudioInputManager,
     spectrumManager: SpectrumManager,
     colorManager: ColorManager,
+    gatewayManager: GatewayManager,
 ) = application {
     val minimumWidth = 1200
     val minimumHeight = 300
@@ -54,7 +57,7 @@ private fun launchGUI(
         window.minimumSize = java.awt.Dimension(minimumWidth, minimumHeight)
 
         Theme {
-            val snackbarController = remember { SnackbarController() }
+            val snackbarController = remember { SharedFlowSnackbarController() }
             val snackbarHostState = remember { SnackbarHostState() }
 
             LaunchedEffect(Unit) {
@@ -71,6 +74,7 @@ private fun launchGUI(
                         inputManager,
                         spectrumManager,
                         colorManager,
+                        gatewayManager,
                         snackbarController
                     )
                 }

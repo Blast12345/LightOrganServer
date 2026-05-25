@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import lightOrgan.color.ColorManager
+import lightOrgan.gateway.GatewayManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
-import server.Server
 import utilities.SequenceGapDetector
 import utilities.TimestampUtility
 
@@ -19,7 +19,7 @@ class LightOrgan(
     private val inputManager: AudioInputManager,
     private val spectrumManager: SpectrumManager,
     private val colorManager: ColorManager,
-    private val server: Server = Server(),
+    private val gatewayManager: GatewayManager,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) {
 
@@ -42,7 +42,7 @@ class LightOrgan(
         val frequencyBins = spectrumManager.calculate(newAudio)
         val color = colorManager.calculate(frequencyBins)
 
-        server.new(color)
+        gatewayManager.send(color)
 
         timeBetweenColors.logTimeSinceLast()
     }
