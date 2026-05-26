@@ -1,5 +1,7 @@
 package lightOrgan.gateway
 
+import annotations.SkipCoverage
+import config.ConfigSingleton
 import gateway.serial.SerialConnection
 import gateway.serial.SerialObject
 import gateway.serial.SerialRequest
@@ -8,41 +10,17 @@ import wrappers.serial.SerialFormat
 import wrappers.serial.SerialPort
 import java.util.*
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
-class GatewayConnector(
-
+@SkipCoverage
+class SerialClientFactory(
+    private val baudRate: Int = ConfigSingleton.gateway.baudRate,
+    private val format: SerialFormat = ConfigSingleton.gateway.serialFormat
 ) {
 
-    suspend fun connect(port: SerialPort): Gateway? {
-        TODO()
+    fun create(port: SerialPort): SerialClient {
+        return SerialClient(port, baudRate, format)
     }
-
-
-//
-//    private suspend fun attemptHandshake(port: SerialPort): Gateway? {
-//        val client = SerialClient(port, baudRate, serialFormat)
-//
-//        try {
-//            client.connect()
-//
-//            val handshakeRequest = GatewayIdentificationRequest()
-//            val response = client.request(handshakeRequest, GatewayIdentificationResponse::class.java) // TODO: Return type
-//
-//            return Gateway(
-//                systemPath = port.systemPath,
-//                macAddress = response.macAddress,
-//                firmwareVersion = response.firmwareVersion,
-//                serialClient = client
-//            )
-//        } catch (e: CancellationException) {
-//            throw e
-//        } catch (e: Exception) {
-//            client.disconnect()
-//            return null
-//        }
-//    }
-
 
 }
 
@@ -57,6 +35,8 @@ class SerialClient(
     private val connection = SerialConnection(serialPort, baudRate, format) // TODO:
     val isConnected = connection.isConnected
 
+    val systemPath = serialPort.systemPath
+
     fun connect() = connection.connect()
     fun disconnect() = connection.disconnect()
 
@@ -66,11 +46,7 @@ class SerialClient(
     }
 
     // TODO: Throw on error
-    suspend fun <Request : SerialRequest, Response : SerialResponse> request(
-        request: Request,
-        responseClass: Class<Response>,
-        timeout: Duration = 100.milliseconds
-    ): Response {
+    suspend fun <T : SerialResponse> request(request: SerialRequest<T>, timeout: Duration = 5.seconds): T {
         TODO()
     }
 
@@ -78,7 +54,7 @@ class SerialClient(
 
 data class GatewayIdentificationRequest(
     override val requestId: String = UUID.randomUUID().toString(),
-) : SerialRequest {
+) : SerialRequest<GatewayIdentificationResponse> {
 
     override val type: String = "gateway-identification"
 

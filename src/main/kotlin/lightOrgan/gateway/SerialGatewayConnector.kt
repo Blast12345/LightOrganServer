@@ -1,15 +1,26 @@
 package lightOrgan.gateway
 
-import wrappers.serial.SerialPort
+import kotlin.coroutines.cancellation.CancellationException
 
-class SerialGatewayConnector {
+class SerialGatewayConnector(
+    private val gatewayFactory: SerialGatewayFactory = SerialGatewayFactory()
+) {
 
-    suspend fun connect(port: SerialPort): Gateway? {
-        // connect
-        // attempt handshake
-        // success -> return gateway
-        // failure -> disconnect and return null
-        TODO()
+    suspend fun connect(client: SerialClient): SerialGateway? {
+        try {
+            client.connect()
+
+            val handshakeRequest = GatewayIdentificationRequest()
+            val response = client.request(handshakeRequest)
+
+            return gatewayFactory.create(response, client)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            client.disconnect()
+        }
+
+        return null
     }
 
 }

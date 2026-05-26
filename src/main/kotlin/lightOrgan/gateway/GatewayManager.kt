@@ -4,6 +4,8 @@ import color.StandardRgbColor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
+
+// ENHANCEMENT: Auto-find
 // ENHANCEMENT: Auto-reconnect
 @OptIn(ExperimentalCoroutinesApi::class)
 class GatewayManager(

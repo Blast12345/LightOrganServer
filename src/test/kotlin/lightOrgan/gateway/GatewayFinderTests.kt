@@ -15,21 +15,30 @@ import wrappers.serial.SerialPortFinder
 class GatewayFinderTests {
 
     private val serialPortFinder: SerialPortFinder = mockk()
+    private val serialClientFactory: SerialClientFactory = mockk()
     private val serialGatewayConnector: SerialGatewayConnector = mockk()
 
-    private val otherPort1: SerialPort = mockk()
-    private val otherPort2: SerialPort = mockk()
+    private val port1: SerialPort = mockk()
+    private val port2: SerialPort = mockk()
     private val gatewayPort: SerialPort = mockk()
 
-    private val gateway: Gateway = mockk()
+    private val client1: SerialClient = mockk()
+    private val client2: SerialClient = mockk()
+    private val gatewayClient: SerialClient = mockk()
+
+    private val gateway: SerialGateway = mockk()
 
     @BeforeEach
     fun setupHappyPath() {
-        every { serialPortFinder.find() } returns listOf(otherPort1, otherPort2, gatewayPort)
+        every { serialPortFinder.find() } returns listOf(port1, port2, gatewayPort)
 
-        coEvery { serialGatewayConnector.connect(otherPort1) } returns null
-        coEvery { serialGatewayConnector.connect(otherPort2) } returns null
-        coEvery { serialGatewayConnector.connect(gatewayPort) } returns gateway
+        coEvery { serialClientFactory.create(port1) } returns client1
+        coEvery { serialClientFactory.create(port2) } returns client2
+        coEvery { serialClientFactory.create(gatewayPort) } returns gatewayClient
+
+        coEvery { serialGatewayConnector.connect(client1) } returns null
+        coEvery { serialGatewayConnector.connect(client2) } returns null
+        coEvery { serialGatewayConnector.connect(gatewayClient) } returns gateway
     }
 
     @AfterEach
@@ -40,11 +49,11 @@ class GatewayFinderTests {
     private fun createSUT(): GatewayFinder {
         return GatewayFinder(
             serialPortFinder = serialPortFinder,
+            serialClientFactory = serialClientFactory,
             serialGatewayConnector = serialGatewayConnector
         )
     }
 
-    // Find
     @Test
     fun `given a gateway is available, then return the gateway`() = runTest {
         val sut = createSUT()
@@ -57,7 +66,7 @@ class GatewayFinderTests {
     @Test
     fun `given no gateway is available, then return null`() = runTest {
         val sut = createSUT()
-        every { serialPortFinder.find() } returns listOf(otherPort1, otherPort2)
+        every { serialPortFinder.find() } returns listOf(port1, port2)
 
         val actual = sut.find()
 

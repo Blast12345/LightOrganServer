@@ -1,5 +1,6 @@
 package lightOrgan.gateway
 
+import annotations.SkipCoverage
 import color.StandardRgbColor
 import kotlinx.coroutines.flow.StateFlow
 
@@ -15,6 +16,26 @@ interface Gateway {
     fun connect()
     fun disconnect()
     fun sendColor(color: StandardRgbColor)
+}
+
+
+@SkipCoverage
+class SerialGatewayFactory {
+
+    fun create(
+        identity: GatewayIdentificationResponse,
+        client: SerialClient
+    ): SerialGateway {
+        return SerialGateway(
+            details = GatewayDetails(
+                systemPath = client.systemPath,
+                macAddress = identity.macAddress,
+                firmwareVersion = identity.firmwareVersion,
+            ),
+            serialClient = client
+        )
+    }
+
 }
 
 class SerialGateway(
