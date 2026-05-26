@@ -1,27 +1,32 @@
 package lightOrgan.gateway
 
 import color.StandardRgbColor
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 
 // ENHANCEMENT: Auto-reconnect
+@OptIn(ExperimentalCoroutinesApi::class)
 class GatewayManager(
-    private val currentGateway: MutableStateFlow<Gateway?> = MutableStateFlow(null),
     private val gatewayFinder: GatewayFinder = GatewayFinder()
 ) {
 
-    val gatewayDetails: Flow<GatewayDetails?> = currentGateway.map { it?.details }
-    val isConnected: Flow<Boolean> = currentGateway.map { it?.isConnected == true }
-    val isSearching: Flow<Boolean> = gatewayFinder.isSearching
+    private val _currentGateway: MutableStateFlow<Gateway?> = MutableStateFlow(null)
+    private val _isSearching = MutableStateFlow(false)
+
+    val gatewayDetails: Flow<GatewayDetails?> = _currentGateway.map { it?.details }
+    val isConnected: Flow<Boolean> = _currentGateway.flatMapLatest { it?.isConnected ?: flowOf(false) }
+    val isSearching: Flow<Boolean> = _isSearching.asStateFlow()
 
     suspend fun findGateway() {
-        if (currentGateway.value != null) return
-        currentGateway.value = gatewayFinder.find()
-    }
+        if (_currentGateway.value != null) return
+        if (_isSearching.value) return
 
-    fun send(color: StandardRgbColor) {
-        TODO()
+        try {
+            _isSearching.value = true
+            _currentGateway.value = gatewayFinder.find()
+        } finally {
+            _isSearching.value = false
+        }
     }
 
     // TODO: Separate find and connect?
@@ -40,5 +45,10 @@ class GatewayManager(
 //        _currentGateway.value?.disconnect()
 //        _currentGateway.value = null
     }
+
+    fun send(color: StandardRgbColor) {
+        TODO()
+    }
+
 
 }

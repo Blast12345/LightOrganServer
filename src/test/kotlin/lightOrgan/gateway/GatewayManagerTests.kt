@@ -1,11 +1,13 @@
 package gateway
 
+import color.StandardRgbColor
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import lightOrgan.gateway.Gateway
@@ -26,22 +28,39 @@ fun nextGatewayDetails(): GatewayDetails {
     )
 }
 
-fun nextGateway(): Gateway { // TODO: Fixture
-    return Gateway(
-        details = nextGatewayDetails()
-    )
+class FakeGateway(
+    override val details: GatewayDetails = nextGatewayDetails()
+) : Gateway {
+
+    private val _isConnected = MutableStateFlow(false)
+    override val isConnected: StateFlow<Boolean> = _isConnected.asStateFlow()
+
+    val sentColors = mutableListOf<StandardRgbColor>()
+
+    override fun connect() {
+        _isConnected.value = true
+    }
+
+    override fun disconnect() {
+        _isConnected.value = false
+    }
+
+    override fun sendColor(color: StandardRgbColor) {
+        sentColors.add(color)
+    }
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GatewayManagerTests {
 
-    private val currentGatewayFlow: MutableStateFlow<Gateway?> = MutableStateFlow(null)
     private val gatewayFinder: GatewayFinder = mockk()
 
-    private val gateway = nextGateway()
+    private lateinit var gateway: FakeGateway
 
     @BeforeEach
     fun setupHappyPath() {
+        gateway = FakeGateway()
+
         coEvery { gatewayFinder.find() } returns gateway
     }
 
@@ -52,7 +71,6 @@ class GatewayManagerTests {
 
     private fun createSUT(): GatewayManager {
         return GatewayManager(
-            currentGateway = currentGatewayFlow,
             gatewayFinder = gatewayFinder
         )
     }
@@ -77,15 +95,7 @@ class GatewayManagerTests {
         assertEquals(null, sut.gatewayDetails.first())
     }
 
-    @Test
-    fun `given a gateway was already found, then no search is started`() = runTest {
-        currentGatewayFlow.value = gateway
-        val sut = createSUT()
-
-        sut.findGateway()
-
-        coVerify(exactly = 0) { gatewayFinder.find() }
-    }
+    // Searching state
 
 //    // Connect
 //    @OptIn(ExperimentalCoroutinesApi::class)

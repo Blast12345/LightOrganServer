@@ -1,6 +1,7 @@
 package lightOrgan.gateway
 
 import io.mockk.clearAllMocks
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -13,27 +14,22 @@ import wrappers.serial.SerialPortFinder
 
 class GatewayFinderTests {
 
-    val serialPortFinder: SerialPortFinder = mockk()
+    private val serialPortFinder: SerialPortFinder = mockk()
+    private val serialGatewayConnector: SerialGatewayConnector = mockk()
 
-    val otherPort1: SerialPort = mockk()
-    val otherPort2: SerialPort = mockk()
-    val gatewayPort: SerialPort = mockk()
+    private val otherPort1: SerialPort = mockk()
+    private val otherPort2: SerialPort = mockk()
+    private val gatewayPort: SerialPort = mockk()
 
-    val gateway: Gateway = mockk()
-
-    private fun createSUT(): GatewayFinder {
-        return GatewayFinder(
-            serialPortFinder = serialPortFinder
-        )
-    }
+    private val gateway: Gateway = mockk()
 
     @BeforeEach
     fun setupHappyPath() {
-//        mockkObject(Gateway.Companion)
-//
-//        coEvery { Gateway.connect(otherPort1, any()) } throws Exception("ASDF 1")
-//        coEvery { Gateway.connect(otherPort2, any()) } throws Exception("ASDF 2")
-//        coEvery { Gateway.connect(gatewayPort, any()) } returns gateway
+        every { serialPortFinder.find() } returns listOf(otherPort1, otherPort2, gatewayPort)
+
+        coEvery { serialGatewayConnector.connect(otherPort1) } returns null
+        coEvery { serialGatewayConnector.connect(otherPort2) } returns null
+        coEvery { serialGatewayConnector.connect(gatewayPort) } returns gateway
     }
 
     @AfterEach
@@ -41,11 +37,17 @@ class GatewayFinderTests {
         clearAllMocks()
     }
 
+    private fun createSUT(): GatewayFinder {
+        return GatewayFinder(
+            serialPortFinder = serialPortFinder,
+            serialGatewayConnector = serialGatewayConnector
+        )
+    }
+
     // Find
     @Test
     fun `given a gateway is available, then return the gateway`() = runTest {
         val sut = createSUT()
-        every { serialPortFinder.find() } returns listOf(otherPort1, otherPort2, gatewayPort)
 
         val actual = sut.find()
 
@@ -61,9 +63,5 @@ class GatewayFinderTests {
 
         assertEquals(null, actual)
     }
-
-    // Status
-//    @Test
-//    fun `get the searching
 
 }

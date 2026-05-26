@@ -1,18 +1,44 @@
 package lightOrgan.gateway
 
+import color.StandardRgbColor
+import kotlinx.coroutines.flow.StateFlow
+
 data class GatewayDetails(
     val systemPath: String,
     val macAddress: String,
     val firmwareVersion: String
 )
 
-class Gateway(
-    val details: GatewayDetails,
-//    private val serialRouter: SerialRouter,
-//    private val messageFactory: MessageFactory
-) {
+interface Gateway {
+    val details: GatewayDetails
+    val isConnected: StateFlow<Boolean>
+    fun connect()
+    fun disconnect()
+    fun sendColor(color: StandardRgbColor)
+}
 
-    val isConnected = false
+class SerialGateway(
+    override val details: GatewayDetails,
+    private val serialClient: SerialClient
+) : Gateway {
+
+    override val isConnected = serialClient.isConnected
+
+    override fun connect() {
+        serialClient.connect()
+    }
+
+    override fun disconnect() {
+        serialClient.disconnect()
+    }
+
+    override fun sendColor(color: StandardRgbColor) {
+        TODO()
+    }
+
+}
+
+
 //    val isConnected = serialRouter.isConnected
 //
 //    companion object {
@@ -55,17 +81,3 @@ class Gateway(
 //
 //    }
 //
-//    fun reconnect() {
-//        serialRouter.connect()
-//    }
-//
-//    fun disconnect() {
-//        serialRouter.disconnect()
-//    }
-//
-//    fun send(color: Color) {
-//        val command = messageFactory.createColorCommand(color)
-//        serialRouter.send(command)
-//    }
-
-}

@@ -5,6 +5,7 @@ import config.children.Client
 import dsp.windowing.WindowType
 import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
+import lightOrgan.gateway.GatewayConfig
 import lightOrgan.spectrum.SpectrumConfig
 import kotlin.random.Random
 
@@ -26,6 +27,10 @@ fun nextConfig(
         spectrumGui = SpectrumGuiConfig(
             lowestFrequency = Random.nextFloat(),
             highestFrequency = Random.nextFloat(),
+        ),
+        gateway = GatewayConfig(
+            baudRate = nextInt(),
+            serialFormat = nextSerialFormat()
         )
     )
 }
