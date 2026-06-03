@@ -5,6 +5,7 @@ import jsonrpc.JsonRpcPeer
 import jsonrpc.SerialJsonRpcPeer
 import jsonrpc.sendRequest
 import lightOrgan.gateway.serial.messages.GatewayIdentificationResponse
+import serial.SerialFrameFormat
 import serial.SerialPort
 import kotlin.time.Duration
 
@@ -25,7 +26,9 @@ class Gateway private constructor(
                 return Gateway(
                     details = SerialGatewayDetails(
                         macAddress = response.macAddress,
-                        firmwareVersion = response.firmwareVersion
+                        firmwareVersion = response.firmwareVersion,
+                        baudRate = device.baudRate,
+                        frameFormat = device.frameFormat
                     ),
                     device = device
                 )
@@ -46,13 +49,15 @@ class Gateway private constructor(
 
 }
 
-interface GatewayDetails {
+sealed interface GatewayDetails {
     val macAddress: String
     val firmwareVersion: String
 }
 
+
 data class SerialGatewayDetails(
     override val macAddress: String,
     override val firmwareVersion: String,
-    // TODO: Baud rate, protocol, etc
+    val baudRate: Int,
+    val frameFormat: SerialFrameFormat,
 ) : GatewayDetails

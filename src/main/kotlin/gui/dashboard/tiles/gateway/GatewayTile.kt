@@ -8,6 +8,7 @@ import androidx.compose.ui.text.font.FontWeight
 import gui.basicComponents.*
 import lightOrgan.gateway.GatewayDetails
 import lightOrgan.gateway.GatewayManagerState
+import lightOrgan.gateway.SerialGatewayDetails
 
 @Composable
 fun GatewayTile(
@@ -25,41 +26,38 @@ fun GatewayTile(
 
         SimpleSpacer(12)
 
-        DetailText("Status", connectionState.displayName)
-        // TODO: Additional details like protocol, baud rate, etc
-        DetailText("MAC Address", connectionState.gatewayDetails?.macAddress)
-        DetailText("Firmware", connectionState.gatewayDetails?.firmwareVersion)
+        when (val currentState = connectionState) {
+            is GatewayManagerState.NoGateway -> {
+                SimpleButton("Connect", isLoading = false, action = { viewModel.connect() })
+                DetailText("Status", "No Gateway")
+            }
 
-        SimpleSpacer(12)
+            is GatewayManagerState.Connecting -> {
+                SimpleButton("Connect", isLoading = true, action = {})
+                DetailText("Status", "Connecting...")
+            }
 
-        when (connectionState) {
-            is GatewayManagerState.NoGateway -> SimpleButton(
-                title = "Connect",
-                isLoading = false,
-                action = { viewModel.connect() }
-            )
-
-            is GatewayManagerState.Connecting -> SimpleButton(
-                title = "Connecting",
-                isLoading = true,
-                action = {}
-            )
-
-            is GatewayManagerState.Connected -> SimpleButton(
-                title = "Disconnect",
-                isLoading = false,
-                action = { viewModel.disconnect() }
-            )
+            is GatewayManagerState.Connected -> {
+                SimpleButton("Disconnect", isLoading = false, action = { viewModel.disconnect() })
+                ScrollableColumn {
+                    DetailText("Status", "Connected")
+                    GatewayDetailsSection(currentState.gateway.details)
+                }
+            }
         }
     }
 }
 
-private val GatewayManagerState.displayName: String
-    get() = when (this) {
-        is GatewayManagerState.NoGateway -> "No Gateway"
-        is GatewayManagerState.Connecting -> "Connecting..."
-        is GatewayManagerState.Connected -> "Connected"
-    }
+@Composable
+private fun GatewayDetailsSection(details: GatewayDetails) {
+    DetailText("MAC Address", details.macAddress)
+    DetailText("Firmware", details.firmwareVersion)
 
-private val GatewayManagerState.gatewayDetails: GatewayDetails?
-    get() = (this as? GatewayManagerState.Connected)?.gateway?.details
+    when (details) {
+        is SerialGatewayDetails -> {
+            DetailText("Connection", "Serial")
+            DetailText("Baud Rate", details.baudRate.toString())
+            DetailText("Frame Format", details.frameFormat.notation)
+        }
+    }
+}
