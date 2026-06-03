@@ -20,6 +20,7 @@ dependencies {
     implementation("com.github.wendykierp:JTransforms:3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:${coroutinesVersion}")
+    implementation("tools.jackson.module:jackson-module-kotlin:3.1.+")
     implementation(compose.desktop.currentOs)
 
     // Unit Testing
