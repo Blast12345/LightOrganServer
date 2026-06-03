@@ -2,7 +2,6 @@ package gui.tiles.gateway
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import gui.basicComponents.*
@@ -15,7 +14,7 @@ fun GatewayTile(
     viewModel: GatewayTileViewModel,
     modifier: Modifier = Modifier
 ) {
-    val connectionState by viewModel.connectionState.collectAsState()
+    val connectionState = viewModel.connectionState.collectAsState().value
 
     Tile(modifier) {
         SimpleText(
@@ -26,7 +25,7 @@ fun GatewayTile(
 
         SimpleSpacer(12)
 
-        when (val currentState = connectionState) {
+        when (connectionState) {
             is GatewayManagerState.NoGateway -> {
                 SimpleButton("Connect", isLoading = false, action = { viewModel.connect() })
                 DetailText("Status", "No Gateway")
@@ -41,7 +40,7 @@ fun GatewayTile(
                 SimpleButton("Disconnect", isLoading = false, action = { viewModel.disconnect() })
                 ScrollableColumn {
                     DetailText("Status", "Connected")
-                    GatewayDetailsSection(currentState.gateway.details)
+                    GatewayDetailsSection(connectionState.gateway.details)
                 }
             }
         }
