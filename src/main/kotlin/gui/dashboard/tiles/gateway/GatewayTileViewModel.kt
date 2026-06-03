@@ -1,10 +1,13 @@
 package gui.tiles.gateway
 
+import extensions.tryLaunch
 import gui.dashboard.SnackbarController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import lightOrgan.gateway.GatewayEvent
 import lightOrgan.gateway.GatewayManager
 
 class GatewayTileViewModel(
@@ -13,38 +16,30 @@ class GatewayTileViewModel(
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 ) {
 
-    val isSearching = gatewayManager.isSearching
-    val gatewayDetails = gatewayManager.gatewayDetails
-    val isConnected = gatewayManager.isConnected
+    val connectionState = gatewayManager.connectionState
 
-    fun findGateway() {
-        scope.launch {
-            try {
-                gatewayManager.findGateway()
-            } catch (e: Exception) {
-                snackbarController.show(e.message ?: "Failed to find gateway.")
-            }
-        }
+    init {
+        gatewayManager.events
+            .onEach { snackbarController.show(it.toUserMessage()) }
+            .launchIn(scope)
+    }
+
+    private fun GatewayEvent.toUserMessage(): String = when (this) {
+        GatewayEvent.ConnectionLost -> "Gateway connection lost."
     }
 
     fun connect() {
-//        scope.launch {
-//            try {
-//                gatewayManager.connect()
-//            } catch (e: Exception) {
-//                snackbarController.show(e.message ?: "Failed to connect to gateway.")
-//            }
-//        }
+        scope.tryLaunch(
+            block = { gatewayManager.connect() },
+            onError = { snackbarController.show(it.message ?: "Failed to connect to the gateway.") }
+        )
     }
 
     fun disconnect() {
-//        scope.launch {
-//            try {
-//                gatewayManager.disconnect()
-//            } catch (e: Exception) {
-//                snackbarController.show(e.message ?: "Failed to disconnect from gateway.")
-//            }
-//        }
+        scope.tryLaunch(
+            block = { gatewayManager.disconnect() },
+            onError = { snackbarController.show(it.message ?: "Failed to disconnect from the gateway.") }
+        )
     }
 
 }

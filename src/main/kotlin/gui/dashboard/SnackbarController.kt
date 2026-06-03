@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 interface SnackbarController {
-    suspend fun show(message: String)
+    fun show(message: String)
 }
 
 // TODO: Extract me?
@@ -14,7 +14,7 @@ class SharedFlowSnackbarController : SnackbarController {
     private val _messages = MutableSharedFlow<String>()
     val messages: SharedFlow<String> = _messages.asSharedFlow()
 
-    override suspend fun show(message: String) {
-        _messages.emit(message)
+    override fun show(message: String) {
+        _messages.tryEmit(message)
     }
 }

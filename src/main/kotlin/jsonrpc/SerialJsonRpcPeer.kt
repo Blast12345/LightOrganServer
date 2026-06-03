@@ -1,0 +1,200 @@
+package jsonrpc
+
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import logging.Logger
+import serial.SerialFrameFormat
+import serial.SerialPort
+import tools.jackson.core.type.TypeReference
+import tools.jackson.databind.PropertyNamingStrategies
+import tools.jackson.module.kotlin.jsonMapper
+import tools.jackson.module.kotlin.kotlinModule
+import tools.jackson.module.kotlin.treeToValue
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.time.Duration
+
+// ENHANCEMENT: Add the ability to receive and respond to requests.
+// This is a client that communicates over serial based on the JSON-RPC spec.
+// REFERENCE: https://www.jsonrpc.org/specification
+class SerialJsonRpcPeer(
+    private val port: SerialPort,
+    private val generateId: () -> String = { UUID.randomUUID().toString() },
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+) : JsonRpcPeer {
+
+    private val writeMutex = Mutex()
+    private val pendingRequests = ConcurrentHashMap<String, CompletableDeferred<JsonRpcResponse>>()
+    private val jsonMapper = jsonMapper {
+        addModule(kotlinModule())
+        propertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE)
+    }
+
+    val name: String = port.name
+    val baudRate: Int = port.baudRate
+    val frameFormat: SerialFrameFormat = port.frameFormat
+
+    private val _isConnected = MutableStateFlow(port.isOpen)
+    override val isConnected: StateFlow<Boolean> = _isConnected // TODO: observer vs update
+
+    // TODO: Implement incoming data handler
+    private val _incomingRequests = MutableSharedFlow<JsonRpcRequest>()
+    override val incomingRequests: Flow<JsonRpcRequest> = _incomingRequests
+
+    private val _incomingNotifications = MutableSharedFlow<JsonRpcNotification>()
+    override val incomingNotifications: Flow<JsonRpcNotification> = _incomingNotifications
+
+    override suspend fun connect() {
+        port.open()
+        _isConnected.value = true
+
+        readerJob = scope.launch { readIncomingMessages() }
+    }
+
+    override suspend fun disconnect() {
+        port.close()
+        readerJob?.cancelAndJoin()
+        _isConnected.value = false
+        cancelPendingRequests()
+    }
+
+    private fun cancelPendingRequests() {
+        val exception = CancellationException("Peer disconnected")
+        pendingRequests.values.forEach { it.completeExceptionally(exception) }
+        pendingRequests.clear()
+    }
+
+    override suspend fun <T> sendRequest(method: String, params: Any?, responseType: TypeReference<T>, timeout: Duration): T {
+        val request = JsonRpcRequest(
+            id = generateId(),
+            method = method,
+            params = params?.let { jsonMapper.valueToTree(it) }
+        )
+
+        val deferred = CompletableDeferred<JsonRpcResponse>()
+        pendingRequests[request.id] = deferred
+
+        try {
+            val response = withTimeout(timeout) {
+                writeLine(request)
+                deferred.await()
+            }
+
+            return when (response) {
+                is JsonRpcSuccess -> jsonMapper.treeToValue(response.result, responseType)
+                is JsonRpcFailure -> throw SerialRpcException(response.error)
+            }
+        } finally {
+            pendingRequests.remove(request.id)
+        }
+    }
+
+    override suspend fun sendNotification(method: String, params: Any?, timeout: Duration) {
+        val notification = JsonRpcNotification(
+            method = method,
+            params = params?.let { jsonMapper.valueToTree(it) }
+        )
+
+        writeLine(notification, timeout)
+    }
+
+    override suspend fun respondWithSuccess(id: String, response: Any, timeout: Duration) {
+        val success = JsonRpcSuccess(
+            id = id,
+            result = jsonMapper.valueToTree(response)
+        )
+
+        writeLine(success, timeout)
+    }
+
+    override suspend fun respondWithFailure(id: String, code: Int, message: String, data: Any?, timeout: Duration) {
+        val failure = JsonRpcFailure(
+            id = id,
+            error = JsonRpcError(
+                code = code,
+                message = message,
+                data = data?.let { jsonMapper.valueToTree(it) }
+            )
+        )
+
+        writeLine(failure, timeout)
+    }
+
+    // Reading
+    private var readerJob: Job? = null
+
+    private suspend fun readIncomingMessages() {
+        val buffer = StringBuilder()
+
+        port.incomingBytes.collect { bytes ->
+            buffer.append(String(bytes))
+
+            while (true) {
+                val newlineIndex = buffer.indexOf('\n')
+
+                if (newlineIndex == -1) break
+
+                val line = buffer.substring(0, newlineIndex).trim()
+                buffer.delete(0, newlineIndex + 1)
+
+                if (line.isNotEmpty()) routeMessage(line)
+            }
+        }
+    }
+
+    private suspend fun routeMessage(json: String) {
+        val message = try {
+            parseMessage(json)
+        } catch (e: Exception) {
+            Logger.warning("Port $name received malformed JSON: '$json' - ${e.message}")
+            return
+        }
+
+        // TODO: Try emit or throw? Or warn?
+        when (message) {
+            is JsonRpcSuccess -> pendingRequests[message.id]?.complete(message)
+            is JsonRpcFailure -> pendingRequests[message.id]?.complete(message)
+            is JsonRpcRequest -> _incomingRequests.tryEmit(message)
+            is JsonRpcNotification -> _incomingNotifications.tryEmit(message)
+        }
+    }
+
+    private fun parseMessage(json: String): JsonRpcMessage {
+        val node = jsonMapper.readTree(json)
+
+        val hasId = node.has("id")
+        val hasMethod = node.has("method")
+
+        return when {
+            hasMethod && hasId -> jsonMapper.treeToValue<JsonRpcRequest>(node)
+            hasMethod -> jsonMapper.treeToValue<JsonRpcNotification>(node)
+            hasId && node.has("result") -> jsonMapper.treeToValue<JsonRpcSuccess>(node)
+            hasId && node.has("error") -> jsonMapper.treeToValue<JsonRpcFailure>(node)
+            else -> throw IllegalArgumentException("Unrecognized JSON-RPC message")
+        }
+    }
+
+    // Helpers
+    // TODO: Write test to ensure requests are thread safe
+    private suspend fun writeLine(message: JsonRpcMessage, timeout: Duration) {
+        withTimeout(timeout) { writeLine(message) }
+    }
+
+    private suspend fun writeLine(message: JsonRpcMessage) {
+        val json = jsonMapper.writeValueAsBytes(message) + '\n'.code.toByte()
+
+        // Only one envelope should be written at a time or the data will be jumbled
+        writeMutex.withLock { port.write(json) }
+    }
+
+    class SerialRpcException(
+        val error: JsonRpcError
+    ) : Exception(error.message)
+
+}

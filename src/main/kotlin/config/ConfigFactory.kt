@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.gateway.GatewayConfig
 import lightOrgan.spectrum.SpectrumConfig
 import music.WesternTuningSystem
-import wrappers.serial.SerialFormat
+import serial.SerialFrameFormat
 import kotlin.time.Duration.Companion.milliseconds
 
 class ConfigFactory(
@@ -45,7 +45,7 @@ class ConfigFactory(
             ),
             gateway = GatewayConfig(
                 baudRate = 115200,
-                serialFormat = SerialFormat.FORMAT_8N1,
+                frameFormat = SerialFrameFormat.FORMAT_8N1,
             )
         )
     }

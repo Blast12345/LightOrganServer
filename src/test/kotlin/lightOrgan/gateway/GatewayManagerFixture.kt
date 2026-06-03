@@ -6,7 +6,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class GatewayManagerFixture(
-    val mock: GatewayManager,
+    val mock: RealGatewayManager,
     val gatewayDetailsFlow: MutableStateFlow<GatewayDetails?>,
     val isConnectedFlow: MutableStateFlow<Boolean>
 ) {
@@ -14,7 +14,7 @@ data class GatewayManagerFixture(
     companion object {
         fun create(): GatewayManagerFixture {
             val fixture = GatewayManagerFixture(
-                mock = mockk<GatewayManager>(),
+                mock = mockk<RealGatewayManager>(),
                 gatewayDetailsFlow = MutableStateFlow(null),
                 isConnectedFlow = MutableStateFlow(false)
             )

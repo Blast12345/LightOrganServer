@@ -47,7 +47,7 @@ class GatewayTileViewModelTests {
 
     private fun createSUT(scope: CoroutineScope): GatewayTileViewModel {
         return GatewayTileViewModel(
-            gatewayManager = gatewayManager.mock,
+            realGatewayManager = gatewayManager.mock,
             snackbarController = snackbarController,
             scope = scope,
         )
@@ -74,7 +74,7 @@ class GatewayTileViewModelTests {
 
         assertEquals(exception.message, snackbarController.lastMessage)
     }
-    
+
 //    // Gateway Details
 //    @Test
 //    fun `given no gateway is available at init, then display empty connection details`() {

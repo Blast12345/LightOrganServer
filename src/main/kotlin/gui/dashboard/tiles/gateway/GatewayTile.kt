@@ -1,22 +1,20 @@
 package gui.tiles.gateway
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import gui.basicComponents.*
+import lightOrgan.gateway.GatewayDetails
+import lightOrgan.gateway.GatewayManagerState
 
-@Preview
 @Composable
 fun GatewayTile(
     viewModel: GatewayTileViewModel,
     modifier: Modifier = Modifier
 ) {
-    val isSearching by viewModel.isSearching.collectAsState(initial = false)
-    val details by viewModel.gatewayDetails.collectAsState(initial = null)
-    val isConnected by viewModel.isConnected.collectAsState(initial = false)
+    val connectionState by viewModel.connectionState.collectAsState()
 
     Tile(modifier) {
         SimpleText(
@@ -27,31 +25,41 @@ fun GatewayTile(
 
         SimpleSpacer(12)
 
-        DetailText("Status", if (isConnected) "Connected" else "Not connected")
-        DetailText("System Path", details?.systemPath ?: "")
-        DetailText("MAC Address", details?.macAddress ?: "")
-        DetailText("Firmware", details?.firmwareVersion ?: "")
+        DetailText("Status", connectionState.displayName)
+        // TODO: Additional details like protocol, baud rate, etc
+        DetailText("MAC Address", connectionState.gatewayDetails?.macAddress)
+        DetailText("Firmware", connectionState.gatewayDetails?.firmwareVersion)
 
         SimpleSpacer(12)
 
-        if (details == null || isSearching) {
-            SimpleButton(
-                title = "Find Gateway",
-                isLoading = isSearching,
-                action = { viewModel.findGateway() }
-            )
-        } else if (isConnected) {
-            SimpleButton(
-                title = "Disconnect",
-                isLoading = false,
-                action = { viewModel.disconnect() }
-            )
-        } else {
-            SimpleButton(
+        when (connectionState) {
+            is GatewayManagerState.NoGateway -> SimpleButton(
                 title = "Connect",
                 isLoading = false,
                 action = { viewModel.connect() }
             )
+
+            is GatewayManagerState.Connecting -> SimpleButton(
+                title = "Connecting",
+                isLoading = true,
+                action = {}
+            )
+
+            is GatewayManagerState.Connected -> SimpleButton(
+                title = "Disconnect",
+                isLoading = false,
+                action = { viewModel.disconnect() }
+            )
         }
     }
 }
+
+private val GatewayManagerState.displayName: String
+    get() = when (this) {
+        is GatewayManagerState.NoGateway -> "No Gateway"
+        is GatewayManagerState.Connecting -> "Connecting..."
+        is GatewayManagerState.Connected -> "Connected"
+    }
+
+private val GatewayManagerState.gatewayDetails: GatewayDetails?
+    get() = (this as? GatewayManagerState.Connected)?.gateway?.details

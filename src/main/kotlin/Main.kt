@@ -13,7 +13,7 @@ import gui.dashboard.DashboardViewModel
 import gui.dashboard.SharedFlowSnackbarController
 import lightOrgan.LightOrgan
 import lightOrgan.color.ColorManager
-import lightOrgan.gateway.GatewayManager
+import lightOrgan.gateway.RealGatewayManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 
@@ -25,15 +25,15 @@ fun main(args: Array<String>) {
     val inputManager = AudioInputManager()
     val spectrumManager = SpectrumManager()
     val colorManager = ColorManager()
-    val gatewayManager = GatewayManager()
+    val realGatewayManager = RealGatewayManager()
 
-    val lightOrgan = LightOrgan(inputManager, spectrumManager, colorManager, gatewayManager)
+    val lightOrgan = LightOrgan(inputManager, spectrumManager, colorManager, realGatewayManager)
     lightOrgan.start()
 
     if (args.contains("--headless")) {
         launchHeadless(lightOrgan)
     } else {
-        launchGUI(inputManager, spectrumManager, colorManager, gatewayManager)
+        launchGUI(inputManager, spectrumManager, colorManager, realGatewayManager)
     }
 }
 
@@ -41,7 +41,7 @@ private fun launchGUI(
     inputManager: AudioInputManager,
     spectrumManager: SpectrumManager,
     colorManager: ColorManager,
-    gatewayManager: GatewayManager,
+    realGatewayManager: RealGatewayManager,
 ) = application {
     val minimumWidth = 1200
     val minimumHeight = 300
@@ -74,7 +74,7 @@ private fun launchGUI(
                         inputManager,
                         spectrumManager,
                         colorManager,
-                        gatewayManager,
+                        realGatewayManager,
                         snackbarController
                     )
                 }

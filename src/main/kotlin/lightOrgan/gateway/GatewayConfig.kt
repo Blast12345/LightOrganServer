@@ -1,8 +1,8 @@
 package lightOrgan.gateway
 
-import wrappers.serial.SerialFormat
+import serial.SerialFrameFormat
 
 data class GatewayConfig(
     val baudRate: Int,
-    val serialFormat: SerialFormat
+    val frameFormat: SerialFrameFormat
 )

@@ -5,12 +5,16 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import lightOrgan.gateway.serial.SerialGateway
+import lightOrgan.gateway.serial.SerialGatewayConnector
+import lightOrgan.gateway.serial.client.SerialClientFactory
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import wrappers.serial.SerialPort
-import wrappers.serial.SerialPortFinder
+import serial.SerialPort
+import serial.SerialPortFinder
+import serial.rpc.DefaultSerialRpcClient
 
 class GatewayFinderTests {
 
@@ -22,9 +26,9 @@ class GatewayFinderTests {
     private val port2: SerialPort = mockk()
     private val gatewayPort: SerialPort = mockk()
 
-    private val client1: SerialClient = mockk()
-    private val client2: SerialClient = mockk()
-    private val gatewayClient: SerialClient = mockk()
+    private val client1: DefaultSerialRpcClient = mockk()
+    private val client2: DefaultSerialRpcClient = mockk()
+    private val gatewayClient: DefaultSerialRpcClient = mockk()
 
     private val gateway: SerialGateway = mockk()
 

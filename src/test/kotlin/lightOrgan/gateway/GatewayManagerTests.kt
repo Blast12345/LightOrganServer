@@ -4,48 +4,47 @@ import color.StandardRgbColor
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.mockk
+import jsonrpc.ConnectionState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import lightOrgan.gateway.Gateway
 import lightOrgan.gateway.GatewayDetails
 import lightOrgan.gateway.GatewayFinder
-import lightOrgan.gateway.GatewayManager
+import lightOrgan.gateway.RealGatewayManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextString
 
-fun nextGatewayDetails(): GatewayDetails {
-    return GatewayDetails(
-        systemPath = nextString("path"),
-        macAddress = nextString("mac"),
-        firmwareVersion = nextString("version")
-    )
-}
+// TODO: Move me
+class FakeGatewayDetails(
+    override val macAddress: String = nextString("mac"),
+    override val firmwareVersion: String = nextString("version")
+) : GatewayDetails
 
+// TODO: Move me
 class FakeGateway(
-    override val details: GatewayDetails = nextGatewayDetails()
+    override val details: GatewayDetails = FakeGatewayDetails()
 ) : Gateway {
 
-    private val _isConnected = MutableStateFlow(false)
-    override val isConnected: StateFlow<Boolean> = _isConnected.asStateFlow()
+    private val _connectionState = MutableStateFlow<ConnectionState?>(null)
+    override val connectionState: Flow<ConnectionState?> = _connectionState.asStateFlow()
 
     val sentColors = mutableListOf<StandardRgbColor>()
 
-    override fun connect() {
-        _isConnected.value = true
+    override suspend fun connect() {
+        _connectionState.value = true
     }
 
-    override fun disconnect() {
-        _isConnected.value = false
+    override suspend fun disconnect() {
+        _connectionState.value = false
     }
 
-    override fun sendColor(color: StandardRgbColor) {
+    override suspend fun sendColor(color: StandardRgbColor) {
         sentColors.add(color)
     }
 }
@@ -69,15 +68,15 @@ class GatewayManagerTests {
         clearAllMocks()
     }
 
-    private fun createSUT(): GatewayManager {
-        return GatewayManager(
+    private fun createSUT(): RealGatewayManager {
+        return RealGatewayManager(
             gatewayFinder = gatewayFinder
         )
     }
 
     // Find
     @Test
-    fun `given a gateway is available, then the gateway is found`() = runTest {
+    fun `find a gateway`() = runTest {
         val sut = createSUT()
 
         sut.findGateway()
@@ -86,7 +85,7 @@ class GatewayManagerTests {
     }
 
     @Test
-    fun `given no gateway is available, then no gateway is found`() = runTest {
+    fun `given no gateway is found, then no gateway is found`() = runTest {
         val sut = createSUT()
         coEvery { gatewayFinder.find() } returns null
 

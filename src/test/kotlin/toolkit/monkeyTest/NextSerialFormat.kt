@@ -1,10 +1,10 @@
 package toolkit.monkeyTest
 
-import wrappers.serial.SerialFormat
+import serial.SerialFrameFormat
 
-fun nextSerialFormat(): SerialFormat {
-    return SerialFormat(
-        bits = nextInt(),
+fun nextSerialFormat(): SerialFrameFormat {
+    return SerialFrameFormat(
+        dataBits = nextInt(),
         parity = nextInt(),
         stopBits = nextInt()
     )
