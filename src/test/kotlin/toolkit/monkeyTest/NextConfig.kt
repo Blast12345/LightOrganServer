@@ -30,7 +30,7 @@ fun nextConfig(
         ),
         gateway = GatewayConfig(
             baudRate = nextInt(),
-            frameFormat = nextSerialFormat()
+            frameFormat = nextSerialFrameFormat()
         )
     )
 }

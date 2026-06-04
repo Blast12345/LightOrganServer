@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    val coroutinesVersion = "1.10.2"
+    val coroutinesVersion = "1.11.0"
     val mockkVersion = "1.14.9"
 
     implementation("com.fazecast:jSerialComm:2.11.4")

@@ -3,6 +3,7 @@ package gui.dashboard
 import config.Config
 import config.ConfigPersister
 import config.ConfigSingleton
+import gui.dashboard.snackbar.SnackbarController
 import gui.dashboard.tiles.color.ColorTileViewModel
 import gui.dashboard.tiles.spectrum.SpectrumTileViewModel
 import gui.tiles.audioInput.AudioInputTileViewModel
