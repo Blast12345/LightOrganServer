@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import lightOrgan.color.ColorManager
+import lightOrgan.gateway.Gateway
 import lightOrgan.gateway.GatewayManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
@@ -42,12 +43,12 @@ class LightOrgan(
         val frequencyBins = spectrumManager.calculate(newAudio)
         val color = colorManager.calculate(frequencyBins)
 
-        val state = gatewayManager.connectionState.value
-        if (state is GatewayManager.State.Connected) {
-            state.gateway.broadcastColor(color)
-        }
+        gatewayManager.gateway?.broadcastColor(color)
 
         timeBetweenColors.logTimeSinceLast()
     }
+
+    val GatewayManager.gateway: Gateway?
+        get() = (this.connectionState.value as? GatewayManager.State.Connected)?.gateway
 
 }
