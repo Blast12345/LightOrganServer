@@ -14,7 +14,7 @@ inline fun CoroutineScope.tryLaunch(
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
-        Logger.error(e)
+        Logger.error("A try launch threw.", e)
         onError(e)
     }
 }

@@ -14,15 +14,14 @@ object Logger {
         println("${LogColor.Orange.code}WARNING: $message${LogColor.Default.code}")
     }
 
-    fun error(message: String, throwable: Throwable? = null) {
+    fun error(message: String) {
         if (!enabled) return
         println("${LogColor.Red.code}ERROR: $message${LogColor.Default.code}")
     }
 
-    fun error(throwable: Throwable) {
+    fun error(message: String, throwable: Throwable) {
         if (!enabled) return
-        val message = throwable.message ?: "An unknown error occurred."
-        println("${LogColor.Red.code}ERROR: $message${LogColor.Default.code}")
+        error("$message\n${throwable.stackTraceToString()}")
     }
 
     fun debug(message: String) {

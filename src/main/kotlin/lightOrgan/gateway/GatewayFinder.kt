@@ -20,11 +20,11 @@ class GatewayFinder(
                 // TODO: Should timeout be configurable?
                 return Gateway.connect(port, 100.milliseconds)
             } catch (e: TimeoutCancellationException) {
-                Logger.error(e.message ?: "Port ${port.name} failed to connect.", e)
+                Logger.error("Port ${port.name} failed to connect.", e)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                Logger.error(e.message ?: "Port ${port.name} failed to connect.", e)
+                Logger.error("Port ${port.name} failed to connect.", e)
             }
         }
 
