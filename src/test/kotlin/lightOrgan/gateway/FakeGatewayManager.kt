@@ -1,22 +1,23 @@
 package lightOrgan.gateway
 
-import color.StandardRgbColor
+import gateway.FakeGateway
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import toolkit.monkeyTest.nextGatewayDetails
+import lightOrgan.gateway.GatewayManager.Event
+import lightOrgan.gateway.GatewayManager.State
 
 class FakeGatewayManager : GatewayManager {
 
-    override val connectionState = MutableStateFlow<GatewayManagerState>(GatewayManagerState.NoGateway)
-    override val events = MutableSharedFlow<GatewayEvent>()
+    override val connectionState = MutableStateFlow<State>(State.NoGateway)
+    override val events = MutableSharedFlow<Event>()
 
     // Connect
-    val gatewayDetails = nextGatewayDetails()
+    val gateway = FakeGateway()
     var connectError: Throwable? = null
 
     override suspend fun connect() {
         connectError?.let { throw it }
-        connectionState.value = GatewayManagerState.Connected(gatewayDetails)
+        connectionState.value = State.Connected(gateway)
     }
 
     // Disconnect
@@ -24,13 +25,7 @@ class FakeGatewayManager : GatewayManager {
 
     override suspend fun disconnect() {
         disconnectError?.let { throw it }
-        connectionState.value = GatewayManagerState.NoGateway
+        connectionState.value = State.NoGateway
     }
 
-    // Broadcast color
-    var lastColor: StandardRgbColor? = null
-
-    override suspend fun broadcastColor(color: StandardRgbColor) {
-        lastColor = color
-    }
 }

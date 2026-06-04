@@ -7,7 +7,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import lightOrgan.gateway.GatewayEvent
 import lightOrgan.gateway.GatewayManager
 
 class GatewayTileViewModel(
@@ -24,8 +23,8 @@ class GatewayTileViewModel(
             .launchIn(scope)
     }
 
-    private fun GatewayEvent.toUserMessage(): String = when (this) {
-        GatewayEvent.ConnectionLost -> "Gateway connection lost."
+    private fun GatewayManager.Event.toUserMessage(): String = when (this) {
+        GatewayManager.Event.UnexpectedDisconnect -> "Gateway connection lost."
     }
 
     fun connect() {

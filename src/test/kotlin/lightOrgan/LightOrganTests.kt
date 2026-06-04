@@ -59,13 +59,14 @@ class LightOrganTests {
     @Test
     fun `when an audio frame is received, then a color is derived and broadcast`() = runTest {
         val sut = createSUT(backgroundScope)
+        fakeGatewayManager.connect()
         sut.start()
         runCurrent()
 
         inputManager.audioStream.emit(streamFrame)
         runCurrent()
 
-        assertEquals(newColor, fakeGatewayManager.lastColor)
+        assertEquals(newColor, fakeGatewayManager.gateway.lastColor)
     }
 
 }

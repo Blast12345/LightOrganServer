@@ -7,20 +7,24 @@ import wrappers.serial.JSerialPortFinder
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.milliseconds
 
-// OPTIMIZATION: Prioritize last known path
-class GatewayFinder(
-    private val serialPortFinder: SerialPortFinder = JSerialPortFinder()
-) {
+interface GatewayFinder {
+    suspend fun find(): Gateway
+}
 
-    suspend fun find(): Gateway? {
+// OPTIMIZATION: Prioritize last known path
+class RealGatewayFinder(
+    private val serialPortFinder: SerialPortFinder = JSerialPortFinder()
+) : GatewayFinder {
+
+    override suspend fun find(): Gateway {
         val ports = serialPortFinder.find()
 
         for (port in ports) {
             try {
                 // TODO: Should timeout be configurable?
-                return Gateway.connect(port, 100.milliseconds)
+                return RealGateway.connect(port, 100.milliseconds)
             } catch (e: TimeoutCancellationException) {
-                Logger.error("Port ${port.name} failed to connect.", e)
+                Logger.error("Port ${port.name} connection attempt timed out.")
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -28,7 +32,7 @@ class GatewayFinder(
             }
         }
 
-        return null
+        throw IllegalStateException("No gateway was found.")
     }
 
 }

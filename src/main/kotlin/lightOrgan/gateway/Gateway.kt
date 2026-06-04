@@ -4,16 +4,29 @@ import color.StandardRgbColor
 import jsonrpc.JsonRpcPeer
 import jsonrpc.SerialJsonRpcPeer
 import jsonrpc.sendRequest
+import kotlinx.coroutines.flow.StateFlow
 import lightOrgan.gateway.serial.messages.GatewayIdentificationResponse
 import serial.SerialFrameFormat
 import serial.SerialPort
 import kotlin.time.Duration
 
+interface Gateway {
+    val details: GatewayDetails
+    val isConnected: StateFlow<Boolean>
+    suspend fun disconnect()
+    suspend fun broadcastColor(color: StandardRgbColor)
+}
+
+sealed interface GatewayDetails {
+    val macAddress: String
+    val firmwareVersion: String
+}
+
 // TODO: Test me
-class Gateway private constructor(
-    val details: GatewayDetails,
-    private val device: JsonRpcPeer
-) {
+class RealGateway private constructor(
+    override val details: GatewayDetails,
+    private val device: JsonRpcPeer,
+) : Gateway {
 
     companion object {
         suspend fun connect(port: SerialPort, timeout: Duration): Gateway {
@@ -23,7 +36,7 @@ class Gateway private constructor(
             try {
                 val response: GatewayIdentificationResponse = device.sendRequest("gateway-identification-request", null, timeout)
 
-                return Gateway(
+                return RealGateway(
                     details = SerialGatewayDetails(
                         macAddress = response.macAddress,
                         firmwareVersion = response.firmwareVersion,
@@ -39,21 +52,17 @@ class Gateway private constructor(
         }
     }
 
-    suspend fun disconnect() {
+    override val isConnected = device.isConnected
+
+    override suspend fun disconnect() {
         device.disconnect()
     }
 
-    suspend fun broadcastColor(color: StandardRgbColor) {
+    override suspend fun broadcastColor(color: StandardRgbColor) {
         device.sendNotification("broadcast-color", color)
     }
 
 }
-
-sealed interface GatewayDetails {
-    val macAddress: String
-    val firmwareVersion: String
-}
-
 
 data class SerialGatewayDetails(
     override val macAddress: String,

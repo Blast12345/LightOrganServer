@@ -7,8 +7,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import lightOrgan.gateway.FakeGatewayManager
-import lightOrgan.gateway.GatewayEvent
-import lightOrgan.gateway.GatewayManagerState
+import lightOrgan.gateway.GatewayManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -44,7 +43,7 @@ class GatewayTileViewModelTests {
         sut.connect()
         runCurrent()
 
-        assert(fakeGatewayManager.connectionState.value is GatewayManagerState.Connected)
+        assert(fakeGatewayManager.connectionState.value is GatewayManager.State.Connected)
     }
 
     @Test
@@ -62,12 +61,12 @@ class GatewayTileViewModelTests {
     @Test
     fun `disconnect from a gateway`() = runTest {
         val sut = createSUT(backgroundScope)
-        fakeGatewayManager.connectionState.value = GatewayManagerState.Connected(fakeGatewayManager.gatewayDetails)
+        fakeGatewayManager.connectionState.value = GatewayManager.State.Connected(fakeGatewayManager.gateway)
 
         sut.disconnect()
         runCurrent()
 
-        assert(fakeGatewayManager.connectionState.value is GatewayManagerState.NoGateway)
+        assert(fakeGatewayManager.connectionState.value is GatewayManager.State.NoGateway)
     }
 
     @Test
@@ -87,7 +86,7 @@ class GatewayTileViewModelTests {
         val sut = createSUT(backgroundScope)
         runCurrent() // allow the collector to initialize
 
-        fakeGatewayManager.events.emit(GatewayEvent.ConnectionLost)
+        fakeGatewayManager.events.emit(GatewayManager.Event.UnexpectedDisconnect)
         runCurrent()
 
         assertEquals("Gateway connection lost.", fakeSnackbarController.lastMessage)

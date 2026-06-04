@@ -42,7 +42,10 @@ class LightOrgan(
         val frequencyBins = spectrumManager.calculate(newAudio)
         val color = colorManager.calculate(frequencyBins)
 
-        gatewayManager.broadcastColor(color)
+        val state = gatewayManager.connectionState.value
+        if (state is GatewayManager.State.Connected) {
+            state.gateway.broadcastColor(color)
+        }
 
         timeBetweenColors.logTimeSinceLast()
     }

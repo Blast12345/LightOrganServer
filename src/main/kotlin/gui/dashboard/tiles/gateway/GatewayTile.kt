@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import gui.basicComponents.*
 import lightOrgan.gateway.GatewayDetails
-import lightOrgan.gateway.GatewayManagerState
+import lightOrgan.gateway.GatewayManager
 import lightOrgan.gateway.SerialGatewayDetails
 
 @Composable
@@ -26,21 +26,21 @@ fun GatewayTile(
         SimpleSpacer(12)
 
         when (connectionState) {
-            is GatewayManagerState.NoGateway -> {
+            is GatewayManager.State.NoGateway -> {
                 SimpleButton("Connect", isLoading = false, action = { viewModel.connect() })
                 DetailText("Status", "No Gateway")
             }
 
-            is GatewayManagerState.Connecting -> {
+            is GatewayManager.State.Connecting -> {
                 SimpleButton("Connect", isLoading = true, action = {})
                 DetailText("Status", "Connecting...")
             }
 
-            is GatewayManagerState.Connected -> {
+            is GatewayManager.State.Connected -> {
                 SimpleButton("Disconnect", isLoading = false, action = { viewModel.disconnect() })
                 ScrollableColumn {
                     DetailText("Status", "Connected")
-                    GatewayDetailsSection(connectionState.details)
+                    GatewayDetailsSection(connectionState.gateway.details)
                 }
             }
         }
