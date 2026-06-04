@@ -40,7 +40,7 @@ fun GatewayTile(
                 SimpleButton("Disconnect", isLoading = false, action = { viewModel.disconnect() })
                 ScrollableColumn {
                     DetailText("Status", "Connected")
-                    GatewayDetailsSection(connectionState.gateway.details)
+                    GatewayDetailsSection(connectionState.details)
                 }
             }
         }

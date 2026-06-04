@@ -62,7 +62,7 @@ class GatewayTileViewModelTests {
     @Test
     fun `disconnect from a gateway`() = runTest {
         val sut = createSUT(backgroundScope)
-        fakeGatewayManager.connectionState.value = GatewayManagerState.Connected(fakeGatewayManager.gateway)
+        fakeGatewayManager.connectionState.value = GatewayManagerState.Connected(fakeGatewayManager.gatewayDetails)
 
         sut.disconnect()
         runCurrent()

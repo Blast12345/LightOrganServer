@@ -8,9 +8,7 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import lightOrgan.color.ColorManager
-import lightOrgan.gateway.Gateway
-import lightOrgan.gateway.GatewayManagerState
-import lightOrgan.gateway.RealGatewayManager
+import lightOrgan.gateway.GatewayManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 import utilities.SequenceGapDetector
@@ -21,7 +19,7 @@ class LightOrgan(
     private val inputManager: AudioInputManager,
     private val spectrumManager: SpectrumManager,
     private val colorManager: ColorManager,
-    private val realGatewayManager: RealGatewayManager,
+    private val gatewayManager: GatewayManager,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) {
 
@@ -44,12 +42,9 @@ class LightOrgan(
         val frequencyBins = spectrumManager.calculate(newAudio)
         val color = colorManager.calculate(frequencyBins)
 
-        realGatewayManager.connectionState.value.gateway?.broadcastColor(color)
+        gatewayManager.broadcastColor(color)
 
         timeBetweenColors.logTimeSinceLast()
     }
-
-    private val GatewayManagerState.gateway: Gateway?
-        get() = (this as? GatewayManagerState.Connected)?.gateway
 
 }
