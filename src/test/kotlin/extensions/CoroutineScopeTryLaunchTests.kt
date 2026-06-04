@@ -9,7 +9,7 @@ import toolkit.monkeyTest.nextException
 import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TryLaunchTests {
+class CoroutineScopeTryLaunchTests {
 
     @Test
     fun `execute the block`() = runTest {
