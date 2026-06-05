@@ -3,9 +3,8 @@ package wrappers.serial
 import com.fazecast.jSerialComm.SerialPortDataListener
 import com.fazecast.jSerialComm.SerialPortEvent
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.withContext
 import logging.Logger
 import serial.SerialFrameFormat
@@ -20,10 +19,10 @@ class JSerialCommPort(
 ) : SerialPort {
 
     private val port: JSerialPort = JSerialPort.getCommPort(name)
-    private val incomingBytesChannel = Channel<ByteArray>(Channel.BUFFERED)
-
     override val isOpen: Boolean get() = port.isOpen
-    override val incomingBytes: Flow<ByteArray> = incomingBytesChannel.receiveAsFlow()
+
+    private val _incomingBytes = MutableSharedFlow<ByteArray>(extraBufferCapacity = 64)
+    override val incomingBytes: SharedFlow<ByteArray> = _incomingBytes
 
     // Init
     init {
@@ -86,8 +85,8 @@ class JSerialCommPort(
         val bytesRead = port.readBytes(buffer, available)
 
         if (bytesRead > 0) {
-            val sendResult = incomingBytesChannel.trySend(buffer.copyOf(bytesRead))
-            if (sendResult.isFailure) Logger.warning("Port $name failed to emit $bytesRead bytes.")
+            val success = _incomingBytes.tryEmit(buffer.copyOf(bytesRead))
+            if (!success) Logger.warning("Port $name failed to emit $bytesRead bytes.")
         }
     }
 
