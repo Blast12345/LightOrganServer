@@ -1,6 +1,6 @@
 package gui.dashboard.tiles.audioInput
 
-import gui.dashboard.SnackbarController
+import gui.snackbar.SnackbarController
 import gui.tiles.audioInput.AudioInputTileViewModel
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -80,7 +80,7 @@ class AudioInputTileViewModelTests {
         sutScope.advanceUntilIdle()
         assertEquals(inputDetails2, sut.inputDetails.value)
     }
-    
+
     // Listening state
     @Test
     fun `get the listening state`() = runTest {
