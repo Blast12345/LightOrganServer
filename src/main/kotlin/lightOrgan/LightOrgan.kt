@@ -1,6 +1,6 @@
 package lightOrgan
 
-import audio.samples.AudioFrame
+import dsp.bins.FrequencyBins
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.BufferOverflow
@@ -35,15 +35,22 @@ class LightOrgan(
             // WARNING: Overflowing the buffer will cause spectral artifacts
             .buffer(64, onBufferOverflow = BufferOverflow.DROP_OLDEST)
             .onEach { gapDetector.check(it.sequenceNumber) }
-            .onEach { handle(it.audio) }
+            .onEach { spectrumManager.calculate(it.audio) }
+            .launchIn(scope)
+
+        // TODO: Monitor for dropped frames
+        spectrumManager.frequencyBins
+            .onEach { handle(it) }
             .launchIn(scope)
     }
 
-    private suspend fun handle(newAudio: AudioFrame) {
-        val frequencyBins = spectrumManager.calculate(newAudio)
+    private suspend fun handle(frequencyBins: FrequencyBins) {
         val color = colorManager.calculate(frequencyBins)
 
-        gatewayManager.gateway?.broadcastColor(color)
+        try {
+            gatewayManager.gateway?.broadcastColor(color)
+        } catch (e: Exception) {
+        }
 
         timeBetweenColors.logTimeSinceLast()
     }

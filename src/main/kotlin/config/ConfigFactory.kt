@@ -44,7 +44,7 @@ class ConfigFactory(
                 highestFrequency = 160F,
             ),
             gateway = GatewayConfig(
-                baudRate = 115200,
+                baudRate = 921600,
                 frameFormat = SerialFrameFormat.FORMAT_8N1,
             )
         )

@@ -31,6 +31,8 @@ class JSerialCommPort(
         port.numStopBits = frameFormat.stopBits.toJSerialComm()
         port.parity = frameFormat.parity.toJSerialComm()
 
+        port.setComPortTimeouts(JSerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0)
+
         startPortListener()
     }
 

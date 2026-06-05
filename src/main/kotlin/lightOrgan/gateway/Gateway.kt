@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import logging.Logger
 import serial.SerialFrameFormat
 import serial.SerialPort
+import kotlin.math.roundToInt
 import kotlin.time.Duration
 
 interface Gateway {
@@ -25,16 +26,16 @@ interface Gateway {
 // TODO: Test me
 class RealGateway private constructor(
     override val details: Gateway.Details,
-    private val device: JsonRpcConnection,
+    private val connection: JsonRpcConnection,
 ) : Gateway {
 
     companion object {
         suspend fun connect(port: SerialPort, timeout: Duration): Gateway {
-            val device = SerialJsonRpcJsonRpcConnection(port)
-            device.connect()
+            val connection = SerialJsonRpcConnection(port)
+            connection.connect()
 
             try {
-                val response: GatewayIdentificationResponse = device.sendRequest("gateway-identification-request", null, timeout)
+                val response: GatewayIdentificationResponse = connection.sendRequest("gateway-identification-request", null, timeout)
 
                 Logger.success("Port ${port.name} handshake successful.")
 
@@ -42,27 +43,36 @@ class RealGateway private constructor(
                     details = SerialGatewayDetails(
                         macAddress = response.macAddress,
                         firmwareVersion = response.firmwareVersion,
-                        baudRate = device.baudRate,
-                        frameFormat = device.frameFormat
+                        baudRate = connection.baudRate,
+                        frameFormat = connection.frameFormat
                     ),
-                    device = device
+                    connection = connection
                 )
             } catch (e: Exception) {
-                device.disconnect()
+                connection.disconnect()
                 throw e
             }
         }
     }
 
-    override val isConnected = device.isConnected
+    override val isConnected = connection.isConnected
 
     override suspend fun disconnect() {
-        device.disconnect()
+        connection.disconnect()
     }
 
     override suspend fun broadcastColor(color: StandardRgbColor) {
-        device.sendNotification("broadcast-color", color)
+        val params = BroadcastColorParams(
+            r = (color.red.value * 255).roundToInt(),
+            g = (color.green.value * 255).roundToInt(),
+            b = (color.blue.value * 255).roundToInt(),
+        )
+
+        connection.sendNotification("broadcast-color", params)
     }
+
+    // TODO: Where should this live?
+    private data class BroadcastColorParams(val r: Int, val g: Int, val b: Int)
 
 }
 
