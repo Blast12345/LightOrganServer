@@ -1,6 +1,6 @@
 package gui.dashboard.tiles.gateway
 
-import gui.dashboard.snackbar.FakeSnackbarController
+import gui.snackbar.FakeSnackbarController
 import gui.tiles.gateway.GatewayTileViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi

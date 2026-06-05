@@ -1,4 +1,4 @@
-package gui.dashboard.snackbar
+package gui.snackbar
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent

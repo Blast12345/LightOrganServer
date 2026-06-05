@@ -1,4 +1,4 @@
-package gui.dashboard.snackbar
+package gui.snackbar
 
 class FakeSnackbarController : SnackbarController {
 

@@ -1,7 +1,7 @@
 package gui.tiles.gateway
 
 import extensions.tryLaunch
-import gui.dashboard.snackbar.SnackbarController
+import gui.snackbar.SnackbarController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

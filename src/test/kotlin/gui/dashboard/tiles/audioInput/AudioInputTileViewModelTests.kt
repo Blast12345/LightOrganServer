@@ -1,6 +1,6 @@
 package gui.dashboard.tiles.audioInput
 
-import gui.dashboard.snackbar.SnackbarController
+import gui.snackbar.SnackbarController
 import gui.tiles.audioInput.AudioInputTileViewModel
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi

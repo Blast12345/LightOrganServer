@@ -10,7 +10,7 @@ import androidx.compose.ui.window.rememberWindowState
 import gui.Theme
 import gui.dashboard.Dashboard
 import gui.dashboard.DashboardViewModel
-import gui.dashboard.snackbar.FlowSnackbarController
+import gui.snackbar.FlowSnackbarController
 import lightOrgan.LightOrgan
 import lightOrgan.color.ColorManager
 import lightOrgan.gateway.GatewayManager
