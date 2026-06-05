@@ -1,6 +1,6 @@
 package toolkit.monkeyTest
 
-import lightOrgan.gateway.serial.messages.GatewayIdentificationResponse
+import lightOrgan.gateway.GatewayIdentificationResponse
 
 fun nextGatewayIdentificationResponse(): GatewayIdentificationResponse {
     return GatewayIdentificationResponse(

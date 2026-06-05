@@ -5,7 +5,6 @@ import jsonrpc.JsonRpcPeer
 import jsonrpc.SerialJsonRpcPeer
 import jsonrpc.sendRequest
 import kotlinx.coroutines.flow.StateFlow
-import lightOrgan.gateway.serial.messages.GatewayIdentificationResponse
 import logging.Logger
 import serial.SerialFrameFormat
 import serial.SerialPort
