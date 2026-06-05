@@ -1,60 +1,21 @@
-package gateway
+package lightOrgan.gateway
 
-import color.StandardRgbColor
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import lightOrgan.gateway.Gateway
-import lightOrgan.gateway.GatewayDetails
-import lightOrgan.gateway.GatewayFinder
 import lightOrgan.gateway.GatewayManager.Event
 import lightOrgan.gateway.GatewayManager.State
-import lightOrgan.gateway.RealGatewayManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import toolkit.monkeyTest.nextException
-import toolkit.monkeyTest.nextGatewayDetails
 import kotlin.test.assertIs
-
-// TODO: Move me
-class FakeGateway : Gateway {
-
-    override val details: GatewayDetails = nextGatewayDetails()
-    override val isConnected = MutableStateFlow(true)
-
-    override suspend fun disconnect() {
-        isConnected.value = false
-    }
-
-    var lastColor: StandardRgbColor? = null
-
-    override suspend fun broadcastColor(color: StandardRgbColor) {
-        lastColor = color
-    }
-
-}
-
-class FakeGatewayFinder : GatewayFinder {
-
-    var gateway = FakeGateway()
-    var deferFind: CompletableDeferred<Unit>? = null
-    var error: Exception? = null
-
-    override suspend fun find(): Gateway {
-        error?.let { throw it }
-        deferFind?.await()
-        return gateway
-    }
-
-}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GatewayManagerTests {
