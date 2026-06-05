@@ -10,7 +10,7 @@ import androidx.compose.ui.window.rememberWindowState
 import gui.Theme
 import gui.dashboard.Dashboard
 import gui.dashboard.DashboardViewModel
-import gui.dashboard.snackbar.SharedFlowSnackbarController
+import gui.dashboard.snackbar.FlowSnackbarController
 import lightOrgan.LightOrgan
 import lightOrgan.color.ColorManager
 import lightOrgan.gateway.GatewayManager
@@ -59,7 +59,7 @@ private fun launchGUI(
         window.minimumSize = java.awt.Dimension(minimumWidth, minimumHeight)
 
         Theme {
-            val snackbarController = remember { SharedFlowSnackbarController() }
+            val snackbarController = remember { FlowSnackbarController() }
             val snackbarHostState = remember { SnackbarHostState() }
 
             LaunchedEffect(Unit) {

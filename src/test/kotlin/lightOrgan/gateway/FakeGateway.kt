@@ -6,7 +6,7 @@ import toolkit.monkeyTest.nextGatewayDetails
 
 class FakeGateway : Gateway {
 
-    override val details: GatewayDetails = nextGatewayDetails()
+    override val details: Gateway.Details = nextGatewayDetails()
     override val isConnected = MutableStateFlow(true)
 
     override suspend fun disconnect() {

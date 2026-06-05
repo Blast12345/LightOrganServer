@@ -12,6 +12,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -186,7 +187,7 @@ class AudioInputManagerTests {
     @Test
     fun `when an input emits new audio, then the audio is passed on`() = runTest {
         val sut = createSUT()
-        val received = sut.audioStream.collectInto(sutScope)
+        val received = sut.audioStream.collectInto(this)
 
         currentAudioInputFlow.value = defaultInput.mock
         sutScope.advanceUntilIdle()
@@ -195,6 +196,7 @@ class AudioInputManagerTests {
         defaultInput.audioStreamFlow.emit(frame)
         sutScope.advanceUntilIdle()
 
+        runCurrent()
         assertEquals(listOf(frame), received)
     }
 
@@ -203,7 +205,7 @@ class AudioInputManagerTests {
         val sut = createSUT()
         val defaultFrame = nextAudioStreamFrame()
         val otherFrame = nextAudioStreamFrame()
-        val received = sut.audioStream.collectInto(sutScope)
+        val received = sut.audioStream.collectInto(this)
 
         currentAudioInputFlow.value = defaultInput.mock
         sutScope.advanceUntilIdle()
@@ -214,6 +216,7 @@ class AudioInputManagerTests {
         otherInput.audioStreamFlow.emit(otherFrame)
         sutScope.advanceUntilIdle()
 
+        runCurrent()
         assertEquals(listOf(defaultFrame, otherFrame), received)
     }
 
