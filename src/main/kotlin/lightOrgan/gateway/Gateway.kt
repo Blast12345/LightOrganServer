@@ -6,6 +6,7 @@ import jsonrpc.SerialJsonRpcPeer
 import jsonrpc.sendRequest
 import kotlinx.coroutines.flow.StateFlow
 import lightOrgan.gateway.serial.messages.GatewayIdentificationResponse
+import logging.Logger
 import serial.SerialFrameFormat
 import serial.SerialPort
 import kotlin.time.Duration
@@ -35,6 +36,8 @@ class RealGateway private constructor(
 
             try {
                 val response: GatewayIdentificationResponse = device.sendRequest("gateway-identification-request", null, timeout)
+
+                Logger.success("Port ${port.name} handshake successful.")
 
                 return RealGateway(
                     details = SerialGatewayDetails(
