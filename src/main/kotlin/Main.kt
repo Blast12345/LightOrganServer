@@ -18,6 +18,7 @@ import lightOrgan.gateway.RealGatewayManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 
+// ENHANCEMENT: Explore higher baud rates
 // ENHANCEMENT: Introduce Frequency type
 // ENHANCEMENT: Introduce SampleRate type (which exposes nyquistFrequency)
 // ENHANCEMENT: Introduce Magnitude and DBFS types (which can be converted back and forth)
