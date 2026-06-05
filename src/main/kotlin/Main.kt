@@ -1,7 +1,4 @@
 import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -10,7 +7,7 @@ import androidx.compose.ui.window.rememberWindowState
 import gui.Theme
 import gui.dashboard.Dashboard
 import gui.dashboard.DashboardViewModel
-import gui.snackbar.FlowSnackbarController
+import gui.snackbar.SimpleSnackbar
 import lightOrgan.LightOrgan
 import lightOrgan.color.ColorManager
 import lightOrgan.gateway.GatewayManager
@@ -59,17 +56,10 @@ private fun launchGUI(
         window.minimumSize = java.awt.Dimension(minimumWidth, minimumHeight)
 
         Theme {
-            val snackbarController = remember { FlowSnackbarController() }
-            val snackbarHostState = remember { SnackbarHostState() }
-
-            LaunchedEffect(Unit) {
-                snackbarController.messages.collect { message ->
-                    snackbarHostState.showSnackbar(message)
-                }
-            }
+            val snackbar = remember { SimpleSnackbar() }
 
             Scaffold(
-                snackbarHost = { SnackbarHost(snackbarHostState) }
+                snackbarHost = { snackbar.Host() }
             ) {
                 val viewModel = remember {
                     DashboardViewModel(
@@ -77,7 +67,7 @@ private fun launchGUI(
                         spectrumManager,
                         colorManager,
                         gatewayManager,
-                        snackbarController
+                        snackbar.controller
                     )
                 }
 

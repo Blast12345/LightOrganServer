@@ -4,9 +4,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import toolkit.extensions.collectInto
 import toolkit.monkeyTest.nextString
-import kotlin.test.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FlowSnackbarControllerTests {
