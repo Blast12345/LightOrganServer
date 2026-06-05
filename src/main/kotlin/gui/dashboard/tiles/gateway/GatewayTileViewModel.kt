@@ -24,7 +24,7 @@ class GatewayTileViewModel(
     }
 
     private fun GatewayManager.Event.toUserMessage(): String = when (this) {
-        GatewayManager.Event.UnexpectedDisconnect -> "Gateway connection lost."
+        GatewayManager.Event.UnexpectedDisconnect -> "Gateway unexpectedly disconnected."
     }
 
     fun connect() {

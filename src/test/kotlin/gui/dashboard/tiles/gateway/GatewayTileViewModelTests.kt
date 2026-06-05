@@ -82,14 +82,14 @@ class GatewayTileViewModelTests {
 
     // Events
     @Test
-    fun `when the gateway connection is lost, show an alert`() = runTest {
+    fun `when the gateway unexpectedly disconnects, show an alert`() = runTest {
         val sut = createSUT(backgroundScope)
         runCurrent() // allow the collector to initialize
 
         fakeGatewayManager.events.emit(GatewayManager.Event.UnexpectedDisconnect)
         runCurrent()
 
-        assertEquals("Gateway connection lost.", fakeSnackbarController.lastMessage)
+        assertEquals("Gateway unexpectedly disconnected.", fakeSnackbarController.lastMessage)
     }
 
 }
