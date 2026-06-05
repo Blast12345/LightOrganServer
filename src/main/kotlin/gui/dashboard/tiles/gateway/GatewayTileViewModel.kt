@@ -15,7 +15,7 @@ class GatewayTileViewModel(
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 ) {
 
-    val connectionState = gatewayManager.connectionState
+    val connectionState = gatewayManager.state
 
     init {
         gatewayManager.events

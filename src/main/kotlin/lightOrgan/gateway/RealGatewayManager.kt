@@ -14,7 +14,7 @@ class RealGatewayManager(
 ) : GatewayManager {
 
     private val _connectionState = MutableStateFlow<State>(State.NoGateway)
-    override val connectionState: StateFlow<State> = _connectionState.asStateFlow()
+    override val state: StateFlow<State> = _connectionState.asStateFlow()
 
     private val _events = MutableSharedFlow<Event>()
     override val events: SharedFlow<Event> = _events.asSharedFlow()

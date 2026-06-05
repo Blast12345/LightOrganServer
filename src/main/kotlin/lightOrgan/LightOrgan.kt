@@ -49,6 +49,6 @@ class LightOrgan(
     }
 
     val GatewayManager.gateway: Gateway?
-        get() = (this.connectionState.value as? GatewayManager.State.Connected)?.gateway
+        get() = (this.state.value as? GatewayManager.State.Connected)?.gateway
 
 }

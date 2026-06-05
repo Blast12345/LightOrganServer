@@ -1,6 +1,5 @@
 package lightOrgan.gateway
 
-import gateway.FakeGateway
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.gateway.GatewayManager.Event
@@ -8,7 +7,7 @@ import lightOrgan.gateway.GatewayManager.State
 
 class FakeGatewayManager : GatewayManager {
 
-    override val connectionState = MutableStateFlow<State>(State.NoGateway)
+    override val state = MutableStateFlow<State>(State.NoGateway)
     override val events = MutableSharedFlow<Event>()
 
     // Connect
@@ -17,7 +16,7 @@ class FakeGatewayManager : GatewayManager {
 
     override suspend fun connect() {
         connectError?.let { throw it }
-        connectionState.value = State.Connected(gateway)
+        state.value = State.Connected(gateway)
     }
 
     // Disconnect
@@ -25,7 +24,7 @@ class FakeGatewayManager : GatewayManager {
 
     override suspend fun disconnect() {
         disconnectError?.let { throw it }
-        connectionState.value = State.NoGateway
+        state.value = State.NoGateway
     }
 
 }

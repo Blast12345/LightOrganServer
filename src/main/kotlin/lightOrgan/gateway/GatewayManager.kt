@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface GatewayManager {
-    val connectionState: StateFlow<State>
+    val state: StateFlow<State>
     val events: SharedFlow<Event>
 
     suspend fun connect()

@@ -44,7 +44,7 @@ class GatewayManagerTests {
         launch { sut.connect() }
         runCurrent()
 
-        assertIs<State.Connecting>(sut.connectionState.first())
+        assertIs<State.Connecting>(sut.state.first())
 
         // Finish connecting
         fakeGatewayFinder.deferFind?.complete(Unit)
@@ -52,7 +52,7 @@ class GatewayManagerTests {
 
         assertEquals(
             State.Connected(fakeGatewayFinder.gateway),
-            sut.connectionState.first()
+            sut.state.first()
         )
     }
 
@@ -69,7 +69,7 @@ class GatewayManagerTests {
         fakeGatewayFinder.deferFind?.complete(Unit)
         runCurrent()
 
-        assertIs<State.Connected>(sut.connectionState.first())
+        assertIs<State.Connected>(sut.state.first())
     }
 
     @Test
@@ -78,7 +78,7 @@ class GatewayManagerTests {
         sut.connect()
 
         assertThrows<Exception> { sut.connect() }
-        assertIs<State.Connected>(sut.connectionState.first())
+        assertIs<State.Connected>(sut.state.first())
     }
 
     @Test
@@ -87,7 +87,7 @@ class GatewayManagerTests {
         fakeGatewayFinder.error = nextException()
 
         assertThrows<Exception> { sut.connect() }
-        assertIs<State.NoGateway>(sut.connectionState.first())
+        assertIs<State.NoGateway>(sut.state.first())
     }
 
     @Test
@@ -106,7 +106,7 @@ class GatewayManagerTests {
 
         sut.disconnect()
 
-        assertIs<State.NoGateway>(sut.connectionState.first())
+        assertIs<State.NoGateway>(sut.state.first())
     }
 
     @Test
@@ -122,7 +122,7 @@ class GatewayManagerTests {
         fakeGatewayFinder.deferFind?.complete(Unit)
         runCurrent()
 
-        assertIs<State.Connected>(sut.connectionState.first())
+        assertIs<State.Connected>(sut.state.first())
     }
 
     @Test
@@ -136,7 +136,7 @@ class GatewayManagerTests {
         fakeGatewayFinder.gateway.isConnected.value = false
         runCurrent()
 
-        assertIs<State.NoGateway>(sut.connectionState.first())
+        assertIs<State.NoGateway>(sut.state.first())
         assertIs<Event.UnexpectedDisconnect>(events.first())
     }
 
