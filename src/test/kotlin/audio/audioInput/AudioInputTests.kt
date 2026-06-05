@@ -8,6 +8,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -105,6 +106,7 @@ class AudioInputTests {
         readResults.forEach { resultChannel.trySend(it) }
         sutScope.advanceUntilIdle()
 
+        sutScope.runCurrent()
         assertEquals(readResults.size, received.size)
         for (result in received) {
             assertEquals(normalizedSamples, result.audio.samples)

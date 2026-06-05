@@ -5,6 +5,7 @@ import config.ConfigPersister
 import config.ConfigSingleton
 import gui.dashboard.tiles.color.ColorTileViewModel
 import gui.dashboard.tiles.spectrum.SpectrumTileViewModel
+import gui.snackbar.SnackbarController
 import gui.tiles.audioInput.AudioInputTileViewModel
 import lightOrgan.color.ColorManager
 import lightOrgan.input.AudioInputManager
