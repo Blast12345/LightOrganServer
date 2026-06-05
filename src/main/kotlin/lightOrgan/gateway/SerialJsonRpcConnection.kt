@@ -22,7 +22,6 @@ import kotlin.time.Duration
 
 // ENHANCEMENT: Add the ability to receive and respond to requests.
 // This is a client that communicates over serial based on the JSON-RPC spec.
-// REFERENCE: https://www.jsonrpc.org/specification
 class SerialJsonRpcConnection(
     private val port: SerialPort,
     private val generateId: () -> String = { UUID.randomUUID().toString() },

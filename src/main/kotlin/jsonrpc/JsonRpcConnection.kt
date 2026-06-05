@@ -7,6 +7,8 @@ import tools.jackson.module.kotlin.jacksonTypeRef
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
+// REFERENCE: https://www.jsonrpc.org/specification
+// I could not cleanly represent IDs as both numbers and strings, so I picked strings.
 interface JsonRpcConnection {
     val isConnected: StateFlow<Boolean>
     suspend fun connect()
