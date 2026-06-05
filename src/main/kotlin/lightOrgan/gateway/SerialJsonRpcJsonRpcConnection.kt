@@ -1,5 +1,6 @@
-package jsonrpc
+package lightOrgan.gateway
 
+import jsonrpc.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,17 +18,16 @@ import tools.jackson.module.kotlin.kotlinModule
 import tools.jackson.module.kotlin.treeToValue
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 
 // ENHANCEMENT: Add the ability to receive and respond to requests.
 // This is a client that communicates over serial based on the JSON-RPC spec.
 // REFERENCE: https://www.jsonrpc.org/specification
-class SerialJsonRpcPeer(
+class SerialJsonRpcJsonRpcConnection(
     private val port: SerialPort,
     private val generateId: () -> String = { UUID.randomUUID().toString() },
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-) : JsonRpcPeer {
+) : JsonRpcConnection {
 
     private val writeMutex = Mutex()
     private val pendingRequests = ConcurrentHashMap<String, CompletableDeferred<JsonRpcResponse>>()
@@ -65,7 +65,7 @@ class SerialJsonRpcPeer(
     }
 
     private fun cancelPendingRequests() {
-        val exception = CancellationException("Peer disconnected")
+        val exception = kotlin.coroutines.cancellation.CancellationException("Peer disconnected")
         pendingRequests.values.forEach { it.completeExceptionally(exception) }
         pendingRequests.clear()
     }
@@ -148,7 +148,7 @@ class SerialJsonRpcPeer(
         }
     }
 
-    private suspend fun routeMessage(json: String) {
+    private fun routeMessage(json: String) {
         val message = try {
             parseMessage(json)
         } catch (e: Exception) {

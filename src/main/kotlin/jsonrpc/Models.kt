@@ -2,52 +2,48 @@ package jsonrpc
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import tools.jackson.databind.JsonNode
+import tools.jackson.databind.node.ContainerNode
 
 sealed interface JsonRpcMessage {
-    val jsonrpc: String get() = "2.0"
+    val jsonrpc: String
 }
 
 // Calls
-sealed interface JsonRpcCall : JsonRpcMessage {
-    val method: String
-    val params: JsonNode?
-}
+sealed interface JsonRpcCall : JsonRpcMessage
 
 data class JsonRpcRequest(
     val id: String,
-    override val method: String,
-    @field:JsonInclude(JsonInclude.Include.NON_NULL)
-    override val params: JsonNode?,
+    val method: String,
+    @field:JsonInclude(JsonInclude.Include.NON_NULL) val params: ContainerNode<*>?,
+    override val jsonrpc: String = "2.0"
 ) : JsonRpcCall
 
 data class JsonRpcNotification(
-    override val method: String,
-    @field:JsonInclude(JsonInclude.Include.NON_NULL)
-    override val params: JsonNode?,
+    val method: String,
+    @field:JsonInclude(JsonInclude.Include.NON_NULL) val params: ContainerNode<*>?,
+    override val jsonrpc: String = "2.0"
 ) : JsonRpcCall
 
-
 // Responses
-sealed interface JsonRpcResponse : JsonRpcMessage {
-    val id: String
-}
+sealed interface JsonRpcResponse : JsonRpcMessage
 
 data class JsonRpcSuccess(
-    override val id: String,
-    val result: JsonNode
+    val id: String,
+    val result: JsonNode,
+    override val jsonrpc: String = "2.0"
 ) : JsonRpcResponse
 
 data class JsonRpcFailure(
-    override val id: String,
-    val error: JsonRpcError
+    val id: String?,
+    val error: JsonRpcError,
+    override val jsonrpc: String = "2.0"
 ) : JsonRpcResponse
 
 // Errors
 data class JsonRpcError(
     val code: Int,
     val message: String,
-    @field:JsonInclude(JsonInclude.Include.NON_NULL)
-    val data: JsonNode?
+    @field:JsonInclude(JsonInclude.Include.NON_NULL) val data: JsonNode?
 )
 
 object JsonRpcErrorCodes {

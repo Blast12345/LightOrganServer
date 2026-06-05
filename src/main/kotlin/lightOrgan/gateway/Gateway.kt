@@ -1,8 +1,7 @@
 package lightOrgan.gateway
 
 import color.StandardRgbColor
-import jsonrpc.JsonRpcPeer
-import jsonrpc.SerialJsonRpcPeer
+import jsonrpc.JsonRpcConnection
 import jsonrpc.sendRequest
 import kotlinx.coroutines.flow.StateFlow
 import logging.Logger
@@ -11,26 +10,27 @@ import serial.SerialPort
 import kotlin.time.Duration
 
 interface Gateway {
-    val details: GatewayDetails
+    val details: Details
     val isConnected: StateFlow<Boolean>
     suspend fun disconnect()
     suspend fun broadcastColor(color: StandardRgbColor)
-}
 
-sealed interface GatewayDetails {
-    val macAddress: String
-    val firmwareVersion: String
+    // Types
+    sealed interface Details {
+        val macAddress: String
+        val firmwareVersion: String
+    }
 }
 
 // TODO: Test me
 class RealGateway private constructor(
-    override val details: GatewayDetails,
-    private val device: JsonRpcPeer,
+    override val details: Gateway.Details,
+    private val device: JsonRpcConnection,
 ) : Gateway {
 
     companion object {
         suspend fun connect(port: SerialPort, timeout: Duration): Gateway {
-            val device = SerialJsonRpcPeer(port)
+            val device = SerialJsonRpcJsonRpcConnection(port)
             device.connect()
 
             try {
@@ -71,4 +71,4 @@ data class SerialGatewayDetails(
     override val firmwareVersion: String,
     val baudRate: Int,
     val frameFormat: SerialFrameFormat,
-) : GatewayDetails
+) : Gateway.Details

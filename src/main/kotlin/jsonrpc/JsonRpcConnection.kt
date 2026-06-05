@@ -7,11 +7,12 @@ import tools.jackson.module.kotlin.jacksonTypeRef
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-interface JsonRpcPeer {
+interface JsonRpcConnection {
     val isConnected: StateFlow<Boolean>
     suspend fun connect()
     suspend fun disconnect()
 
+    // Protocol
     val incomingRequests: Flow<JsonRpcRequest>
     val incomingNotifications: Flow<JsonRpcNotification>
 
@@ -21,7 +22,7 @@ interface JsonRpcPeer {
     suspend fun respondWithFailure(id: String, code: Int, message: String, data: Any?, timeout: Duration = 5.seconds)
 }
 
-suspend inline fun <reified T> JsonRpcPeer.sendRequest(
+suspend inline fun <reified T> JsonRpcConnection.sendRequest(
     method: String,
     params: Any? = null,
     timeout: Duration = 5.seconds,
