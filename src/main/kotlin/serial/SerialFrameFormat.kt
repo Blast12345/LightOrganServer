@@ -15,7 +15,6 @@ data class SerialFrameFormat(
         val FORMAT_8N1 = SerialFrameFormat(DataBits.EIGHT, Parity.NONE, StopBits.ONE)
     }
 
-
     val notation: String = "${dataBits.code}${parity.code}${stopBits.code}"
 
 }
