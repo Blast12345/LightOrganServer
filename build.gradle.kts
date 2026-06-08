@@ -24,7 +24,6 @@ dependencies {
     implementation(compose.desktop.currentOs)
 
     // Unit Testing
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${coroutinesVersion}")
     testImplementation("io.mockk:mockk:${mockkVersion}")
     testImplementation(platform("org.junit:junit-bom:6.0.1"))

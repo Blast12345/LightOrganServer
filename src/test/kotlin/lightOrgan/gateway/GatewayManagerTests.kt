@@ -1,10 +1,7 @@
 package lightOrgan.gateway
 
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -14,8 +11,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import toolkit.extensions.collectInto
 import toolkit.monkeyTest.nextException
-import kotlin.test.assertIs
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GatewayManagerTests {
@@ -38,62 +35,76 @@ class GatewayManagerTests {
     @Test
     fun `connect to a gateway`() = runTest {
         val sut = createSUT(backgroundScope)
-        fakeGatewayFinder.deferFind = CompletableDeferred()
 
-        // Begin a connection attempt
+        // Start connection attempt
+        fakeGatewayFinder.pause()
         launch { sut.connect() }
         runCurrent()
 
-        assertIs<State.Connecting>(sut.state.first())
+        assertEquals(State.Connecting, sut.state.value)
 
         // Finish connecting
-        fakeGatewayFinder.deferFind?.complete(Unit)
+        fakeGatewayFinder.resume()
         runCurrent()
 
-        assertEquals(
-            State.Connected(fakeGatewayFinder.gateway),
-            sut.state.first()
-        )
+        assertEquals(State.Connected(fakeGatewayFinder.gateway), sut.state.value)
     }
 
     @Test
-    fun `given we are already attempting to connect, then calling connect again throws an error`() = runTest {
+    fun `given the manager is connecting, then calling connect again throws an error`() = runTest {
         val sut = createSUT(backgroundScope)
-        fakeGatewayFinder.deferFind = CompletableDeferred()
+
+        // Start first connection attempt
+        fakeGatewayFinder.pause()
         launch { sut.connect() }
         runCurrent()
 
+        // Start second connection attempt
         assertThrows<Exception> { sut.connect() }
-
-        // Allow the original connect attempt to finish
-        fakeGatewayFinder.deferFind?.complete(Unit)
         runCurrent()
 
-        assertIs<State.Connected>(sut.state.first())
+        // Finish first attempt
+        fakeGatewayFinder.resume()
+        runCurrent()
+
+        assertEquals(State.Connected(fakeGatewayFinder.gateway), sut.state.value)
     }
 
     @Test
-    fun `given we are already connected, then calling connect again throws an error`() = runTest {
+    fun `given the manager is connected, then calling connect again throws an error`() = runTest {
         val sut = createSUT(backgroundScope)
         sut.connect()
 
         assertThrows<Exception> { sut.connect() }
-        assertIs<State.Connected>(sut.state.first())
+        assertEquals(State.Connected(fakeGatewayFinder.gateway), sut.state.value)
     }
 
     @Test
-    fun `when a gateway finder throws, then throw an error`() = runTest {
+    fun `given the manager is disconnecting, then calling connect throws an error`() = runTest {
+        val sut = createSUT(backgroundScope)
+
+        // Start connection attempt and hang on disconnect
+        sut.connect()
+        fakeGatewayFinder.gateway.pauseDisconnect()
+        launch { sut.disconnect() }
+        runCurrent()
+
+        assertEquals(State.Disconnecting, sut.state.value)
+
+        // Start second connection attempt
+        assertThrows<Exception> { sut.connect() }
+
+        // Finish disconnecting
+        fakeGatewayFinder.gateway.resumeDisconnect()
+        runCurrent()
+
+        assertEquals(State.Disconnected, sut.state.value)
+    }
+
+    @Test
+    fun `when the gateway finder throws, then throw an error and remain connected`() = runTest {
         val sut = createSUT(backgroundScope)
         fakeGatewayFinder.error = nextException()
-
-        assertThrows<Exception> { sut.connect() }
-        assertIs<State.NoGateway>(sut.state.first())
-    }
-
-    @Test
-    fun `when the gateway finder returns a disconnected gateway, then throw an error`() = runTest {
-        val sut = createSUT(backgroundScope)
-        fakeGatewayFinder.gateway.isConnected.value = false
 
         assertThrows<Exception> { sut.connect() }
     }
@@ -104,40 +115,90 @@ class GatewayManagerTests {
         val sut = createSUT(backgroundScope)
         sut.connect()
 
-        sut.disconnect()
+        // Start disconnect attempt
+        fakeGatewayFinder.gateway.pauseDisconnect()
+        launch { sut.disconnect() }
+        runCurrent()
 
-        assertIs<State.NoGateway>(sut.state.first())
+        assertEquals(State.Disconnecting, sut.state.value)
+
+        // Finish disconnecting
+        fakeGatewayFinder.gateway.resumeDisconnect()
+        runCurrent()
+
+        assertEquals(State.Disconnected, sut.state.value)
     }
 
     @Test
-    fun `given we are attempting to connect, then calling disconnect throws an error`() = runTest {
+    fun `given the manager is disconnected, then calling disconnect again throws an error`() = runTest {
         val sut = createSUT(backgroundScope)
-        fakeGatewayFinder.deferFind = CompletableDeferred()
+
+        assertThrows<Exception> { sut.disconnect() }
+    }
+
+    @Test
+    fun `given the manager is connecting, then calling disconnect again throws an error`() = runTest {
+        val sut = createSUT(backgroundScope)
+
+        // Start connection attempt
+        fakeGatewayFinder.pause()
         launch { sut.connect() }
         runCurrent()
 
+        // Attempt disconnect
         assertThrows<Exception> { sut.disconnect() }
-
-        // Allow the original connect attempt to finish
-        fakeGatewayFinder.deferFind?.complete(Unit)
         runCurrent()
 
-        assertIs<State.Connected>(sut.state.first())
+        // Finish connection attempt
+        fakeGatewayFinder.resume()
+        runCurrent()
+
+        assertEquals(State.Connected(fakeGatewayFinder.gateway), sut.state.value)
     }
 
     @Test
-    fun `when the gateway unexpectedly disconnects, then emit an event`() = runTest {
+    fun `given the manager is disconnecting, then calling disconnect again throws an error`() = runTest {
         val sut = createSUT(backgroundScope)
-        val events = mutableListOf<Event>()
-        backgroundScope.launch { sut.events.toList(events) }
         sut.connect()
+
+        // Start first disconnect attempt
+        fakeGatewayFinder.gateway.pauseDisconnect()
+        launch { sut.disconnect() }
         runCurrent()
 
+        // Start second disconnect attempt
+        assertThrows<Exception> { sut.disconnect() }
+
+        // Finish first disconnect attempt
+        fakeGatewayFinder.gateway.resumeDisconnect()
+        runCurrent()
+
+        assertEquals(State.Disconnected, sut.state.value)
+    }
+
+    @Test
+    fun `when the gateway fails to disconnect, then throw an error and remain connected`() = runTest {
+        val sut = createSUT(backgroundScope)
+        sut.connect()
+        fakeGatewayFinder.gateway.disconnectError = nextException()
+
+        assertThrows<Exception> { sut.disconnect() }
+        assertEquals(State.Connected(fakeGatewayFinder.gateway), sut.state.value)
+    }
+
+    // Unexpected disconnects
+    @Test
+    fun `when the gateway unexpectedly disconnects, then emit an event`() = runTest {
+        val sut = createSUT(backgroundScope)
+        val events = sut.events.collectInto(this)
+        sut.connect()
+
+        // Force a disconnect
         fakeGatewayFinder.gateway.isConnected.value = false
         runCurrent()
 
-        assertIs<State.NoGateway>(sut.state.first())
-        assertIs<Event.UnexpectedDisconnect>(events.first())
+        assertEquals(State.Disconnected, sut.state.value)
+        assertEquals(Event.UnexpectedDisconnect, events.first())
     }
 
 }

@@ -7,7 +7,7 @@ import lightOrgan.gateway.GatewayManager.State
 
 class FakeGatewayManager : GatewayManager {
 
-    override val state = MutableStateFlow<State>(State.NoGateway)
+    override val state = MutableStateFlow<State>(State.Disconnected)
     override val events = MutableSharedFlow<Event>()
 
     // Connect
@@ -24,7 +24,7 @@ class FakeGatewayManager : GatewayManager {
 
     override suspend fun disconnect() {
         disconnectError?.let { throw it }
-        state.value = State.NoGateway
+        state.value = State.Disconnected
     }
 
 }

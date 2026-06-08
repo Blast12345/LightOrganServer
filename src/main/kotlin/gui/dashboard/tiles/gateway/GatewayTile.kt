@@ -26,7 +26,7 @@ fun GatewayTile(
         SimpleSpacer(12)
 
         when (connectionState) {
-            is GatewayManager.State.NoGateway -> {
+            is GatewayManager.State.Disconnected -> {
                 SimpleButton("Connect", isLoading = false, action = { viewModel.connect() })
                 DetailText("Status", "No Gateway")
             }
@@ -42,6 +42,11 @@ fun GatewayTile(
                     DetailText("Status", "Connected")
                     GatewayDetailsSection(connectionState.gateway.details)
                 }
+            }
+
+            is GatewayManager.State.Disconnecting -> {
+                SimpleButton("Disconnect", isLoading = true, action = {})
+                DetailText("Status", "Disconnecting...")
             }
         }
     }

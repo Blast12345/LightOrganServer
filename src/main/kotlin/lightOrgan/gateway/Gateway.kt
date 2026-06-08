@@ -13,6 +13,7 @@ import kotlin.time.Duration
 interface Gateway {
     val details: Details
     val isConnected: StateFlow<Boolean>
+
     suspend fun disconnect()
     suspend fun broadcastColor(color: StandardRgbColor)
 

@@ -66,7 +66,7 @@ class GatewayTileViewModelTests {
         sut.disconnect()
         runCurrent()
 
-        assert(fakeGatewayManager.state.value is GatewayManager.State.NoGateway)
+        assert(fakeGatewayManager.state.value is GatewayManager.State.Disconnected)
     }
 
     @Test
