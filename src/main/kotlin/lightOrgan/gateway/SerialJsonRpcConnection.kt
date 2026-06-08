@@ -4,7 +4,6 @@ import jsonrpc.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -39,11 +38,10 @@ class SerialJsonRpcConnection(
     val baudRate: Int = port.baudRate
     val frameFormat: SerialFrameFormat = port.frameFormat
 
-    private val _isConnected = MutableStateFlow(port.isOpen)
-    override val isConnected: StateFlow<Boolean> = _isConnected // TODO: observer vs update
+    override val isConnected: StateFlow<Boolean> = port.isOpen
 
     // TODO: Implement incoming data handler
-    private val _incomingRequests = MutableSharedFlow<JsonRpcRequest>()
+    private val _incomingRequests = MutableSharedFlow<JsonRpcRequest>() // TODO: Add buffer or tryEmit won't work
     override val incomingRequests: Flow<JsonRpcRequest> = _incomingRequests
 
     private val _incomingNotifications = MutableSharedFlow<JsonRpcNotification>()
@@ -51,7 +49,6 @@ class SerialJsonRpcConnection(
 
     override suspend fun connect() {
         port.open()
-        _isConnected.value = true
 
         readerJob = scope.launch { readIncomingMessages() }
     }
@@ -59,7 +56,6 @@ class SerialJsonRpcConnection(
     override suspend fun disconnect() {
         port.close()
         readerJob?.cancelAndJoin()
-        _isConnected.value = false
         cancelPendingRequests()
     }
 

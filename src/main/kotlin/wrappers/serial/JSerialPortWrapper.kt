@@ -4,7 +4,9 @@ import com.fazecast.jSerialComm.SerialPortDataListener
 import com.fazecast.jSerialComm.SerialPortEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import logging.Logger
 import serial.SerialFrameFormat
@@ -19,7 +21,9 @@ class JSerialCommPort(
 ) : SerialPort {
 
     private val port: JSerialPort = JSerialPort.getCommPort(name)
-    override val isOpen: Boolean get() = port.isOpen
+
+    private val _isOpen = MutableStateFlow(port.isOpen)
+    override val isOpen: StateFlow<Boolean> = _isOpen
 
     private val _incomingBytes = MutableSharedFlow<ByteArray>(extraBufferCapacity = 64)
     override val incomingBytes: SharedFlow<ByteArray> = _incomingBytes
@@ -77,6 +81,7 @@ class JSerialCommPort(
         // https://fazecast.github.io/jSerialComm/javadoc/com/fazecast/jSerialComm/SerialPort.html#isOpen()
         Logger.warning("Port $name unexpectedly disconnected.")
         port.closePort()
+        _isOpen.value = false
     }
 
     private fun onDataAvailable() {
@@ -94,9 +99,10 @@ class JSerialCommPort(
 
     // Open
     override suspend fun open() = withContext(Dispatchers.IO) {
-        check(!isOpen) { "Port $name is already open." }
+        check(!port.isOpen) { "Port $name is already open." }
 
         if (port.openPort()) {
+            _isOpen.value = true
             Logger.debug("Port $name opened.")
         } else {
             throw IOException("Port $name failed to open.")
@@ -111,9 +117,10 @@ class JSerialCommPort(
 
     // Close
     override suspend fun close() = withContext(Dispatchers.IO) {
-        if (!isOpen) return@withContext
+        if (!port.isOpen) return@withContext
 
         if (port.closePort()) {
+            _isOpen.value = false
             Logger.debug("Port $name closed.")
         } else {
             Logger.warning("Port $name failed to close.")
@@ -122,7 +129,7 @@ class JSerialCommPort(
 
     // Write
     override suspend fun write(data: ByteArray) = withContext(Dispatchers.IO) {
-        check(isOpen) { "Port $name is not open." }
+        check(port.isOpen) { "Port $name is not open." }
 
         val bytesWritten = port.writeBytes(data, data.size)
 

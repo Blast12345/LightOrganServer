@@ -1,7 +1,11 @@
 package lightOrgan.gateway
 
-import kotlinx.coroutines.*
+import extensions.await
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import lightOrgan.gateway.GatewayManager.Event
 import lightOrgan.gateway.GatewayManager.State
 
@@ -14,9 +18,10 @@ interface GatewayManager {
 
     // Types
     sealed interface State {
-        data object NoGateway : State
+        data object Disconnected : State
         data object Connecting : State
         data class Connected(val gateway: Gateway) : State
+        data object Disconnecting : State
     }
 
     sealed interface Event {
@@ -24,7 +29,6 @@ interface GatewayManager {
     }
 }
 
-// ENHANCEMENT: Auto-find
 // ENHANCEMENT: Auto-reconnect
 @OptIn(ExperimentalCoroutinesApi::class)
 class RealGatewayManager(
@@ -32,58 +36,57 @@ class RealGatewayManager(
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) : GatewayManager {
 
-    private val _connectionState = MutableStateFlow<State>(State.NoGateway)
-    override val state: StateFlow<State> = _connectionState.asStateFlow()
+    private val _state = MutableStateFlow<State>(State.Disconnected)
+    override val state: StateFlow<State> = _state
 
     private val _events = MutableSharedFlow<Event>()
     override val events: SharedFlow<Event> = _events.asSharedFlow()
 
-    private var unexpectedDisconnectWatcher: Job? = null
-
-    // Lifecycle
     override suspend fun connect() {
-        when (_connectionState.value) {
-            is State.NoGateway -> Unit
+        when (_state.value) {
+            is State.Disconnected -> _state.value = State.Connecting
             is State.Connecting -> throw IllegalStateException("Could not connect: there is a connection attempt in progress.")
             is State.Connected -> throw IllegalStateException("Could not connect: there is already a gateway connected.")
+            is State.Disconnecting -> throw IllegalStateException("Could not connect: there is a disconnect attempt in progress.")
         }
-
-        _connectionState.value = State.Connecting
 
         try {
             val gateway = gatewayFinder.find()
-            check(gateway.isConnected.value) { "Could not connect: the gateway is already disconnected." }
-            _connectionState.value = State.Connected(gateway)
-            unexpectedDisconnectWatcher = watchForUnexpectedDisconnect(gateway)
+            _state.value = State.Connected(gateway)
+            watchForUnexpectedDisconnect(gateway)
         } catch (e: Exception) {
-            _connectionState.value = State.NoGateway
+            _state.value = State.Disconnected
             throw e
         }
     }
 
-    private fun watchForUnexpectedDisconnect(gateway: Gateway): Job {
-        return scope.launch {
-            gateway.isConnected.first { !it }
-            _connectionState.value = State.NoGateway
+    private fun watchForUnexpectedDisconnect(gateway: Gateway) = scope.launch {
+        gateway.isConnected.await(false)
+
+        val expected = _state.value is State.Disconnecting
+
+        if (!expected) {
+            _state.value = State.Disconnected
             _events.emit(Event.UnexpectedDisconnect)
         }
     }
 
     override suspend fun disconnect() {
-        when (val state = _connectionState.value) {
-            is State.NoGateway -> {
-                throw IllegalStateException("Could not disconnect: there is no gateway connected.")
-            }
+        val gateway = when (val state = _state.value) {
+            is State.Disconnected -> throw IllegalStateException("Could not disconnect: there is no connection.")
+            is State.Connecting -> throw IllegalStateException("Could not disconnect: there is a connection attempt in progress.")
+            is State.Connected -> state.gateway
+            is State.Disconnecting -> throw IllegalStateException("Could not connect: there is a disconnect attempt in progress.")
+        }
 
-            is State.Connecting -> {
-                throw IllegalStateException("Could not disconnect: there is a connection attempt in progress.")
-            }
+        _state.value = State.Disconnecting
 
-            is State.Connected -> {
-                unexpectedDisconnectWatcher?.cancel()
-                state.gateway.disconnect()
-                _connectionState.value = State.NoGateway
-            }
+        try {
+            gateway.disconnect()
+            _state.value = State.Disconnected
+        } catch (e: Exception) {
+            _state.value = State.Connected(gateway)
+            throw e
         }
     }
 
