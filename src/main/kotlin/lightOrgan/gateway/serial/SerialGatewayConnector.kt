@@ -2,9 +2,9 @@ package lightOrgan.gateway.serial
 
 import jsonrpc.sendRequest
 import lightOrgan.gateway.Gateway
-import lightOrgan.gateway.GatewayIdentificationResponse
-import lightOrgan.gateway.JsonRpcGateway
+import lightOrgan.gateway.RealGateway
 import lightOrgan.gateway.SerialGatewayDetails
+import lightOrgan.gateway.models.GatewayIdentificationResponse
 import logging.Logger
 import serial.SerialPort
 import kotlin.time.Duration
@@ -22,7 +22,7 @@ class SerialGatewayConnector {
 
             Logger.success("Port ${port.name} handshake successful.")
 
-            return JsonRpcGateway(
+            return RealGateway(
                 details = SerialGatewayDetails(
                     macAddress = response.macAddress,
                     firmwareVersion = response.firmwareVersion,

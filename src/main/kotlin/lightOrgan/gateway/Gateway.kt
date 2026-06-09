@@ -3,6 +3,7 @@ package lightOrgan.gateway
 import color.StandardRgbColor
 import jsonrpc.JsonRpcConnection
 import kotlinx.coroutines.flow.StateFlow
+import lightOrgan.gateway.models.BroadcastColor
 import kotlin.math.roundToInt
 
 interface Gateway {
@@ -13,20 +14,21 @@ interface Gateway {
     suspend fun broadcastColor(color: StandardRgbColor)
 }
 
-// TODO: Test me
-class JsonRpcGateway(
+class RealGateway(
     override val details: GatewayDetails,
     private val connection: JsonRpcConnection,
 ) : Gateway {
 
     override val isConnected = connection.isConnected
 
+
     override suspend fun disconnect() {
         connection.disconnect()
     }
 
+    // ENHANCEMENT: StandardRgbColor could be values of 0-255
     override suspend fun broadcastColor(color: StandardRgbColor) {
-        val params = BroadcastColorParams(
+        val params = BroadcastColor(
             r = (color.red.value * 255).roundToInt(),
             g = (color.green.value * 255).roundToInt(),
             b = (color.blue.value * 255).roundToInt(),
@@ -34,8 +36,5 @@ class JsonRpcGateway(
 
         connection.sendNotification("broadcast-color", params)
     }
-
-    // TODO: Where should this live?
-    private data class BroadcastColorParams(val r: Int, val g: Int, val b: Int)
 
 }
