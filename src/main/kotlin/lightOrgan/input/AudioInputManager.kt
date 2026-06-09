@@ -2,7 +2,7 @@ package lightOrgan.input
 
 import audio.audioInput.AudioInput
 import audio.audioInput.AudioInputFinder
-import audio.samples.AudioStreamFrame
+import audio.samples.SequencedAudioFrame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
@@ -24,7 +24,7 @@ class AudioInputManager(
         .flatMapLatest { it?.isListening ?: flowOf(false) }
         .stateIn(scope, SharingStarted.Eagerly, false)
 
-    val audioStream: SharedFlow<AudioStreamFrame> = currentAudioInput
+    val audioStream: SharedFlow<SequencedAudioFrame> = currentAudioInput
         .flatMapLatest { it?.audioStream ?: emptyFlow() }
         .shareIn(scope, SharingStarted.Eagerly)
 
@@ -33,7 +33,7 @@ class AudioInputManager(
         currentAudioInput.value?.stop()
         currentAudioInput.value = audioInputFinder.findDefaultInput()
     }
-    
+
     // Start-stop
     fun startListening() {
         val input = currentAudioInput.value ?: throw IllegalStateException("Cannot start listening. No input selected.")

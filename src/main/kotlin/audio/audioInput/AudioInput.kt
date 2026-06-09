@@ -2,12 +2,13 @@ package audio.audioInput
 
 import audio.samples.AudioFormat
 import audio.samples.AudioFrame
-import audio.samples.AudioStreamFrame
 import audio.samples.SampleNormalizer
+import audio.samples.SequencedAudioFrame
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import logging.Logger
+import utilities.coroutines.asSequenced
 import wrappers.sound.InputLine
 
 class AudioInput(
@@ -16,14 +17,6 @@ class AudioInput(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
 
-    private val listeningJob = MutableStateFlow<Job?>(null)
-
-    // NOTE: The OS may not deliver samples at a consistent rate.
-    // E.g., immediately after a read, more data is available, thus causing another immediate read.
-    // Back-to-back reads can cause even very fast collectors to fall behind, so we allow a small buffer to handle bursts.
-    // That said, collectors to be performant enough to handle high rates. If they are not, they will fall behind and experience dropped frames.
-    private val _audioStream = MutableSharedFlow<AudioStreamFrame>(0, 8, BufferOverflow.DROP_OLDEST)
-
     val name: String = inputLine.name
     val format = AudioFormat(
         sampleRate = inputLine.sampleRate,
@@ -31,10 +24,16 @@ class AudioInput(
         channels = inputLine.channels
     )
 
+    private val listeningJob = MutableStateFlow<Job?>(null)
     val isListening: StateFlow<Boolean> = listeningJob
         .map { it != null }
         .stateIn(scope, SharingStarted.Eagerly, false)
 
+    // NOTE: The OS may not deliver samples at a consistent rate.
+    // E.g., immediately after a read, more data is available, thus causing another immediate read.
+    // Back-to-back reads can cause even very fast collectors to fall behind, so we allow a small buffer to handle bursts.
+    // That said, collectors to be performant enough to handle high rates. If they are not, they will fall behind and experience dropped frames.
+    private val _audioStream = MutableSharedFlow<SequencedAudioFrame>(0, 8, BufferOverflow.DROP_OLDEST)
     val audioStream = _audioStream.asSharedFlow()
 
     fun start() {
@@ -65,10 +64,8 @@ class AudioInput(
             val readResult = inputLine.read()
             val newSamples = sampleNormalizer.normalize(readResult.data)
 
-            val audioFrame = AudioFrame(newSamples, format)
-            val audioStreamFrame = AudioStreamFrame(audioFrame, nextSequenceNumber++, readResult.bufferWasFull)
-
-            val emittedSuccessfully = _audioStream.tryEmit(audioStreamFrame)
+            val audioFrame = AudioFrame(newSamples, format).asSequenced(nextSequenceNumber++)
+            val emittedSuccessfully = _audioStream.tryEmit(audioFrame)
 
             if (!emittedSuccessfully) {
                 Logger.warning("Failed to emit the new audio to the stream.")
