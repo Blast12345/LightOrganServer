@@ -3,17 +3,17 @@ package lightOrgan
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import lightOrgan.color.ColorManager
 import lightOrgan.gateway.Gateway
 import lightOrgan.gateway.GatewayManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
+import logging.Logger
 import utilities.TimestampUtility
+import utilities.coroutines.Sequenced
 import utilities.coroutines.mapSequenced
+import utilities.coroutines.onEachSequenced
 
 // ENHANCEMENT: Gracefully handle crashed coroutines
 class LightOrgan(
@@ -35,13 +35,30 @@ class LightOrgan(
             .conflate()
             .mapSequenced("Color generation") { colorManager.calculate(it) }
             .conflate()
-            .mapSequenced("Gateway broadcast") { gatewayManager.gateway?.broadcastColor(it) }
-            .onEach { timeBetweenColors.logTimeSinceLast() } // TODO: Expose as something at each layer?
+            .onEachSequenced("Gateway broadcast") { gatewayManager.gateway?.broadcastColor(it) }
+            .onEach { timeBetweenColors.logTimeSinceLast() }
             .launchIn(scope)
     }
 
-    val GatewayManager.gateway: Gateway?
+    // Convenience
+    private val GatewayManager.gateway: Gateway?
         get() = (this.state.value as? GatewayManager.State.Connected)?.gateway
+
+    private fun <T, R> Flow<Sequenced<T>>.mapSequenced(
+        label: String,
+        transform: suspend (T) -> R
+    ): Flow<Sequenced<R>> = mapSequenced(
+        transform = transform,
+        onGap = { Logger.warning("$label is slow, dropped $it") }
+    )
+
+    fun <T> Flow<Sequenced<T>>.onEachSequenced(
+        label: String,
+        action: suspend (T) -> Unit
+    ): Flow<Sequenced<T>> = onEachSequenced(
+        action = action,
+        onGap = { Logger.warning("$label is slow, dropped $it") }
+    )
 
 }
 

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextFrequencyBins
 import toolkit.monkeyTest.nextStandardRgbColor
-import utilities.coroutines.Sequenced
+import utilities.coroutines.asLazySequence
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LightOrganTests {
@@ -64,8 +64,7 @@ class LightOrganTests {
         sut.start()
         runCurrent()
 
-        val sequencedFrame = Sequenced("audio frame", 0L, audioFrame)
-        inputManager.audioStream.emit(sequencedFrame)
+        inputManager.audioStream.emit(audioFrame.asLazySequence())
         runCurrent()
 
         assertEquals(newColor, fakeGatewayManager.gateway.lastColor)
