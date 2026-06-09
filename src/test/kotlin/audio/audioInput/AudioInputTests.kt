@@ -111,7 +111,7 @@ class AudioInputTests {
         assertEquals(readResults.size, received.size)
 
         received.forEachIndexed { index, sequenced ->
-            assertEquals(index, sequenced.sequenceNumber)
+            assertEquals(index.toLong(), sequenced.sequenceNumber)
             assertEquals(normalizedSamples, sequenced.value.samples)
             assertEquals(sut.format, sequenced.value.format)
         }

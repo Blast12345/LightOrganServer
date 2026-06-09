@@ -2,12 +2,11 @@ package lightOrgan.input
 
 import audio.audioInput.AudioInput
 import audio.audioInput.AudioInputFinder
-import audio.samples.AudioFrame
+import audio.samples.SequencedAudioFrame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
-import utilities.coroutines.Sequenced
 
 // ENHANCEMENT: Handle unexpected disconnects.
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -25,7 +24,7 @@ class AudioInputManager(
         .flatMapLatest { it?.isListening ?: flowOf(false) }
         .stateIn(scope, SharingStarted.Eagerly, false)
 
-    val audioStream: SharedFlow<Sequenced<AudioFrame>> = currentAudioInput
+    val audioStream: SharedFlow<SequencedAudioFrame> = currentAudioInput
         .flatMapLatest { it?.audioStream ?: emptyFlow() }
         .shareIn(scope, SharingStarted.Eagerly)
 
