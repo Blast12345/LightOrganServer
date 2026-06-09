@@ -13,7 +13,7 @@ import lightOrgan.gateway.GatewayManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 import utilities.TimestampUtility
-import utilities.mapSequenced
+import utilities.coroutines.mapSequenced
 
 // ENHANCEMENT: Gracefully handle crashed coroutines
 class LightOrgan(

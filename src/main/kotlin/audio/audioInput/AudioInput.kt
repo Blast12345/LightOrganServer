@@ -7,7 +7,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import logging.Logger
-import utilities.Sequenced
+import utilities.coroutines.Sequenced
 import wrappers.sound.InputLine
 
 class AudioInput(

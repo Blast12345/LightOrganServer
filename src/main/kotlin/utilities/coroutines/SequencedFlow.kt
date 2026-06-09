@@ -1,4 +1,4 @@
-package utilities
+package utilities.coroutines
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

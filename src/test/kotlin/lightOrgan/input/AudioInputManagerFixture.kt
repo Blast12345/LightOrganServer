@@ -5,7 +5,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import utilities.Sequenced
+import utilities.coroutines.Sequenced
 
 data class AudioInputManagerFixture(
     val mock: AudioInputManager,

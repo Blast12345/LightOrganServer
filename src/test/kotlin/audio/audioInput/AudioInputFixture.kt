@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import lightOrgan.input.AudioInputDetails
 import toolkit.monkeyTest.nextAudioInputDetails
-import utilities.Sequenced
+import utilities.coroutines.Sequenced
 
 data class AudioInputFixture(
     val mock: AudioInput,

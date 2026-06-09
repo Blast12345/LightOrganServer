@@ -18,8 +18,8 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import toolkit.extensions.collectInto
 import toolkit.monkeyTest.nextAudioFrame
-import utilities.Sequenced
-import utilities.asSequenced
+import utilities.coroutines.Sequenced
+import utilities.coroutines.asSequenced
 
 
 @OptIn(ExperimentalCoroutinesApi::class)

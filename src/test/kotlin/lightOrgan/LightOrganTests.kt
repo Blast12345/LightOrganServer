@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextFrequencyBins
 import toolkit.monkeyTest.nextStandardRgbColor
-import utilities.Sequenced
+import utilities.coroutines.Sequenced
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LightOrganTests {
