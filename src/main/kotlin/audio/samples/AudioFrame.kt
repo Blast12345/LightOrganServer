@@ -1,5 +1,7 @@
 package audio.samples
 
+import utilities.coroutines.Sequenced
+
 // ENHANCEMENT: Introduce Samples type to make equality cleaner
 data class AudioFrame(
     val samples: FloatArray,
@@ -20,3 +22,5 @@ data class AudioFrame(
     }
 
 }
+
+typealias SequencedAudioFrame = Sequenced<AudioFrame>

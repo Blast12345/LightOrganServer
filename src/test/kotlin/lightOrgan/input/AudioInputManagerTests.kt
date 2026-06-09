@@ -17,8 +17,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import toolkit.extensions.collectInto
-import toolkit.monkeyTest.nextAudioStreamFrame
-
+import toolkit.monkeyTest.nextAudioFrame
+import utilities.coroutines.asLazySequence
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AudioInputManagerTests {
@@ -192,7 +192,7 @@ class AudioInputManagerTests {
         currentAudioInputFlow.value = defaultInput.mock
         sutScope.advanceUntilIdle()
 
-        val frame = nextAudioStreamFrame()
+        val frame = nextAudioFrame().asLazySequence()
         defaultInput.audioStreamFlow.emit(frame)
         sutScope.advanceUntilIdle()
 
@@ -203,8 +203,8 @@ class AudioInputManagerTests {
     @Test
     fun `when the input changes, then the new inputs audio is passed on`() = runTest {
         val sut = createSUT()
-        val defaultFrame = nextAudioStreamFrame()
-        val otherFrame = nextAudioStreamFrame()
+        val defaultFrame = nextAudioFrame().asLazySequence()
+        val otherFrame = nextAudioFrame().asLazySequence()
         val received = sut.audioStream.collectInto(this)
 
         currentAudioInputFlow.value = defaultInput.mock

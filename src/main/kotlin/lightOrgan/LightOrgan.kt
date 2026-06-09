@@ -6,13 +6,13 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import lightOrgan.color.ColorManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
+import logging.Logger
 import server.Server
-import utilities.SequenceGapDetector
 import utilities.TimestampUtility
+import utilities.coroutines.mapSequenced
 
 // ENHANCEMENT: Gracefully handle crashed coroutines
 class LightOrgan(
@@ -27,14 +27,12 @@ class LightOrgan(
 
     fun start() {
         inputManager.selectDefaultInput()
-        val gapDetector = SequenceGapDetector("Audio stream")
 
         // ENHANCEMENT: Decouple ingest and calculation
         inputManager.audioStream
             // WARNING: Overflowing the buffer will cause spectral artifacts
             .buffer(64, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-            .onEach { gapDetector.check(it.sequenceNumber) }
-            .onEach { handle(it.audio) }
+            .mapSequenced(transform = { handle(it) }, onGap = logGap("Light organ pipeline"))
             .launchIn(scope)
     }
 
@@ -46,5 +44,8 @@ class LightOrgan(
 
         timeBetweenColors.logTimeSinceLast()
     }
+
+
+    private fun logGap(stage: String): (Long) -> Unit = { Logger.warning("$stage is slow, dropped $it") }
 
 }

@@ -15,9 +15,10 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import server.Server
-import toolkit.monkeyTest.nextAudioStreamFrame
+import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextFrequencyBins
 import toolkit.monkeyTest.nextStandardRgbColor
+import utilities.coroutines.asLazySequence
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LightOrganTests {
@@ -27,7 +28,7 @@ class LightOrganTests {
     private lateinit var colorManager: ColorManagerFixture
     private val server: Server = mockk()
 
-    private val streamFrame = nextAudioStreamFrame()
+    private val audioFrame = nextAudioFrame()
     private val frequencyBins = nextFrequencyBins()
     private val newColor = nextStandardRgbColor()
 
@@ -37,7 +38,7 @@ class LightOrganTests {
         spectrumManager = SpectrumManagerFixture.create()
         colorManager = ColorManagerFixture.create()
 
-        every { spectrumManager.mock.calculate(streamFrame.audio) } returns frequencyBins
+        every { spectrumManager.mock.calculate(audioFrame) } returns frequencyBins
         every { colorManager.mock.calculate(frequencyBins) } returns newColor
         every { server.new(newColor) } returns Unit
     }
@@ -63,7 +64,7 @@ class LightOrganTests {
         sut.start()
         runCurrent()
 
-        inputManager.audioStream.emit(streamFrame)
+        inputManager.audioStream.emit(audioFrame.asLazySequence())
         runCurrent()
 
         verify { server.new(newColor) }

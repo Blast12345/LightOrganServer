@@ -1,6 +1,6 @@
 package audio.audioInput
 
-import audio.samples.AudioStreamFrame
+import audio.samples.SequencedAudioFrame
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,7 +12,7 @@ data class AudioInputFixture(
     val mock: AudioInput,
     val details: AudioInputDetails,
     val isListeningFlow: MutableStateFlow<Boolean>,
-    val audioStreamFlow: MutableSharedFlow<AudioStreamFrame>
+    val audioStreamFlow: MutableSharedFlow<SequencedAudioFrame>
 ) {
 
     companion object {
@@ -20,7 +20,7 @@ data class AudioInputFixture(
             val mock = mockk<AudioInput>()
             val details = nextAudioInputDetails(name)
             val isListeningFlow = MutableStateFlow(false)
-            val audioStreamFlow = MutableSharedFlow<AudioStreamFrame>(extraBufferCapacity = 1)
+            val audioStreamFlow = MutableSharedFlow<SequencedAudioFrame>(extraBufferCapacity = 1)
 
             every { mock.name } returns details.name
             every { mock.format } returns details.format
