@@ -25,7 +25,6 @@ class GatewayTests {
             details = details,
             connection = fakeConnection
         )
-
     }
 
     @Test
