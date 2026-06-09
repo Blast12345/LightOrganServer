@@ -24,6 +24,5 @@ class FakeGatewayFinder : GatewayFinder {
         pause?.complete(Unit)
         pause = null
     }
-
-
+    
 }
