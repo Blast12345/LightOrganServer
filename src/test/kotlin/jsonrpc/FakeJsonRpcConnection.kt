@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import tools.jackson.core.type.TypeReference
 import kotlin.time.Duration
 
-
 class FakeJsonRpcConnection : JsonRpcConnection {
 
     override val isConnected = MutableStateFlow<Boolean>(true)
