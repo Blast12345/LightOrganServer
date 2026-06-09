@@ -5,7 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import gui.basicComponents.*
-import lightOrgan.gateway.Gateway
+import lightOrgan.gateway.GatewayDetails
 import lightOrgan.gateway.GatewayManager
 import lightOrgan.gateway.SerialGatewayDetails
 
@@ -53,7 +53,7 @@ fun GatewayTile(
 }
 
 @Composable
-private fun GatewayDetailsSection(details: Gateway.Details) {
+private fun GatewayDetailsSection(details: GatewayDetails) {
     DetailText("MAC Address", details.macAddress)
     DetailText("Firmware", details.firmwareVersion)
 

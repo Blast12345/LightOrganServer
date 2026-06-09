@@ -107,10 +107,13 @@ class AudioInputTests {
         sutScope.advanceUntilIdle()
 
         sutScope.runCurrent()
+
         assertEquals(readResults.size, received.size)
-        for (result in received) {
-            assertEquals(normalizedSamples, result.audio.samples)
-            assertEquals(sut.format, result.audio.format)
+
+        received.forEachIndexed { index, sequenced ->
+            assertEquals(index, sequenced.sequenceNumber)
+            assertEquals(normalizedSamples, sequenced.value.samples)
+            assertEquals(sut.format, sequenced.value.format)
         }
     }
 

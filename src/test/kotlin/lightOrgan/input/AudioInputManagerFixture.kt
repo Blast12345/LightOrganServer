@@ -1,16 +1,17 @@
 package lightOrgan.input
 
-import audio.samples.AudioStreamFrame
+import audio.samples.AudioFrame
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import utilities.Sequenced
 
 data class AudioInputManagerFixture(
     val mock: AudioInputManager,
     val inputDetailsFlow: MutableStateFlow<AudioInputDetails?>,
     val isListeningFlow: MutableStateFlow<Boolean>,
-    val audioStream: MutableSharedFlow<AudioStreamFrame>
+    val audioStream: MutableSharedFlow<Sequenced<AudioFrame>>
 ) {
 
     companion object {

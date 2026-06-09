@@ -1,13 +1,11 @@
 package lightOrgan.gateway
 
 import extensions.await
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import lightOrgan.gateway.GatewayManager.Event
 import lightOrgan.gateway.GatewayManager.State
+import lightOrgan.gateway.serial.SerialGatewayFinder
 
 interface GatewayManager {
     val state: StateFlow<State>
@@ -32,7 +30,7 @@ interface GatewayManager {
 // ENHANCEMENT: Auto-reconnect
 @OptIn(ExperimentalCoroutinesApi::class)
 class RealGatewayManager(
-    private val gatewayFinder: GatewayFinder = RealGatewayFinder(),
+    private val gatewayFinder: GatewayFinder = SerialGatewayFinder(),
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) : GatewayManager {
 
@@ -41,6 +39,8 @@ class RealGatewayManager(
 
     private val _events = MutableSharedFlow<Event>()
     override val events: SharedFlow<Event> = _events.asSharedFlow()
+
+    private var unexpectedDisconnectWatcher: Job? = null
 
     override suspend fun connect() {
         when (_state.value) {
@@ -53,7 +53,7 @@ class RealGatewayManager(
         try {
             val gateway = gatewayFinder.find()
             _state.value = State.Connected(gateway)
-            watchForUnexpectedDisconnect(gateway)
+            unexpectedDisconnectWatcher = watchForUnexpectedDisconnect(gateway)
         } catch (e: Exception) {
             _state.value = State.Disconnected
             throw e
@@ -62,13 +62,8 @@ class RealGatewayManager(
 
     private fun watchForUnexpectedDisconnect(gateway: Gateway) = scope.launch {
         gateway.isConnected.await(false)
-
-        val expected = _state.value is State.Disconnecting
-
-        if (!expected) {
-            _state.value = State.Disconnected
-            _events.emit(Event.UnexpectedDisconnect)
-        }
+        _state.value = State.Disconnected
+        _events.emit(Event.UnexpectedDisconnect)
     }
 
     override suspend fun disconnect() {
@@ -82,10 +77,12 @@ class RealGatewayManager(
         _state.value = State.Disconnecting
 
         try {
+            unexpectedDisconnectWatcher?.cancel()
             gateway.disconnect()
             _state.value = State.Disconnected
         } catch (e: Exception) {
             _state.value = State.Connected(gateway)
+            unexpectedDisconnectWatcher = watchForUnexpectedDisconnect(gateway)
             throw e
         }
     }

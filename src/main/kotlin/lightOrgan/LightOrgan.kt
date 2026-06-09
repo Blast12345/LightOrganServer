@@ -1,10 +1,10 @@
 package lightOrgan
 
-import dsp.bins.FrequencyBins
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import lightOrgan.color.ColorManager
@@ -12,8 +12,8 @@ import lightOrgan.gateway.Gateway
 import lightOrgan.gateway.GatewayManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
-import utilities.SequenceGapDetector
 import utilities.TimestampUtility
+import utilities.mapSequenced
 
 // ENHANCEMENT: Gracefully handle crashed coroutines
 class LightOrgan(
@@ -28,34 +28,21 @@ class LightOrgan(
 
     fun start() {
         inputManager.selectDefaultInput()
-        val gapDetector = SequenceGapDetector("Audio stream")
 
-        // ENHANCEMENT: Decouple ingest and calculation
         inputManager.audioStream
-            // WARNING: Overflowing the buffer will cause spectral artifacts
             .buffer(64, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-            .onEach { gapDetector.check(it.sequenceNumber) }
-            .onEach { spectrumManager.calculate(it.audio) }
+            .mapSequenced("Spectral analysis") { spectrumManager.calculate(it) }
+            .conflate()
+            .mapSequenced("Color generation") { colorManager.calculate(it) }
+            .conflate()
+            .mapSequenced("Gateway broadcast") { gatewayManager.gateway?.broadcastColor(it) }
+            .onEach { timeBetweenColors.logTimeSinceLast() } // TODO: Expose as something at each layer?
             .launchIn(scope)
-
-        // TODO: Monitor for dropped frames
-        spectrumManager.frequencyBins
-            .onEach { handle(it) }
-            .launchIn(scope)
-    }
-
-    private suspend fun handle(frequencyBins: FrequencyBins) {
-        val color = colorManager.calculate(frequencyBins)
-
-        try {
-            gatewayManager.gateway?.broadcastColor(color)
-        } catch (e: Exception) {
-        }
-
-        timeBetweenColors.logTimeSinceLast()
     }
 
     val GatewayManager.gateway: Gateway?
         get() = (this.state.value as? GatewayManager.State.Connected)?.gateway
 
 }
+
+

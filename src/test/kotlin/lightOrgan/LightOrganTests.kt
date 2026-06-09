@@ -14,9 +14,10 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import toolkit.monkeyTest.nextAudioStreamFrame
+import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextFrequencyBins
 import toolkit.monkeyTest.nextStandardRgbColor
+import utilities.Sequenced
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LightOrganTests {
@@ -26,7 +27,7 @@ class LightOrganTests {
     private lateinit var colorManager: ColorManagerFixture
     private lateinit var fakeGatewayManager: FakeGatewayManager
 
-    private val streamFrame = nextAudioStreamFrame()
+    private val audioFrame = nextAudioFrame()
     private val frequencyBins = nextFrequencyBins()
     private val newColor = nextStandardRgbColor()
 
@@ -37,7 +38,7 @@ class LightOrganTests {
         colorManager = ColorManagerFixture.create()
         fakeGatewayManager = FakeGatewayManager()
 
-        every { spectrumManager.mock.calculate(streamFrame.audio) } returns frequencyBins
+        every { spectrumManager.mock.calculate(audioFrame) } returns frequencyBins
         every { colorManager.mock.calculate(frequencyBins) } returns newColor
     }
 
@@ -63,7 +64,8 @@ class LightOrganTests {
         sut.start()
         runCurrent()
 
-        inputManager.audioStream.emit(streamFrame)
+        val sequencedFrame = Sequenced("audio frame", 0L, audioFrame)
+        inputManager.audioStream.emit(sequencedFrame)
         runCurrent()
 
         assertEquals(newColor, fakeGatewayManager.gateway.lastColor)

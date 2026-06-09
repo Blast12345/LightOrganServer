@@ -1,9 +1,13 @@
 package toolkit.monkeyTest
 
-import lightOrgan.gateway.Gateway
+import lightOrgan.gateway.GatewayDetails
 import lightOrgan.gateway.SerialGatewayDetails
 
-fun nextGatewayDetails(): Gateway.Details {
+fun nextGatewayDetails(): GatewayDetails {
+    return nextSerialGatewayDetails()
+}
+
+fun nextSerialGatewayDetails(): GatewayDetails {
     return SerialGatewayDetails(
         macAddress = nextString("mac"),
         firmwareVersion = nextString("version"),

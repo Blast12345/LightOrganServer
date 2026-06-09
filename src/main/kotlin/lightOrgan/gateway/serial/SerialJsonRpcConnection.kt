@@ -1,4 +1,4 @@
-package lightOrgan.gateway
+package lightOrgan.gateway.serial
 
 import jsonrpc.*
 import kotlinx.coroutines.*
