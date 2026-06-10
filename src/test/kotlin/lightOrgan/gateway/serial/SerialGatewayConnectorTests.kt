@@ -3,7 +3,6 @@ package lightOrgan.gateway.serial
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-import jsonrpc.FakeJsonRpcConnection
 import kotlinx.coroutines.test.runTest
 import lightOrgan.gateway.FakeGateway
 import lightOrgan.gateway.GatewayFactory
@@ -14,17 +13,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import serial.FakeSerialPort
-import serial.SerialFrameFormat
-import toolkit.monkeyTest.*
+import toolkit.monkeyTest.nextDuration
+import toolkit.monkeyTest.nextException
+import toolkit.monkeyTest.nextGatewayIdentificationResponse
 import kotlin.time.Duration
-
-class FakeSerialJsonRpcConnection : FakeJsonRpcConnection(), SerialJsonRpcConnection {
-
-    override val name: String = nextString("name")
-    override val baudRate: Int = nextInt()
-    override val frameFormat: SerialFrameFormat = nextSerialFrameFormat()
-
-}
 
 class SerialGatewayConnectorTests {
 
