@@ -21,7 +21,7 @@ object Logger {
 
     fun error(message: String, throwable: Throwable) {
         if (!enabled) return
-        error("$message\n${throwable.stackTraceToString()}")
+        this.error("$message >>> ${throwable.message}")
     }
 
     fun debug(message: String) {
