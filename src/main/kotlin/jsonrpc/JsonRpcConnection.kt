@@ -3,19 +3,18 @@ package jsonrpc
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import tools.jackson.core.type.TypeReference
-import tools.jackson.databind.JsonNode
 import tools.jackson.module.kotlin.jacksonTypeRef
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-// REFERENCE: https://www.jsonrpc.org/specification
-// I could not cleanly represent IDs as both numbers and strings, so I picked strings.
-interface JsonRpcConnection {
+interface JsonRpcConnection : JsonRpcProtocol {
     val isConnected: StateFlow<Boolean>
     suspend fun connect()
     suspend fun disconnect()
+}
 
-    // Protocol
+// REFERENCE: https://www.jsonrpc.org/specification
+interface JsonRpcProtocol {
     val incomingNotifications: Flow<JsonRpcNotification>
     val incomingRequests: Flow<JsonRpcRequest>
 
@@ -29,7 +28,7 @@ interface JsonRpcConnection {
 class RequestFailureException(
     val code: Int,
     override val message: String,
-    val data: JsonNode?
+    val data: Any?
 ) : Exception(message)
 
 // Convenience functions

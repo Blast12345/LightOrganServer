@@ -17,6 +17,7 @@ import org.junit.jupiter.api.assertThrows
 import serial.FakeSerialPort
 import toolkit.extensions.collectInto
 import toolkit.monkeyTest.TestObject
+import tools.jackson.databind.JsonNode
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -222,7 +223,7 @@ class SerialJsonRpcConnectionTests {
 
         assertEquals(1, exception.code)
         assertEquals("uh-oh", exception.message)
-        assertEquals(-123, exception.data?.get("value")?.asInt())
+        assertEquals(-123, (exception.data as JsonNode).get("value")?.asInt())
     }
 
     @Test
