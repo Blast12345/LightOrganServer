@@ -136,6 +136,15 @@ class JSerialCommPort(
             val success = _incomingBytes.tryEmit(buffer.copyOf(bytesRead))
             if (!success) Logger.warning("Port $name failed to emit $bytesRead bytes.")
         }
+
+        if (bytesRead == 0) {
+            Logger.warning("Failed to read bytes from port $name.")
+        } else if (bytesRead < 0) {
+            Logger.error("Read error from port $name")
+        } else if (bytesRead < available) {
+            Logger.warning("Incomplete read from port $name.")
+            onDataAvailable()
+        }
     }
 
 }
