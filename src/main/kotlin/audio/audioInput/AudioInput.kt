@@ -14,7 +14,7 @@ import wrappers.sound.InputLine
 class AudioInput(
     private val inputLine: InputLine,
     private val sampleNormalizer: SampleNormalizer,
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) {
 
     val name: String = inputLine.name

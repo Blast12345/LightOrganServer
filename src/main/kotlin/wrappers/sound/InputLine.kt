@@ -49,7 +49,7 @@ class InputLine(
         val remainingFrames = ByteArray(remaining)
         dataLine.read(remainingFrames, 0, remaining)
 
-        ReadResult(firstFrame + remainingFrames, (frameSize + remaining) >= bufferSize)
+        return@withContext ReadResult(firstFrame + remainingFrames, (frameSize + remaining) >= bufferSize)
     }
 
     class ReadResult(
