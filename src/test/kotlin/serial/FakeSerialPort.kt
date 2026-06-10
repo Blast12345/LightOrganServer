@@ -7,11 +7,14 @@ import toolkit.monkeyTest.nextInt
 import toolkit.monkeyTest.nextSerialFrameFormat
 import toolkit.monkeyTest.nextString
 
-class FakeSerialPort : SerialPort {
+class FakeSerialPort : SerialPort() {
 
+    // Details
     override val name: String = nextString("name")
     override val baudRate: Int = nextInt()
     override val frameFormat: SerialFrameFormat = nextSerialFrameFormat()
+
+    // Life cycle
     override val isOpen = MutableStateFlow(false)
 
     override suspend fun open() {
@@ -27,7 +30,7 @@ class FakeSerialPort : SerialPort {
     val writtenBytes = mutableListOf<ByteArray>()
     val writtenLines: List<String> get() = writtenBytes.map { String(it).trim() }
 
-    override suspend fun write(data: ByteArray) {
+    override suspend fun writeRaw(data: ByteArray) {
         if (suspendWrites) awaitCancellation()
         writtenBytes.add(data)
     }

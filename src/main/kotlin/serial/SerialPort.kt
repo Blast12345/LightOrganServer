@@ -2,19 +2,30 @@ package serial
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
-interface SerialPort {
-    val name: String
-    val baudRate: Int
-    val frameFormat: SerialFrameFormat
+abstract class SerialPort {
+    // Details
+    abstract val name: String
+    abstract val baudRate: Int
+    abstract val frameFormat: SerialFrameFormat
 
-    val isOpen: StateFlow<Boolean>
-    val incomingBytes: Flow<ByteArray>
+    // Life cycle
+    abstract val isOpen: StateFlow<Boolean>
 
-    suspend fun open()
-    suspend fun close()
+    abstract suspend fun open()
+    abstract suspend fun close()
 
-    // WARNING: A mutex or equivalent should be used to prevent concurrent writes from interleaving data
-    suspend fun write(data: ByteArray)
+    // Read
+    abstract val incomingBytes: Flow<ByteArray>
+
+    // Write
+    private val writeMutex = Mutex()
+
+    suspend fun write(data: ByteArray) {
+        writeMutex.withLock { writeRaw(data) }
+    }
+
+    protected abstract suspend fun writeRaw(data: ByteArray)
 }
-

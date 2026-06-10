@@ -7,8 +7,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import logging.Logger
 import serial.SerialFrameFormat
@@ -20,16 +18,9 @@ class JSerialCommPort(
     override val name: String,
     override val baudRate: Int,
     override val frameFormat: SerialFrameFormat,
-) : SerialPort {
+) : SerialPort() {
 
     private val port: JSerialPort = JSerialPort.getCommPort(name)
-    private val writeMutex = Mutex()
-
-    private val _isOpen = MutableStateFlow(port.isOpen)
-    override val isOpen: StateFlow<Boolean> = _isOpen
-
-    private val _incomingBytes = MutableSharedFlow<ByteArray>(extraBufferCapacity = 64)
-    override val incomingBytes: SharedFlow<ByteArray> = _incomingBytes
 
     // Init
     init {
@@ -79,28 +70,10 @@ class JSerialCommPort(
         })
     }
 
-    private fun onDisconnect() {
-        // Ensures that isOpen can be trusted.
-        // https://fazecast.github.io/jSerialComm/javadoc/com/fazecast/jSerialComm/SerialPort.html#isOpen()
-        Logger.warning("Port $name unexpectedly disconnected.")
-        port.closePort()
-        _isOpen.value = false
-    }
+    // Life cycle
+    private val _isOpen = MutableStateFlow(port.isOpen)
+    override val isOpen: StateFlow<Boolean> = _isOpen
 
-    private fun onDataAvailable() {
-        val available = port.bytesAvailable()
-        if (available <= 0) return
-
-        val buffer = ByteArray(available)
-        val bytesRead = port.readBytes(buffer, available)
-
-        if (bytesRead > 0) {
-            val success = _incomingBytes.tryEmit(buffer.copyOf(bytesRead))
-            if (!success) Logger.warning("Port $name failed to emit $bytesRead bytes.")
-        }
-    }
-
-    // Open
     override suspend fun open() = withContext(Dispatchers.IO) {
         check(!port.isOpen) { "Port $name is already open." }
 
@@ -118,7 +91,6 @@ class JSerialCommPort(
         }
     }
 
-    // Close
     override suspend fun close() = withContext(Dispatchers.IO) {
         if (!port.isOpen) return@withContext
 
@@ -131,16 +103,39 @@ class JSerialCommPort(
     }
 
     // Write
-    override suspend fun write(data: ByteArray) = withContext(Dispatchers.IO) {
-        writeMutex.withLock {
-            check(port.isOpen) { "Port $name is not open." }
+    override suspend fun writeRaw(data: ByteArray) {
+        check(port.isOpen) { "Port $name is not open." }
 
-            val bytesWritten = port.writeBytes(data, data.size)
+        val bytesWritten = port.writeBytes(data, data.size)
 
-            if (bytesWritten != data.size) {
-                throw IOException("Port $name wrote $bytesWritten of ${data.size} bytes.")
-            }
+        if (bytesWritten != data.size) {
+            throw IOException("Port $name wrote $bytesWritten of ${data.size} bytes.")
         }
     }
 
+    private fun onDisconnect() {
+        // Ensures that isOpen can be trusted.
+        // https://fazecast.github.io/jSerialComm/javadoc/com/fazecast/jSerialComm/SerialPort.html#isOpen()
+        Logger.warning("Port $name unexpectedly disconnected.")
+        port.closePort()
+        _isOpen.value = false
+    }
+
+    // Read
+    private val _incomingBytes = MutableSharedFlow<ByteArray>(extraBufferCapacity = 64)
+    override val incomingBytes: SharedFlow<ByteArray> = _incomingBytes
+
+    private fun onDataAvailable() {
+        val available = port.bytesAvailable()
+        if (available <= 0) return
+
+        val buffer = ByteArray(available)
+        val bytesRead = port.readBytes(buffer, available)
+
+        if (bytesRead > 0) {
+            val success = _incomingBytes.tryEmit(buffer.copyOf(bytesRead))
+            if (!success) Logger.warning("Port $name failed to emit $bytesRead bytes.")
+        }
+    }
+    
 }
