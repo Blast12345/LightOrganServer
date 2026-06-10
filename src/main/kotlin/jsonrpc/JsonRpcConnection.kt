@@ -22,7 +22,6 @@ interface JsonRpcProtocol {
     suspend fun <T> sendRequest(method: String, params: Any?, responseType: TypeReference<T>, timeout: Duration = 5.seconds): T
     suspend fun respondWithSuccess(id: String, response: Any, timeout: Duration = 5.seconds)
     suspend fun respondWithFailure(id: String, code: Int, message: String, data: Any?, timeout: Duration = 5.seconds)
-
 }
 
 suspend inline fun <reified T> JsonRpcProtocol.sendRequest(
@@ -30,7 +29,6 @@ suspend inline fun <reified T> JsonRpcProtocol.sendRequest(
     params: Any? = null,
     timeout: Duration = 5.seconds,
 ): T = sendRequest(method, params, jacksonTypeRef<T>(), timeout)
-
 
 // Exceptions
 class RequestFailureException(
