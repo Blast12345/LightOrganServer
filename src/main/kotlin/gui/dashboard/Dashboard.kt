@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import gui.dashboard.tiles.color.ColorTile
 import gui.dashboard.tiles.spectrum.SpectrumTile
 import gui.tiles.audioInput.AudioInputTile
+import gui.tiles.gateway.GatewayTile
 
 @Preview
 @Composable
@@ -56,6 +57,11 @@ private fun MainRow(
         ColorTile(
             viewModel = viewModel.colorTileViewModel,
             modifier = Modifier.weight(1f).fillMaxSize()
+        )
+
+        GatewayTile(
+            viewModel = viewModel.gatewayTileViewModel,
+            modifier = Modifier.weight(1f).fillMaxHeight()
         )
 
     }

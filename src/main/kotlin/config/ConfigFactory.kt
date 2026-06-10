@@ -8,8 +8,10 @@ import dsp.filtering.FilterType
 import dsp.windowing.WindowType
 import gui.dashboard.tiles.spectrum.SpectrumGuiConfig
 import kotlinx.coroutines.flow.MutableStateFlow
+import lightOrgan.gateway.GatewayConfig
 import lightOrgan.spectrum.SpectrumConfig
 import music.WesternTuningSystem
+import serial.SerialFrameFormat
 import kotlin.time.Duration.Companion.milliseconds
 
 class ConfigFactory(
@@ -41,6 +43,10 @@ class ConfigFactory(
                 lowestFrequency = 0f,
                 highestFrequency = 160F,
             ),
+            gateway = GatewayConfig(
+                baudRate = 921600,
+                frameFormat = SerialFrameFormat.FORMAT_8N1,
+            )
         )
     }
 

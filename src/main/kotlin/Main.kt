@@ -10,9 +10,13 @@ import gui.dashboard.DashboardViewModel
 import gui.snackbar.SimpleSnackbar
 import lightOrgan.LightOrgan
 import lightOrgan.color.ColorManager
+import lightOrgan.gateway.GatewayManager
+import lightOrgan.gateway.RealGatewayManager
 import lightOrgan.input.AudioInputManager
 import lightOrgan.spectrum.SpectrumManager
 
+// ENHANCEMENT: Make state machines (e.g. managers) thread safe. Maybe create a state wrapper that uses a mutex.
+// ENHANCEMENT: Explore higher baud rates
 // ENHANCEMENT: Introduce Frequency type
 // ENHANCEMENT: Introduce SampleRate type (which exposes nyquistFrequency)
 // ENHANCEMENT: Introduce Magnitude and DBFS types (which can be converted back and forth)
@@ -21,14 +25,15 @@ fun main(args: Array<String>) {
     val inputManager = AudioInputManager()
     val spectrumManager = SpectrumManager()
     val colorManager = ColorManager()
+    val gatewayManager = RealGatewayManager()
 
-    val lightOrgan = LightOrgan(inputManager, spectrumManager, colorManager)
+    val lightOrgan = LightOrgan(inputManager, spectrumManager, colorManager, gatewayManager)
     lightOrgan.start()
 
     if (args.contains("--headless")) {
         launchHeadless(lightOrgan)
     } else {
-        launchGUI(inputManager, spectrumManager, colorManager)
+        launchGUI(inputManager, spectrumManager, colorManager, gatewayManager)
     }
 }
 
@@ -36,6 +41,7 @@ private fun launchGUI(
     inputManager: AudioInputManager,
     spectrumManager: SpectrumManager,
     colorManager: ColorManager,
+    gatewayManager: GatewayManager,
 ) = application {
     val minimumWidth = 1200
     val minimumHeight = 300
@@ -61,6 +67,7 @@ private fun launchGUI(
                         inputManager,
                         spectrumManager,
                         colorManager,
+                        gatewayManager,
                         snackbar.controller
                     )
                 }

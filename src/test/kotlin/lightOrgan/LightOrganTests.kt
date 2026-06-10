@@ -2,19 +2,18 @@ package lightOrgan
 
 import io.mockk.clearAllMocks
 import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import lightOrgan.color.ColorManagerFixture
+import lightOrgan.gateway.FakeGatewayManager
 import lightOrgan.input.AudioInputManagerFixture
 import lightOrgan.spectrum.SpectrumManagerFixture
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import server.Server
 import toolkit.monkeyTest.nextAudioFrame
 import toolkit.monkeyTest.nextFrequencyBins
 import toolkit.monkeyTest.nextStandardRgbColor
@@ -26,7 +25,7 @@ class LightOrganTests {
     private lateinit var inputManager: AudioInputManagerFixture
     private lateinit var spectrumManager: SpectrumManagerFixture
     private lateinit var colorManager: ColorManagerFixture
-    private val server: Server = mockk()
+    private lateinit var fakeGatewayManager: FakeGatewayManager
 
     private val audioFrame = nextAudioFrame()
     private val frequencyBins = nextFrequencyBins()
@@ -37,10 +36,10 @@ class LightOrganTests {
         inputManager = AudioInputManagerFixture.create()
         spectrumManager = SpectrumManagerFixture.create()
         colorManager = ColorManagerFixture.create()
+        fakeGatewayManager = FakeGatewayManager()
 
         every { spectrumManager.mock.calculate(audioFrame) } returns frequencyBins
         every { colorManager.mock.calculate(frequencyBins) } returns newColor
-        every { server.new(newColor) } returns Unit
     }
 
     @AfterEach
@@ -53,7 +52,7 @@ class LightOrganTests {
             inputManager = inputManager.mock,
             spectrumManager = spectrumManager.mock,
             colorManager = colorManager.mock,
-            server = server,
+            gatewayManager = fakeGatewayManager,
             scope = scope,
         )
     }
@@ -61,13 +60,14 @@ class LightOrganTests {
     @Test
     fun `when an audio frame is received, then a color is derived and broadcast`() = runTest {
         val sut = createSUT(backgroundScope)
+        fakeGatewayManager.connect()
         sut.start()
         runCurrent()
 
         inputManager.audioStream.emit(audioFrame.asLazySequence())
         runCurrent()
 
-        verify { server.new(newColor) }
+        assertEquals(newColor, fakeGatewayManager.gateway.lastColor)
     }
 
 }

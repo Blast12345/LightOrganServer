@@ -19,6 +19,11 @@ object Logger {
         println("${LogColor.Red.code}ERROR: $message${LogColor.Default.code}")
     }
 
+    fun error(message: String, throwable: Throwable) {
+        if (!enabled) return
+        this.error("$message | Exception: ${throwable.message}")
+    }
+
     fun debug(message: String) {
         if (!enabled) return
         println("${LogColor.Yellow.code}DEBUG: $message${LogColor.Yellow.code}")

@@ -41,6 +41,7 @@ class SpectrumManager(
     private val _frequencyBins = MutableStateFlow<FrequencyBins>(emptyList())
     val frequencyBins: StateFlow<FrequencyBins> = _frequencyBins.asStateFlow()
 
+    // WARNING: Discontinuous data will cause spectral artifacts
     fun calculate(audio: AudioFrame): FrequencyBins {
         val conditionedAudio = conditionAudio(audio)
         val preparedFrame = prepareFrame(conditionedAudio)
@@ -87,7 +88,7 @@ class SpectrumManager(
         val optimalFftLength = nextPowerOfTwo(samplesSizeForDesiredSpacing.toInt())
 
         val preparedAudio = audio
-            .let { updateBuffer(audio, sampleSize) }
+            .let { updateBuffer(it, sampleSize) }
             .let { applyWindowFunction(it) }
             .let { interpolate(it, optimalFftLength) }
 
