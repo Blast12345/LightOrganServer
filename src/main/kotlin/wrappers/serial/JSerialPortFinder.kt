@@ -9,7 +9,7 @@ class JSerialPortFinder : SerialPortFinder {
     override fun find(): List<SerialPort> {
         return com.fazecast.jSerialComm.SerialPort.getCommPorts().map {
             JSerialCommPort(
-                it.systemPortName,
+                port = it,
                 ConfigSingleton.gateway.baudRate,
                 ConfigSingleton.gateway.frameFormat
             )

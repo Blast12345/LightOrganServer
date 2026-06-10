@@ -15,12 +15,12 @@ import java.io.IOException
 import com.fazecast.jSerialComm.SerialPort as JSerialPort
 
 class JSerialCommPort(
-    override val name: String,
+    private val port: JSerialPort,
     override val baudRate: Int,
     override val frameFormat: SerialFrameFormat,
 ) : SerialPort() {
 
-    private val port: JSerialPort = JSerialPort.getCommPort(name)
+    override val name: String = port.systemPortName
 
     // Init
     init {
@@ -137,5 +137,5 @@ class JSerialCommPort(
             if (!success) Logger.warning("Port $name failed to emit $bytesRead bytes.")
         }
     }
-    
+
 }

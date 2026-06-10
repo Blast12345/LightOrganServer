@@ -15,9 +15,10 @@ class SerialGatewayConnector {
     // TODO: Should timeout be configurable?
     suspend fun connect(port: SerialPort, timeout: Duration = 100.milliseconds): Gateway {
         val connection = SerialJsonRpcConnection(port)
-        connection.connect()
 
         try {
+            connection.connect()
+            
             val response: GatewayIdentificationResponse = connection.sendRequest("gateway-identification-request", null, timeout)
 
             Logger.success("Port ${port.name} handshake successful.")
