@@ -1,5 +1,6 @@
 package lightOrgan.gateway.serial
 
+import annotations.SkipCoverage
 import jsonrpc.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -17,13 +18,19 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 
+interface SerialJsonRpcConnection : JsonRpcConnection {
+    val name: String
+    val baudRate: Int
+    val frameFormat: SerialFrameFormat
+}
+
 // ENHANCEMENT: Add the ability to receive and respond to requests.
 // This is a client that communicates over serial based on the JSON-RPC spec.
-class SerialJsonRpcConnection(
+class RealSerialJsonRpcConnection(
     private val port: SerialPort,
     private val generateId: () -> String = { UUID.randomUUID().toString() },
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-) : JsonRpcConnection {
+) : SerialJsonRpcConnection {
 
     private val pendingRequests = ConcurrentHashMap<String, CompletableDeferred<JsonRpcResponse>>()
     private val jsonMapper = jsonMapper {
@@ -31,9 +38,9 @@ class SerialJsonRpcConnection(
         propertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE)
     }
 
-    val name: String = port.name
-    val baudRate: Int = port.baudRate
-    val frameFormat: SerialFrameFormat = port.frameFormat
+    override val name: String = port.name
+    override val baudRate: Int = port.baudRate
+    override val frameFormat: SerialFrameFormat = port.frameFormat
 
     override val isConnected: StateFlow<Boolean> = port.isOpen
 
@@ -181,4 +188,9 @@ class SerialJsonRpcConnection(
         port.write(json)
     }
 
+}
+
+@SkipCoverage
+class SerialJsonRpcConnectionFactory {
+    fun create(port: SerialPort): SerialJsonRpcConnection = RealSerialJsonRpcConnection(port)
 }

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextGatewayDetails
+import kotlin.time.Duration.Companion.milliseconds
 
 class GatewayTests {
 
@@ -62,7 +63,7 @@ class GatewayTests {
         sut.broadcastColor(color)
 
         assertEquals(
-            FakeJsonRpcConnection.RecordedNotification("broadcast-color", BroadcastColor(255, 128, 0)),
+            FakeJsonRpcConnection.RecordedNotification("broadcast-color", BroadcastColor(255, 128, 0), timeout = 50.milliseconds),
             fakeConnection.notifications.first()
         )
     }

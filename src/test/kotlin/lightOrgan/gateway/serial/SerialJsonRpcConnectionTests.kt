@@ -26,14 +26,15 @@ class SerialJsonRpcConnectionTests {
 
     private lateinit var fakePort: FakeSerialPort
     private val generatedId = "request1"
+    private val timeout = 100.milliseconds
 
     @BeforeEach
     fun setupHappyPath() {
         fakePort = FakeSerialPort()
     }
 
-    private fun createSUT(scope: CoroutineScope): SerialJsonRpcConnection {
-        return SerialJsonRpcConnection(
+    private fun createSUT(scope: CoroutineScope): RealSerialJsonRpcConnection {
+        return RealSerialJsonRpcConnection(
             port = fakePort,
             generateId = { generatedId },
             scope = scope
@@ -101,7 +102,8 @@ class SerialJsonRpcConnectionTests {
 
         sut.sendNotification(
             method = "notification-a",
-            params = null
+            params = null,
+            timeout = timeout
         )
 
         assertEquals(
@@ -116,7 +118,8 @@ class SerialJsonRpcConnectionTests {
 
         sut.sendNotification(
             method = "notification-b",
-            params = TestObject(value = 123)
+            params = TestObject(value = 123),
+            timeout = timeout
         )
 
         assertEquals(
@@ -131,7 +134,7 @@ class SerialJsonRpcConnectionTests {
         fakePort.suspendWrites = true
 
         assertThrows<TimeoutCancellationException> {
-            sut.sendNotification("test", null, timeout = 500.milliseconds)
+            sut.sendNotification("test", null, timeout)
         }
     }
 
@@ -146,7 +149,8 @@ class SerialJsonRpcConnectionTests {
         val response = async {
             sut.sendRequest<TestObject>(
                 method = "request-a",
-                params = null
+                params = null,
+                timeout = timeout
             )
         }
         runCurrent()
@@ -174,7 +178,8 @@ class SerialJsonRpcConnectionTests {
         val response = async {
             sut.sendRequest<TestObject>(
                 method = "request-b",
-                params = TestObject(value = 321)
+                params = TestObject(value = 321),
+                timeout = timeout
             )
         }
         runCurrent()
@@ -210,7 +215,7 @@ class SerialJsonRpcConnectionTests {
 
         // Request
         val response = backgroundScope.async {
-            runCatching { sut.sendRequest<TestObject>("test", null) }
+            runCatching { sut.sendRequest<TestObject>("test", null, timeout) }
         }
         runCurrent()
 
@@ -234,7 +239,7 @@ class SerialJsonRpcConnectionTests {
 
         // Request
         val response = async {
-            sut.sendRequest<TestObject>("test", null)
+            sut.sendRequest<TestObject>("test", null, timeout)
         }
         runCurrent()
 
@@ -257,7 +262,7 @@ class SerialJsonRpcConnectionTests {
 
         // Request
         val response = backgroundScope.async {
-            runCatching { sut.sendRequest<TestObject>("test", null) }
+            runCatching { sut.sendRequest<TestObject>("test", null, timeout) }
         }
         runCurrent()
 
@@ -404,7 +409,7 @@ class SerialJsonRpcConnectionTests {
         val request = JsonRpcRequest(id = "req1", method = "respond-to-me", params = null)
 
         // Respond to the request
-        sut.respondWithSuccess(request.id, TestObject(value = 42))
+        sut.respondWithSuccess(request.id, TestObject(value = 42), timeout)
 
         // Assert
         assertEquals(
@@ -427,7 +432,8 @@ class SerialJsonRpcConnectionTests {
             id = "req1",
             code = -1,
             message = "Invalid request",
-            data = TestObject(value = 99)
+            data = TestObject(value = 99),
+            timeout = timeout
         )
 
         // Assert

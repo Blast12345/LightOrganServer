@@ -2,7 +2,7 @@ package lightOrgan.gateway.serial
 
 import jsonrpc.sendRequest
 import lightOrgan.gateway.Gateway
-import lightOrgan.gateway.RealGateway
+import lightOrgan.gateway.GatewayFactory
 import lightOrgan.gateway.SerialGatewayDetails
 import lightOrgan.gateway.models.GatewayIdentificationResponse
 import logging.Logger
@@ -10,20 +10,22 @@ import serial.SerialPort
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-class SerialGatewayConnector {
+class SerialGatewayConnector(
+    private val connectionFactory: SerialJsonRpcConnectionFactory = SerialJsonRpcConnectionFactory(),
+    private val gatewayFactory: GatewayFactory = GatewayFactory(),
+    private val timeout: Duration = 100.milliseconds
+) {
 
-    // TODO: Should timeout be configurable?
-    suspend fun connect(port: SerialPort, timeout: Duration = 100.milliseconds): Gateway {
-        val connection = SerialJsonRpcConnection(port)
+    suspend fun connect(port: SerialPort): Gateway {
+        val connection = connectionFactory.create(port)
+        connection.connect()
 
         try {
-            connection.connect()
-            
             val response: GatewayIdentificationResponse = connection.sendRequest("gateway-identification-request", null, timeout)
 
             Logger.success("Port ${port.name} handshake successful.")
 
-            return RealGateway(
+            return gatewayFactory.create(
                 details = SerialGatewayDetails(
                     macAddress = response.macAddress,
                     firmwareVersion = response.firmwareVersion,
