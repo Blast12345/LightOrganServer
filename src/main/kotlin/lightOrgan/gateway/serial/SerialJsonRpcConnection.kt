@@ -5,8 +5,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import logging.Logger
 import serial.SerialFrameFormat
 import serial.SerialPort
@@ -27,7 +25,6 @@ class SerialJsonRpcConnection(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) : JsonRpcConnection {
 
-    private val writeMutex = Mutex()
     private val pendingRequests = ConcurrentHashMap<String, CompletableDeferred<JsonRpcResponse>>()
     private val jsonMapper = jsonMapper {
         addModule(kotlinModule())
@@ -40,11 +37,10 @@ class SerialJsonRpcConnection(
 
     override val isConnected: StateFlow<Boolean> = port.isOpen
 
-    // TODO: Implement incoming data handler
-    private val _incomingRequests = MutableSharedFlow<JsonRpcRequest>() // TODO: Add buffer or tryEmit won't work
+    private val _incomingRequests = MutableSharedFlow<JsonRpcRequest>(extraBufferCapacity = 8)
     override val incomingRequests: Flow<JsonRpcRequest> = _incomingRequests
 
-    private val _incomingNotifications = MutableSharedFlow<JsonRpcNotification>()
+    private val _incomingNotifications = MutableSharedFlow<JsonRpcNotification>(extraBufferCapacity = 8)
     override val incomingNotifications: Flow<JsonRpcNotification> = _incomingNotifications
 
     override suspend fun connect() {
@@ -65,6 +61,15 @@ class SerialJsonRpcConnection(
         pendingRequests.clear()
     }
 
+    override suspend fun sendNotification(method: String, params: Any?, timeout: Duration) {
+        val notification = JsonRpcNotification(
+            method = method,
+            params = params?.let { jsonMapper.valueToTree(it) }
+        )
+
+        writeLine(notification, timeout)
+    }
+
     override suspend fun <T> sendRequest(method: String, params: Any?, responseType: TypeReference<T>, timeout: Duration): T {
         val request = JsonRpcRequest(
             id = generateId(),
@@ -83,20 +88,11 @@ class SerialJsonRpcConnection(
 
             return when (response) {
                 is JsonRpcSuccess -> jsonMapper.treeToValue(response.result, responseType)
-                is JsonRpcFailure -> throw SerialRpcException(response.error)
+                is JsonRpcFailure -> throw RequestFailureException(response.error.code, response.error.message, response.error.data)
             }
         } finally {
             pendingRequests.remove(request.id)
         }
-    }
-
-    override suspend fun sendNotification(method: String, params: Any?, timeout: Duration) {
-        val notification = JsonRpcNotification(
-            method = method,
-            params = params?.let { jsonMapper.valueToTree(it) }
-        )
-
-        writeLine(notification, timeout)
     }
 
     override suspend fun respondWithSuccess(id: String, response: Any, timeout: Duration) {
@@ -151,7 +147,6 @@ class SerialJsonRpcConnection(
             return
         }
 
-        // TODO: Try emit or throw? Or warn?
         when (message) {
             is JsonRpcSuccess -> pendingRequests[message.id]?.complete(message)
             is JsonRpcFailure -> pendingRequests[message.id]?.complete(message)
@@ -176,7 +171,6 @@ class SerialJsonRpcConnection(
     }
 
     // Helpers
-    // TODO: Write test to ensure requests are thread safe
     private suspend fun writeLine(message: JsonRpcMessage, timeout: Duration) {
         withTimeout(timeout) { writeLine(message) }
     }
@@ -184,12 +178,7 @@ class SerialJsonRpcConnection(
     private suspend fun writeLine(message: JsonRpcMessage) {
         val json = jsonMapper.writeValueAsBytes(message) + '\n'.code.toByte()
 
-        // Only one envelope should be written at a time or the data will be jumbled
-        writeMutex.withLock { port.write(json) }
+        port.write(json)
     }
-
-    class SerialRpcException(
-        val error: JsonRpcError
-    ) : Exception(error.message)
 
 }

@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import logging.Logger
 import serial.SerialFrameFormat
@@ -21,6 +23,7 @@ class JSerialCommPort(
 ) : SerialPort {
 
     private val port: JSerialPort = JSerialPort.getCommPort(name)
+    private val writeMutex = Mutex()
 
     private val _isOpen = MutableStateFlow(port.isOpen)
     override val isOpen: StateFlow<Boolean> = _isOpen
@@ -129,12 +132,14 @@ class JSerialCommPort(
 
     // Write
     override suspend fun write(data: ByteArray) = withContext(Dispatchers.IO) {
-        check(port.isOpen) { "Port $name is not open." }
+        writeMutex.withLock {
+            check(port.isOpen) { "Port $name is not open." }
 
-        val bytesWritten = port.writeBytes(data, data.size)
+            val bytesWritten = port.writeBytes(data, data.size)
 
-        if (bytesWritten != data.size) {
-            throw IOException("Port $name wrote $bytesWritten of ${data.size} bytes.")
+            if (bytesWritten != data.size) {
+                throw IOException("Port $name wrote $bytesWritten of ${data.size} bytes.")
+            }
         }
     }
 

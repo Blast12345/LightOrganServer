@@ -1,28 +1,42 @@
 package serial
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import toolkit.monkeyTest.nextInt
 import toolkit.monkeyTest.nextSerialFrameFormat
 import toolkit.monkeyTest.nextString
 
 class FakeSerialPort : SerialPort {
+
     override val name: String = nextString("name")
     override val baudRate: Int = nextInt()
     override val frameFormat: SerialFrameFormat = nextSerialFrameFormat()
-    override val isOpen: StateFlow<Boolean> = MutableStateFlow(false)
-    override val incomingBytes: Flow<ByteArray> = MutableStateFlow(ByteArray(0))
+    override val isOpen = MutableStateFlow(false)
 
     override suspend fun open() {
-        TODO("Not yet implemented")
+        isOpen.value = true
     }
 
     override suspend fun close() {
-        TODO("Not yet implemented")
+        isOpen.value = false
     }
 
+    // Write
+    var suspendWrites = false
+    val writtenBytes = mutableListOf<ByteArray>()
+    val writtenLines: List<String> get() = writtenBytes.map { String(it).trim() }
+
     override suspend fun write(data: ByteArray) {
-        TODO("Not yet implemented")
+        if (suspendWrites) awaitCancellation()
+        writtenBytes.add(data)
     }
+
+    // Read
+    override val incomingBytes = MutableSharedFlow<ByteArray>()
+
+    suspend fun receiveLine(json: String) {
+        incomingBytes.emit((json + "\n").toByteArray())
+    }
+
 }

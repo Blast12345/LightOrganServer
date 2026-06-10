@@ -13,6 +13,8 @@ interface SerialPort {
 
     suspend fun open()
     suspend fun close()
+
+    // WARNING: A mutex or equivalent should be used to prevent concurrent writes from interleaving data
     suspend fun write(data: ByteArray)
 }
 

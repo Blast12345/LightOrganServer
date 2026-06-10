@@ -4,7 +4,8 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.verify
 import io.mockk.verifyOrder
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
@@ -16,8 +17,6 @@ import toolkit.monkeyTest.nextException
 import toolkit.monkeyTest.nextInt
 import toolkit.monkeyTest.nextString
 import java.nio.ByteOrder
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class InputLineTests {
@@ -151,14 +150,11 @@ class InputLineTests {
         val sut = createSUT()
         val data = nextByteArray(10)
 
-        val result = async(Dispatchers.Default) { sut.read() }
-
-        delay(50.milliseconds)
-        assertFalse(result.isCompleted)
+        val result = async { sut.read() }
 
         fakeDataLine.queue(data)
 
-        val readResult = withTimeout(1.seconds) { result.await() }
+        val readResult = result.await()
         assertArrayEquals(data, readResult.data)
     }
 

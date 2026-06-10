@@ -1,5 +1,7 @@
 package wrappers.sound
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.nio.ByteOrder
 import javax.sound.sampled.TargetDataLine
 
@@ -36,8 +38,7 @@ class InputLine(
     }
 
     // Reading
-    @Suppress("RedundantSuspendModifier")
-    suspend fun read(): ReadResult {
+    suspend fun read(): ReadResult = withContext(Dispatchers.IO) {
         val frameSize = dataLine.format.frameSize
         require(frameSize > 0) { "Cannot read: audio format has no valid frame size ($frameSize)" }
 
@@ -48,7 +49,7 @@ class InputLine(
         val remainingFrames = ByteArray(remaining)
         dataLine.read(remainingFrames, 0, remaining)
 
-        return ReadResult(firstFrame + remainingFrames, (frameSize + remaining) >= bufferSize)
+        ReadResult(firstFrame + remainingFrames, (frameSize + remaining) >= bufferSize)
     }
 
     class ReadResult(
