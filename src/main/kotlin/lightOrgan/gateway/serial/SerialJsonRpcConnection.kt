@@ -24,8 +24,6 @@ interface SerialJsonRpcConnection : JsonRpcConnection {
     val frameFormat: SerialFrameFormat
 }
 
-// ENHANCEMENT: Add the ability to receive and respond to requests.
-// This is a client that communicates over serial based on the JSON-RPC spec.
 class RealSerialJsonRpcConnection(
     private val port: SerialPort,
     private val generateId: () -> String = { UUID.randomUUID().toString() },
