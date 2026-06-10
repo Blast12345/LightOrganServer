@@ -21,7 +21,7 @@ object Logger {
 
     fun error(message: String, throwable: Throwable) {
         if (!enabled) return
-        this.error("$message >>> ${throwable.message}")
+        this.error("$message | Exception: ${throwable.message}")
     }
 
     fun debug(message: String) {
