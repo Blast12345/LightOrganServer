@@ -4,15 +4,38 @@ import color.*
 import dsp.peakExtraction.SpectralPeak
 import dsp.peakExtraction.SpectralPeaks
 import dsp.peakExtraction.combinedMagnitude
-import math.geometry.Angle
 import math.normalization.UnitInterval
 import math.perception.StevensPowerLaw
 import math.physics.Light
+import math.smoothing.ExponentialSmoother
+import math.smoothing.PeakSmoother
 import music.TuningSystem
 import music.WesternTuningSystem
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+
+
+class LightExponentialSmoother(
+    private val halfLife: Duration
+) {
+
+    private val smoother = ExponentialSmoother(
+        halfLife = halfLife,
+        zero = Light(),
+        scale = { light, factor -> light * factor },
+        add = { a, b -> a + b }
+    )
+
+    fun smooth(light: Light): Light {
+        return smoother.smooth(light)
+    }
+
+}
 
 class ColorWheelAlgorithm(
     private val tuning: TuningSystem = WesternTuningSystem(),
+    private val lightSmoother: LightExponentialSmoother = LightExponentialSmoother(75.milliseconds),
+    private val brightnessSmoother: PeakSmoother = PeakSmoother(20.milliseconds)
 ) : ColorAlgorithm {
 
     override fun calculate(spectralPeaks: SpectralPeaks): StandardRgbColor {
@@ -21,38 +44,45 @@ class ColorWheelAlgorithm(
 
         // we point the lights at a virtual wall and mix them together
         val combinedLight = lights.fold(Light()) { sum, current -> sum + current }
+        val smoothedLight = lightSmoother.smooth(combinedLight)
 
         // we can calculate the chromaticity - color, independent of brightness
-        val combinedChromaticity = combinedLight.chromaticity
+        val combinedChromaticity = smoothedLight.chromaticity
 
         // we then calculate the overall loudness of the sound
         val subjectiveLoudness = StevensPowerLaw.LOUDNESS_3KHZ_TONE.perceivedIntensity(spectralPeaks.combinedMagnitude)
-        val brightness = UnitInterval.clamped(subjectiveLoudness)
+        val smoothedBrightness = brightnessSmoother.smooth(subjectiveLoudness)
+        val brightness = UnitInterval.clamped(smoothedBrightness)
 
         // finally, we create a color using the hue and saturation of the combined light
         // and make it as bright as the sound is loud
         return when (combinedChromaticity) {
-            is Chromaticity.Chromatic -> HsbColor<StandardRGB>(combinedChromaticity.hue, combinedChromaticity.saturation, brightness).toRgb()
-            is Chromaticity.Achromatic -> HsbColor<StandardRGB>(Angle.zero, UnitInterval.zero, brightness).toRgb()
             null -> StandardRgbColors.Black
+            else -> HsbColor.from<StandardRGB>(combinedChromaticity, brightness).toRgb()
         }
     }
 
     private fun createLight(spectralPeak: SpectralPeak): Light {
+        // HSB is conventionally a perceptual color space, but light is combined in linear space.
         val colorForHue = HsbColor<StandardRGB>(
             hue = tuning.getPositionInOctave(spectralPeak.frequency),
             saturation = UnitInterval.one,
             brightness = UnitInterval.one
         ).toRgb().toLinear()
 
+        // If the input has an equal loudness contour applied, then a Stevens Power Law of 3 kHz should apply cleanly to all frequencies.
+        // If no equal loudness contour is applied, then this is still the most straightforward way of achieving perceived loudness.
         val subjectiveLoudness = StevensPowerLaw.LOUDNESS_3KHZ_TONE.perceivedIntensity(spectralPeak.magnitude.toDouble())
+
+        // We percieve the final combination of light, not the individual components, so we mix using objective brightness (i.e. model real world physics)
+        // 5° extended-field is the Stevens condition matching a steadily-lit wall (vs. point sources or brief flashes).
         val objectiveBrightness = StevensPowerLaw.BRIGHTNESS_5DEG_IN_DARK.stimulusIntensity(subjectiveLoudness)
 
         return Light(
-            colorForHue.red.value * objectiveBrightness,
-            colorForHue.green.value * objectiveBrightness,
-            colorForHue.blue.value * objectiveBrightness,
-        )
+            colorForHue.red.value,
+            colorForHue.green.value,
+            colorForHue.blue.value,
+        ).times(objectiveBrightness)
     }
 
 }

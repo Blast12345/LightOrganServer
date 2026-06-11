@@ -12,6 +12,7 @@ class ColorWheelAlgorithmIntegrationTests {
 
     private val westernTuning = WesternTuningSystem()
     private val cFrequency = westernTuning.getFrequency(westernTuning.C, octave = 4)
+    private val dFrequency = westernTuning.getFrequency(westernTuning.D, octave = 4)
     private val fSharpFrequency = westernTuning.getFrequency(westernTuning.F_SHARP, octave = 4)
     private val halfLoudness = loudnessToMagnitude(0.5)
     private val fullLoudness = loudnessToMagnitude(1.0)
@@ -87,6 +88,19 @@ class ColorWheelAlgorithmIntegrationTests {
         assertEquals(1.0, actual.red.value, 0.001)
         assertEquals(1.0, actual.green.value, 0.001)
         assertEquals(1.0, actual.blue.value, 0.001)
+    }
+
+    @Test
+    fun `given C and D notes each at full loudness, then orange at full brightness is returned`() {
+        val sut = createSUT()
+        val peak1 = SpectralPeak(cFrequency, fullLoudness) // C is red
+        val peak2 = SpectralPeak(dFrequency, fullLoudness) // D is yellow
+
+        val actual = sut.calculate(listOf(peak1, peak2)) // They should arrive at orange
+
+        assertEquals(1.0, actual.red.value, 0.001)
+        assertEquals(0.5, actual.green.value, 0.001)
+        assertEquals(0.0, actual.blue.value, 0.001)
     }
 
 }
