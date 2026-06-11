@@ -1,3 +1,5 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 plugins {
     val kotlinVersion = "2.2.21"
 
@@ -32,13 +34,33 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-compose.desktop {
-    application {
-        mainClass = "MainKt"
-    }
-}
-
+// Tests
 tasks.test {
     useJUnitPlatform()
     jvmArgs("-Djunit.jupiter.extensions.autodetection.enabled=true")
+}
+
+// Compilation
+// ENHANCEMENT: Automate package version
+compose.desktop {
+    application {
+        mainClass = "MainKt"
+
+        nativeDistributions {
+            packageName = "SynestheticServer"
+            packageVersion = "1.0.0"
+
+            targetFormats(TargetFormat.Msi, TargetFormat.Dmg, TargetFormat.Deb)
+
+            macOS {
+                // Options for macOS
+            }
+            windows {
+                // Options for Windows
+            }
+            linux {
+                // Options for Linux
+            }
+        }
+    }
 }
