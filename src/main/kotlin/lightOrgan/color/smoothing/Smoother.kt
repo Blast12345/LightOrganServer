@@ -1,6 +1,7 @@
-package math.smoothing
+package lightOrgan.color.smoothing
 
 import math.averages.ExponentialMovingAverage
+import math.envelopes.EnvelopeFollower
 import math.physics.Light
 import kotlin.time.Duration
 import kotlin.time.TimeSource
@@ -8,7 +9,6 @@ import kotlin.time.TimeSource
 fun interface Smoother<T> {
     fun smooth(value: T): T
 }
-
 
 object Smoothers {
 
@@ -24,6 +24,15 @@ object Smoothers {
         )
 
         return Smoother(average::update)
+    }
+
+    fun scalarEnvelope(
+        attack: Duration,
+        release: Duration,
+        timeSource: TimeSource = TimeSource.Monotonic
+    ): Smoother<Double> {
+        val follower = EnvelopeFollower(attack, release, timeSource)
+        return Smoother(follower::update)
     }
 
 }

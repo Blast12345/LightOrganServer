@@ -1,8 +1,9 @@
-package math.smoothing
+package lightOrgan.color.smoothing
 
 import kotlin.math.pow
 import kotlin.time.Duration
 
+// TODO: Delete me
 class PeakSmoother(
     private val halfLife: Duration
 ) : Smoother<Double> {

@@ -4,12 +4,11 @@ import color.*
 import dsp.peakExtraction.SpectralPeak
 import dsp.peakExtraction.SpectralPeaks
 import dsp.peakExtraction.combinedMagnitude
+import lightOrgan.color.smoothing.Smoother
+import lightOrgan.color.smoothing.Smoothers
 import math.normalization.UnitInterval
 import math.perception.StevensPowerLaw
 import math.physics.Light
-import math.smoothing.PeakSmoother
-import math.smoothing.Smoother
-import math.smoothing.Smoothers
 import music.TuningSystem
 import music.WesternTuningSystem
 import kotlin.time.Duration.Companion.milliseconds
@@ -17,7 +16,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class ColorWheelAlgorithm(
     private val tuning: TuningSystem = WesternTuningSystem(),
     private val lightSmoother: Smoother<Light> = Smoothers.lightExponentialMovingAverage(75.milliseconds),
-    private val brightnessSmoother: Smoother<Double> = PeakSmoother(20.milliseconds)
+    private val brightnessSmoother: Smoother<Double> = Smoothers.scalarEnvelope(attack = 0.milliseconds, release = 20.milliseconds)
 ) : ColorAlgorithm {
 
     override fun calculate(spectralPeaks: SpectralPeaks): StandardRgbColor {
@@ -33,7 +32,8 @@ class ColorWheelAlgorithm(
 
         // we then calculate the overall loudness of the sound
         val subjectiveLoudness = StevensPowerLaw.LOUDNESS_3KHZ_TONE.perceivedIntensity(spectralPeaks.combinedMagnitude)
-        val smoothedBrightness = brightnessSmoother.smooth(subjectiveLoudness)
+        val midclamp = UnitInterval.clamped(subjectiveLoudness).value
+        val smoothedBrightness = brightnessSmoother.smooth(midclamp)
         val brightness = UnitInterval.clamped(smoothedBrightness)
 
         // finally, we create a color using the hue and saturation of the combined light

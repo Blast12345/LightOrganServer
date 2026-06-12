@@ -1,7 +1,6 @@
 package lightOrgan.color.smoothing
 
 import math.physics.Light
-import math.smoothing.Smoothers
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.time.Duration.Companion.milliseconds
