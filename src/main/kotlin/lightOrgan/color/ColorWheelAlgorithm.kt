@@ -4,8 +4,6 @@ import color.*
 import dsp.peakExtraction.SpectralPeak
 import dsp.peakExtraction.SpectralPeaks
 import dsp.peakExtraction.combinedMagnitude
-import lightOrgan.color.smoothing.Smoother
-import lightOrgan.color.smoothing.Smoothers
 import math.normalization.UnitInterval
 import math.perception.StevensPowerLaw
 import math.physics.Light
@@ -32,8 +30,7 @@ class ColorWheelAlgorithm(
 
         // we then calculate the overall loudness of the sound
         val subjectiveLoudness = StevensPowerLaw.LOUDNESS_3KHZ_TONE.perceivedIntensity(spectralPeaks.combinedMagnitude)
-        val midclamp = UnitInterval.clamped(subjectiveLoudness).value
-        val smoothedBrightness = brightnessSmoother.smooth(midclamp)
+        val smoothedBrightness = brightnessSmoother.smooth(subjectiveLoudness)
         val brightness = UnitInterval.clamped(smoothedBrightness)
 
         // finally, we create a color using the hue and saturation of the combined light

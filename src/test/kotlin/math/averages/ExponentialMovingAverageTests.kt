@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import toolkit.monkeyTest.nextDuration
 import kotlin.math.pow
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -12,7 +13,7 @@ import kotlin.time.TestTimeSource
 class ExponentialMovingAverageTest {
 
     private val timeSource = TestTimeSource()
-    private val halfLife: Duration = 100.milliseconds
+    private val halfLife: Duration = nextDuration()
 
     private fun averageOfDoubles(halfLife: Duration = this.halfLife) = ExponentialMovingAverage<Double>(
         halfLife = halfLife,
@@ -22,11 +23,6 @@ class ExponentialMovingAverageTest {
     )
 
     // Init
-    @Test
-    fun `when half life is greater than zero, init`() {
-        averageOfDoubles(halfLife)
-    }
-
     @Test
     fun `when half life is zero, throw`() {
         assertThrows<IllegalArgumentException> {
@@ -65,41 +61,7 @@ class ExponentialMovingAverageTest {
         assertEquals(update2, sut.average!!, 1e-6)
     }
 
-    // Basic decay
-    @Test
-    fun `decays along the exponential curve at fractional half-lives`() {
-        val sut = averageOfDoubles()
-        sut.update(1.0)
-
-        timeSource += (halfLife / 2)
-        val actual = sut.update(0.0)
-
-        assertEquals(2.0.pow(-0.5), actual, 1e-9)
-    }
-
-    @Test
-    fun `decays halfway to a new value after one half-life`() {
-        val sut = averageOfDoubles()
-        sut.update(1.0)
-
-        timeSource += halfLife
-        val actual = sut.update(0.0)
-
-        assertEquals(0.5, actual, 1e-9)
-    }
-
-    @Test
-    fun `decays along the exponential curve beyond one half-life`() {
-        val sut = averageOfDoubles()
-        sut.update(1.0)
-
-        timeSource += (halfLife * 2)
-        val actual = sut.update(0.0)
-
-        assertEquals(0.25, actual, 1e-9)
-    }
-
-    // Basic rise
+    // Rise
     @Test
     fun `rises along the exponential curve at fractional half-lives`() {
         val sut = averageOfDoubles()
@@ -133,6 +95,40 @@ class ExponentialMovingAverageTest {
         assertEquals(0.75, actual, 1e-9)
     }
 
+    // Fall
+    @Test
+    fun `falls along the exponential curve at fractional half-lives`() {
+        val sut = averageOfDoubles()
+        sut.update(1.0)
+
+        timeSource += (halfLife / 2)
+        val actual = sut.update(0.0)
+
+        assertEquals(2.0.pow(-0.5), actual, 1e-9)
+    }
+
+    @Test
+    fun `falls halfway to a new value after one half-life`() {
+        val sut = averageOfDoubles()
+        sut.update(1.0)
+
+        timeSource += halfLife
+        val actual = sut.update(0.0)
+
+        assertEquals(0.5, actual, 1e-9)
+    }
+
+    @Test
+    fun `falls along the exponential curve beyond one half-life`() {
+        val sut = averageOfDoubles()
+        sut.update(1.0)
+
+        timeSource += (halfLife * 2)
+        val actual = sut.update(0.0)
+
+        assertEquals(0.25, actual, 1e-9)
+    }
+
     // Convergence
     @Test
     fun `converges to a sustained new value`() {
@@ -153,13 +149,13 @@ class ExponentialMovingAverageTest {
         val sut = averageOfDoubles()
         sut.update(1.0)
 
-        timeSource += 10.milliseconds
+        timeSource += nextDuration()
         val observation1 = sut.update(1.0)
 
-        timeSource += 50.milliseconds
+        timeSource += nextDuration()
         val observation2 = sut.update(1.0)
 
-        timeSource += 25.milliseconds
+        timeSource += nextDuration()
         val observation3 = sut.update(1.0)
 
         assertEquals(1.0, observation1, 1e-9)

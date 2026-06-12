@@ -1,4 +1,4 @@
-package lightOrgan.color.smoothing
+package lightOrgan.color
 
 import math.averages.ExponentialMovingAverage
 import math.envelopes.EnvelopeFollower

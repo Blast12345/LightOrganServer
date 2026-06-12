@@ -23,7 +23,9 @@ class ColorWheelAlgorithmIntegrationTests {
 
     private fun createSUT(): ColorWheelAlgorithm {
         return ColorWheelAlgorithm(
-            tuning = westernTuning
+            tuning = westernTuning,
+            lightSmoother = { it },
+            brightnessSmoother = { it }
         )
     }
 
