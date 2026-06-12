@@ -10,15 +10,16 @@ import kotlin.time.TestTimeSource
 class SmootherTests {
 
     private val timeSource = TestTimeSource()
+    private val halfLife = nextDuration()
     private val attackHalfLife = nextDuration()
     private val releaseHalfLife = nextDuration()
 
     @Test
     fun `smooth light channels by the half-life`() {
-        val sut = Smoothers.lightExponentialMovingAverage(releaseHalfLife, timeSource)
+        val sut = Smoothers.lightExponentialMovingAverage(halfLife, timeSource)
         sut.smooth(Light(1.0, 0.0, 0.5))
 
-        timeSource += releaseHalfLife
+        timeSource += halfLife
         val actual = sut.smooth(Light(0.0, 1.0, 0.5))
 
         assertEquals(0.5, actual.red, 1e-9)
