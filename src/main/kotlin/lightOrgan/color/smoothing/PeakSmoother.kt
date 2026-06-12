@@ -5,12 +5,12 @@ import kotlin.time.Duration
 
 class PeakSmoother(
     private val halfLife: Duration
-) {
+) : Smoother<Double> {
 
     private var current = 0.0
     private var lastTimestamp: Long? = null
 
-    fun smooth(value: Double): Double {
+    override fun smooth(value: Double): Double {
         val now = System.currentTimeMillis()
         val elapsed = lastTimestamp?.let { now - it } ?: 0L
         lastTimestamp = now

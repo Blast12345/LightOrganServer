@@ -7,35 +7,17 @@ import dsp.peakExtraction.combinedMagnitude
 import math.normalization.UnitInterval
 import math.perception.StevensPowerLaw
 import math.physics.Light
-import math.smoothing.ExponentialSmoother
 import math.smoothing.PeakSmoother
+import math.smoothing.Smoother
+import math.smoothing.Smoothers
 import music.TuningSystem
 import music.WesternTuningSystem
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-
-
-class LightExponentialSmoother(
-    private val halfLife: Duration
-) {
-
-    private val smoother = ExponentialSmoother(
-        halfLife = halfLife,
-        zero = Light(),
-        scale = { light, factor -> light * factor },
-        add = { a, b -> a + b }
-    )
-
-    fun smooth(light: Light): Light {
-        return smoother.smooth(light)
-    }
-
-}
 
 class ColorWheelAlgorithm(
     private val tuning: TuningSystem = WesternTuningSystem(),
-    private val lightSmoother: LightExponentialSmoother = LightExponentialSmoother(75.milliseconds),
-    private val brightnessSmoother: PeakSmoother = PeakSmoother(20.milliseconds)
+    private val lightSmoother: Smoother<Light> = Smoothers.lightExponentialMovingAverage(75.milliseconds),
+    private val brightnessSmoother: Smoother<Double> = PeakSmoother(20.milliseconds)
 ) : ColorAlgorithm {
 
     override fun calculate(spectralPeaks: SpectralPeaks): StandardRgbColor {
