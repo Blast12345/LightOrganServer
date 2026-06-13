@@ -12,6 +12,8 @@ fun interface Smoother<T> {
 
 object Smoothers {
 
+    fun <T> none(): Smoother<T> = Smoother { it }
+
     fun lightExponentialMovingAverage(
         halfLife: Duration,
         timeSource: TimeSource = TimeSource.Monotonic
@@ -26,7 +28,7 @@ object Smoothers {
         return Smoother(average::update)
     }
 
-    fun scalarEnvelope(
+    fun envelopeFollower(
         attack: Duration,
         release: Duration,
         timeSource: TimeSource = TimeSource.Monotonic

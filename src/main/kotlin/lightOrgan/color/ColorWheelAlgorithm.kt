@@ -14,8 +14,10 @@ import kotlin.time.Duration.Companion.milliseconds
 class ColorWheelAlgorithm(
     private val tuning: TuningSystem = WesternTuningSystem(),
     private val lightSmoother: Smoother<Light> = Smoothers.lightExponentialMovingAverage(75.milliseconds),
-    private val brightnessSmoother: Smoother<Double> = Smoothers.scalarEnvelope(attack = 0.milliseconds, release = 20.milliseconds)
+    private val brightnessSmoother: Smoother<Double> = Smoothers.envelopeFollower(attack = 0.milliseconds, release = 10.milliseconds)
 ) : ColorAlgorithm {
+
+    private var chromaticity: Chromaticity = Chromaticity.Achromatic
 
     override fun calculate(spectralPeaks: SpectralPeaks): StandardRgbColor {
         // think of each peak as its own light source
@@ -26,7 +28,8 @@ class ColorWheelAlgorithm(
         val smoothedLight = lightSmoother.smooth(combinedLight)
 
         // we can calculate the chromaticity - color, independent of brightness
-        val combinedChromaticity = smoothedLight.chromaticity
+        // when the sound stops, we hold its last color so the brightness release fades through it
+        smoothedLight.chromaticity?.let { chromaticity = it }
 
         // we then calculate the overall loudness of the sound
         val subjectiveLoudness = StevensPowerLaw.LOUDNESS_3KHZ_TONE.perceivedIntensity(spectralPeaks.combinedMagnitude)
@@ -35,10 +38,7 @@ class ColorWheelAlgorithm(
 
         // finally, we create a color using the hue and saturation of the combined light
         // and make it as bright as the sound is loud
-        return when (combinedChromaticity) {
-            null -> StandardRgbColors.Black
-            else -> HsbColor.from<StandardRGB>(combinedChromaticity, brightness).toRgb()
-        }
+        return HsbColor.from<StandardRGB>(chromaticity, brightness).toRgb()
     }
 
     private fun createLight(spectralPeak: SpectralPeak): Light {

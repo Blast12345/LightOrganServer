@@ -29,7 +29,7 @@ class SmootherTests {
 
     @Test
     fun `smooth a scalar with the attack and release half-lives`() {
-        val sut = Smoothers.scalarEnvelope(attackHalfLife, releaseHalfLife, timeSource)
+        val sut = Smoothers.envelopeFollower(attackHalfLife, releaseHalfLife, timeSource)
         sut.smooth(0.0)
 
         timeSource += attackHalfLife
