@@ -46,7 +46,6 @@ data class Light(
         blue = blue + other.blue
     )
 
-    // TODO: Test me?
     operator fun times(factor: Double) = Light(
         red = red * factor,
         green = green * factor,
