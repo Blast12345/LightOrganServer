@@ -46,4 +46,10 @@ data class Light(
         blue = blue + other.blue
     )
 
+    operator fun times(factor: Double) = Light(
+        red = red * factor,
+        green = green * factor,
+        blue = blue * factor
+    )
+
 }

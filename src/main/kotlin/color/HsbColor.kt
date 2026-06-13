@@ -11,6 +11,17 @@ data class HsbColor<S : RgbColorSpace>(
     val brightness: UnitInterval
 ) {
 
+    companion object {
+        fun <S : RgbColorSpace> from(
+            chromaticity: Chromaticity,
+            brightness: UnitInterval
+        ): HsbColor<S> = when (chromaticity) {
+            // achromatic light has no hue; choosing zero for sake of simplicity
+            is Chromaticity.Achromatic -> HsbColor(Angle.zero, UnitInterval.zero, brightness)
+            is Chromaticity.Chromatic -> HsbColor(chromaticity.hue, chromaticity.saturation, brightness)
+        }
+    }
+
     fun toRgb(): RgbColor<S> {
         val chroma = brightness.value * saturation.value
         val hueSegment = hue.degrees / 60.0
