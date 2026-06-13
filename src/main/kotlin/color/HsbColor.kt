@@ -16,9 +16,9 @@ data class HsbColor<S : RgbColorSpace>(
             chromaticity: Chromaticity,
             brightness: UnitInterval
         ): HsbColor<S> = when (chromaticity) {
-            is Chromaticity.Chromatic -> HsbColor(chromaticity.hue, chromaticity.saturation, brightness)
             // achromatic light has no hue; choosing zero for sake of simplicity
             is Chromaticity.Achromatic -> HsbColor(Angle.zero, UnitInterval.zero, brightness)
+            is Chromaticity.Chromatic -> HsbColor(chromaticity.hue, chromaticity.saturation, brightness)
         }
     }
 
