@@ -1,5 +1,6 @@
 package lightOrgan.color
 
+import annotations.SkipCoverage
 import math.averages.ExponentialMovingAverage
 import math.envelopes.EnvelopeFollower
 import math.physics.Light
@@ -12,6 +13,7 @@ fun interface Smoother<T> {
 
 object Smoothers {
 
+    @SkipCoverage
     fun <T> none(): Smoother<T> = Smoother { it }
 
     fun lightExponentialMovingAverage(

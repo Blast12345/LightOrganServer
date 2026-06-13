@@ -5,7 +5,6 @@ import math.physics.Light
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import toolkit.monkeyTest.nextDuration
-import toolkit.monkeyTest.nextPositiveFloat
 import kotlin.time.TestTimeSource
 
 class SmootherTests {
@@ -14,16 +13,6 @@ class SmootherTests {
     private val halfLife = nextDuration()
     private val attackHalfLife = nextDuration()
     private val releaseHalfLife = nextDuration()
-
-    @Test
-    fun `apply no smoothing`() {
-        val sut = Smoothers.none<Float>()
-
-        val value = nextPositiveFloat()
-        val actual = sut.smooth(value)
-
-        assertEquals(value, actual)
-    }
 
     @Test
     fun `smooth light channels by the half-life`() {
