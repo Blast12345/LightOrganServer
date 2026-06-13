@@ -21,13 +21,13 @@ class ColorWheelAlgorithmIntegrationTests {
     private val fullLoudness = loudnessToMagnitude(1.0)
 
     private val redPeak = SpectralPeak(cFrequency, fullLoudness)
-    private val tealPeak = SpectralPeak(fSharpFrequency, fullLoudness)
+    private val cyanPeak = SpectralPeak(fSharpFrequency, fullLoudness)
 
-    val alwaysGreen = Smoother<Light> { Light(0.0, 1.0, 0.0) }
-    val halvingBrightness = Smoother<Double> { it * 0.5 }
-    val constantBrightness = Smoother<Double> { 1.0 }
+    private val alwaysGreen = Smoother<Light> { Light(0.0, 1.0, 0.0) }
+    private val halvingBrightness = Smoother<Double> { it * 0.5 }
+    private val constantBrightness = Smoother<Double> { 1.0 }
 
-    fun loudnessToMagnitude(loudness: Double): Float {
+    private fun loudnessToMagnitude(loudness: Double): Float {
         return loudness.pow(1.0 / StevensPowerLaw.LOUDNESS_3KHZ_TONE.exponent).toFloat()
     }
 
@@ -67,7 +67,7 @@ class ColorWheelAlgorithmIntegrationTests {
     }
 
     @Test
-    fun `given a F# note at half loudness, then teal at half brightness is returned`() {
+    fun `given a F# note at half loudness, then cyan at half brightness is returned`() {
         val sut = createSUT()
         val peak = SpectralPeak(fSharpFrequency, halfLoudness)
 
@@ -130,7 +130,7 @@ class ColorWheelAlgorithmIntegrationTests {
         assertEquals(1.0, color1.green.value, 0.001)
         assertEquals(0.0, color1.blue.value, 0.001)
 
-        val color2 = sut.calculate(listOf(tealPeak))
+        val color2 = sut.calculate(listOf(cyanPeak))
         assertEquals(0.0, color2.red.value, 0.001)
         assertEquals(1.0, color2.green.value, 0.001)
         assertEquals(0.0, color2.blue.value, 0.001)
@@ -181,7 +181,7 @@ class ColorWheelAlgorithmIntegrationTests {
         sut.calculate(listOf())
 
         // A new note arrives
-        val resumedColor = sut.calculate(listOf(tealPeak))
+        val resumedColor = sut.calculate(listOf(cyanPeak))
 
         assertEquals(0.0, resumedColor.red.value, 0.001)
         assertEquals(1.0, resumedColor.green.value, 0.001)

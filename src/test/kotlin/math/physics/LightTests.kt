@@ -11,7 +11,7 @@ class LightTests {
     private val green = Light(0.0, 1.0, 0.0)
     private val blue = Light(0.0, 0.0, 1.0)
     private val yellow = Light(1.0, 1.0, 0.0)
-    private val teal = Light(0.0, 1.0, 1.0)
+    private val cyan = Light(0.0, 1.0, 1.0)
     private val white = Light(1.0, 1.0, 1.0)
     private val black = Light(0.0, 0.0, 0.0)
 
@@ -105,8 +105,8 @@ class LightTests {
     }
 
     @Test
-    fun `chromaticity of red and teal mixes to white`() {
-        val combined = red + teal
+    fun `chromaticity of red and cyan mixes to white`() {
+        val combined = red + cyan
 
         assertEquals(Chromaticity.Achromatic, combined.chromaticity)
     }

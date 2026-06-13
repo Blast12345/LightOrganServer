@@ -29,11 +29,11 @@ object Smoothers {
     }
 
     fun envelopeFollower(
-        attack: Duration,
-        release: Duration,
+        attackHalfLife: Duration,
+        releaseHalfLife: Duration,
         timeSource: TimeSource = TimeSource.Monotonic
     ): Smoother<Double> {
-        val follower = EnvelopeFollower(attack, release, timeSource)
+        val follower = EnvelopeFollower(attackHalfLife, releaseHalfLife, timeSource)
         return Smoother(follower::update)
     }
 
